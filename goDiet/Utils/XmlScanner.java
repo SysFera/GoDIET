@@ -98,20 +98,20 @@ public class XmlScanner implements ErrorHandler {
             doc = builder.parse( xmlFile );
         } catch (SAXException sxe) {
             // Error generated during parsing)
-            Exception  x = sxe;
+            /*Exception  x = sxe;
             if (sxe.getException() != null)
-                x = sxe.getException();
-            //x.printStackTrace();
+                x = sxe.getException();*/
+            sxe.printStackTrace();
             throw new IOException("Parsing of " + xmlFile + " failed. Parser error." );
 
          } catch (ParserConfigurationException pce) {
             // Parser with specified options can't be built
-            //pce.printStackTrace();
+            pce.printStackTrace();
             throw new IOException("Parsing of " + xmlFile + " failed. Parser configuration error." );
 
         } catch (IOException ioe) {
             // I/O error
-            //ioe.printStackTrace();
+            ioe.printStackTrace();
             throw new IOException("Parsing of " + xmlFile + " failed.  I/O error.");
         }
         return doc;
