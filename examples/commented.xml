@@ -132,10 +132,16 @@
         <config server="clusterX_host2" 
                 remote_binary="LogCentral"/>
     </log_central>
+    <!-- Optional: If log_tool tag is included, the log file generator tool 
+         will be launched after log_central. Note: LogCentral must be compiled
+         with - -enable-background. -->
     <log_tool>
         <config server="clusterX_host2" 
                 remote_binary="DIETLogTool"/>
     </log_tool>
+    <!-- Optional: If diet_statistics tag is included, GoDIET will use set
+         unique statistics output file environment variable for every launched
+         element. DIET must be configured with - -enable-stats. -->
   </diet_services>
  
   <!-- Define desired DIET agent and server hierarchy.  Must include at
