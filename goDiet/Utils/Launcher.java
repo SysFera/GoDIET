@@ -138,6 +138,16 @@ public class Launcher {
         sshUtil.runWithSsh(element,compRes,runConfig);
     }
     
+    public void stopElement(Elements element,
+                             ComputeResource compRes,
+                             RunConfig runConfig){
+       if(runConfig.debugLevel >= 1){                          
+          System.out.println("Trying to stop element " + element.getName());
+       }
+       SshUtils sshUtil = new SshUtils();
+       sshUtil.stopWithSsh(element,compRes,runConfig);
+    }
+    
     private void createCfgFile(Elements element,
                                String localScratch,
                                boolean useLogService,
