@@ -89,7 +89,10 @@
   >
 
 <!ELEMENT SeD (config,parameters?)>
-<!ATTLIST SeD label CDATA #IMPLIED>
+<!ATTLIST SeD 
+    label CDATA #IMPLIED
+    maxConcurrentJobs CDATA #IMPLIED
+  >
 
 <!--- Configuration for agents and seds -->
 <!ELEMENT config EMPTY>

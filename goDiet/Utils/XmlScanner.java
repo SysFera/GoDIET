@@ -784,6 +784,8 @@ public class XmlScanner implements ErrorHandler {
                           Agents parentAgent) { // <SeD>
         ServerDaemon newSeD = null;
         String sedName = "";
+        int maxConcJobs = -1;
+        boolean useMaxConcJobs = false;
         Config config = new Config();
         String parameters = null;
                 
@@ -792,6 +794,16 @@ public class XmlScanner implements ErrorHandler {
             org.w3c.dom.Attr attr = (org.w3c.dom.Attr)attrs.item(i);
             if (attr.getName().equals("label")) { // <SeD label="???">
                 sedName = attr.getValue();
+            } else if (attr.getName().equals("maxConcurrentJobs")) {
+                maxConcJobs = (new Integer(attr.getValue())).intValue();
+                if (maxConcJobs <= 0){
+                    System.err.println("SeD maxConcurrentJobs value " + maxConcJobs
+                        + " invalid.  Choose a value greater than 0 or remove " +
+                        "the setting.");
+                    System.exit(1);
+                } else {
+                    useMaxConcJobs = true;
+                }
             }
         }
         org.w3c.dom.NodeList nodes = element.getChildNodes();
@@ -815,6 +827,9 @@ public class XmlScanner implements ErrorHandler {
                         newSeD.setTraceLevel(config.traceLevel);
                     }
                     newSeD.setUseDietStats(mainController.getUseDietStats());
+                    if (useMaxConcJobs){
+                        newSeD.enableConcurrentJobLimit(maxConcJobs);
+                    }
                     mainController.addServerDaemon(newSeD, parentAgent);
                 }
                 if( newSeD != null ) {

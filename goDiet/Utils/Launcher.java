@@ -236,6 +236,11 @@ public class Launcher {
         } else if(element instanceof goDiet.Model.ServerDaemon){
             ServerDaemon sed = (ServerDaemon)element;
             out.write("parentName = " + (sed.getParent()).getName() + "\n");
+            if(sed.isConcurrentJobLimitEnabled()) {
+                out.write("useConcJobLimit = 1\n");
+                out.write("maxConcJobs = " + sed.getMaxConcurrentJobLimit() +
+                    "\n");
+            }
         }
         
         out.write("traceLevel = " + element.getTraceLevel() + "\n");

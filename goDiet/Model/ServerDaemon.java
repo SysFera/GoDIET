@@ -14,12 +14,16 @@ public class ServerDaemon extends Elements {
     /** Config-related items.  These should never change while SeD is running */
     private Agents parent;
     private String parameters = null;
+    private int maxConcJobs;
+    private boolean useConcJobLimit;
     
     /** Creates a new instance of ServerDaemon */
     public ServerDaemon(String name, ComputeResource compRes,
                         String binary, Agents parent){
         super(name,compRes,binary);
         this.parent=parent;
+        maxConcJobs = 1;
+        useConcJobLimit = false;
     }
        
     public Agents getParent(){
@@ -31,5 +35,24 @@ public class ServerDaemon extends Elements {
     }    
     public String getParameters() {
         return this.parameters;
+    }
+    
+    public void enableConcurrentJobLimit(int maxConcJobs){
+        this.useConcJobLimit = true;
+        if (maxConcJobs > 0){
+            this.maxConcJobs = maxConcJobs;
+        } else {
+            this.maxConcJobs = 1;
+        }
+    }
+    public void disableConcurrentJobLimit(){
+        this.useConcJobLimit = false;
+    }
+
+    public int getMaxConcurrentJobLimit() {
+        return this.maxConcJobs;
+    }
+    public boolean isConcurrentJobLimitEnabled(){
+        return this.useConcJobLimit;
     }
 }
