@@ -25,7 +25,7 @@
     
         <!-- Compute hosts -->
         <cluster label="lsCluster" disk="lsDisk" login="dail">
-            <env pate="/home/dail/bSeries_exp/bin/"
+            <env path="/home/dail/bSeries_exp/bin/"
                 LD_LIBRARY_PATH="/home/dail/bSeries_exp/diet/install/lib:/home/dail/local/omniORB-4.0.3-gcc3/lib"/>
             <node label="ls1">
                 <ssh server="ls1.ens.vthd.prd.fr"/>
