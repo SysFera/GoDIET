@@ -369,7 +369,7 @@ public class DeploymentController extends java.util.Observable
             }
             if( this.dietPlatform.useLogCentral() &&
                 this.dietPlatform.getLogCentral().useLogToGuideLaunch() &&
-                !(this.dietPlatform.getLogCentral().logCentralConnected()) &&
+                this.dietPlatform.getLogCentral().logCentralConnected() &&
                 (parentLI.getLogState() != goDiet.Defaults.LOG_STATE_RUNNING)){
                consoleCtrl.printError("Can not launch " + element.getName() +
                   " because parent " + parent.getName() + 
