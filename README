@@ -1,12 +1,18 @@
-Compilation:
-  - Simply type:
-      > ant
+### GoDIET 1.1.0 -- Released September 17, 2004.                     ###
+### Comments and suggestions are welcome.  Bugs can be reported via  ###
+### http://graal.ens-lyon.fr/bugzilla; other comments can be sent to ###
+### Holly Dail at Holly.Dail@ens-lyon.fr.                            ###
 
-  - For alternative build options:
-      > ant -help
+USAGE:
 
-Execution:
-  - Using the examples directory, build a new xml file that describes
-    your environment, the DIET platform you want to run, etc.  Then
-    run:
+Following the models provided in the examples directory, build a new xml file
+that describes the machines you want to use and where you want to place your
+DIET agents and servers.  Then run:
      > java -jar GoDIET.jar <youfile.xml>
+
+You will be offered an interactive terminal with a GoDIET command prompt.
+Type <help> to see all possible commands.
+
+If you encounter problems, check that your XML references a valid 
+DTD file location.  Look for the following line in your XML:
+    <!DOCTYPE diet_configuration SYSTEM "../GoDIET.dtd">
