@@ -24,7 +24,7 @@ public class Launcher {
     
     public String createLocalScratch(String scratchBase,RunConfig runCfg) {
         if(runCfg.debugLevel >= 1){
-           System.out.println("Preparing local scratch directory in " + scratchBase);
+            System.out.println("Preparing local scratch directory in " + scratchBase);
         }
         String dirName = null;
         String runLabel = null;
@@ -32,7 +32,7 @@ public class Launcher {
         SimpleDateFormat formatter = new SimpleDateFormat("yyMMMdd_HHmm");
         java.util.Date today = new Date();
         String dateString = formatter.format(today);
-         
+        
         runLabel = "run_" + dateString;
         
         File dirHdl = new File(scratchBase,runLabel);
@@ -58,18 +58,18 @@ public class Launcher {
      *      - run the element on the remote host
      */
     public void launchElement(Elements element,
-                              String localScratchBase,
-                              String runLabel,
-                              boolean useLogService,
-                              RunConfig runConfig){
+    String localScratchBase,
+    String runLabel,
+    boolean useLogService,
+    RunConfig runConfig){
         if(element == null){
             System.err.println("Launcher.launchElement called with null element.\n" +
-                "Launch request ignored.");
+            "Launch request ignored.");
             return;
         }
         if(element.getComputeResource() == null){
             System.err.println("Launcher.launchElement called with null resource.\n" +
-                "Launch request ignored.");
+            "Launch request ignored.");
             return;
         }
         if(localScratchBase == null){
@@ -82,15 +82,15 @@ public class Launcher {
         }
         if(runConfig.debugLevel >= 1){
             System.out.println("\n** Launching element " + element.getName() +
-                " on " + element.getComputeResource().getName());
-        } 
+            " on " + element.getComputeResource().getName());
+        }
         try {
             if(runConfig.useUniqueDirs){
                 createCfgFile(element,localScratchBase + "/" + runLabel,
-                    useLogService,runConfig);
+                useLogService,runConfig);
             } else {
                 createCfgFile(element,localScratchBase,
-                    useLogService,runConfig);
+                useLogService,runConfig);
             }
         }
         catch (IOException x) {
@@ -101,16 +101,16 @@ public class Launcher {
         }
         StorageResource storeRes = element.getComputeResource().getStorageResource();
         stageFile(localScratchBase,runLabel,element.getCfgFileName(),
-            storeRes,runConfig);
+        storeRes,runConfig);
         runElement(element,runConfig);
     }
     
     // TODO: incorporate Elagi usage
-    private void stageFile(String localBase, String runLabel, 
-                           String filename,StorageResource storeRes,
-                           RunConfig runConfig) {
+    private void stageFile(String localBase, String runLabel,
+    String filename,StorageResource storeRes,
+    RunConfig runConfig) {
         if(runConfig.debugLevel >= 1){
-           System.out.println("Staging file " + filename + " to " + storeRes.getName());
+            System.out.println("Staging file " + filename + " to " + storeRes.getName());
         }
         //AccessMethod access = storeRes.getAccessMethod("scp");
         
@@ -123,13 +123,13 @@ public class Launcher {
         ComputeResource compRes = element.getComputeResource();
         StorageResource storage = compRes.getStorageResource();
         if(runConfig.debugLevel >= 1){
-           System.out.println("Executing element " + element.getName() + 
-                " on resource " + compRes.getName());
+            System.out.println("Executing element " + element.getName() +
+            " on resource " + compRes.getName());
         }
         AccessMethod access = compRes.getAccessMethod("ssh");
         if(access == null){
             System.err.println("runElement: compRes does not have ssh access " +
-                "method. Ignoring launch request");
+            "method. Ignoring launch request");
             return;
         }
         
@@ -138,28 +138,28 @@ public class Launcher {
     }
     
     public void stopElement(Elements element,
-                             RunConfig runConfig){
-       if(runConfig.debugLevel >= 1){                          
-          System.out.println("Trying to stop element " + element.getName());
-       }
-       SshUtils sshUtil = new SshUtils();
-       sshUtil.stopWithSsh(element,runConfig);
+    RunConfig runConfig){
+        if(runConfig.debugLevel >= 1){
+            System.out.println("Trying to stop element " + element.getName());
+        }
+        SshUtils sshUtil = new SshUtils();
+        sshUtil.stopWithSsh(element,runConfig);
     }
     
     private void createCfgFile(Elements element,
-                               String localScratch,
-                               boolean useLogService,
-                               RunConfig runConfig) throws IOException {
+    String localScratch,
+    boolean useLogService,
+    RunConfig runConfig) throws IOException {
         if( element.getName().compareTo("TestTool") == 0){
             return;
         }
-                
+        
         if(element instanceof goDiet.Model.OmniNames){
             element.setCfgFileName("omniORB4.cfg");
         } else {
             element.setCfgFileName(element.getName() + ".cfg");
         }
- 
+        
         File cfgFile = new File(localScratch, element.getCfgFileName());
         
         if(runConfig.debugLevel >= 1){
@@ -168,7 +168,7 @@ public class Launcher {
         
         try {
             cfgFile.createNewFile();
-            FileWriter out = new FileWriter(cfgFile);      
+            FileWriter out = new FileWriter(cfgFile);
             
             if( element.getName().compareTo("LogCentral") ==  0){
                 writeCfgFileLogCentral(element,out);
@@ -183,25 +183,38 @@ public class Launcher {
             System.err.println("Failed to write " + cfgFile.getPath());
             throw x;
         }
-    }  
+    }
     
     private void writeCfgFileLogCentral(Elements element,FileWriter out) throws IOException {
         out.write("[General]\n\n");
         out.write("[DynamicTagList]\n");
         out.write("[StaticTagList]\n");
+        out.write("ADD_SERVICE\n");
         out.write("[UniqueTagList]\n");
         out.write("[VolatileTagList]\n");
+        out.write("ASK_FOR_SED\n");
+        out.write("SED_CHOSEN\n");
+        out.write("BEGIN_SOLVE\n");
+        out.write("END_SOLVE\n");
+        out.write("DATA_STORE\n");
+        out.write("DATA_RELEASE\n");
+        out.write("DATA_TRANSFER_BEGIN\n");
+        out.write("DATA_TRANSFER_END\n");
+        out.write("MEM\n");
+        out.write("LOAD\n");
+        out.write("LATENCY\n");
+        out.write("BANDWIDTH\n");
     }
     
-    private void writeCfgFileOmniNames(OmniNames omni,FileWriter out) throws IOException {        
-        out.write("InitRef = NameService=corbaname::" + 
-            omni.getContact() + ":" + omni.getPort() + "\n"); 
+    private void writeCfgFileOmniNames(OmniNames omni,FileWriter out) throws IOException {
+        out.write("InitRef = NameService=corbaname::" +
+        omni.getContact() + ":" + omni.getPort() + "\n");
         out.write("giopMaxMsgSize = 33554432\n");
-        out.write("supportBootstrapAgent = 1\n");        
+        out.write("supportBootstrapAgent = 1\n");
     }
     
     private void writeCfgFileDiet(Elements element,FileWriter out,
-            boolean useLogService) throws IOException {
+    boolean useLogService) throws IOException {
         ComputeResource compRes = element.getComputeResource();
         if(element instanceof goDiet.Model.MasterAgent) {
             out.write("name = " + element.getName() + "\n");
@@ -215,7 +228,7 @@ public class Launcher {
             ServerDaemon sed = (ServerDaemon)element;
             out.write("parentName = " + (sed.getParent()).getName() + "\n");
         }
-
+        
         if(element.isTraceLevelSet()) {
             out.write("traceLevel = " + element.getTraceLevel() + "\n");
         }
@@ -227,18 +240,18 @@ public class Launcher {
         }
         if(compRes.getEndPointContact() != null){
             out.write("dietHostname = " + compRes.getEndPointContact() +
-                "\n");
+            "\n");
         }
         // TODO: properly handle port range here for firewalls
         out.write("fastUse = 0\n"); // TODO: support config in xml
         out.write("ldapUse = 0\n"); // TODO: support config in xml
         out.write("nwsUse = 0\n");  // TODO: support config in xml
-        if(useLogService){ 
+        if(useLogService){
             out.write("useLogService = 1\n");
         } else {
             out.write("useLogService = 0\n");
         }
         out.write("lsOutbuffersize = 0\n");
-        out.write("lsFlushinterval = 10000\n");        
+        out.write("lsFlushinterval = 10000\n");
     }
 }
