@@ -29,11 +29,11 @@
         <echo message="${project} built."/>
     </target>
 
-    <target depends="init" description="Javadoc for my API." name="javadoc">
+    <target depends="init,compile" description="Javadoc for my API." name="javadoc">
         <mkdir dir="${apidoc}"/>
-        <javadoc destdir="${apidoc}" packagenames="${project}.*">
+        <javadoc destdir="${apidoc}" packagenames="${src}.*">
             <sourcepath>
-                <pathelement location="${src}"/>
+                <pathelement location="${dist}"/>
             </sourcepath>
         </javadoc>
     </target>
@@ -45,6 +45,7 @@
             </fileset>
         </delete>
         <delete dir="${build}"/>
+        <delete dir="${apidoc}"/>
         <delete file="${project}.jar"/>
     </target>
 </project>
