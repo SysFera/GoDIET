@@ -1,4 +1,4 @@
-?xml version="1.0" standalone="no"?>
+<?xml version="1.0" standalone="no"?>
 
 <!DOCTYPE diet_configuration SYSTEM "../GoDIET.dtd">
 
@@ -102,7 +102,7 @@
         <omni_names contact="193.253.175.224" port="2810">
             <config server="ls2" remote_binary="omniNames"/>
         </omni_names>
-        <log_central>
+        <log_central connectDuringLaunch="yes">
             <config server="ls2" remote_binary="LogCentral"/>
         </log_central>
         <log_tool>

@@ -16,17 +16,18 @@ import goDiet.Controller.ConsoleController;
 public class DietPlatform extends java.util.Observable {
     private ConsoleController consoleCtrl;
     
-    private OmniNames omniNames;
-    private Services logCentral;
-    private boolean haveLogCentral = false;
-    private Services testTool;
-    private boolean haveTestTool = false;
-    private boolean useDietStats = false;
-    
     private java.util.Vector masterAgents;
     private java.util.Vector localAgents;
     private java.util.Vector serverDaemons;
+
+    private OmniNames omniNames;
+    private LogCentral logCentral;
+    private boolean haveLogCentral = false; // Did user request Logger    
+    private Services testTool;
+    private boolean haveTestTool = false;
     
+    private boolean useDietStats = false;
+        
     // each new DIET component is assigned unique ID.
     // ID counts incremented at each addition & are not re-used.
     private int MA_ID = 0;
@@ -49,12 +50,17 @@ public class DietPlatform extends java.util.Observable {
         clearChanged();
     }
     
-    public void addLogCentral(Services logCentral){
-        this.logCentral = logCentral;
-        this.haveLogCentral = true;
-        setChanged();
-        notifyObservers(new AddElementsEvent(logCentral));
-        clearChanged();
+    public void addLogCentral(LogCentral logCentral){
+        if(logCentral != null){
+            this.logCentral = logCentral;
+            this.haveLogCentral = true;
+            setChanged();
+            notifyObservers(new AddElementsEvent(logCentral));
+            clearChanged();
+        } else {
+            consoleCtrl.printError("addLogCentral called with null logCentral " +
+                " object.  Continuing without logCentral.");
+        }
     }
     
     public void addTestTool(Services testTool){
@@ -107,7 +113,7 @@ public class DietPlatform extends java.util.Observable {
     public OmniNames getOmniNames(){
         return this.omniNames;
     }
-    public Services getLogCentral(){
+    public LogCentral getLogCentral(){
         return this.logCentral;
     }
     public boolean useLogCentral(){

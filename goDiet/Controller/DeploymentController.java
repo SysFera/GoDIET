@@ -34,7 +34,6 @@ public class DeploymentController extends java.util.Observable
     private java.util.Vector requestQueue;
     private int deployState;
     private Elements waitingOn = null;
-    private boolean logCentralConnected = false;
 
     public DeploymentController(ConsoleController consoleController,
                                 DietPlatformController modelController){
@@ -163,14 +162,25 @@ public class DeploymentController extends java.util.Observable
         if(launchOmniNames() == false){
            return false;
         }
-        if(this.dietPlatform.getLogCentral() != null){
+        if(this.dietPlatform.useLogCentral()){
             launchLogCentral();
-            LaunchInfo logInfo = this.dietPlatform.getLogCentral().getLaunchInfo();
-            if((logInfo.getLaunchState() == goDiet.Defaults.LAUNCH_STATE_RUNNING) &&
-               (logInfo.getLogState() == goDiet.Defaults.LOG_STATE_RUNNING) && 
-               (this.dietPlatform.getTestTool() != null)){
+            if(this.dietPlatform.getLogCentral().useLogToGuideLaunch()){
+                connectLogCentral();
+            }
+            if(this.dietPlatform.useTestTool()){
                 launchTestTool();
             }
+            /*LogCentral logCentral = this.dietPlatform.getLogCentral();
+            LaunchInfo logInfo = logCentral.getLaunchInfo();
+            if((logInfo.getLaunchState() == goDiet.Defaults.LAUNCH_STATE_RUNNING) &&
+               (this.dietPlatform.getTestTool() != null)) {
+              if(logCentral.getConnectDuringLaunch() == false){
+                launchTestTool();
+              } else if(logCentral.getConnectDuringLaunch() &&
+                 (logInfo.getLogState() == goDiet.Defaults.LOG_STATE_RUNNING)){
+                 launchTestTool();
+              }
+            }*/
         }
         launchMasterAgents();
         launchLocalAgents();
@@ -209,21 +219,35 @@ public class DeploymentController extends java.util.Observable
     }
     
     public void launchLogCentral() {
-        logCentralConnected = false;
         Elements logger = this.dietPlatform.getLogCentral();
         launchService(logger);
+    }
+    
+    public void connectLogCentral() {
+        LogCentral logger = this.dietPlatform.getLogCentral();
+        
+        if(logger.logCentralConnected()){
+            consoleCtrl.printError("* Error: log central already connected.", 1);
+            return;
+        }
+        if (logger.getLaunchInfo().getLaunchState() != 
+                goDiet.Defaults.LAUNCH_STATE_RUNNING) {
+          logger.setLogCentralConnected(false);
+          return;
+        }
+        
         OmniNames omni = this.dietPlatform.getOmniNames();
         if(logCommCtrl.connectLogService(omni) == true){
             consoleCtrl.printOutput("* Connected to Log Central.", 1);
             logger.getLaunchInfo().setLogState(
-                goDiet.Defaults.LOG_STATE_RUNNING);
-            logCentralConnected = true;
+                    goDiet.Defaults.LOG_STATE_RUNNING);
+            logger.setLogCentralConnected(true);
         } else {
             consoleCtrl.printError("* Error connecting to log central.", 1);
             logger.getLaunchInfo().setLogState(
-                goDiet.Defaults.LOG_STATE_CONFUSED);
-            logCentralConnected = false;
-        }
+                    goDiet.Defaults.LOG_STATE_CONFUSED);
+            logger.setLogCentralConnected(false);
+        }  
     }
     
     public void launchTestTool() {
@@ -312,20 +336,22 @@ public class DeploymentController extends java.util.Observable
               return false;
            }
           
-            // No launch if we're supposed to have log central and its not
-            // running [unless we're launching it now]
-            if((element.getName().compareTo("LogCentral") != 0) && 
-               (this.dietPlatform.getLogCentral() != null) &&
-               (logCentralConnected == false)){
-                consoleCtrl.printError("LogCentral is not connected. " + 
-                    " Launch for " + element.getName() + " refused.");
-                return false;
-            }
+           // No launch if user wants log feedback to guide launch progress
+           // and log central is not correctly connected
+           if(!(element instanceof LogCentral) &&
+               (this.dietPlatform.useLogCentral()) &&
+               (this.dietPlatform.getLogCentral().useLogToGuideLaunch())) {
+              if(!(this.dietPlatform.getLogCentral().logCentralConnected())){
+                 consoleCtrl.printError("LogCentral is not connected. " + 
+                        " Launch for " + element.getName() + " refused.");
+                 return false;
+              }
+           }
         }
-        
+ 
+        // For elements with parent in hierarchy, check on run status of parent
         LaunchInfo parentLI = null;
         Agents parent = null;
-        // check on run status of parent before launching
         if(element instanceof goDiet.Model.LocalAgent){
             parent = ((LocalAgent)element).getParent();
             parentLI = parent.getLaunchInfo();
@@ -341,8 +367,10 @@ public class DeploymentController extends java.util.Observable
                   " because parent " + parent.getName() + " is not running.", 1);
                return false;
             }
-            if(logCentralConnected &&
-               (parentLI.getLogState() != goDiet.Defaults.LOG_STATE_RUNNING)){
+            if( this.dietPlatform.useLogCentral() &&
+                this.dietPlatform.getLogCentral().useLogToGuideLaunch() &&
+                !(this.dietPlatform.getLogCentral().logCentralConnected()) &&
+                (parentLI.getLogState() != goDiet.Defaults.LOG_STATE_RUNNING)){
                consoleCtrl.printError("Can not launch " + element.getName() +
                   " because parent " + parent.getName() + 
                   " did not register with log.", 1);
@@ -356,23 +384,18 @@ public class DeploymentController extends java.util.Observable
     private void waitAfterLaunch(Elements element,
                                  ComputeResource compRes){
         if(element instanceof goDiet.Model.Services){
-            //System.out.println("Waiting for 3 seconds after service launch");
+            consoleCtrl.printOutput(
+                "Waiting for 3 seconds after service launch",1);
             try {
                 Thread.sleep(3000);
             } catch (InterruptedException x){
                 consoleCtrl.printError("Launch Service: Unexpected sleep " +
                     "interruption.",0);
             }
-        } else if(this.dietPlatform.getLogCentral() == null){
-            //System.out.println("Waiting for 2 seconds after launch without log service");
-            try {
-                Thread.sleep(2000);
-            } catch (InterruptedException x){
-                consoleCtrl.printError("Launch Service: Unexpected sleep " +
-                    "interruption.",0);
-            }
-        } else if(logCentralConnected){
-            //System.out.println("Waiting on log service feedback");
+        } else if(this.dietPlatform.useLogCentral() &&
+                  this.dietPlatform.getLogCentral().logCentralConnected()){
+            consoleCtrl.printOutput(
+                "Waiting on log service feedback",1);
             try {
                 synchronized(this){
                     this.waitingOn = element;
@@ -391,9 +414,16 @@ public class DeploymentController extends java.util.Observable
                       " did not register with log before deadline.", 1);
                 // TODO: any special launch handling required here?
             }
-        } else {
-            consoleCtrl.printError("launchElement: reached forbidden regions ...");
-        }
+        } else { 
+            consoleCtrl.printOutput(
+                "Waiting for 2 seconds after launch without log service feedback", 1);
+            try {
+                Thread.sleep(2000);
+            } catch (InterruptedException x){
+                consoleCtrl.printError("Launch Element: Unexpected sleep " +
+                    "interruption.",0);
+            }
+        } 
     }
     
     /*private boolean waitUserReady(Elements element){

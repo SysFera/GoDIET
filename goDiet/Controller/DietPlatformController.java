@@ -62,9 +62,9 @@ public class DietPlatformController implements java.util.Observer {
         this.dietPlatform.addOmniNames(omni);
         omni.addObserver(this);
     }
-    public void addLogCentral(Services newService){
-        this.dietPlatform.addLogCentral(newService);
-        newService.addObserver(this);
+    public void addLogCentral(LogCentral logger){
+        this.dietPlatform.addLogCentral(logger);
+        logger.addObserver(this);
     }
     public void addTestTool(Services newService){
         this.dietPlatform.addTestTool(newService);

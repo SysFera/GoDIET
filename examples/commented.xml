@@ -46,7 +46,7 @@
          space (e.g. temp storage of config files). You must have write
          access to the directory. -->
     <scratch dir="/tmp/GoDIET_scratch"/>
-  
+
     <!-- Define all storage space that will be needed to run 
          jobs on your compute hosts. -->
     <storage label="disk1">
@@ -59,7 +59,7 @@
         <scratch dir="/tmp/run_scratch"/>
         <scp server="hostX.clusterX.fr"/>
     </storage>
-    
+
     <!-- Define all compute hosts that you want to use. -->
     <!-- Use "compute" tags for individual machines, "cluster" to 
          simplify description of large numbers of machines -->
@@ -125,7 +125,10 @@
                       service. -->
     </omni_names>
 
-    <log_central>
+    <log_central connectDuringLaunch="no|yes">
+       <!-- Optional: If connectDuringLaunch is set to no, GoDIET will launch
+            LogCentral but will not try to use LogCentral feedback to guide
+            the launch. -->
         <config server="clusterX_host2" 
                 remote_binary="LogCentral"/>
     </log_central>

@@ -547,9 +547,9 @@ public class XmlScanner implements ErrorHandler {
                 if (nodeElement.getTagName().equals("omni_names")) {
                     visitElement_omni_names(nodeElement);
                 } else if (nodeElement.getTagName().equals("log_central")) {
-                    visitElement_service(nodeElement);
+                    visitElement_log_central(nodeElement);
                 } else if (nodeElement.getTagName().equals("log_tool")) {
-                    visitElement_service(nodeElement);
+                    visitElement_log_tool(nodeElement);
                 } else if (nodeElement.getTagName().equals("diet_statistics")) {
                     mainController.setUseDietStats(true);
                 }
@@ -600,8 +600,51 @@ public class XmlScanner implements ErrorHandler {
         omniNames.setCfgFileName("omniORB4.cfg");
         mainController.addOmniNames(omniNames);
     }    
-    void visitElement_service(org.w3c.dom.Element element) { // <omni_names>
-        Services service = null;
+    
+    void visitElement_log_central(org.w3c.dom.Element element) { // <log_central>
+        Config config = new Config();
+        ComputeResource compRes = null;
+        boolean connectDuringLaunch = true;
+        
+        org.w3c.dom.NamedNodeMap attrs = element.getAttributes();
+        for (int i = 0; i < attrs.getLength(); i++) {
+            org.w3c.dom.Attr attr = (org.w3c.dom.Attr)attrs.item(i);
+            if(attr.getName().equals("connectDuringLaunch")) {
+                String tempStr = attr.getValue();
+                if(tempStr.equals("no")){
+                    connectDuringLaunch = false;
+                } else if(tempStr.equals("yes")){
+                    connectDuringLaunch = true;
+                }
+            }
+        }                
+        
+        org.w3c.dom.NodeList nodes = element.getChildNodes();
+        for (int i = 0; i < nodes.getLength(); i++) {
+            org.w3c.dom.Node node = nodes.item(i);
+            if( node.getNodeType() == org.w3c.dom.Node.ELEMENT_NODE) {
+                org.w3c.dom.Element nodeElement = (org.w3c.dom.Element)node;
+                if (nodeElement.getTagName().equals("config")) {
+                    config = visitElement_config(nodeElement);
+                }
+            }
+        }
+        
+        compRes = mainController.getComputeResource(config.server);
+        if(compRes == null){
+            System.err.println("Definition of " + element.getTagName() +
+                "incorrect.  Host label " + config.server + " does not refer" +
+                "to valid compute resource.");
+            System.exit(1);
+        }
+        
+        LogCentral logger = new LogCentral(
+            "LogCentral", compRes, config.binary, connectDuringLaunch);
+        logger.setCfgFileName("config.cfg");
+        mainController.addLogCentral(logger);
+    }
+    
+    void visitElement_log_tool(org.w3c.dom.Element element) { // <test_tool>
         Config config = new Config();
         ComputeResource compRes = null;
         
@@ -623,14 +666,9 @@ public class XmlScanner implements ErrorHandler {
                 "to valid compute resource.");
             System.exit(1);
         }
-        if (element.getTagName().equals("log_central")) {
-            service = new Services("LogCentral",compRes,config.binary);
-            service.setCfgFileName("config.cfg");
-            mainController.addLogCentral(service);
-        } else if (element.getTagName().equals("log_tool")) {
-            service = new Services("TestTool",compRes,config.binary);
-            mainController.addTestTool(service);
-        } 
+        
+        Services service = new Services("TestTool",compRes,config.binary);
+        mainController.addTestTool(service);
     }
     
     void visitElement_diet_hierarchy(org.w3c.dom.Element element) { // <diet_hierarchy>
