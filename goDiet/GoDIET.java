@@ -93,6 +93,8 @@ public class GoDIET {
                 } else if(command.equals("stop")){
                     System.out.println("* Stopping DIET platform.");
                     mainController.stopPlatform();
+                    System.out.println("\n* Exiting GoDIET. Bye.");
+                    break; // exit.  Change once we handle re-launching better
                /* } else if(command.equals("kill")){
                     System.out.println("* Killing DIET platform.");
                     // TODO*/
