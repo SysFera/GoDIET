@@ -93,7 +93,7 @@ public class SshUtils {
         if(element.getName().compareTo("OmniNames") == 0){
             String omniRemove = "/bin/rm -f " + scratch + "/omninames-*.log ";
             omniRemove += scratch + "/omninames-*.bak ";
-            omniRemove += "> /dev/null 2> /dev/null ";
+            //omniRemove += "> /dev/null 2> /dev/null ";
             
             String[] commandOmni = {"/usr/bin/ssh", 
                             access.getLogin() + "@" + access.getServer(), 
@@ -107,6 +107,7 @@ public class SshUtils {
             }
             catch (IOException x) {
                 System.err.println("runElement failed to remove omni log file.");
+                x.printStackTrace();
             } 
         }
         
@@ -195,7 +196,7 @@ public class SshUtils {
         newCommand += "/bin/echo '/bin/echo ${!}' ) | ";
         newCommand += "/usr/bin/ssh ";
         newCommand += access.getLogin() + "@" + access.getServer() + " ";
-        newCommand += "\" tee - " + 
+        newCommand += "\" tee " + 
             scratch + "/" + element.getName() + ".launch ";
         newCommand += "| /bin/sh - \"";
         
@@ -234,7 +235,6 @@ public class SshUtils {
             System.err.println("Launch of " + element.getName() + 
                  " failed to return PID.");
         } else {    
-            System.out.println("line: " + launchInfo.launchStdOut);
             try{
                 launchInfo.pid = Integer.parseInt(launchInfo.launchStdOut);
                 if(runConfig.debugLevel >= 2){
@@ -251,5 +251,33 @@ public class SshUtils {
         }
         element.setLaunchInfo(launchInfo);
         return;
+    }
+    
+    public void stopWithSsh(Elements element,ComputeResource compRes,
+            RunConfig runConfig) {
+        AccessMethod access = compRes.getAccessMethod("ssh");
+        if(access == null){
+            System.err.println("stopWithSsh: compRes does not have ssh access " +
+                "method. Ignoring stop request");
+            return;
+        }
+        
+        String stopJob = "kill " + element.getLaunchInfo().pid;
+
+        String[] commandStop = {"/usr/bin/ssh", 
+                        access.getLogin() + "@" + access.getServer(), 
+                        stopJob};
+        for(int i = 0; (i < commandStop.length) && (runConfig.debugLevel >= 2); i++){
+            System.out.println("Command element " + i + " is " + commandStop[i]);
+        }
+
+        try {
+            Runtime.getRuntime().exec(commandStop);
+            element.getLaunchInfo().running = false;
+        }
+        catch (IOException x) {
+            System.err.println("stopElement triggered an exception.");
+            x.printStackTrace();
+        }               
     }
 }
