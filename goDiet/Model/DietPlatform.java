@@ -162,7 +162,12 @@ public class DietPlatform extends java.util.Observable {
                 getRunStatus(sed);
         }
        
-        System.out.println(platStatus);
+        //System.out.println(platStatus);
+        setChanged();
+        notifyObservers(new StatusInfosEvent(platStatus));
+        clearChanged();
+
+        
     }
     private String getRunStatus(Elements element){
         String status = null;

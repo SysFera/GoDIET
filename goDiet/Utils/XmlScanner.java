@@ -792,10 +792,10 @@ public class XmlScanner implements ErrorHandler {
             System.err.println(USAGE);
             System.exit(1);
         }
-        
+       
         DietPlatformController mainController = 
                 new DietPlatformController();
-
+        
         xmlFile = args[0];
         mainController.parseXmlFile(xmlFile);
         

@@ -17,7 +17,7 @@ public class LaunchInfo {
     public int pid = -1;
     public boolean running = false;
 
-    /** Creates a new instance of RunConfig */
+    /** Creates a new instance of LaunchInfo */
     public LaunchInfo() {
 
     }

@@ -17,16 +17,18 @@ import java.text.SimpleDateFormat;
  * @author  hdail
  */
 public class Launcher {
+    private goDiet.Controller.DietPlatformController mainController;
     private FileWriter killPlatformOut;
-
     /** Creates a new instance of Launcher */
-    public Launcher() {
+    public Launcher(goDiet.Controller.DietPlatformController controller) {
+        this.mainController=controller;
     }
     
     public String createLocalScratch(String scratchBase,RunConfig runCfg) {
-        if(runCfg.debugLevel >= 1){
+        /*if(runCfg.debugLevel >= 1){
             System.out.println("Preparing local scratch directory in " + scratchBase);
-        }
+        }*/
+        mainController.printToConsole("Preparing local scratch directory in " + scratchBase,1);
         String dirName = null;
         String runLabel = null;
         
@@ -89,10 +91,12 @@ public class Launcher {
             System.err.println("launchElement: RunLabel undefined.\n");
             return;
         }
-        if(runConfig.debugLevel >= 1){
+        /*if(runConfig.debugLevel >= 1){
             System.out.println("\n** Launching element " + element.getName() +
             " on " + element.getComputeResource().getName());
-        }
+        }*/
+        mainController.printToConsole("\n** Launching element " + element.getName() +
+            " on " + element.getComputeResource().getName(),1);
         try {
             if(runConfig.useUniqueDirs){
                 createCfgFile(element,localScratchBase + "/" + runLabel,
@@ -118,12 +122,13 @@ public class Launcher {
     private void stageFile(String localBase, String runLabel,
     String filename,StorageResource storeRes,
     RunConfig runConfig) {
-        if(runConfig.debugLevel >= 1){
+        /*if(runConfig.debugLevel >= 1){
             System.out.println("Staging file " + filename + " to " + storeRes.getName());
-        }
+        }*/
+        mainController.printToConsole("Staging file " + filename + " to " + storeRes.getName(),1);
         //AccessMethod access = storeRes.getAccessMethod("scp");
         
-        SshUtils sshUtil = new SshUtils();
+        SshUtils sshUtil = new SshUtils(mainController);
         sshUtil.stageWithScp(localBase,runLabel,filename,storeRes,runConfig);
     }
     
@@ -131,10 +136,12 @@ public class Launcher {
     private void runElement(Elements element, RunConfig runConfig) {
         ComputeResource compRes = element.getComputeResource();
         StorageResource storage = compRes.getStorageResource();
-        if(runConfig.debugLevel >= 1){
+        /*if(runConfig.debugLevel >= 1){
             System.out.println("Executing element " + element.getName() +
             " on resource " + compRes.getName());
-        }
+        }*/
+        mainController.printToConsole("Executing element " + element.getName() +
+            " on resource " + compRes.getName(),1);
         AccessMethod access = compRes.getAccessMethod("ssh");
         if(access == null){
             System.err.println("runElement: compRes does not have ssh access " +
@@ -142,15 +149,17 @@ public class Launcher {
             return;
         }
         
-        SshUtils sshUtil = new SshUtils();
+
+        SshUtils sshUtil = new SshUtils(mainController);
         sshUtil.runWithSsh(element,runConfig,killPlatformOut);
     }
     
     public void stopElement(Elements element, RunConfig runConfig){
-        if(runConfig.debugLevel >= 1){
+        /*if(runConfig.debugLevel >= 1){
             System.out.println("Trying to stop element " + element.getName());
-        }
-        SshUtils sshUtil = new SshUtils();
+        }*/
+        mainController.printToConsole("Trying to stop element " + element.getName(),1);
+        SshUtils sshUtil = new SshUtils(mainController);
         sshUtil.stopWithSsh(element,runConfig);
     }
     
@@ -170,9 +179,10 @@ public class Launcher {
         
         File cfgFile = new File(localScratch, element.getCfgFileName());
         
-        if(runConfig.debugLevel >= 1){
+        /*if(runConfig.debugLevel >= 1){
             System.out.println("Writing config file " + element.getCfgFileName());
-        }
+        }*/
+        mainController.printToConsole("Writing config file " + element.getCfgFileName(),1);
         
         try {
             cfgFile.createNewFile();

@@ -18,50 +18,58 @@ import java.io.InputStreamReader;
  * @author  hdail
  */
 public class DietPlatformController implements java.util.Observer {
-    private String                         xmlFile; 
+    private String                         xmlFile;
     private goDiet.Model.RunConfig         runConfig;
     
     private goDiet.Utils.XmlScanner        xmlScanner;
     private goDiet.Model.DietPlatform      dietPlatform;
     private goDiet.Model.ResourcePlatform  resourcePlatform;
     private goDiet.Utils.Launcher          launcher;
-        
+    
+    private ConsoleController consoleController;
+    
     /** Creates a new instance of DietPlatformController */
     public DietPlatformController(){
         runConfig           = new goDiet.Model.RunConfig();
         xmlScanner          = new goDiet.Utils.XmlScanner();
         dietPlatform        = new goDiet.Model.DietPlatform();
         resourcePlatform    = new goDiet.Model.ResourcePlatform();
-        launcher            = new goDiet.Utils.Launcher();
+        launcher            = new goDiet.Utils.Launcher(this);
+        dietPlatform.addObserver(this);
+    }
+    public DietPlatformController(ConsoleController consoleController){
+        this.consoleController=consoleController;
+        runConfig           = new goDiet.Model.RunConfig();
+        xmlScanner          = new goDiet.Utils.XmlScanner();
+        dietPlatform        = new goDiet.Model.DietPlatform();
+        resourcePlatform    = new goDiet.Model.ResourcePlatform();
+        launcher            = new goDiet.Utils.Launcher(this);
         dietPlatform.addObserver(this);
     }
     
-    /** Creates a new instance of DietPlatformController */
-    public DietPlatformController(RunConfig runConfig,
-                                  XmlScanner xmlScanner,
-                                  DietPlatform dietPlatform, 
-                                  ResourcePlatform resourcePlatform,
-                                  Launcher launcher) {
-        this.runConfig      = runConfig;
-        this.xmlScanner     = xmlScanner;
-        this.dietPlatform   = dietPlatform;
-        this.resourcePlatform = resourcePlatform;
-        this.launcher       = launcher;
-        dietPlatform.addObserver(this);
-    }
+  
     
     public void update(java.util.Observable observable, Object obj) {
         java.awt.AWTEvent e = (java.awt.AWTEvent)obj;
-         if ( (e instanceof AddElementsEvent) &&
-              (this.runConfig.debugLevel >= 2)){            
-            System.out.println("New Elements : "+((Elements)e.getSource()).getName());;
+        if ( e instanceof AddElementsEvent){
+            //System.out.println("New Elements : "+((Elements)e.getSource()).getName());
+            ((Elements)e.getSource()).addObserver(this);
+            //if (this.runConfig.debugLevel >= 2)
+            printToConsole("New Elements : "+((Elements)e.getSource()).getName(),2);
         }else if (e instanceof AddServiceEvent){
-            System.out.println("New service : "+e.getSource());
-        }
+            //System.out.println("New service : "+e.getSource());
+            printToConsole("New service : "+e.getSource(),1);
+        }else if (e instanceof StatusInfosEvent){
+            printToConsole("Infos :"+e.getSource(),0);
+        }/*else if (e instanceof ElementLaunchEvent){
+            printToConsole("LaunchInfo : PID :"+((LaunchInfo)e.getSource()).pid,0);
+            printToConsole("LaunchInfo : running ?"+((LaunchInfo)e.getSource()).running,0);
+        }*/
+        
     }
-   
     /* Interfaces for parsing the platform description xml */
     public void parseXmlFile(String xmlFile){
+        this.printToConsole("load xml File :"+xmlFile,0);
         try {
             xmlScanner.buildDietModel(xmlFile, this);
         }
@@ -79,7 +87,7 @@ public class DietPlatformController implements java.util.Observer {
         return this.runConfig;
     }
     
-    /* Interfaces for building the diet platform model */   
+    /* Interfaces for building the diet platform model */
     public void addOmniNames(OmniNames omni){
         this.dietPlatform.addOmniNames(omni);
         omni.addObserver(this);
@@ -186,7 +194,7 @@ public class DietPlatformController implements java.util.Observer {
         if(!omni.isRunning()){
             System.err.println("OmniNames launch failed.  Exiting.");
             System.exit(1);
-        } 
+        }
     }
     
     public void launchLogCentral() {
@@ -198,7 +206,7 @@ public class DietPlatformController implements java.util.Observer {
         Elements testTool = this.dietPlatform.getTestTool();
         launchService(testTool);
     }
-        
+    
     public void launchService(Elements service){
         ComputeResource compRes = service.getComputeResource();
         launchElement(service,compRes);
@@ -206,7 +214,7 @@ public class DietPlatformController implements java.util.Observer {
             Thread.sleep(3000);
         } catch (InterruptedException x){
             System.err.println("LaunchPlatform: Unexpected sleep " +
-                "interruption. Exiting.");
+            "interruption. Exiting.");
             System.exit(1);
         }
     }
@@ -233,20 +241,20 @@ public class DietPlatformController implements java.util.Observer {
             currElement = (Elements) elements.elementAt(i);
             ComputeResource compRes = currElement.getComputeResource();
             launchElement(currElement,compRes);
-        
+            
             try {
-               Thread.sleep(2000);
+                Thread.sleep(2000);
             }
             catch (InterruptedException x) {
                 System.err.println("LaunchPlatform: Unexpected sleep " +
-                    "interruption. Exiting.");
+                "interruption. Exiting.");
                 System.exit(1);
             }
         }
-    }    
-       
+    }
+    
     private void launchElement(Elements element,
-                               ComputeResource compRes) {
+    ComputeResource compRes) {
         boolean userCont = true;
         if(element == null){
             System.err.println("Can not launch null element.");
@@ -257,39 +265,39 @@ public class DietPlatformController implements java.util.Observer {
             System.exit(1);
         }
         if((element.getLaunchInfo() != null) &&
-           (element.getLaunchInfo().running)){
-            System.err.println("Element " + element.getName() + 
-                " is already running.  Launch request ignored.");
+        (element.getLaunchInfo().running)){
+            System.err.println("Element " + element.getName() +
+            " is already running.  Launch request ignored.");
             return;
         }
         if(runConfig.debugLevel >= 3){
             userCont = waitUserReady(element);
         }
         if(userCont){
-            launcher.launchElement(element, 
-                               resourcePlatform.getLocalScratchBase(),
-                               resourcePlatform.getRunLabel(),
-                               dietPlatform.useLogCentral(), 
-                               this.runConfig);
-        } 
+            launcher.launchElement(element,
+            resourcePlatform.getLocalScratchBase(),
+            resourcePlatform.getRunLabel(),
+            dietPlatform.useLogCentral(),
+            this.runConfig);
+        }
     }
     
     private boolean waitUserReady(Elements element){
         System.out.println("\nType <return> to launch " + element.getName() +
-                ", <no> to skip this element, or <stop> to quit ...");
+        ", <no> to skip this element, or <stop> to quit ...");
         String userInput = "";
         BufferedReader stdin = new BufferedReader(
-                new InputStreamReader(System.in));
+        new InputStreamReader(System.in));
         try {
             userInput = stdin.readLine();
         } catch(Exception x) {
             System.err.println("Exception caught while waiting for input. " +
-                "Ignoring exception.");
+            "Ignoring exception.");
         }
         userInput = userInput.trim();
         if(userInput.equals("no")){
             System.out.println("Skipping launch of " + element.getName() +
-                ".  The launch of any sub-elements will fail!");   
+            ".  The launch of any sub-elements will fail!");
             return false;
         } else if(userInput.equals("stop")){
             stopPlatform();
@@ -303,7 +311,7 @@ public class DietPlatformController implements java.util.Observer {
         stopServerDaemons();
         stopLocalAgents();
         stopMasterAgents();
-
+        
         if(this.dietPlatform.getLogCentral() != null){
             if(this.dietPlatform.getTestTool() != null){
                 stopTestTool();
@@ -326,7 +334,7 @@ public class DietPlatformController implements java.util.Observer {
     public void stopMasterAgents() {
         java.util.Vector mAgents = this.dietPlatform.getMasterAgents();
         stopElements(mAgents);
-    }    
+    }
     
     public void stopOmniNames() {
         Elements omni = this.dietPlatform.getOmniNames();
@@ -342,7 +350,7 @@ public class DietPlatformController implements java.util.Observer {
         Elements testTool = this.dietPlatform.getTestTool();
         stopService(testTool);
     }
-        
+    
     public void stopService(Elements service){
         ComputeResource compRes = service.getComputeResource();
         if(stopElement(service,compRes)){
@@ -351,7 +359,7 @@ public class DietPlatformController implements java.util.Observer {
                 Thread.sleep(2000);
             } catch (InterruptedException x){
                 System.err.println("StopService: Unexpected sleep " +
-                    "interruption.  Exiting.");
+                "interruption.  Exiting.");
                 System.exit(1);
             }
         }
@@ -366,35 +374,42 @@ public class DietPlatformController implements java.util.Observer {
             if( stopElement(currElement,compRes) ){
                 // If stop command was run, sleep afterwards for cleanup time
                 try {
-                   Thread.sleep(1000);
+                    Thread.sleep(1000);
                 }
                 catch (InterruptedException x) {
                     System.err.println("StopElements: Unexpected sleep " +
-                        "interruption. Exiting.");
+                    "interruption. Exiting.");
                     System.exit(1);
                 }
             }
         }
-    } 
+    }
     
     private boolean stopElement(Elements element,
-                             ComputeResource compRes) {
+    ComputeResource compRes) {
         if(element == null){
             System.err.println("Can not run stop on null element.");
             return false;
         }
         if((element.getLaunchInfo() == null) ||
-           (!element.getLaunchInfo().running)){
+        (!element.getLaunchInfo().running)){
             System.err.println("Element " + element.getName() + " is not " +
-                "running. Ignoring stop command.");
+            "running. Ignoring stop command.");
             return false;
         }
-        launcher.stopElement(element, 
-                             this.runConfig);
+        launcher.stopElement(element,
+        this.runConfig);
         return true;
     }
     
     public void printPlatformStatus(){
         this.dietPlatform.printStatus();
+    }
+    public void printToConsole(String msg,int debugLevel){
+        //System.out.println("ask debugLevel :"+debugLevel);
+        //System.out.println("runConfig.debugLevel :"+this.runConfig.debugLevel);
+        if (debugLevel <= this.runConfig.debugLevel){
+            consoleController.printToConsole(msg);
+        }
     }
 }

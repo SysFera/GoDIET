@@ -77,7 +77,7 @@ public class Elements extends java.util.Observable {
     }
     
     public void setLaunchInfo(LaunchInfo launchInfo){
-        this.launchInfo = launchInfo;
+        this.launchInfo = launchInfo;        
     }
     public LaunchInfo getLaunchInfo(){
         return this.launchInfo;
