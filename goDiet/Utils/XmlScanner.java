@@ -213,6 +213,9 @@ public class XmlScanner implements ErrorHandler {
                 if (nodeElement.getTagName().equals("compute")) {
                     visitElement_compute(nodeElement);
                 }
+                if (nodeElement.getTagName().equals("cluster")) {
+                    visitElement_cluster(nodeElement);
+                }
             }
         }
     }
@@ -274,8 +277,8 @@ public class XmlScanner implements ErrorHandler {
 
     void visitElement_compute(org.w3c.dom.Element element) { // <compute>
         String resourceLabel = null;
-        String scratchDir = null;
         String diskLabel = null;
+        String login = null;
         AccessMethod sshAccess = null;
         EnvDesc envCfg = null;
         EndPoint endPoint = null;
@@ -289,6 +292,9 @@ public class XmlScanner implements ErrorHandler {
             }
             if (attr.getName().equals("disk")) { // <compute disk="???">
                 diskLabel = attr.getValue();
+            }
+            if (attr.getName().equals("login")) {
+                login = attr.getValue();
             }
         }
         StorageResource storRes = mainController.getStorageResource(diskLabel);
@@ -304,7 +310,7 @@ public class XmlScanner implements ErrorHandler {
             if( node.getNodeType() == org.w3c.dom.Node.ELEMENT_NODE) {
                 org.w3c.dom.Element nodeElement = (org.w3c.dom.Element)node;
                 if (nodeElement.getTagName().equals("ssh")) {
-                    sshAccess = visitElement_ssh(nodeElement);
+                    sshAccess = visitElement_ssh(nodeElement,login);
                 } else if (nodeElement.getTagName().equals("env")) {
                     envCfg = visitElement_env(nodeElement);
                 } else if (nodeElement.getTagName().equals("end_point")) {
@@ -313,6 +319,97 @@ public class XmlScanner implements ErrorHandler {
             }
         }
         compRes = new ComputeResource(resourceLabel, storRes);
+        if(sshAccess != null){
+            compRes.addAccessMethod(sshAccess);
+        }
+        if(envCfg != null){
+            compRes.setEnvPath(envCfg.path);
+            compRes.setEnvLdLibraryPath(envCfg.ldLibraryPath);
+        }
+        if(endPoint != null){
+            if(endPoint.contact != null){
+                compRes.setEndPointContact(endPoint.contact);
+            }
+            if(endPoint.startPort != -1){
+                compRes.setEndPointRange(endPoint.startPort,endPoint.endPort);
+            }
+        }
+        mainController.addComputeResource(compRes); 
+    }
+    
+       void visitElement_cluster(org.w3c.dom.Element element) {
+        String clusLabel = null;
+        String diskLabel = null;
+        String login = null;
+        EnvDesc envCfg = null;
+        ComputeResource compRes = null;
+
+        org.w3c.dom.NamedNodeMap attrs = element.getAttributes();
+        for (int i = 0; i < attrs.getLength(); i++) {
+            org.w3c.dom.Attr attr = (org.w3c.dom.Attr)attrs.item(i);
+            if (attr.getName().equals("label")) { // <compute label="???">
+                clusLabel = attr.getValue();
+            }
+            if (attr.getName().equals("disk")) { // <compute disk="???">
+                diskLabel = attr.getValue();
+            }
+            if (attr.getName().equals("login")) {
+                login = attr.getValue();
+            }
+        }
+        StorageResource storRes = mainController.getStorageResource(diskLabel);
+        if(storRes == null){
+            System.err.println("Compute resource " + clusLabel +
+               " has invalid storage reference " + diskLabel + ". Not added.");
+            return;
+        }
+        
+        org.w3c.dom.NodeList nodes = element.getChildNodes();
+        for (int i = 0; i < nodes.getLength(); i++) {
+            org.w3c.dom.Node node = nodes.item(i);
+            if( node.getNodeType() == org.w3c.dom.Node.ELEMENT_NODE) {
+                org.w3c.dom.Element nodeElement = (org.w3c.dom.Element)node;
+                if (nodeElement.getTagName().equals("env")) {
+                    envCfg = visitElement_env(nodeElement);
+                }
+                if (nodeElement.getTagName().equals("node")){
+                    visitElement_node(nodeElement, envCfg, storRes, login);
+                    System.out.println("Visiting node.");
+                }
+            }
+        }
+     }
+       
+     void visitElement_node(org.w3c.dom.Element element, EnvDesc envCfg,
+            StorageResource storRes, String clusLogin) {
+        String resourceLabel = null;
+        AccessMethod sshAccess = null;
+        EndPoint endPoint = null;
+        ComputeResource compRes = null;
+
+        org.w3c.dom.NamedNodeMap attrs = element.getAttributes();
+        for (int i = 0; i < attrs.getLength(); i++) {
+            org.w3c.dom.Attr attr = (org.w3c.dom.Attr)attrs.item(i);
+            if (attr.getName().equals("label")) { 
+                resourceLabel = attr.getValue();
+                System.out.println("Found label " + resourceLabel);
+            }
+        } 
+        compRes = new ComputeResource(resourceLabel, storRes);
+        
+        org.w3c.dom.NodeList nodes = element.getChildNodes();
+        for (int i = 0; i < nodes.getLength(); i++) {
+            org.w3c.dom.Node node = nodes.item(i);
+            if( node.getNodeType() == org.w3c.dom.Node.ELEMENT_NODE) {
+                org.w3c.dom.Element nodeElement = (org.w3c.dom.Element)node;
+                if (nodeElement.getTagName().equals("ssh")) {
+                    sshAccess = visitElement_ssh(nodeElement,clusLogin);
+                } else if (nodeElement.getTagName().equals("end_point")) {
+                    endPoint = visitElement_end_point(nodeElement);
+                }
+            }
+        }
+       
         if(sshAccess != null){
             compRes.addAccessMethod(sshAccess);
         }
@@ -352,7 +449,7 @@ public class XmlScanner implements ErrorHandler {
         return scpAccess;
     }
     
-    AccessMethod visitElement_ssh(org.w3c.dom.Element element) { 
+    AccessMethod visitElement_ssh(org.w3c.dom.Element element,String clusLogin) { 
         AccessMethod sshAccess = null;
         String login = null, server = null;
         org.w3c.dom.NamedNodeMap attrs = element.getAttributes();
@@ -367,6 +464,8 @@ public class XmlScanner implements ErrorHandler {
         }
         if(login != null) {
             sshAccess = new AccessMethod("ssh", server, login);
+        } else if(clusLogin != null) {
+            sshAccess = new AccessMethod("ssh", server, clusLogin);
         } else {
             sshAccess = new AccessMethod("ssh", server);
         }

@@ -13,7 +13,7 @@
 
 <!--- Define resources available for data storage and compution -->
 <!--- Must define local scratch directory for use before launch -->
-<!ELEMENT resources (scratch,storage+,compute+)>
+<!ELEMENT resources (scratch,storage+,compute*,cluster*)>
 
 <!ELEMENT storage (scratch,scp)>
 <!ATTLIST storage
@@ -31,13 +31,22 @@
 
 <!ELEMENT compute (ssh,env?,end_point?)>
 <!ATTLIST compute
-    disk CDATA #IMPLIED
-    label CDATA #IMPLIED
+    disk CDATA #REQUIRED
+    label CDATA #REQUIRED
+    login CDATA #IMPLIED
   >
-  
+<!ELEMENT cluster (env,node+)>
+<!ATTLIST cluster
+    disk CDATA #REQUIRED
+    label CDATA #REQUIRED
+    login CDATA #IMPLIED
+  >
+<!ELEMENT node (ssh,end_point?)>
+<!ATTLIST node
+    label CDATA #REQUIRED
+  >
 <!ELEMENT ssh EMPTY>
 <!ATTLIST ssh
-    login CDATA #IMPLIED
     server CDATA #REQUIRED
   >
 <!ELEMENT env EMPTY>

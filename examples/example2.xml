@@ -24,161 +24,140 @@
     </storage>
 
     <!-- Compute hosts -->
-    <compute label="ls1" disk="lsDisk">
-        <ssh server="ls1.ens.vthd.prd.fr" login="dail"/>
+    <cluster label="lsCluster" disk="lsDisk" login="dail">
         <env path="/home/dail/bSeries_exp/bin/"
              LD_LIBRARY_PATH="/home/dail/bSeries_exp/diet/install/lib:/home/dail/local/omniORB-4.0.3-gcc3/lib"/>
-        <end_point contact="193.253.175.223"/>
-    </compute>
-    <compute label="ls2" disk="lsDisk">
-        <ssh server="ls2.ens.vthd.prd.fr" login="dail"/>
-        <env path="/home/dail/bSeries_exp/bin/"
-             LD_LIBRARY_PATH="/home/dail/bSeries_exp/diet/install/lib:/home/dail/local/omniORB-4.0.3-gcc3/lib"/>
-        <end_point contact="193.253.175.224"/>
-    </compute>
-    <compute label="ls3" disk="lsDisk">
-        <ssh server="ls3.ens.vthd.prd.fr" login="dail"/>
-        <env path="/home/dail/bSeries_exp/bin/"
-             LD_LIBRARY_PATH="/home/dail/bSeries_exp/diet/install/lib:/home/dail/local/omniORB-4.0.3-gcc3/lib"/>
-        <end_point contact="193.253.175.225"/>
-    </compute>
-    <compute label="ls4" disk="lsDisk">
-        <ssh server="ls4.ens.vthd.prd.fr" login="dail"/>
-        <env path="/home/dail/bSeries_exp/bin/"
-             LD_LIBRARY_PATH="/home/dail/bSeries_exp/diet/install/lib:/home/dail/local/omniORB-4.0.3-gcc3/lib"/>
-        <end_point contact="193.253.175.226"/>
-    </compute>
-    <compute label="ls5" disk="lsDisk">
-        <ssh server="ls5.ens.vthd.prd.fr" login="dail"/>
-        <env path="/home/dail/bSeries_exp/bin/"
-             LD_LIBRARY_PATH="/home/dail/bSeries_exp/diet/install/lib:/home/dail/local/omniORB-4.0.3-gcc3/lib"/>
-        <end_point contact="193.253.175.227"/>
-    </compute>
-    <compute label="ls6" disk="lsDisk">
-        <ssh server="ls6.ens.vthd.prd.fr" login="dail"/>
-        <env path="/home/dail/bSeries_exp/bin/"
-             LD_LIBRARY_PATH="/home/dail/bSeries_exp/diet/install/lib:/home/dail/local/omniORB-4.0.3-gcc3/lib"/>
-        <end_point contact="193.253.175.228"/>
-    </compute>
-    <compute label="ls7" disk="lsDisk">
-        <ssh server="ls7.ens.vthd.prd.fr" login="dail"/>
-        <env path="/home/dail/bSeries_exp/bin/"
-             LD_LIBRARY_PATH="/home/dail/bSeries_exp/diet/install/lib:/home/dail/local/omniORB-4.0.3-gcc3/lib"/>
-        <end_point contact="193.253.175.229"/>
-    </compute>
-    <compute label="ls8" disk="lsDisk">
-        <ssh server="ls8.ens.vthd.prd.fr" login="dail"/>
-        <env path="/home/dail/bSeries_exp/bin/"
-             LD_LIBRARY_PATH="/home/dail/bSeries_exp/diet/install/lib:/home/dail/local/omniORB-4.0.3-gcc3/lib"/>
-        <end_point contact="193.253.175.230"/>
-    </compute>
-    <compute label="ls9" disk="lsDisk">
-        <ssh server="ls9.ens.vthd.prd.fr" login="dail"/>
-        <env path="/home/dail/bSeries_exp/bin/"
-             LD_LIBRARY_PATH="/home/dail/bSeries_exp/diet/install/lib:/home/dail/local/omniORB-4.0.3-gcc3/lib"/>
-        <end_point contact="193.253.175.231"/>
-    </compute>
+	<node label="ls1">
+		<ssh server="ls1.ens.vthd.prd.fr"/>
+		<end_point contact="193.253.175.223"/>
+	</node>
+	<node label="ls2">
+        	<ssh server="ls2.ens.vthd.prd.fr"/>
+		<end_point contact="193.253.175.224"/>
+	</node>
+    	<node label="ls3">
+        	<ssh server="ls3.ens.vthd.prd.fr"/>
+		<end_point contact="193.253.175.225"/>
+    	</node>
+    	<node label="ls4">
+        	<ssh server="ls4.ens.vthd.prd.fr"/>
+		<end_point contact="193.253.175.226"/>
+    	</node>
+    	<node label="ls5">
+        	<ssh server="ls5.ens.vthd.prd.fr"/>
+		<end_point contact="193.253.175.227"/>
+    	</node>
+    	<node label="ls6">
+        	<ssh server="ls6.ens.vthd.prd.fr"/>
+		<end_point contact="193.253.175.228"/>
+    	</node>
+    	<node label="ls7">
+        	<ssh server="ls7.ens.vthd.prd.fr"/>
+		<end_point contact="193.253.175.229"/>
+    	</node>
+    	<node label="ls8">
+        	<ssh server="ls8.ens.vthd.prd.fr"/> 
+		<end_point contact="193.253.175.230"/>
+    	</node>
+    	<node label="ls9">
+        	<ssh server="ls9.ens.vthd.prd.fr"/>
+		<end_point contact="193.253.175.231"/>
+    	</node>
+    </cluster>
     <!-- compute hosts on cristal -->
-    <compute label="clus-103" disk="cristalDisk">
-        <ssh server="192.5.59.198" login="hdail"/>
+    <cluster label="cristalCluster" disk="cristalDisk" login="hdail">
         <env path="/home/hdail/bSeries_exp/bin/"
              LD_LIBRARY_PATH="/home/hdail/bSeries_exp/diet/install/lib:/home/hdail/local/omniORB-4.0.3-gcc3/lib:/home/hdail/local/gcc-3.0.4/lib"/>
-        <end_point contact="192.5.59.198"/>
-    </compute>
-    <compute label="clus-104" disk="cristalDisk">
-        <ssh server="192.5.59.199" login="hdail"/>
-        <env path="/home/hdail/bSeries_exp/bin/"
-             LD_LIBRARY_PATH="/home/hdail/bSeries_exp/diet/install/lib:/home/hdail/local/omniORB-4.0.3-gcc3/lib:/home/hdail/local/gcc-3.0.4/lib"/>
-        <end_point contact="192.5.59.199"/>
-    </compute>
-    <compute label="clus-105" disk="cristalDisk">
-        <ssh server="192.5.59.200" login="hdail"/>
-        <env path="/home/hdail/bSeries_exp/bin/"
-             LD_LIBRARY_PATH="/home/hdail/bSeries_exp/diet/install/lib:/home/hdail/local/omniORB-4.0.3-gcc3/lib:/home/hdail/local/gcc-3.0.4/lib"/>
-        <end_point contact="192.5.59.200"/>
-    </compute>
-    <compute label="clus-106" disk="cristalDisk">
-        <ssh server="192.5.59.201" login="hdail"/>
-        <env path="/home/hdail/bSeries_exp/bin/"
-             LD_LIBRARY_PATH="/home/hdail/bSeries_exp/diet/install/lib:/home/hdail/local/omniORB-4.0.3-gcc3/lib:/home/hdail/local/gcc-3.0.4/lib"/>
-        <end_point contact="192.5.59.201"/>
-    </compute>
-    <compute label="clus-107" disk="cristalDisk">
-        <ssh server="192.5.59.202" login="hdail"/>
-        <env path="/home/hdail/bSeries_exp/bin/"
-             LD_LIBRARY_PATH="/home/hdail/bSeries_exp/diet/install/lib:/home/hdail/local/omniORB-4.0.3-gcc3/lib:/home/hdail/local/gcc-3.0.4/lib"/>
-        <end_point contact="192.5.59.202"/>
-    </compute>
-    <compute label="clus-108" disk="cristalDisk">
-        <ssh server="192.5.59.203" login="hdail"/>
-        <env path="/home/hdail/bSeries_exp/bin/"
-             LD_LIBRARY_PATH="/home/hdail/bSeries_exp/diet/install/lib:/home/hdail/local/omniORB-4.0.3-gcc3/lib:/home/hdail/local/gcc-3.0.4/lib"/>
-        <end_point contact="192.5.59.203"/>
-    </compute>
+
+    	<node label="clus-103">
+        	<ssh server="192.5.59.198"/>
+		<end_point contact="192.5.59.198"/>
+    	</node>
+    	<node label="clus-104">
+        	<ssh server="192.5.59.199"/>
+		<end_point contact="192.5.59.199"/>
+    	</node>
+    	<node label="clus-105">
+        	<ssh server="192.5.59.200"/>
+		<end_point contact="192.5.59.200"/>
+    	</node>
+    	<node label="clus-106">
+        	<ssh server="192.5.59.201"/>
+		<end_point contact="192.5.59.201"/>
+    	</node>
+    	<node label="clus-107">
+        	<ssh server="192.5.59.202"/>
+		<end_point contact="192.5.59.202"/>
+    	</node>
+    	<node label="clus-108">
+        	<ssh server="192.5.59.203"/>
+		<end_point contact="192.5.59.203"/>
+	</node>
+    </cluster>
 
   </resources>
   
   <diet_services>
     <omni_names contact="193.253.175.224" port="2810">
-	      <config server="ls2" remote_binary="omniNames"/>
+	<config server="ls2" remote_binary="omniNames"/>
     </omni_names>
     <log_central>
-        <config server="ls2" remote_binary="LogCentral"/>
+	<config server="ls2" remote_binary="LogCentral"/>
     </log_central>
     <test_tool>
-        <config server="ls2" remote_binary="testTool"/>
+	<config server="ls2" remote_binary="testTool"/>
     </test_tool>
   </diet_services>
   
   <diet_hierarchy>
     <master_agent>
-	      <config server="clus-104" remote_binary="dietAgent"/>
+	<config server="clus-104" remote_binary="dietAgent"/>
    
-	      <!-- diet components on LS --> 
+	<!-- diet components on LS --> 
         <local_agent>
-	          <config server="ls1" remote_binary="dietAgent"/>
-	          <local_agent>
-		            <config server="ls6" remote_binary="dietAgent"/>
-		            <SeD>
-			            <config server="ls7" remote_binary="scalar_server"/>
-		            </SeD>
-            	  <SeD>
-			            <config server="ls8" remote_binary="dmat_server"/>
-			            <parameters string="MatPROD"/>
-            	  </SeD>
-            	  <SeD>
-			            <config server="ls9" remote_binary="dmat_server"/>
-			            <parameters string="MatSUM"/>
-		            </SeD>
-	          </local_agent>
+	    <config server="ls1" remote_binary="dietAgent"/>
+	    <local_agent>
+		<config server="ls6" remote_binary="dietAgent"/>
+		<SeD>
+			<config server="ls7" remote_binary="scalar_server"/>
+		</SeD>
+            	<SeD>
+			<config server="ls8" remote_binary="dmat_server"/>
+			<parameters string="MatPROD"/>
+            	</SeD>
+            	<SeD>
+			<config server="ls9" remote_binary="dmat_server"/>
+			<parameters string="MatSUM"/>
+		</SeD>
+	    </local_agent>
             <SeD>
-		            <config server="ls3" remote_binary="scalar_server"/>
+		<config server="ls3" remote_binary="scalar_server"/>
             </SeD>
             <SeD>
-		            <config server="ls4" remote_binary="scalar_server"/>
+		<config server="ls4" remote_binary="scalar_server"/>
             </SeD>
             <SeD>
-		            <config server="ls5" remote_binary="dmat_server"/>
-		            <parameters string="T"/>
+		<config server="ls5" remote_binary="dmat_server"/>
+		<parameters string="T"/>
             </SeD>
         </local_agent>
 
-	      <!-- DIET components on cristal -->
+	<!-- DIET components on cristal -->
         <local_agent>
-	          <config server="clus-105" remote_binary="dietAgent"/>
+	    <config server="clus-105" remote_binary="dietAgent"/>
             
             <SeD>
-		            <config server="clus-106" remote_binary="dmat_server"/>
+		<config server="clus-106" remote_binary="dmat_server"/>
                 <parameters string="MatPROD"/>
             </SeD>
             <SeD>
-	              <config server="clus-107" remote_binary="dmat_server"/>
+	        <config server="clus-107" remote_binary="dmat_server"/>
                 <parameters string="MatSUM"/>
             </SeD>
             <SeD>
-	              <config server="clus-108" remote_binary="scalar_server"/>
+	        <config server="clus-108" remote_binary="scalar_server"/>
             </SeD>
-	      </local_agent>
+	</local_agent>
     </master_agent>
   </diet_hierarchy>
 
