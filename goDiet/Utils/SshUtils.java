@@ -64,14 +64,22 @@ public class SshUtils {
         catch (IOException x) {
             System.out.println("stageFile failed.");
         }
-        storeRes.setScratchReady(true);
+        if(!storeRes.isScratchReady()) {
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException x){
+                System.err.println("ScratchPrep: Unexpected sleep " +
+                "interruption. Exiting.");
+                System.exit(1);
+            }
+            storeRes.setScratchReady(true);
+        }
         storeRes.setRunLabel(runLabel);
     }
     
-    // TODO: move ssh functionality to sshUtils & incorporate Elagi usage
-    public void runWithSsh(Elements element,ComputeResource compRes,
-            RunConfig runConfig) {
-        String className = element.getClass().getName();
+    // TODO: incorporate Elagi usage
+    public void runWithSsh(Elements element, RunConfig runConfig) {
+        ComputeResource compRes = element.getComputeResource();
         StorageResource storage = compRes.getStorageResource();
         String scratch;
         int i;
@@ -90,10 +98,11 @@ public class SshUtils {
         
         /** If element is omniNames, need to ensure old log file is deleted so 
             can use "omniNames -start port" command. */
-        if(element.getName().compareTo("OmniNames") == 0){
-            String omniRemove = "/bin/rm -f " + scratch + "/omninames-*.log ";
-            omniRemove += scratch + "/omninames-*.bak ";
-            //omniRemove += "> /dev/null 2> /dev/null ";
+        if( (element instanceof goDiet.Model.OmniNames) &&
+            (!runConfig.useUniqueDirs)){
+            String omniRemove = "/bin/sh -c \" /bin/rm -f " + scratch + 
+                                "/omninames-*.log ";
+            omniRemove += scratch + "/omninames-*.bak \" ";
             
             String[] commandOmni = {"/usr/bin/ssh", 
                             access.getLogin() + "@" + access.getServer(), 
@@ -112,7 +121,6 @@ public class SshUtils {
         }
         
         /** Build remote command for launching the job */
-        //String remoteCommand = "/bin/sh -c \"";
         String remoteCommand = "";
         // Set PATH.  Used to find binaries (unless user provides full path)
         if(compRes.getEnvPath() != null) {
@@ -123,7 +131,7 @@ public class SshUtils {
                 remoteCommand += "export LD_LIBRARY_PATH=" + compRes.getEnvLdLibraryPath() + " ; ";
         }
         // Set OMNINAMES_LOGDIR.  Needed by omniNames.
-        if(className.compareTo("goDiet.Model.Elements") == 0){
+        if(element instanceof goDiet.Model.OmniNames){
             remoteCommand += "export OMNINAMES_LOGDIR=" + scratch + " ; ";
         }
         // Set OMNIORB_CONFIG.  Needed by omniNames & all diet components.
@@ -133,20 +141,19 @@ public class SshUtils {
         // Provide resiliency to the return from ssh with nohup.  Give binary.
         remoteCommand += "nohup " + element.getBinary() + " ";
         // Provide config file name with full path.  Needed by agents and seds.
-        if(className.compareTo("goDiet.Model.Elements") != 0){
+        if( (element instanceof goDiet.Model.MasterAgent) ||
+            (element instanceof goDiet.Model.LocalAgent) ||
+            (element instanceof goDiet.Model.ServerDaemon)){
             remoteCommand += scratch + "/" + element.getCfgFileName() + " ";
         }
         // Provide command line parameters. Needed by SeDs only.
-        if( (className.compareTo("goDiet.Model.ServerDaemon") == 0) &&
+        if( (element instanceof goDiet.Model.ServerDaemon) &&
             (((ServerDaemon)element).isParametersSet())){
             remoteCommand += ((ServerDaemon)element).getParameters() + " ";
         }
         // Give -start parameter to omniNames.
-        if(element.getName().compareTo("OmniNames") == 0){
-            remoteCommand += "-start ";
-            if(element.isPortSet()){
-                remoteCommand += element.getPort() + " ";
-            }
+        if(element instanceof goDiet.Model.OmniNames){
+            remoteCommand += "-start " + ((OmniNames)element).getPort() + " ";
         }
         if(element.getName().compareTo("LogCentral") == 0){
             remoteCommand += "-config LogCentral.cfg";
@@ -168,22 +175,7 @@ public class SshUtils {
             }
         }
         // Background process and give correct quotes
-        //remoteCommand += "&\"";
         execSshGetPid(element, access, remoteCommand, runConfig, scratch);
-        /*String[] command = {"/usr/bin/ssh", 
-                            access.getLogin() + "@" + access.getServer(), 
-                            remoteCommand};
-        for(i = 0; (i < command.length) && (runConfig.debugLevel >= 2); i++){
-            System.out.println("Command element " + i + " is " + command[i]);
-        }
-    
-        try {
-            Runtime.getRuntime().exec(command);
-        }
-        catch (IOException x) {
-            System.err.println("runElement failed to run the task " + 
-                element.getName() + ".");
-        }*/
     }
     
     // input: command ; command ; command
@@ -253,8 +245,8 @@ public class SshUtils {
         return;
     }
     
-    public void stopWithSsh(Elements element,ComputeResource compRes,
-            RunConfig runConfig) {
+    public void stopWithSsh(Elements element,RunConfig runConfig) {
+        ComputeResource compRes = element.getComputeResource();
         AccessMethod access = compRes.getAccessMethod("ssh");
         if(access == null){
             System.err.println("stopWithSsh: compRes does not have ssh access " +
