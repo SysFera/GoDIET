@@ -11,72 +11,91 @@ package goDiet.Model;
  * @author  hdail
  */
 public class ComputeResource extends Resources {
-    private StorageResource storRes = null;
-    private String envPath = null;
-    private String envLdLibraryPath = null;
+    /** Config items.  Never change if jobs are active (jobCount > 0) */
+    private ComputeCollection myCollection;
     private String endPointContact = null;
-    private int endPntStartPort = -1;
-    private int endPntEndPort = -1;
+    private int begAllowedPorts = -1;
+    private int endAllowedPorts = -1;
+
+    /** Runtime-related items. */
+    private int jobCount = 0;  // Number of items launched on this machine
     private int allocatedPorts = 0;
-    
+
     /** Creates a new instance of ComputeResource */
-    public ComputeResource(String name, StorageResource storRes) {
+    public ComputeResource(String name, ComputeCollection collection) {
         super(name);
-        this.storRes = storRes;
+        this.myCollection = collection;
     }
     
-    public void setEnvPath(String path){
-        this.envPath = path;
-    }
-    public String getEnvPath(){
-        return this.envPath;
-    }
-   
-    public void setEnvLdLibraryPath(String ldLibPath){
-        this.envLdLibraryPath = ldLibPath;
-    }
-    public String getEnvLdLibraryPath(){
-        return this.envLdLibraryPath;
+    public ComputeCollection getCollection(){
+        return this.myCollection;
     }
     
-    public StorageResource getStorageResource(){
-        return this.storRes;
-    }
-    
-    public void setEndPointContact(String endPoint){
+    /** Config-related methods */
+    public void setEndPointContact(String endPoint) {
         this.endPointContact = endPoint;
     }
     public String getEndPointContact(){
         return this.endPointContact;
     }
+
+    public void setBegAllowedPorts(int begPort) {
+        this.begAllowedPorts = begPort;
+    }
+    public int getBegAllowedPorts(){
+        return this.begAllowedPorts;
+    }
+
+    public void setEndAllowedPorts(int endPort) {
+        this.endAllowedPorts = endPort;
+    }
+    public int getEndAllowedPorts(){
+        return this.endAllowedPorts;
+    }
+        /*public Exception throwJobsExistException() throws Exception {
+            Exception x = new Exception("Machine " + outerThis.getName() +
+                    " has " + outerThis.jobCount + " active jobs.  Can not" +
+                    " change the config.");
+            throw (x);
+        }*/  
     
-    public void setEndPointRange(int startPort, int endPort){
-        this.endPntStartPort = startPort;
-        this.endPntEndPort = endPort;
+    /** Runtime-related methods */
+    public void incJobCount(){
+        this.jobCount++;
+        this.myCollection.incJobCount();
+        this.myCollection.getStorageResource().incJobCount();
     }
-    public int getEndPointStartPort(){
-        return this.endPntStartPort;
+    public void decJobCount(){
+        this.jobCount--;
+        this.myCollection.decJobCount();
+        this.myCollection.getStorageResource().decJobCount();
     }
-    public int getEndPointEndPort(){
-        return this.endPntEndPort;
+    public int getJobCount(){
+        return this.jobCount;
     }
-    public int allocateEndPointPort(){
+                 
+    /** If user specified constraints on ports to be used as end points, 
+     * the next unallocated port is allocated and returned.  If the
+     * user did not specify constraints or all ports have been allocated,
+     * -1 is returned. */
+    public int allocateAllowedPort(){
         // Check if we even need to use port
-        if(this.endPntStartPort < 0){
+        if(this.begAllowedPorts < 0){
             return -1;
         }
         // In case a maximum range has been given, check we haven't passed it
-        if( (this.endPntEndPort > 0) &&
-            ((this.endPntStartPort + this.allocatedPorts) >= 
-                    this.endPntEndPort) ) {
+        if( (this.endAllowedPorts > 0) &&
+            ((this.begAllowedPorts + this.allocatedPorts) >= 
+                    this.endAllowedPorts) ) {
            System.err.println("Port allocation on " + 
-                this.getName() + " failed.  All ports [" + this.endPntStartPort
-                + "," + this.endPntEndPort + "] already allocated.");
+                this.getName() + " failed.  All ports [" + 
+                this.begAllowedPorts + "," + this.endAllowedPorts + 
+                "] already allocated.");
            return -1;
         }
-        
-        int newPort = this.endPntStartPort + this.allocatedPorts;
+
+        int newPort = this.begAllowedPorts + this.allocatedPorts;
         this.allocatedPorts++;
         return newPort;
-    }
+    }   
 }

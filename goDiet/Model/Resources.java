@@ -46,6 +46,5 @@ public class Resources extends java.util.Observable {
             }
         }
         return null;
-    }
-    
+    }    
 }

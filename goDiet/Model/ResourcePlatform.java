@@ -8,59 +8,63 @@ package goDiet.Model;
 
 import goDiet.Events.*;
 
+import java.util.Iterator;
+
 /**
  *
  * @author  hdail
  */
 public class ResourcePlatform extends java.util.Observable {
-    private java.util.Vector computeResources;
+    /** config=related items
+     * These should not be changed while jobs are running on the platform */
+    private java.util.Vector computeCollections;
     private java.util.Vector storageResources;
-    
-    private String localScratchBase = null;     // base dir for local tmp space
-    private String runLabel = null;             // Unique label for all scratch space
-    private boolean localScratchReady = false;  // Has dir been created?
        
     /** Creates a new instance of DietPlatform */
     public ResourcePlatform() {
-        this.computeResources = new java.util.Vector();
+        this.computeCollections = new java.util.Vector();
         this.storageResources = new java.util.Vector();
     }
     
-    public void setLocalScratchBase(String localScratchBase){
-        this.localScratchBase = localScratchBase;
-    }
-    
-    public String getLocalScratchBase(){
-        return this.localScratchBase;
-    }
-    
-    public void setRunLabel(String runLabel){
-        this.runLabel = runLabel;
-    }
-    
-    public String getRunLabel(){
-        return this.runLabel;
-    }
-    
-    public void setLocalScratchReady(boolean flag){
-        this.localScratchReady = flag;
-    }
-    
-    public boolean isLocalScratchReady(){
-        return this.localScratchReady;
-    }
-    
-    public void addComputeResource(ComputeResource newComp){    
-        if( this.getComputeResource(newComp.getName()) != null){
-            System.err.println("Resource Platform: Compute Resource " + 
-                newComp.getName() + "already exists. Addition refused.");
+    public void addComputeCollection(ComputeCollection newColl){   
+        if( this.getComputeCollection(newColl.getName()) != null){
+            System.err.println("Resource Platform: Compute Collection " + 
+                newColl.getName() + " already exists. Addition refused.");
             return;
         }
-        this.computeResources.add(newComp);
+        this.computeCollections.add(newColl);
         setChanged();
-        notifyObservers(new AddElementsEvent(newComp));
+        notifyObservers(new AddElementsEvent(newColl));
         clearChanged();
     }
+    public int getComputeCollectionCount(){
+        return this.computeCollections.size();
+    }
+    public ComputeCollection getComputeCollection(String name) {
+        ComputeCollection coll = null;
+        for( Iterator it = computeCollections.iterator(); it.hasNext();){
+            coll = (ComputeCollection) it.next();
+            if(name.equals(coll.getName())) {
+                return coll;
+            }
+        }
+        // if not found, return null
+        return null;
+    }
+    
+    public ComputeResource getComputeResource(String name){
+        ComputeResource res = null;
+        ComputeCollection coll = null;
+        for(Iterator it = computeCollections.iterator(); it.hasNext();){
+            coll = (ComputeCollection) it.next();
+            res = coll.getComputeResource(name);
+            if(res != null){
+                return res;
+            }
+        }
+        return null;
+    }
+    
     public void addStorageResource(StorageResource newStore){
         if( this.getStorageResource(newStore.getName()) != null){
             System.err.println("Resource Platform: Storage Resource " + 
@@ -72,32 +76,7 @@ public class ResourcePlatform extends java.util.Observable {
         notifyObservers(new AddElementsEvent(newStore));
         clearChanged();
     }
-    
-    public int getComputeResourceCount(){
-        return this.computeResources.size();
-    }
-    
-    public ComputeResource getComputeResource(String name) {
-        ComputeResource resource = null;
-        for( int i = 0; i < computeResources.size(); i++) {
-            resource = (ComputeResource)computeResources.elementAt(i);
-            if(name.equals(resource.getName())) {
-                return resource;
-            }
-        }
-        // if not found, return null
-        return null;
-    }
-    
-    public java.util.Vector getComputeResources() {
-        return this.computeResources;
-    }
-    
-    public int getStorageResourceCount(){
-        return this.storageResources.size();
-    }
-    
-    public StorageResource getStorageResource(String name) {
+     public StorageResource getStorageResource(String name) {
         StorageResource resource = null;
         for( int i = 0; i < storageResources.size(); i++) {
             resource = (StorageResource)storageResources.elementAt(i);
@@ -108,30 +87,37 @@ public class ResourcePlatform extends java.util.Observable {
         // if not found, return null
         return null;
     }
-    
-    public java.util.Vector getStorageResources() {
-        return this.storageResources;
+    public int getStorageResourceCount(){
+        return this.storageResources.size();
     }
-    
+            
     public static void main(String args[]){
         System.out.println("Running ResourcePlatform unit test.");
         ResourcePlatform platform = new ResourcePlatform();
-        StorageResource storRes = new StorageResource("localDisk", "/tmp/diet_scratch");
-        ComputeResource compRes = new ComputeResource("localHost", storRes);
+        StorageResource storRes = new StorageResource("localDisk");
+        storRes.setScratchBase("/tmp/diet_scratch");
+        
+        ComputeCollection coll = new ComputeCollection("local");
+        ComputeResource compRes = new ComputeResource("localHost", coll); 
+
+        coll.addStorageResource(storRes);
+        coll.addComputeResource(compRes);
         
         platform.addStorageResource(storRes);
-        platform.addComputeResource(compRes);
+        platform.addComputeCollection(coll);
         
-        ComputeResource newComp = platform.getComputeResource("localHost");
-        StorageResource newStor = platform.getStorageResource("localDisk");
+        ComputeCollection newColl = platform.getComputeCollection("local");
+        ComputeResource newComp = newColl.getComputeResource("localHost");
+        StorageResource newStor = newColl.getStorageResource();
         
-        if( (newComp == null) || (newStor == null) ) {
+        if( (newComp == null) || (newStor == null) || (newColl == null)) {
             System.err.println("ResourcePlatform unit test failed. " +
                 "Did not find expected objects.");
             return;
         }
         
-        if( (newStor.getName() != "localDisk") ||
+        if( (newColl.getName() != "local") ||
+            (newStor.getName() != "localDisk") ||
             (newComp.getName() != "localHost")) {
             System.err.println("ResourcePlatform unit test failed. " + 
                 "Name retrieval gave unexpected answers.");

@@ -5,35 +5,52 @@
  */
 
 package goDiet.Controller;
+
 import goDiet.Interface.GoDIETFrame;
 import goDiet.Interface.GoDIETConsolePanel;
+import goDiet.Utils.XmlScanner;
+import goDiet.Events.DeployStateChange;
+import goDiet.Model.RunConfig;
+import goDiet.Defaults;
+
+import java.io.IOException;
+
+
 /**
  *
- * @author  rbolze
+ * @author  rbolze hdail
  */
-public class ConsoleController implements java.awt.event.ActionListener{
-    private DietPlatformController mainController;
+public class ConsoleController extends java.util.Observable
+                               implements java.awt.event.ActionListener,
+                                          java.util.Observer {
+    private RunConfig runCfg;       // configure behavior of GoDIET
+    private DietPlatformController modelController;
+    private DeploymentController deployCtrl;
+   
+    private XmlScanner xmlScanner;
+    private String xmlFileName;
+    
     private GoDIETConsolePanel goDietConsolePanel;
     private javax.swing.JTextArea goDIETconsole;
     private java.util.Vector history;
-    private java.util.Date startTime, endTime;
-    double timeDiff;
-    private boolean fileLoaded= false;
+    private boolean fileLoaded = false;
     private static boolean interfaceMode;
-    //boolean shellmode = false;
+    private int deployState = goDiet.Defaults.DEPLOY_NONE;
+
     protected static final String HELP =
-    "The following commands are available:\n" +
-    "   launch:     launch entire DIET platform\n" +
-    "   stop:       kill entire DIET platform using kill pid\n" +
-    //        "   kill:       kill entire DIET platform using kill -9 pid\n" +
-    "   status:     print run status of each DIET component\n" +
-    "   history:    print history of commands executed\n" +
-    "   help:       print this message\n" +
-    "   exit:       exit GoDIET, do not change running platform.\n";
-    
+            "The following commands are available:\n" +
+            "   launch:     launch entire DIET platform\n" +
+            "   stop:       kill entire DIET platform using kill pid\n" +
+            //        "   kill:       kill entire DIET platform using kill -9 pid\n" +
+            "   status:     print run status of each DIET component\n" +
+            "   history:    print history of commands executed\n" +
+            "   help:       print this message\n" +
+            "   exit:       exit GoDIET, do not change running platform.\n";
     
     /** Creates a new instance of ConsoleController */
     public ConsoleController(goDiet.Interface.GoDIETConsolePanel consolePanel) {
+        this.interfaceMode=true;        
+        
         this.goDietConsolePanel=consolePanel;
         this.goDIETconsole=goDietConsolePanel.getGoDIETConsole();
         goDietConsolePanel.getCommandTextField().addActionListener(this);
@@ -41,14 +58,39 @@ public class ConsoleController implements java.awt.event.ActionListener{
         goDietConsolePanel.getLaunchButton().addActionListener(this);
         goDietConsolePanel.getStopButton().addActionListener(this);
         goDietConsolePanel.getStatusButton().addActionListener(this);
-        history = new java.util.Vector();
-        this.mainController = new DietPlatformController(this);
-        this.interfaceMode=true;
+
+        initNonGraphic();
     }
-    public ConsoleController(){
-        history = new java.util.Vector();
-        this.mainController = new DietPlatformController(this);
+    
+    public ConsoleController(java.util.Observer deployObserver){
         this.interfaceMode=false;
+        
+        initNonGraphic();
+        this.deployCtrl.addObserver(deployObserver);
+    }
+    
+    public ConsoleController(){
+        this.interfaceMode=false;
+        
+        initNonGraphic();
+    }
+    
+    /** To be called by all contructors */
+    private void initNonGraphic(){
+        this.runCfg = new RunConfig();  // Set defaults
+        history = new java.util.Vector();
+        this.modelController = new DietPlatformController(this);
+        this.deployCtrl = new DeploymentController(this, modelController);
+        this.deployCtrl.addObserver(this);
+        this.xmlScanner = new XmlScanner();        
+    }
+    
+    public void setRunConfig(RunConfig runCfg){
+        this.runCfg = runCfg;
+    }
+    
+    public RunConfig getRunConfig(){
+        return this.runCfg;
     }
     
     public void actionPerformed(java.awt.event.ActionEvent e) {
@@ -57,119 +99,129 @@ public class ConsoleController implements java.awt.event.ActionListener{
             javax.swing.JTextField command= (javax.swing.JTextField) source;
             doCommand(command.getText());
             command.setText("");
-        }else if ( source == goDietConsolePanel.getOpenButton()){
+        } else if ( source == goDietConsolePanel.getOpenButton()){
             javax.swing.JFileChooser fileChooser = new javax.swing.JFileChooser();
             fileChooser.setDialogTitle("Choose xml file");
             fileChooser.showDialog(goDIETconsole, "ok");
             try{
                 loadXmlFile(fileChooser.getSelectedFile().toString());
-                 goDietConsolePanel.getStatusButton().setEnabled(true);
-            }catch(java.lang.NullPointerException x){
-                printToConsole("You must load a xml file");
+                goDietConsolePanel.getStatusButton().setEnabled(true);
+            } catch(java.lang.NullPointerException x){
+                printOutput("You must load a xml file", 0);
             }
            
-        }else if ( source == goDietConsolePanel.getLaunchButton()){
-            //launch();
-            doCommand("launch");
-        }else if ( source == goDietConsolePanel.getStopButton()){
+        } else if ( source == goDietConsolePanel.getLaunchButton()){
+            launch();
+        } else if ( source == goDietConsolePanel.getStopButton()){
             stop();
-        }else if ( source == goDietConsolePanel.getStatusButton()){
+        } else if ( source == goDietConsolePanel.getStatusButton()){
             status();
         }
     }
     
-    public void doCommand(String cmd){
+    public boolean doCommand(String cmd){
         history.add(cmd);
         java.util.StringTokenizer strTok = new java.util.StringTokenizer(cmd," ");
         String command= strTok.nextToken();
+        boolean giveUserCtrl = true;
         if (command.compareTo("load") == 0){
             if(!fileLoaded && !interfaceMode){
                 try{
-                    String arg= strTok.nextToken();
-                    System.out.println("command :"+command);
-                    System.out.println("arg :"+arg);
-                    loadXmlFile(arg);
-                    fileLoaded=true;
+                    loadXmlFile(strTok.nextToken());
                 }catch(Exception x){
-                    printToConsole("Usage load <file.xml>");
+                    printOutput("Usage load <file.xml>", 0);
                 }
             }else{
-                printToConsole("you have already load a file");
+                printOutput("You have already loaded a file", 0);
             }
-        }else if (command.compareTo("launch") ==0){
+        }else if (command.compareTo("launch") == 0){
             launch();
-        }else if (command.compareTo("stop") ==0 ){
+            giveUserCtrl = false;
+        }else if (command.compareTo("stop") == 0 ){
             stop();
-        }else if (command.compareTo("status") ==0){
+            giveUserCtrl = false;
+        }else if (command.compareTo("status") == 0){
             status();
-        }else if (command.compareTo("history") ==0){
+        }else if (command.compareTo("history") == 0){
             history();
-        }else if (command.compareTo("exit") ==0){
+        }else if (command.compareTo("exit") == 0){
             exit();
         }else{
             help();
         }
+        return giveUserCtrl;
     }
-    
+
     public void loadXmlFile(String xmlFileName){
         if ((new java.io.File(xmlFileName).canRead())){
-            mainController.parseXmlFile(xmlFileName);
-            setFileloaded();
-        }else{
-            printToConsole("No Such file");
+            this.xmlFileName = xmlFileName;
+        } else {
+            printOutput("No Such file", 0);
         }
+
+        this.printOutput("Parsing xml file: " + xmlFileName, 0);
+        try {
+            xmlScanner.buildDietModel(xmlFileName, modelController,this);
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+            this.printError("Can not continue without valid XML.  Exiting.");
+            System.exit(1);
+        }
+        setFileloaded();
     }
+    
     private void launch(){
         if (fileLoaded){
-            startTime = new java.util.Date();
-            printToConsole("* Launching DIET platform at " + startTime.toString());
-            mainController.launchPlatform();
-            endTime = new java.util.Date();
-            timeDiff = (endTime.getTime() - startTime.getTime())/1000;
-            printToConsole("* DIET launch done at " + endTime.toString() +
-            " [time= " + timeDiff + " sec]");
-            if(interfaceMode){
+            setChanged();
+            this.printOutput("sending launch request all", 3);
+            notifyObservers(new goDiet.Events.LaunchRequest(this,"all"));
+            clearChanged();
+
+            /*if(interfaceMode){
                 goDietConsolePanel.getStopButton().setEnabled(true);
                 goDietConsolePanel.getLaunchButton().setEnabled(false);
-            }
-        }else {
-            printToConsole("You must load the XML file before launch !");
+            }*/
+        } else {
+            printError("You must load the XML file before launch !");
         }
     }
     
     private void stop(){
+        java.util.Date startTime, endTime;
+        double timeDiff;
+
         if (fileLoaded){
             startTime = new java.util.Date();
-            printToConsole("\n* Stopping DIET platform at " + startTime.toString());
-            mainController.stopPlatform();
+            printOutput("\n* Stopping DIET platform at " + startTime.toString());
+            deployCtrl.stopPlatform();
             endTime = new java.util.Date();
             timeDiff = (endTime.getTime() - startTime.getTime())/1000;
-            printToConsole("\n* DIET platform stopped at " + endTime.toString() +
-            "[time= " + timeDiff + " sec]");
+            printOutput("\n* DIET platform stopped at " + endTime.toString() +
+                    "[time= " + timeDiff + " sec]", 0);
             if(interfaceMode){
                 goDietConsolePanel.getStopButton().setEnabled(false);
                 goDietConsolePanel.getLaunchButton().setEnabled(true);
             }else{
-                printToConsole("\n* Exiting GoDIET. Bye.");
+                printOutput("\n* Exiting GoDIET. Bye.");
                 exit();
             }
         }else {
-            printToConsole("You must load the XML file before stop !");
+            printError("You must load the XML file before stop !");
         }
     }
     private void status(){
         if (fileLoaded){
-            mainController.printPlatformStatus();
+            modelController.printPlatformStatus();
         }else {
-            printToConsole("You must load the XML file before get status !");
+            printError("You must load the XML file before get status !");
         }
     }
     private void help(){
-        printToConsole(HELP);
+        printOutput(HELP);
     }
     private void history(){
         for (java.util.Iterator it =history.iterator();it.hasNext();){
-            printToConsole((String)it.next());
+            printOutput((String)it.next());
         }
     }
     private String exit(){
@@ -177,20 +229,58 @@ public class ConsoleController implements java.awt.event.ActionListener{
         return "exit";
     }
     
-    public  void printToConsole(String msg){
+    public void printOutput(String msg){
+        this.printOutput(msg, 0);
+    }
+    public void printOutput(String msg, int printLevel){
         //if (this.goDIETconsole != null){
-        if (interfaceMode){
-            this.goDIETconsole.append(msg+"\n");
-            this.goDietConsolePanel.update(goDietConsolePanel.getGraphics());
-            this.goDietConsolePanel.updateUI();
-        }else{
-            System.out.println(msg);
+        if (printLevel <= this.runCfg.getDebugLevel()){
+            if (interfaceMode){
+                this.goDIETconsole.append(msg+"\n");
+                this.goDietConsolePanel.update(goDietConsolePanel.getGraphics());
+                this.goDietConsolePanel.updateUI();
+            } else {
+                System.out.println(msg);
+            }
         }
     }
+    public void printError(String msg){
+        this.printError(msg, 0);
+    }
+    public void printError(String msg, int printLevel){
+        //if (this.goDIETconsole != null){
+        if (printLevel <= this.runCfg.getDebugLevel()){
+            if (interfaceMode){
+                this.goDIETconsole.append(msg+"\n");
+                this.goDietConsolePanel.update(goDietConsolePanel.getGraphics());
+                this.goDietConsolePanel.updateUI();
+            }else{
+                System.err.println(msg);
+            }
+        }
+    }
+   
     private void setFileloaded(){
         this.fileLoaded=true;
         if (this.goDIETconsole != null){
             goDietConsolePanel.getLaunchButton().setEnabled(true);
+        }
+    }
+
+    public void update(java.util.Observable observable, Object obj) {
+        java.awt.AWTEvent e = (java.awt.AWTEvent)obj;
+        int newState;
+        if ( e instanceof DeployStateChange){
+            newState = ((DeployStateChange)e).getNewState();
+            this.printOutput("Changing state to : " +
+                goDiet.Defaults.getDeployStateString(newState), 3);
+            if(newState == goDiet.Defaults.DEPLOY_ACTIVE){
+                if(interfaceMode){
+                    goDietConsolePanel.getStopButton().setEnabled(true);
+                    goDietConsolePanel.getLaunchButton().setEnabled(false);
+                }
+            }
+            this.deployState = newState;
         }
     }
 }

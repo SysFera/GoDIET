@@ -7,12 +7,15 @@
 package goDiet.Model;
 
 import goDiet.Events.*;
+import goDiet.Controller.ConsoleController;
 
 /**
  *
  * @author  hdail
  */
 public class DietPlatform extends java.util.Observable {
+    private ConsoleController consoleCtrl;
+    
     private OmniNames omniNames;
     private Services logCentral;
     private boolean haveLogCentral = false;
@@ -31,7 +34,9 @@ public class DietPlatform extends java.util.Observable {
     private int SeD_ID = 0;
     
     /** Creates a new instance of DietPlatform */
-    public DietPlatform() {
+    public DietPlatform(ConsoleController consoleController) {
+        this.consoleCtrl = consoleController;
+        
         this.masterAgents= new java.util.Vector();
         this.localAgents= new java.util.Vector();
         this.serverDaemons= new java.util.Vector();
@@ -136,50 +141,69 @@ public class DietPlatform extends java.util.Observable {
         LocalAgent lAgent;
         ServerDaemon sed;
         
-        String platStatus = "Platform status is:" +
-            "\n\tOmniNames: " + getRunStatus(omniNames);
+        String platStatus = getStatusHeader();
+        platStatus += getStatusString(omniNames);
+        
         if(haveLogCentral){
-            platStatus +=
-                "\n\tLogCentral: " + getRunStatus(logCentral);
+            platStatus +=getStatusString(logCentral);
             if(haveTestTool){
-                platStatus += 
-                    "\n\ttestTool: " + getRunStatus(testTool);
+                platStatus += getStatusString(testTool);
             }
         }
         for(it = masterAgents.iterator(); it.hasNext();){
             mAgent = (MasterAgent) it.next();
-            platStatus += "\n\t" + mAgent.getName() + ": " +
-                getRunStatus(mAgent);
+            platStatus += getStatusString(mAgent);
         }
         for(it = localAgents.iterator(); it.hasNext();){
             lAgent = (LocalAgent) it.next();
-            platStatus += "\n\t" + lAgent.getName() + ": " +
-                getRunStatus(lAgent);
+            platStatus += getStatusString(lAgent);
         }
         for(it = serverDaemons.iterator(); it.hasNext();){
             sed = (ServerDaemon) it.next();
-            platStatus += "\n\t" + sed.getName() + ": " +
-                getRunStatus(sed);
+            platStatus += getStatusString(sed);
         }
-       
-        //System.out.println(platStatus);
-        setChanged();
-        notifyObservers(new StatusInfosEvent(platStatus));
-        clearChanged();
-
         
+        consoleCtrl.printOutput(platStatus);
+        
+        /*setChanged();
+        notifyObservers(new StatusInfosEvent(platStatus));
+        clearChanged();  */ 
     }
-    private String getRunStatus(Elements element){
-        String status = null;
-        if((element == null) ||
-           (element.getLaunchInfo() == null) ||
-           (!element.getLaunchInfo().running)) {
-            status = "not running  [sched for " + 
-                element.getComputeResource().getName() + "]";
-        } else {
-            status = "running on " + element.getComputeResource().getName() +
-                " with pid " + element.getLaunchInfo().pid;
+    private String getStatusHeader(){
+        return "Status   Element   LaunchState   LogState   " +
+            "Resource     PID\n";
+    }
+    private String getStatusString(Elements element){
+        String status = paddedString(" ", 8) + " " + 
+                        paddedString(element.getName(),9) + " ";
+        if(element == null){
+            status += "NULL\n";
+            return status;
         }
+        LaunchInfo launch = element.getLaunchInfo();
+
+        status += paddedString(goDiet.Defaults.getLaunchStateString(
+                launch.getLaunchState()), 13) + " ";
+        status += paddedString(goDiet.Defaults.getLogStateString(
+                launch.getLogState()), 10) + " ";
+        status += paddedString(element.getComputeResource().getName(),12) + 
+                    " ";
+        if(launch.getPID() > 0){
+            status += launch.getPID();
+        }
+        status += "\n";
+        
         return status;
+    }
+    private String paddedString(String input, int outputLength){
+        if(outputLength <= input.length()){
+            return input.substring(0,outputLength);
+        } else {
+            String output = input;
+            for(int i = input.length(); i < outputLength; i++){
+                output += " ";
+            }
+            return output;
+        }
     }
 }

@@ -26,6 +26,7 @@ public class XmlScanner implements ErrorHandler {
         "USAGE: XmlImporter <file.xml>\n";  
     
     private goDiet.Controller.DietPlatformController mainController;
+    private goDiet.Controller.ConsoleController consoleCtrl;
     
     private class Config {
         public Config() {};
@@ -74,16 +75,19 @@ public class XmlScanner implements ErrorHandler {
         System.err.println ("XML Parse Warning:  " + sAXParseException);
     }  
     
-    public boolean buildDietModel(String xmlFile, 
-                                  DietPlatformController controller) 
+    public boolean buildDietModel(String xmlFile,
+                                  DietPlatformController mainController,
+                                  ConsoleController consoleCtrl) 
         throws IOException {
             
         Document doc1;
-        mainController = controller;
+        this.mainController = mainController;
+        this.consoleCtrl = consoleCtrl;
         
         try {
             doc1 = readXml(xmlFile);
         } catch (IOException ioe) {
+            ioe.printStackTrace();
             throw ioe;
         }
         
@@ -156,7 +160,7 @@ public class XmlScanner implements ErrorHandler {
     }
     
     void visitElement_goDiet(org.w3c.dom.Element element) {
-        RunConfig runCfg = mainController.getRunConfig();
+        RunConfig runCfg = consoleCtrl.getRunConfig();
         String tempStr;
         int tempInt;
         org.w3c.dom.NamedNodeMap attrs = element.getAttributes();
@@ -192,7 +196,6 @@ public class XmlScanner implements ErrorHandler {
                 }
             }
         }
-        mainController.addRunConfig(runCfg);
     }
         
     void visitElement_resources(org.w3c.dom.Element element) {
@@ -204,7 +207,8 @@ public class XmlScanner implements ErrorHandler {
                 org.w3c.dom.Element nodeElement = (org.w3c.dom.Element)node;
                 if (nodeElement.getTagName().equals("scratch")) {
                     scratchDir = visitElement_scratch(nodeElement);
-                    mainController.addLocalScratchBase(scratchDir);
+                    //mainController.addLocalScratchBase(scratchDir);
+                    consoleCtrl.getRunConfig().setLocalScratchBase(scratchDir);
                 }
                 if (nodeElement.getTagName().equals("storage")) {
                     visitElement_storage(nodeElement);
@@ -249,15 +253,17 @@ public class XmlScanner implements ErrorHandler {
             System.err.println("Check for changes in DTD.  Exiting.");
             System.exit(1);
         } else if(scratchDir == null){
-            System.err.println("Problem retrieving scratch dir for " + resourceLabel + 
-                " from XML. Exiting.");
+            System.err.println("Problem retrieving scratch dir for " + 
+                resourceLabel + " from XML. Exiting.");
             System.exit(1);
         } else if(scpAccess == null){
-            System.err.println("No access method available for " + resourceLabel + ". Exiting.");
+            System.err.println("No access method available for " + 
+                resourceLabel + ". Exiting.");
             System.exit(1);
         }
         
-        StorageResource storRes = new StorageResource(resourceLabel, scratchDir);
+        StorageResource storRes = new StorageResource(resourceLabel);
+        storRes.setScratchBase(scratchDir);
         storRes.addAccessMethod(scpAccess);
         mainController.addStorageResource(storRes);
     }
@@ -282,6 +288,7 @@ public class XmlScanner implements ErrorHandler {
         EnvDesc envCfg = null;
         EndPoint endPoint = null;
         ComputeResource compRes = null;
+        ComputeCollection compColl = null;
 
         org.w3c.dom.NamedNodeMap attrs = element.getAttributes();
         for (int i = 0; i < attrs.getLength(); i++) {
@@ -317,31 +324,37 @@ public class XmlScanner implements ErrorHandler {
                 }
             }
         }
-        compRes = new ComputeResource(resourceLabel, storRes);
+        compColl = new ComputeCollection(resourceLabel);
+        compRes = new ComputeResource(resourceLabel, compColl);
         if(sshAccess != null){
             compRes.addAccessMethod(sshAccess);
-        }
-        if(envCfg != null){
-            compRes.setEnvPath(envCfg.path);
-            compRes.setEnvLdLibraryPath(envCfg.ldLibraryPath);
         }
         if(endPoint != null){
             if(endPoint.contact != null){
                 compRes.setEndPointContact(endPoint.contact);
             }
             if(endPoint.startPort != -1){
-                compRes.setEndPointRange(endPoint.startPort,endPoint.endPort);
+                compRes.setBegAllowedPorts(endPoint.startPort);
+                compRes.setEndAllowedPorts(endPoint.endPort);
             }
         }
-        mainController.addComputeResource(compRes); 
+        compColl.addComputeResource(compRes);
+        compColl.addStorageResource(storRes);
+        
+        if(envCfg != null){
+            compColl.setEnvPath(envCfg.path);
+            compColl.setEnvLdLibraryPath(envCfg.ldLibraryPath);
+        }
+        mainController.addComputeCollection(compColl); 
     }
     
-       void visitElement_cluster(org.w3c.dom.Element element) {
+    void visitElement_cluster(org.w3c.dom.Element element) {
         String clusLabel = null;
         String diskLabel = null;
         String login = null;
         EnvDesc envCfg = null;
-        ComputeResource compRes = null;
+        //ComputeResource compRes = null;
+        ComputeCollection compColl = null;
 
         org.w3c.dom.NamedNodeMap attrs = element.getAttributes();
         for (int i = 0; i < attrs.getLength(); i++) {
@@ -363,6 +376,7 @@ public class XmlScanner implements ErrorHandler {
             return;
         }
         
+        /** First retrieve env parameters, and create collection */
         org.w3c.dom.NodeList nodes = element.getChildNodes();
         for (int i = 0; i < nodes.getLength(); i++) {
             org.w3c.dom.Node node = nodes.item(i);
@@ -370,16 +384,37 @@ public class XmlScanner implements ErrorHandler {
                 org.w3c.dom.Element nodeElement = (org.w3c.dom.Element)node;
                 if (nodeElement.getTagName().equals("env")) {
                     envCfg = visitElement_env(nodeElement);
+                    break;
                 }
+            }
+         }
+         compColl = new ComputeCollection(clusLabel);
+         compColl.addStorageResource(storRes);
+         
+         if(envCfg.path != null){
+            compColl.setEnvPath(envCfg.path);
+         }
+         if(envCfg.ldLibraryPath != null){
+            compColl.setEnvLdLibraryPath(envCfg.ldLibraryPath);
+         }
+        
+        /** Next find all resources that go in this collection */
+         for (int i = 0; i < nodes.getLength(); i++) {
+            org.w3c.dom.Node node = nodes.item(i);
+            if( node.getNodeType() == org.w3c.dom.Node.ELEMENT_NODE) {
+                org.w3c.dom.Element nodeElement = (org.w3c.dom.Element)node;
+
                 if (nodeElement.getTagName().equals("node")){
-                    visitElement_node(nodeElement, envCfg, storRes, login);
+                    visitElement_node(nodeElement, compColl, login);
                 }
             }
         }
+        mainController.addComputeCollection(compColl);
      }
-       
-     void visitElement_node(org.w3c.dom.Element element, EnvDesc envCfg,
-            StorageResource storRes, String clusLogin) {
+
+     void visitElement_node(org.w3c.dom.Element element, 
+                            ComputeCollection collection,
+                            String clusLogin){
         String resourceLabel = null;
         AccessMethod sshAccess = null;
         EndPoint endPoint = null;
@@ -392,7 +427,7 @@ public class XmlScanner implements ErrorHandler {
                 resourceLabel = attr.getValue();
             }
         } 
-        compRes = new ComputeResource(resourceLabel, storRes);
+        compRes = new ComputeResource(resourceLabel, collection);
         
         org.w3c.dom.NodeList nodes = element.getChildNodes();
         for (int i = 0; i < nodes.getLength(); i++) {
@@ -409,20 +444,23 @@ public class XmlScanner implements ErrorHandler {
        
         if(sshAccess != null){
             compRes.addAccessMethod(sshAccess);
-        }
-        if(envCfg != null){
-            compRes.setEnvPath(envCfg.path);
-            compRes.setEnvLdLibraryPath(envCfg.ldLibraryPath);
+        } else {
+            System.err.println("Resource " + resourceLabel + 
+                " does not have recognizable ssh access. " +
+                "Not added!");
+            return;
         }
         if(endPoint != null){
             if(endPoint.contact != null){
                 compRes.setEndPointContact(endPoint.contact);
             }
             if(endPoint.startPort != -1){
-                compRes.setEndPointRange(endPoint.startPort,endPoint.endPort);
+                compRes.setBegAllowedPorts(endPoint.startPort);
+                compRes.setEndAllowedPorts(endPoint.endPort);
             }
         }
-        mainController.addComputeResource(compRes); 
+        collection.addComputeResource(compRes);
+        return; 
     }
     
     AccessMethod visitElement_scp(org.w3c.dom.Element element) { // <scp>
@@ -729,8 +767,8 @@ public class XmlScanner implements ErrorHandler {
                         mainController.getComputeResource(config.server);
                     if(compRes == null){
                         System.err.println("Definition of " + sedName +
-                        " incorrect.  Host label " + config.server + 
-                        " does not refer to valid compute resource.");
+                            " incorrect.  Host label " + config.server + 
+                            " does not refer to valid compute resource.");
                         System.exit(1);
                     }
                     newSeD = new ServerDaemon(sedName,compRes,
@@ -792,12 +830,10 @@ public class XmlScanner implements ErrorHandler {
             System.err.println(USAGE);
             System.exit(1);
         }
-       
-        DietPlatformController mainController = 
-                new DietPlatformController();
         
         xmlFile = args[0];
-        mainController.parseXmlFile(xmlFile);
+        ConsoleController consoleController = new ConsoleController();
+        consoleController.loadXmlFile(xmlFile);
         
         System.out.println("XmlScanner unit test finished.");
     } 

@@ -8,26 +8,48 @@ package goDiet;
 
 import goDiet.Controller.*;
 import goDiet.Interface.GoDIETFrame;
+import goDiet.Events.DeployStateChange;
 
 import java.io.*;
 import java.util.*;
 
 /**
  *
- * @author  rbolze
+ * @author  hdail
  */
-public class GoDIET {
+public class GoDIET implements java.util.Observer {
     protected static final String USAGE =
-    "USAGE: GoDiet [--launch] <file.xml>";
+            "USAGE: GoDiet [--launch] <file.xml>\n" +
+            "       GoDiet --interface";
+    private int deployState = goDiet.Defaults.DEPLOY_NONE;
     
     public GoDIET() {
     }
     
+    public void update(Observable observable, Object obj) {
+        java.awt.AWTEvent e = (java.awt.AWTEvent)obj;
+        int newState;
+        if ( e instanceof goDiet.Events.DeployStateChange){
+            newState = ((DeployStateChange)e).getNewState();
+            //System.out.println("godiet Changing state to : " +
+              //  goDiet.Defaults.getDeployStateString(newState));
+            this.deployState = newState;
+            if(newState != goDiet.Defaults.DEPLOY_LAUNCHING &&
+               newState != goDiet.Defaults.DEPLOY_STOPPING){
+               synchronized(this){
+                  notifyAll();
+               } 
+            }
+        }
+    }
+    
     public static void main(String[] args) {
+        GoDIET goDiet = new GoDIET();
         boolean launchMode = false;
         boolean shellMode= true; //default
         boolean interfaceMode = false;
         String xmlFile = "";
+        boolean giveUserCtrl = true;
         int i;
         //System.out.println("args.length :"+args.length);
         if (args.length<1 || args.length>2){
@@ -42,8 +64,7 @@ public class GoDIET {
                 interfaceMode=false;
                 launchMode =true;
                 xmlFile = args[args.length - 1];
-            }
-            
+            }   
         }
         if (args.length==1){
             if (args[0].compareTo("--interface") == 0){
@@ -56,40 +77,42 @@ public class GoDIET {
         }
         
         /** Prepare GoDIET for usage */
-        //System.out.println("shellMode :" + shellMode);
-        //System.out.println("interfaceMode :" + interfaceMode);
-        //System.out.println("launchMode :"+ launchMode);
         if(launchMode){
-            // FIXME : maybe some problems after changes ..
-            DietPlatformController mainController =
-            new DietPlatformController();
-            mainController.parseXmlFile(xmlFile);
             // If not interactive, just launch platform and exit
-            System.out.println("* Launching DIET platform.");
-            mainController.launchPlatform();
-            System.out.println("GoDIET finished.");
-        }else if (interfaceMode){
+            ConsoleController consoleController = new ConsoleController(goDiet);
+            consoleController.loadXmlFile(xmlFile);            
+            consoleController.printOutput("* Launching DIET platform.");
+            consoleController.doCommand("launch");
+            consoleController.printOutput("GoDIET finished.");
+        } else if (interfaceMode){
             new GoDIETFrame().show();
-        }else if (shellMode){
-            ConsoleController consoleController =
-            new ConsoleController();
+        } else if (shellMode){
+            ConsoleController consoleController = new ConsoleController(goDiet);
             consoleController.loadXmlFile(xmlFile);
             BufferedReader stdin = new BufferedReader(
-            new InputStreamReader(System.in));
+                new InputStreamReader(System.in));
             String command;
             while(true){
                 System.out.print("GoDIET> ");
                 command = "";
                 try {
                     command = stdin.readLine();
-                    consoleController.doCommand(command);
-                    //System.out.println(consoleControler.procedCommand(command));
-                    //System.out.println(command);
+                    giveUserCtrl = consoleController.doCommand(command);
                 } catch(Exception x) {
-                    //System.out.println("Exception: "+x.toString());
+                    consoleController.printOutput("Exception: " + x.toString());
                     //break;
                 }
-            }
-        }
-    }  // End of GoDIET main().
-}
+                if(giveUserCtrl == false){
+                    try {
+                        synchronized(goDiet){
+                            goDiet.wait();
+                        }
+                    }    
+                    catch (InterruptedException x) {
+                        System.out.println("Unexpected sleep interruption.");
+                    }
+                }       
+            }           // End while(true)
+        }               // End Shell mode context
+    }                   // End main{}
+}                       // End GoDIET

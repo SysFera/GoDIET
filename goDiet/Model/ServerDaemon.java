@@ -11,36 +11,25 @@ package goDiet.Model;
  * @author  rbolze
  */
 public class ServerDaemon extends Elements {
-    //private java.util.Vector services;
-    private String parameters;
-    private boolean haveParameters = false;
-    
+    /** Config-related items.  These should never change while SeD is running */
     private Agents parent;
+    private String parameters = null;
     
     /** Creates a new instance of ServerDaemon */
-    public ServerDaemon(String name,ComputeResource compRes,
-                        String binary,Agents parent) {
-        super(name, compRes, binary);
+    public ServerDaemon(String name, ComputeResource compRes,
+                        String binary, Agents parent){
+        super(name,compRes,binary);
         this.parent=parent;
-        //services = new java.util.Vector();
+    }
+       
+    public Agents getParent(){
+        return this.parent;
     }
     
     public void setParameters(String parameters) {
         this.parameters = parameters;
-        this.haveParameters = true;
-    }
-        
-    public boolean isParametersSet() {return this.haveParameters;}
-    public String getParameters() {return this.parameters;}
-    
-    /*public void addService(String newService){
-        services.add(newService);
-        setChanged();
-        notifyObservers(new Events.AddServiceEvent(newService));
-        clearChanged();
-    }*/
-    
-    public Agents getParent(){
-        return this.parent;
+    }    
+    public String getParameters() {
+        return this.parameters;
     }
 }

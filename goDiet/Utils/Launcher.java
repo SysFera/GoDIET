@@ -17,48 +17,61 @@ import java.text.SimpleDateFormat;
  * @author  hdail
  */
 public class Launcher {
-    private goDiet.Controller.DietPlatformController mainController;
-    private FileWriter killPlatformOut;
+    private goDiet.Controller.ConsoleController consoleCtrl;
+    private File killPlatformFile;
+    
     /** Creates a new instance of Launcher */
-    public Launcher(goDiet.Controller.DietPlatformController controller) {
-        this.mainController=controller;
+    public Launcher(goDiet.Controller.ConsoleController consoleController) {
+        this.consoleCtrl=consoleController;
     }
     
-    public String createLocalScratch(String scratchBase,RunConfig runCfg) {
-        /*if(runCfg.debugLevel >= 1){
-            System.out.println("Preparing local scratch directory in " + scratchBase);
-        }*/
-        mainController.printToConsole("Preparing local scratch directory in " + scratchBase,1);
-        String dirName = null;
+    public void createLocalScratch() {
+        RunConfig runCfg = consoleCtrl.getRunConfig();
+        File dirHdl;
         String runLabel = null;
         
         SimpleDateFormat formatter = new SimpleDateFormat("yyMMMdd_HHmm");
         java.util.Date today = new Date();
         String dateString = formatter.format(today);
         
-        runLabel = "run_" + dateString;
-        
-        File dirHdl = new File(scratchBase,runLabel);
-        if( runCfg.useUniqueDirs && dirHdl.exists() ) {
-            int i = 0;
-            do {
-                i++;
-                dirHdl = new File(scratchBase,runLabel + "_r" + i);
-            } while (dirHdl.exists());
-            runLabel += "_r" + i;
-        }
         if(runCfg.useUniqueDirs){
+            runLabel = "run_" + dateString;
+            dirHdl = new File(runCfg.getLocalScratchBase(),runLabel);
+            if( runCfg.useUniqueDirs && dirHdl.exists() ) {
+                int i = 0;
+                do {
+                    i++;
+                    dirHdl = new File(runCfg.getLocalScratchBase(),
+                        runLabel + "_r" + i);
+                } while (dirHdl.exists());
+                runLabel += "_r" + i;
+            }
             dirHdl.mkdirs();
+            runCfg.setLocalScratch(runCfg.getLocalScratchBase() + "/" + runLabel);
+            runCfg.setRunLabel(runLabel);
+        } else {
+            dirHdl = new File(runCfg.getLocalScratchBase());
+            dirHdl.mkdirs();
+            runCfg.setLocalScratch(runCfg.getLocalScratchBase());
+            runCfg.setRunLabel(null);
         }
+        
+        runCfg.setLocalScratchReady(true);
+        consoleCtrl.printOutput("\nLocal scratch directory ready:\n\t" + 
+            runCfg.getLocalScratch(),1);
+            
         // Initiate output file for pids to use as backup for failures
-        File killPlatformFile = new File(scratchBase + "/" + runLabel, 
+        killPlatformFile = new File(runCfg.getLocalScratch(),
                                     "killPlatform.csh");
         try {
+            if(killPlatformFile.exists()){
+                killPlatformFile.delete();
+            }
             killPlatformFile.createNewFile();
         } catch (IOException x){
-            System.err.println("Could not create " + killPlatformFile);
+            consoleCtrl.printOutput("createLocalScratch: Could not create " + 
+                killPlatformFile);
         }
-        return runLabel;
     }
     
     /* launchElement is the primary method for launching components of the DIET
@@ -69,104 +82,83 @@ public class Launcher {
      *      - run the element on the remote host
      */
     public void launchElement(Elements element,
-    String localScratchBase,
-    String runLabel,
-    boolean useLogService,
-    RunConfig runConfig){
+                              boolean useLogService){
+        RunConfig runCfg = consoleCtrl.getRunConfig();
         if(element == null){
-            System.err.println("Launcher.launchElement called with null element.\n" +
-            "Launch request ignored.");
+            consoleCtrl.printError("launchElement called with null element. " +
+                "Launch request ignored.", 1);
             return;
         }
         if(element.getComputeResource() == null){
-            System.err.println("Launcher.launchElement called with null resource.\n" +
-            "Launch request ignored.");
+            consoleCtrl.printError("LaunchElement called with null resource. " +
+                "Launch request ignored.");
             return;
         }
-        if(localScratchBase == null){
-            System.err.println("launchElement: Scratch space is not ready.  Need to run createLocalScratch.");
+        if(runCfg.isLocalScratchReady() == false){
+            consoleCtrl.printError("launchElement: Scratch space is not ready. " +
+                "Need to run createLocalScratch.");
             return;
         }
-        if(runLabel == null){
-            System.err.println("launchElement: RunLabel undefined.\n");
-            return;
-        }
-        /*if(runConfig.debugLevel >= 1){
-            System.out.println("\n** Launching element " + element.getName() +
-            " on " + element.getComputeResource().getName());
-        }*/
-        mainController.printToConsole("\n** Launching element " + element.getName() +
-            " on " + element.getComputeResource().getName(),1);
+
+        consoleCtrl.printOutput("\n** Launching element " + 
+            element.getName() + " on " +
+            element.getComputeResource().getName(),1);
         try {
-            if(runConfig.useUniqueDirs){
-                createCfgFile(element,localScratchBase + "/" + runLabel,
-                useLogService,runConfig);
-            } else {
-                createCfgFile(element,localScratchBase,
-                useLogService,runConfig);
-            }
+            // LAUNCH STAGE 1: Write config file
+            createCfgFile(element, useLogService);
         }
         catch (IOException x) {
-            System.err.println("Exception writing cfg file for " + element.getName());
-            System.err.println("Exception: " + x);
-            System.err.println("Exiting");
-            System.exit(1);
+            consoleCtrl.printError("Exception writing cfg file for " + 
+                element.getName(), 0);
+            consoleCtrl.printError("Exception: " + x + "\nExiting.", 1);
+            element.getLaunchInfo().setLaunchState(
+                goDiet.Defaults.LAUNCH_STATE_CONFUSED);
+            System.exit(1);     /// TODO: Add error handling and don't exit
         }
-        StorageResource storeRes = element.getComputeResource().getStorageResource();
-        stageFile(localScratchBase,runLabel,element.getCfgFileName(),
-        storeRes,runConfig);
-        runElement(element,runConfig);
+        ComputeCollection coll = element.getComputeResource().getCollection();
+        StorageResource storeRes = coll.getStorageResource();
+        // LAUNCH STAGE 2: Stage config file
+        stageFile(element.getCfgFileName(),storeRes);
+        // LAUNCH STAGE 3: Launch element
+        runElement(element);
     }
     
     // TODO: incorporate Elagi usage
-    private void stageFile(String localBase, String runLabel,
-    String filename,StorageResource storeRes,
-    RunConfig runConfig) {
-        /*if(runConfig.debugLevel >= 1){
-            System.out.println("Staging file " + filename + " to " + storeRes.getName());
-        }*/
-        mainController.printToConsole("Staging file " + filename + " to " + storeRes.getName(),1);
+    private void stageFile(String filename,StorageResource storeRes) {
+        consoleCtrl.printOutput("Staging file " + filename + " to " + 
+            storeRes.getName(),1);
         //AccessMethod access = storeRes.getAccessMethod("scp");
         
-        SshUtils sshUtil = new SshUtils(mainController);
-        sshUtil.stageWithScp(localBase,runLabel,filename,storeRes,runConfig);
+        SshUtils sshUtil = new SshUtils(consoleCtrl);
+        sshUtil.stageWithScp(filename,storeRes,consoleCtrl.getRunConfig());
     }
     
     // TODO: incorporate Elagi usage
-    private void runElement(Elements element, RunConfig runConfig) {
+    private void runElement(Elements element) {
         ComputeResource compRes = element.getComputeResource();
-        StorageResource storage = compRes.getStorageResource();
-        /*if(runConfig.debugLevel >= 1){
-            System.out.println("Executing element " + element.getName() +
-            " on resource " + compRes.getName());
-        }*/
-        mainController.printToConsole("Executing element " + element.getName() +
+        StorageResource storage = compRes.getCollection().getStorageResource();
+        consoleCtrl.printOutput("Executing element " + element.getName() +
             " on resource " + compRes.getName(),1);
         AccessMethod access = compRes.getAccessMethod("ssh");
         if(access == null){
-            System.err.println("runElement: compRes does not have ssh access " +
-            "method. Ignoring launch request");
+            consoleCtrl.printError("runElement: compRes does not have " +
+                "ssh access method. Ignoring launch request.");
             return;
         }
         
-
-        SshUtils sshUtil = new SshUtils(mainController);
-        sshUtil.runWithSsh(element,runConfig,killPlatformOut);
+        SshUtils sshUtil = new SshUtils(consoleCtrl);
+        sshUtil.runWithSsh(element,consoleCtrl.getRunConfig(),killPlatformFile);
     }
     
-    public void stopElement(Elements element, RunConfig runConfig){
-        /*if(runConfig.debugLevel >= 1){
-            System.out.println("Trying to stop element " + element.getName());
-        }*/
-        mainController.printToConsole("Trying to stop element " + element.getName(),1);
-        SshUtils sshUtil = new SshUtils(mainController);
-        sshUtil.stopWithSsh(element,runConfig);
+    public void stopElement(Elements element){
+        consoleCtrl.printOutput("Trying to stop element " + element.getName(),1);
+        SshUtils sshUtil = new SshUtils(consoleCtrl);
+        sshUtil.stopWithSsh(element,consoleCtrl.getRunConfig());
     }
     
     private void createCfgFile(Elements element,
-                               String localScratch,
-                               boolean useLogService,
-                               RunConfig runConfig) throws IOException {
+                               boolean useLogService) throws IOException {
+        RunConfig runCfg = consoleCtrl.getRunConfig();
         if( element.getName().compareTo("TestTool") == 0){
             return;
         }
@@ -177,12 +169,11 @@ public class Launcher {
             element.setCfgFileName(element.getName() + ".cfg");
         }
         
-        File cfgFile = new File(localScratch, element.getCfgFileName());
+        File cfgFile = new File(runCfg.getLocalScratch(), 
+            element.getCfgFileName());
         
-        /*if(runConfig.debugLevel >= 1){
-            System.out.println("Writing config file " + element.getCfgFileName());
-        }*/
-        mainController.printToConsole("Writing config file " + element.getCfgFileName(),1);
+        consoleCtrl.printOutput("Writing config file " + 
+            element.getCfgFileName(),1);
         
         try {
             cfgFile.createNewFile();
@@ -232,7 +223,7 @@ public class Launcher {
     }
     
     private void writeCfgFileDiet(Elements element,FileWriter out,
-    boolean useLogService) throws IOException {
+            boolean useLogService) throws IOException {
         ComputeResource compRes = element.getComputeResource();
         if(element instanceof goDiet.Model.MasterAgent) {
             out.write("name = " + element.getName() + "\n");
@@ -247,20 +238,18 @@ public class Launcher {
             out.write("parentName = " + (sed.getParent()).getName() + "\n");
         }
         
-        if(element.isTraceLevelSet()) {
-            out.write("traceLevel = " + element.getTraceLevel() + "\n");
-        }
-        int port = compRes.allocateEndPointPort();
+        out.write("traceLevel = " + element.getTraceLevel() + "\n");
+
+        int port = compRes.allocateAllowedPort();
         // port will be -1 if we don't need to use port, or if all ports
         // have been allocated (in which case we try without specifying port)
         if(port > 0){
             out.write("dietPort = " + port + "\n");
         }
         if(compRes.getEndPointContact() != null){
-            out.write("dietHostname = " + compRes.getEndPointContact() +
-            "\n");
+            out.write("dietHostname = " + 
+                compRes.getEndPointContact() + "\n");
         }
-        // TODO: properly handle port range here for firewalls
         out.write("fastUse = 0\n"); // TODO: support config in xml
         out.write("ldapUse = 0\n"); // TODO: support config in xml
         out.write("nwsUse = 0\n");  // TODO: support config in xml
