@@ -219,8 +219,14 @@ public class Launcher {
         if(element.isTraceLevelSet()) {
             out.write("traceLevel = " + element.getTraceLevel() + "\n");
         }
+        int port = compRes.allocateEndPointPort();
+        // port will be -1 if we don't need to use port, or if all ports
+        // have been allocated (in which case we try without specifying port)
+        if(port > 0){
+            out.write("dietPort = " + port + "\n");
+        }
         if(compRes.getEndPointContact() != null){
-            out.write("endPointHostname = " + compRes.getEndPointContact() +
+            out.write("dietHostname = " + compRes.getEndPointContact() +
                 "\n");
         }
         // TODO: properly handle port range here for firewalls

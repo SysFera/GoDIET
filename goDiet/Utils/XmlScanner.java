@@ -324,8 +324,7 @@ public class XmlScanner implements ErrorHandler {
             if(endPoint.contact != null){
                 compRes.setEndPointContact(endPoint.contact);
             }
-            if((endPoint.startPort != -1) &&
-               (endPoint.endPort != -1)){
+            if(endPoint.startPort != -1){
                 compRes.setEndPointRange(endPoint.startPort,endPoint.endPort);
             }
         }
@@ -381,7 +380,6 @@ public class XmlScanner implements ErrorHandler {
             org.w3c.dom.Attr attr = (org.w3c.dom.Attr)attrs.item(i);
             if (attr.getName().equals("contact")) { 
                 endPoint.contact = attr.getValue();
-                System.out.println("Found endpoint value " + endPoint.contact);
             } else if (attr.getName().equals("startPort")){
                 endPoint.startPort = (new Integer(attr.getValue())).intValue();
             } else if (attr.getName().equals("endPort")){

@@ -186,7 +186,7 @@ public class SshUtils {
     
         newCommand = "( /bin/echo \"" + remoteCommand + "&\" ; ";
         newCommand += "/bin/echo '/bin/echo ${!}' ) | ";
-        newCommand += "/usr/bin/ssh ";
+        newCommand += "/usr/bin/ssh -q ";
         newCommand += access.getLogin() + "@" + access.getServer() + " ";
         newCommand += "\" tee " + 
             scratch + "/" + element.getName() + ".launch ";
