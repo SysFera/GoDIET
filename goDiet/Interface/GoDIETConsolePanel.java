@@ -53,18 +53,28 @@ public class GoDIETConsolePanel extends javax.swing.JPanel {
 
         add(jScrollPane1, java.awt.BorderLayout.CENTER);
 
+        jPanel1.setBackground(new java.awt.Color(255, 255, 255));
         openButton.setText("open xml");
+        openButton.setMaximumSize(new java.awt.Dimension(92, 25));
+        openButton.setMinimumSize(new java.awt.Dimension(92, 20));
+        openButton.setPreferredSize(new java.awt.Dimension(92, 18));
         jPanel1.add(openButton);
 
         launchButton.setText("launch");
+        launchButton.setMinimumSize(new java.awt.Dimension(75, 20));
+        launchButton.setPreferredSize(new java.awt.Dimension(75, 18));
         launchButton.setEnabled(false);
         jPanel1.add(launchButton);
 
         stopButton.setText("stop");
+        stopButton.setMinimumSize(new java.awt.Dimension(62, 18));
+        stopButton.setPreferredSize(new java.awt.Dimension(62, 18));
         stopButton.setEnabled(false);
         jPanel1.add(stopButton);
 
         statusButton.setText("status");
+        statusButton.setMinimumSize(new java.awt.Dimension(73, 18));
+        statusButton.setPreferredSize(new java.awt.Dimension(73, 18));
         statusButton.setEnabled(false);
         jPanel1.add(statusButton);
 

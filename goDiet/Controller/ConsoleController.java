@@ -239,6 +239,7 @@ public class ConsoleController extends java.util.Observable
                 this.goDIETconsole.append(msg+"\n");
                 this.goDietConsolePanel.update(goDietConsolePanel.getGraphics());
                 this.goDietConsolePanel.updateUI();
+                this.goDIETconsole.setCaretPosition(goDIETconsole.getText().length());
             } else {
                 System.out.println(msg);
             }
