@@ -548,7 +548,7 @@ public class XmlScanner implements ErrorHandler {
                     visitElement_omni_names(nodeElement);
                 } else if (nodeElement.getTagName().equals("log_central")) {
                     visitElement_service(nodeElement);
-                } else if (nodeElement.getTagName().equals("test_tool")) {
+                } else if (nodeElement.getTagName().equals("log_tool")) {
                     visitElement_service(nodeElement);
                 } else if (nodeElement.getTagName().equals("diet_statistics")) {
                     mainController.setUseDietStats(true);
@@ -627,7 +627,7 @@ public class XmlScanner implements ErrorHandler {
             service = new Services("LogCentral",compRes,config.binary);
             service.setCfgFileName("config.cfg");
             mainController.addLogCentral(service);
-        } else if (element.getTagName().equals("test_tool")) {
+        } else if (element.getTagName().equals("log_tool")) {
             service = new Services("TestTool",compRes,config.binary);
             mainController.addTestTool(service);
         } 
