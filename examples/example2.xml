@@ -1,0 +1,75 @@
+<?xml version="1.0" standalone="no"?>
+
+<!DOCTYPE diet_configuration SYSTEM "../GoDIET.dtd">
+
+<diet_configuration>
+  <goDiet debug="1"/>
+    
+  <resources>
+    <scratch dir="/home/hdail/tmp/diet_scratch1"/>
+    
+    <storage label="localDisk">
+        <scratch dir="/home/hdail/tmp/diet_scratchLocal"/>
+        <scp server="localhost" login="hdail"/>
+    </storage>
+    <storage label="graalDisk">
+        <scratch dir="/home/hdail/tmp/diet_scratchGraal"/>
+        <scp server="graal.ens-lyon.fr" login="hdail"/>
+    </storage>
+     
+    <compute label="localHost" disk="localDisk">
+        <ssh server="localhost" login="hdail"/>
+        <env path="/home/hdail/local/LogService/bin:/home/hdail/local/LogService/examples:/home/hdail/diet/omniORB-4.0.3/bin:/home/hdail/local/src/diet/install/bin:/home/hdail/local/src/diet/src/examples/dmat_manips/"
+             LD_LIBRARY_PATH="/home/hdail/local/src/diet/install/lib:/home/hdail/diet/omniORB-4.0.3/lib"/>
+    </compute>
+    <compute label="graalHost" disk="graalDisk">
+        <ssh server="graal.ens-lyon.fr" login="hdail"/>
+        <env path="/home/hdail/local/LogCentral/bin:/home/hdail/local/LogCentral/examples:/home/hdail/local/src/diet/install/bin:/home/hdail/local/src/diet/src/examples/dmat_manips/"
+             LD_LIBRARY_PATH="/usr/lib:/home/hdail/local/src/diet/install/lib"/>
+    </compute>
+  </resources>
+  
+  <diet_services>
+    <omni_names port="2810">
+        <config server="localHost" 
+                trace_level="1" 
+                remote_binary="omniNames"/>
+    </omni_names>
+    <log_central>
+        <config server="localHost" 
+                trace_level="1" 
+                remote_binary="LogCentral"/>
+    </log_central>
+    <test_tool>
+        <config server="localHost" 
+                trace_level="1" 
+                remote_binary="testTool"/>
+    </test_tool>
+  </diet_services>
+  
+  <diet_hierarchy>
+    <master_agent label="MyMA">
+        <config server="localHost"
+                trace_level="1"
+                remote_binary="dietAgent"/>
+    
+        <local_agent label="MyLA">
+            <config server="localHost"
+                    trace_level="1"
+                    remote_binary="dietAgent"/>
+            
+            <SeD label="MySeD">
+                <config server="localHost"
+                        remote_binary="server"/>
+                <parameters string="T"/>
+            </SeD>
+        </local_agent>
+        <SeD label="MySeD">
+            <config server="localHost"
+                    remote_binary="server"/>
+             <parameters string="T"/>
+        </SeD>
+    </master_agent>
+  </diet_hierarchy>      
+
+</diet_configuration>

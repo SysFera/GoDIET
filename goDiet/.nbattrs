@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE attributes PUBLIC "-//NetBeans//DTD DefaultAttributes 1.0//EN" "http://www.netbeans.org/dtds/attributes-1_0.dtd">
+<attributes version="1.0">
+    <fileobject name="GoDIET.java">
+        <attr name="NetBeansAttrArguments" serialvalue="aced0005757200135b4c6a6176612e6c616e672e537472696e673badd256e7e91d7b470200007870000000017400342f686f6d652f686461696c2f656c6167692f63656e7472616c53746174696f6e2f6578616d706c65732f73696d706c652e786d6c"/>
+    </fileobject>
+    <fileobject name="Utils">
+        <attr name="OpenIDE-Folder-Order" stringvalue="XmlImporter.java/pkg"/>
+    </fileobject>
+</attributes>

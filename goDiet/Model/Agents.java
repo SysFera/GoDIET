@@ -1,0 +1,35 @@
+/*
+ * Agents.java
+ *
+ * Created on 13 avril 2004, 14:54
+ */
+
+package goDiet.Model;
+
+/**
+ *
+ * @author  rbolze
+ */
+public class Agents extends Elements {
+    
+    private java.util.Vector children;
+    
+    /** Creates a new instance of Agents */
+    public Agents(String name,String hostName,String binary) {
+        super(name, hostName, binary);
+        this.children= new java.util.Vector();
+    }
+    
+    public void addChild(Elements newChild){
+        this.children.add(newChild);
+        //setChanged();
+        //notifyObservers(new Events.AddElementsEvent(newChild));
+        //clearChanged();
+    }
+        
+    public java.util.Vector getChildren(){
+        return this.children;
+    }
+    
+    
+}

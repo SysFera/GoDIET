@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project basedir="." default="all" name="GoDIET">
+
+    <target name="init">
+        <property name="project" value="GoDIET"/>
+        <property name="src" value="goDiet"/>
+        <property name="build" value="build"/>
+        <property name="dist" value="."/>
+        <property name="apidoc" value="doc"/>
+    </target>
+
+    <target depends="init" name="compile">
+        <mkdir dir="${build}"/>
+        <javac debug="true" deprecation="true" destdir="${build}" srcdir="${src}">
+          </javac>
+    </target>
+
+    <target depends="init,compile" description="Build the jar." name="jar">
+         <jar basedir="${build}" compress="true" jarfile="${project}.jar" manifest="${project}.mf">
+            <exclude name="**/*.java"/>
+            <exclude name="**/*.form"/>
+            <exclude name="${project}.mf"/>
+            <exclude name="${project}.jar"/>
+        </jar>
+    </target>
+
+    <target depends="init,jar" description="Build everything." name="all">
+        <echo message="${project} built."/>
+    </target>
+
+    <target depends="init" description="Javadoc for my API." name="javadoc">
+        <mkdir dir="${apidoc}"/>
+        <javadoc destdir="${apidoc}" packagenames="${project}.*">
+            <sourcepath>
+                <pathelement location="${src}"/>
+            </sourcepath>
+        </javadoc>
+    </target>
+
+    <target depends="init" description="Clean all build products." name="clean">
+        <delete>
+            <fileset dir="${build}">
+                <include name="**/*.class"/>
+            </fileset>
+        </delete>
+        <delete dir="${build}"/>
+        <delete file="${project}.jar"/>
+    </target>
+</project>

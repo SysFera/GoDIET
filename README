@@ -1,0 +1,12 @@
+Compilation:
+  - Simply type:
+      > ant
+
+  - For alternative build options:
+      > ant -help
+
+Execution:
+  - Using the examples directory, build a new xml file that describes
+    your environment, the DIET platform you want to run, etc.  Then
+    run:
+     > java -jar GoDIET.jar <youfile.xml>
