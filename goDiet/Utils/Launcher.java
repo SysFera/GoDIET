@@ -44,7 +44,9 @@ public class Launcher {
             } while (dirHdl.exists());
             runLabel += "_r" + i;
         }
-        dirHdl.mkdirs();
+        if(runCfg.useUniqueDirs){
+            dirHdl.mkdirs();
+        }
         return runLabel;
     }
     
@@ -143,8 +145,13 @@ public class Launcher {
         if( element.getName().compareTo("TestTool") == 0){
             return;
         }
-        
-        element.setCfgFileName(element.getName() + ".cfg");
+                
+        if( element.getName().compareTo("OmniNames") == 0){
+            element.setCfgFileName("omniORB4.cfg");
+        } else {
+            element.setCfgFileName(element.getName() + ".cfg");
+        }
+ 
         File cfgFile = new File(localScratch, element.getCfgFileName());
         
         if(runConfig.debugLevel >= 1){

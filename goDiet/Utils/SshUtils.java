@@ -145,6 +145,9 @@ public class SshUtils {
                 remoteCommand += element.getPort() + " ";
             }
         }
+        if(element.getName().compareTo("LogCentral") == 0){
+            remoteCommand += "-config LogCentral.cfg";
+        }
         // Redirect stdin/stdout/stderr so ssh can exit cleanly w/ live process
         remoteCommand += "< /dev/null ";
         if(!(runConfig.saveStdOut) && !(runConfig.saveStdErr)){
