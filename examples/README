@@ -1,0 +1,20 @@
+Examples:
+
+commented.xml: this file is not meant to be executed as an example.  It
+              explains what elements you need in an input XML file for 
+              GoDIET.
+
+example1.xml: this example provides a very simple DIET run executed
+              with GoDIET on the localhost.  This example leaves as
+              much as possible to automatic configuration (making
+              the XML as short as possible).  The example launches
+              omniNames, 1 MA, 1 LA, and 1 SeD.
+
+example2.xml: this is a working example tested on VTHD.  It includes
+              omniNames, LogCentral, and testTool on the machine ls2,
+              An MA and LA on the cristal cluster, 2 LAs on the LS 
+              cluster, and numerous SeDs on both clusters of type
+              dmat_manips or scalar.  Note that VTHD lacks a DNS,
+              thus the compute description for every machine includes 
+              an end point contact containing the IP address of the
+              machine.
