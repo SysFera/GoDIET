@@ -12,7 +12,7 @@
     </storage>
      
     <compute label="localHost" disk="localDisk">
-        <ssh server="localhost" login="hdail"/>
+        <ssh server="localhost"/>
         <env path="/home/hdail/diet/omniORB-4.0.3/bin:/home/hdail/local/src/diet/install/bin:/home/hdail/local/src/diet/src/examples/dmat_manips/"
              LD_LIBRARY_PATH="/home/hdail/local/src/diet/install/lib:/home/hdail/diet/omniORB-4.0.3/lib"/>
     </compute>
