@@ -64,7 +64,8 @@ public class DietPlatformController implements java.util.Observer {
             xmlScanner.buildDietModel(xmlFile, this);
         }
         catch (IOException ioe) {
-            System.err.println("Parsing of " + xmlFile + " failed. Exiting.");
+            ioe.printStackTrace();
+            System.err.println("Can not continue without valid XML.  Exiting.");
             System.exit(1);
         }
     }
@@ -133,31 +134,21 @@ public class DietPlatformController implements java.util.Observer {
         verifyPlatform();
         prepareScratch();
         launchOmniNames();
-        try { 
-            Thread.sleep(5000);
-            if(this.dietPlatform.getLogCentral() != null){
-                launchLogCentral();
-                Thread.sleep(3000);
-                if(this.dietPlatform.getTestTool() != null){
-                    launchTestTool();
-                    Thread.sleep(1000);
-                }
+        if(this.dietPlatform.getLogCentral() != null){
+            launchLogCentral();
+            if(this.dietPlatform.getTestTool() != null){
+                launchTestTool();
             }
-            launchMasterAgents();
-            Thread.sleep(3000);
-            launchLocalAgents();
-            Thread.sleep(3000);
-            launchServerDaemons();
-        } catch (InterruptedException x) {
-            System.err.println("LaunchPlatform: Unexpected sleep " +
-                "interruption. Exiting.");
-            System.exit(1);
         }
+        launchMasterAgents();
+        launchLocalAgents();
+        launchServerDaemons();
     }
     
     public void verifyPlatform(){
         
     }
+    
     
     public void prepareScratch() {
         String runLabel = null;
@@ -204,6 +195,13 @@ public class DietPlatformController implements java.util.Observer {
         ComputeResource compRes = 
                 resourcePlatform.getComputeResource(hostRef);
         launchElement(service,compRes);
+        try {
+            Thread.sleep(3000);
+        } catch (InterruptedException x){
+            System.err.println("LaunchPlatform: Unexpected sleep " +
+                "interruption. Exiting.");
+            System.exit(1);
+        }
     }
     
     public void launchMasterAgents() {
@@ -244,9 +242,6 @@ public class DietPlatformController implements java.util.Observer {
        
     private void launchElement(Elements element,
                                ComputeResource compRes) {
-        // TODO before making interface public
-        // check that agent is already in the hierarchy.  
-        // if not, report warning that can not launch unknown agent.
         if(element == null){
             System.err.println("Can not launch null element.");
             System.exit(1);
@@ -254,6 +249,12 @@ public class DietPlatformController implements java.util.Observer {
         if(compRes == null){
             System.err.println("Can not launch on null resource.");
             System.exit(1);
+        }
+        if((element.getLaunchInfo() != null) &&
+           (element.getLaunchInfo().running)){
+            System.err.println("Element " + element.getName() + 
+                " is already running.  Launch request ignored.");
+            return;
         }
         launcher.launchElement(element, 
                                compRes,
@@ -263,4 +264,104 @@ public class DietPlatformController implements java.util.Observer {
                                this.runConfig);
     }
     
+    /* Interfaces for stopping the diet platform, or parts thereof */
+    public void stopPlatform() {
+        stopServerDaemons();
+        stopLocalAgents();
+        stopMasterAgents();
+
+        if(this.dietPlatform.getLogCentral() != null){
+            if(this.dietPlatform.getTestTool() != null){
+                stopTestTool();
+            }
+            stopLogCentral();
+        }
+        stopOmniNames();
+    }
+    
+    public void stopServerDaemons() {
+        java.util.Vector seds = this.dietPlatform.getServerDaemons();
+        stopElements(seds);
+    }
+    
+    public void stopLocalAgents() {
+        java.util.Vector lAgents = this.dietPlatform.getLocalAgents();
+        stopElements(lAgents);
+    }
+    
+    public void stopMasterAgents() {
+        java.util.Vector mAgents = this.dietPlatform.getMasterAgents();
+        stopElements(mAgents);
+    }    
+    
+    public void stopOmniNames() {
+        Elements omni = this.dietPlatform.getOmniNames();
+        stopService(omni);
+    }
+    
+    public void stopLogCentral() {
+        Elements logger = this.dietPlatform.getLogCentral();
+        stopService(logger);
+    }
+    
+    public void stopTestTool() {
+        Elements testTool = this.dietPlatform.getTestTool();
+        stopService(testTool);
+    }
+        
+    public void stopService(Elements service){
+        String hostRef = service.getHostReference();
+        ComputeResource compRes = 
+                resourcePlatform.getComputeResource(hostRef);
+        stopElement(service,compRes);
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException x){
+            System.err.println("StopService: Unexpected sleep " +
+                "interruption.  Exiting.");
+            System.exit(1);
+        }
+    }
+    
+    public void stopElements(java.util.Vector elements) {
+        Elements currElement = null;
+        String hostRef = null;
+        for( int i = 0; i < elements.size(); i++) {
+            currElement = (Elements) elements.elementAt(i);
+            hostRef = currElement.getHostReference();
+            ComputeResource compRes = 
+                resourcePlatform.getComputeResource(hostRef);
+            stopElement(currElement,compRes);
+        
+            try {
+               Thread.sleep(1000);
+            }
+            catch (InterruptedException x) {
+                System.err.println("StopElements: Unexpected sleep " +
+                    "interruption. Exiting.");
+                System.exit(1);
+            }
+        }
+    } 
+    
+    private void stopElement(Elements element,
+                             ComputeResource compRes) {
+        if(element == null){
+            System.err.println("Can not run stop on null element.");
+            return;
+        }
+        if((element.getLaunchInfo() == null) ||
+           (!element.getLaunchInfo().running)){
+            System.err.println("Element " + element.getName() + " is not " +
+                "running. Ignoring stop command.");
+            return;
+        }
+        launcher.stopElement(element, 
+                             compRes,
+                             this.runConfig);
+    }
+    
+    public void printPlatformStatus(){
+        this.dietPlatform.printStatus();
+    }
 }
