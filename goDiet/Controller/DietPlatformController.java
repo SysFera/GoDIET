@@ -92,6 +92,13 @@ public class DietPlatformController implements java.util.Observer {
         this.dietPlatform.addTestTool(newService);
         newService.addObserver(this);
     }
+    public void setUseDietStats(boolean flag){
+        this.dietPlatform.setUseDietStats(flag);
+        // addObserver?
+    }
+    public boolean getUseDietStats(){
+        return this.dietPlatform.getUseDietStats();
+    }
     public void addMasterAgent(MasterAgent newMA){
         this.dietPlatform.addMasterAgent(newMA);
         newMA.addObserver(this);

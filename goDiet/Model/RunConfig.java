@@ -11,7 +11,7 @@ package goDiet.Model;
  * @author  hdail
  */
 public class RunConfig {
-    public int debugLevel = 1;          
+    public int debugLevel = 1;
     public boolean saveStdOut = true;
     public boolean saveStdErr = true;
     public boolean useUniqueDirs = true;

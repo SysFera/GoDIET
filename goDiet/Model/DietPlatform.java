@@ -18,6 +18,7 @@ public class DietPlatform extends java.util.Observable {
     private boolean haveLogCentral = false;
     private Services testTool;
     private boolean haveTestTool = false;
+    private boolean useDietStats = false;
     
     private java.util.Vector masterAgents;
     private java.util.Vector localAgents;
@@ -112,6 +113,12 @@ public class DietPlatform extends java.util.Observable {
     }
     public boolean useTestTool(){
         return this.haveTestTool;
+    }
+    public void setUseDietStats(boolean flag){
+        this.useDietStats = flag;
+    }
+    public boolean getUseDietStats(){
+        return this.useDietStats;
     }
     public java.util.Vector getMasterAgents() {
         return this.masterAgents;

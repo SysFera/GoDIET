@@ -97,7 +97,7 @@ public class GoDIET {
                     endTime = new Date();
                     timeDiff = (endTime.getTime() - startTime.getTime())/1000;
                     System.out.println("* DIET launch done at " + endTime.toString() + 
-                       "[launch_time=" + timeDiff + "]");       
+                       " [time= " + timeDiff + " sec]");       
                 } else if(command.equals("stop")){
                     startTime = new Date();
                     System.out.println("* Stopping DIET platform at " + startTime.toString());
@@ -105,7 +105,7 @@ public class GoDIET {
                     endTime = new Date();
                     timeDiff = (endTime.getTime() - startTime.getTime())/1000;
                     System.out.println("* DIET platform stopped at " + endTime.toString() +
-                        "[stop_time=" + timeDiff + "]");
+                        "[time= " + timeDiff + " sec]");
                     System.out.println("\n* Exiting GoDIET. Bye.");
                     break; // exit.  Change once we handle re-launching better
                /* } else if(command.equals("kill")){

@@ -136,6 +136,14 @@ public class SshUtils {
         }
         // Set OMNIORB_CONFIG.  Needed by omniNames & all diet components.
         remoteCommand += "export OMNIORB_CONFIG=" + scratch + "/omniORB4.cfg ; ";
+        if( (element instanceof goDiet.Model.MasterAgent) ||
+            (element instanceof goDiet.Model.LocalAgent) ||
+            (element instanceof goDiet.Model.ServerDaemon)){
+            if( element.getUseDietStats()){
+                remoteCommand += "export DIET_STAT_FILE_NAME=" + scratch +
+                    "/" + element.getName() + ".stats ; ";
+            }
+        }
         // Get into correct directory. Needed by LogCentral and testTool.
         remoteCommand += "cd " + scratch + " ; ";
         // Provide resiliency to the return from ssh with nohup.  Give binary.

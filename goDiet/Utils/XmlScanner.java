@@ -512,6 +512,8 @@ public class XmlScanner implements ErrorHandler {
                     visitElement_service(nodeElement);
                 } else if (nodeElement.getTagName().equals("test_tool")) {
                     visitElement_service(nodeElement);
+                } else if (nodeElement.getTagName().equals("diet_statistics")) {
+                    mainController.setUseDietStats(true);
                 }
             }
         }
@@ -590,7 +592,7 @@ public class XmlScanner implements ErrorHandler {
         } else if (element.getTagName().equals("test_tool")) {
             service = new Services("TestTool",compRes,config.binary);
             mainController.addTestTool(service);
-        }
+        } 
     }
     
     void visitElement_diet_hierarchy(org.w3c.dom.Element element) { // <diet_hierarchy>
@@ -639,8 +641,8 @@ public class XmlScanner implements ErrorHandler {
                     if( config.haveTraceLevel ) {
                         newMA.setTraceLevel(config.traceLevel);
                     }
+                    newMA.setUseDietStats(mainController.getUseDietStats());
                     mainController.addMasterAgent(newMA);
-                    
                 }
                 if( newMA != null ) {
                     if (nodeElement.getTagName().equals("local_agent")) {
@@ -687,6 +689,7 @@ public class XmlScanner implements ErrorHandler {
                     if (config.haveTraceLevel) {
                         newLA.setTraceLevel(config.traceLevel);
                     }
+                    newLA.setUseDietStats(mainController.getUseDietStats());
                     mainController.addLocalAgent(newLA, parentAgent);
                 }
                 if( newLA != null ) {
@@ -735,6 +738,7 @@ public class XmlScanner implements ErrorHandler {
                     if (config.haveTraceLevel) {
                         newSeD.setTraceLevel(config.traceLevel);
                     }
+                    newSeD.setUseDietStats(mainController.getUseDietStats());
                     mainController.addServerDaemon(newSeD, parentAgent);
                 }
                 if( newSeD != null ) {

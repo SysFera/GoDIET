@@ -137,8 +137,7 @@ public class Launcher {
         sshUtil.runWithSsh(element,runConfig);
     }
     
-    public void stopElement(Elements element,
-    RunConfig runConfig){
+    public void stopElement(Elements element, RunConfig runConfig){
         if(runConfig.debugLevel >= 1){
             System.out.println("Trying to stop element " + element.getName());
         }
@@ -147,9 +146,9 @@ public class Launcher {
     }
     
     private void createCfgFile(Elements element,
-    String localScratch,
-    boolean useLogService,
-    RunConfig runConfig) throws IOException {
+            String localScratch,
+            boolean useLogService,
+            RunConfig runConfig) throws IOException {
         if( element.getName().compareTo("TestTool") == 0){
             return;
         }

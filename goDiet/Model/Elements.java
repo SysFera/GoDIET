@@ -21,6 +21,7 @@ public class Elements extends java.util.Observable {
     private boolean haveTraceLevel = false;
     private boolean haveLogService = false;
     private boolean useLogService = false;
+    private boolean useDietStats = false;
     private String cfgFileName = null;
     private boolean haveCfgFileName = false;
 
@@ -68,6 +69,13 @@ public class Elements extends java.util.Observable {
     public boolean isLogServiceSet() {return this.haveLogService;}
     public boolean getLogService() {return this.useLogService;}
    
+    public void setUseDietStats(boolean flag){
+        this.useDietStats = flag;
+    }
+    public boolean getUseDietStats(){
+        return this.useDietStats;
+    }
+    
     public void setLaunchInfo(LaunchInfo launchInfo){
         this.launchInfo = launchInfo;
     }
