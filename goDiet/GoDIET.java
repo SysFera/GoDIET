@@ -9,6 +9,7 @@ package goDiet;
 import goDiet.Controller.*;
 
 import java.io.*;
+import java.util.*;
 
 /**
  *
@@ -35,6 +36,8 @@ public class GoDIET {
         boolean intShell = true;
         String xmlFile = "";
         int i;
+        java.util.Date startTime, endTime;
+        double timeDiff;
         
         if( (args.length < 1) || (args.length > 2) ) {
             System.err.println(USAGE);
@@ -88,11 +91,21 @@ public class GoDIET {
                             (String)history.elementAt(i));
                     }
                 } else if(command.equals("launch")){
-                    System.out.println("* Launching DIET platform.");
-                    mainController.launchPlatform();  
+                    startTime = new Date();
+                    System.out.println("* Launching DIET platform at " + startTime.toString());
+                    mainController.launchPlatform();
+                    endTime = new Date();
+                    timeDiff = (endTime.getTime() - startTime.getTime())/1000;
+                    System.out.println("* DIET launch done at " + endTime.toString() + 
+                       "[launch_time=" + timeDiff + "]");       
                 } else if(command.equals("stop")){
-                    System.out.println("* Stopping DIET platform.");
+                    startTime = new Date();
+                    System.out.println("* Stopping DIET platform at " + startTime.toString());
                     mainController.stopPlatform();
+                    endTime = new Date();
+                    timeDiff = (endTime.getTime() - startTime.getTime())/1000;
+                    System.out.println("* DIET platform stopped at " + endTime.toString() +
+                        "[stop_time=" + timeDiff + "]");
                     System.out.println("\n* Exiting GoDIET. Bye.");
                     break; // exit.  Change once we handle re-launching better
                /* } else if(command.equals("kill")){
