@@ -17,7 +17,8 @@ import java.text.SimpleDateFormat;
  * @author  hdail
  */
 public class Launcher {
-    
+    private FileWriter killPlatformOut;
+
     /** Creates a new instance of Launcher */
     public Launcher() {
     }
@@ -46,6 +47,14 @@ public class Launcher {
         }
         if(runCfg.useUniqueDirs){
             dirHdl.mkdirs();
+        }
+        // Initiate output file for pids to use as backup for failures
+        File killPlatformFile = new File(scratchBase + "/" + runLabel, 
+                                    "killPlatform.csh");
+        try {
+            killPlatformFile.createNewFile();
+        } catch (IOException x){
+            System.err.println("Could not create " + killPlatformFile);
         }
         return runLabel;
     }
@@ -134,7 +143,7 @@ public class Launcher {
         }
         
         SshUtils sshUtil = new SshUtils();
-        sshUtil.runWithSsh(element,runConfig);
+        sshUtil.runWithSsh(element,runConfig,killPlatformOut);
     }
     
     public void stopElement(Elements element, RunConfig runConfig){
@@ -146,9 +155,9 @@ public class Launcher {
     }
     
     private void createCfgFile(Elements element,
-            String localScratch,
-            boolean useLogService,
-            RunConfig runConfig) throws IOException {
+                               String localScratch,
+                               boolean useLogService,
+                               RunConfig runConfig) throws IOException {
         if( element.getName().compareTo("TestTool") == 0){
             return;
         }

@@ -78,7 +78,8 @@ public class SshUtils {
     }
     
     // TODO: incorporate Elagi usage
-    public void runWithSsh(Elements element, RunConfig runConfig) {
+    public void runWithSsh(Elements element, RunConfig runConfig, 
+                           FileWriter killBackup) {
         ComputeResource compRes = element.getComputeResource();
         StorageResource storage = compRes.getStorageResource();
         String scratch;
@@ -197,6 +198,7 @@ public class SshUtils {
         }
         // Background process and give correct quotes
         execSshGetPid(element, access, remoteCommand, runConfig, scratch);
+        updateKillScript(element, access, scratch);
     }
     
     // input: command ; command ; command
@@ -292,5 +294,20 @@ public class SshUtils {
             System.err.println("stopElement triggered an exception.");
             x.printStackTrace();
         }               
+    }
+    private void updateKillScript(Elements element, AccessMethod access, 
+                                  String scratch){
+        File killPlatformFile = new File(scratch, 
+                                        "killPlatform.csh");
+        try{
+            FileWriter out = new FileWriter(killPlatformFile, true);
+            out.write("# " + element.getName() + "\n");
+            out.write("/usr/bin/ssh " + access.getLogin() + "@" + access.getServer()
+                        + " kill -9 " + element.getLaunchInfo().pid + "\n");
+            out.close();
+        } catch (IOException x) {
+            System.err.println("Failed to write " + element.getName() + 
+                " to " + killPlatformFile.getPath());
+        }
     }
 }
