@@ -195,8 +195,9 @@ public class SshUtils {
         newCommand += "/bin/echo '/bin/echo ${!}' ) | ";
         newCommand += "/usr/bin/ssh ";
         newCommand += access.getLogin() + "@" + access.getServer() + " ";
-        newCommand += "tee - " + scratch + "/" + element.getName() + ".launch ";
-        newCommand += "| /bin/sh - ";
+        newCommand += "\" tee - " + 
+            scratch + "/" + element.getName() + ".launch ";
+        newCommand += "| /bin/sh - \"";
         
         String[] commandArray = {"/bin/sh", "-c", newCommand};
         launchInfo.commandArray = commandArray;
