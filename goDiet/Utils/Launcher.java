@@ -60,7 +60,7 @@ public class Launcher {
                               String localScratchBase,
                               String runLabel,
                               boolean useLogService,
-                              int debugLevel){
+                              RunConfig runConfig){
         if(element == null){
             System.err.println("Launcher.launchElement called with null element.\n" +
                 "Launch request ignored.");
@@ -79,13 +79,13 @@ public class Launcher {
             System.err.println("launchElement: RunLabel undefined.\n");
             return;
         }
-        if(debugLevel >= 1){
+        if(runConfig.debugLevel >= 1){
             System.out.println("\n** Launching element " + element.getName() +
                 " on " + compRes.getName());
         } 
         try {
             createCfgFile(element,localScratchBase + "/" + runLabel,
-                    useLogService,debugLevel);
+                    useLogService,runConfig);
         }
         catch (IOException x) {
             System.err.println("Exception writing cfg file for " + element.getName());
@@ -95,29 +95,29 @@ public class Launcher {
         }
         StorageResource storeRes = compRes.getStorageResource();
         stageFile(localScratchBase,runLabel,element.getCfgFileName(),
-            storeRes,debugLevel);
-        runElement(element,compRes,debugLevel);
+            storeRes,runConfig);
+        runElement(element,compRes,runConfig);
     }
     
     // TODO: incorporate Elagi usage
     private void stageFile(String localBase, String runLabel, 
                            String filename,StorageResource storeRes,
-                           int debugLevel) {
-        if(debugLevel >= 1){
+                           RunConfig runConfig) {
+        if(runConfig.debugLevel >= 1){
            System.out.println("Staging file " + filename + " to " + storeRes.getName());
         }
         //AccessMethod access = storeRes.getAccessMethod("scp");
         
         SshUtils sshUtil = new SshUtils();
-        sshUtil.stageWithScp(localBase,runLabel,filename,storeRes,debugLevel);
+        sshUtil.stageWithScp(localBase,runLabel,filename,storeRes,runConfig);
     }
     
     // TODO: incorporate Elagi usage
     private void runElement(Elements element,ComputeResource compRes,
-            int debugLevel) {
+            RunConfig runConfig) {
         StorageResource storage = compRes.getStorageResource();
         String scratch = storage.getScratchBase() + "/" + storage.getRunLabel();
-        if(debugLevel >= 1){
+        if(runConfig.debugLevel >= 1){
            System.out.println("Executing element " + element.getName() + 
                 " on resource " + compRes.getName());
         }
@@ -129,13 +129,13 @@ public class Launcher {
         }
         
         SshUtils sshUtil = new SshUtils();
-        sshUtil.runWithSsh(element,compRes,debugLevel);
+        sshUtil.runWithSsh(element,compRes,runConfig);
     }
     
     private void createCfgFile(Elements element,
                                String localScratch,
                                boolean useLogService,
-                               int debugLevel) throws IOException {
+                               RunConfig runConfig) throws IOException {
         if( element.getName().compareTo("TestTool") == 0){
             return;
         }
@@ -145,7 +145,7 @@ public class Launcher {
         }
         String fileName = element.getCfgFileName();
         
-        if(debugLevel >= 1){
+        if(runConfig.debugLevel >= 1){
             System.out.println("Writing config file " + fileName);
         }
         

@@ -6,6 +6,8 @@
 <!ELEMENT goDiet EMPTY>
 <!ATTLIST goDiet
     debug CDATA #IMPLIED
+    saveStdOut CDATA #IMPLIED
+    saveStdErr CDATA #IMPLIED
   >
 
 <!--- Define resources available for data storage and compution -->

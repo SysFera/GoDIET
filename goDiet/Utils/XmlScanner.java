@@ -148,19 +148,40 @@ public class XmlScanner implements ErrorHandler {
         }
     }
     
-    void visitElement_goDiet(org.w3c.dom.Element element) { // <goDiet>
-        int debug = 0;
+    void visitElement_goDiet(org.w3c.dom.Element element) {
+        RunConfig runCfg = mainController.getRunConfig();
+        String tempStr;
+        int tempInt;
         org.w3c.dom.NamedNodeMap attrs = element.getAttributes();
         for (int i = 0; i < attrs.getLength(); i++) {
             org.w3c.dom.Attr attr = (org.w3c.dom.Attr)attrs.item(i);
-            if (attr.getName().equals("debug")) { // <config remote_binary="???">
-                debug = (new Integer(attr.getValue())).intValue();
-                mainController.setDebugLevel(debug);
+            if (attr.getName().equals("debug")) { 
+                tempInt = (new Integer(attr.getValue())).intValue();
+                if(tempInt < 0) { runCfg.debugLevel = 0;
+                } else if(tempInt > 2) { runCfg.debugLevel = 2;
+                } else { runCfg.debugLevel = tempInt; }
+            }
+            if (attr.getName().equals("saveStdOut")) {
+                tempStr = attr.getValue();
+                if(tempStr.equals("no")){
+                    runCfg.saveStdOut = false;
+                } else if(tempStr.equals("yes")){
+                    runCfg.saveStdOut = true;
+                }   // else leave default in place
+            }
+            if (attr.getName().equals("saveStdErr")) {
+                tempStr = attr.getValue();
+                if(tempStr.equals("no")){
+                    runCfg.saveStdErr = false;
+                } else if(tempStr.equals("yes")){
+                    runCfg.saveStdErr = true;
+                }
             }
         }
+        mainController.addRunConfig(runCfg);
     }
         
-    void visitElement_resources(org.w3c.dom.Element element) { // <resources>
+    void visitElement_resources(org.w3c.dom.Element element) {
         String scratchDir = null;
         org.w3c.dom.NodeList nodes = element.getChildNodes();
         for (int i = 0; i < nodes.getLength(); i++) {

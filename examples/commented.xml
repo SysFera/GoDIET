@@ -1,0 +1,145 @@
+<?xml version="1.0" standalone="no"?>
+
+<!DOCTYPE diet_configuration SYSTEM "../GoDIET.dtd">
+<!-- GoDIET.dtd defines the semantics for input xml files for DIET.
+     GoDIET uses a validating parser, so if your XML does not follow
+     the rules specified in the dtd it will not be accepted by the
+     parser. The comments below will help you write a valid XML for 
+     GoDIET.  All sections are required unless marked "Optional" -->
+
+<!-- The diet_configuration tags surround all of the other sections.
+     diet_configuration can optionally contain:
+       1 "goDiet" section: configure goDIET behavior
+     and must contain each of the following:
+       1 "resources" section: define storage and compute resources
+       1 "diet_services" section: define omniNames, LogCentral, etc.
+       1 "diet_hierarchy" section: define your agent hierarchy
+-->
+<diet_configuration>
+
+  <!-- Optional: If desired, the goDiet section can be included to 
+       allow configuration of goDIET behavior. -->
+  <goDiet debug="1"
+          saveStdOut="yes"
+          saveStdErr="no"/>
+        <!-- Optional: debug controls the verbosity of goDIET output from
+                  0 (no debugging) -> 2 (very verbose) 
+             Optional: saveStdOut controls whether stdout is redirected
+                  to /dev/null or to a file in your remote scratch
+                  space called <componentName>.out.
+             Optional: saveStdErr as above with a file named 
+                  <componentName>.err.
+          -->
+   
+  <!-- Use the resources section to define what machines you
+       want to use for computation and storage, how to access those
+       resources, and where to find binaries on each. You must include
+       1 "scratch" section, at least 1 "storage" section, and at least
+       1 "compute" section. --> 
+  <resources>
+    <!-- Specify a local pathname GoDIET can use as scratch
+         space (e.g. temp storage of config files). You must have write
+         access to the directory. -->
+    <scratch dir="/tmp/GoDIET_scratch"/>
+  
+    <!-- Define all storage space that will be needed to run 
+         jobs on your compute hosts. -->
+    <storage label="graalDisk">
+        <scratch dir="/tmp/run_scratchGraal"/>
+        <scp server="graal.ens-lyon.fr" login="hdail"/>
+          <!-- Optional: if login is not specified, the current login
+               is used. -->
+    </storage>
+    <storage label="localDisk">
+        <scratch dir="/tmp/run_scratchLocal"/>
+        <scp server="localhost"/>
+    </storage>
+    
+    <!-- Define all compute hosts that you want to use.  The "disk" -->
+    <compute label="graalHost" disk="graalDisk">
+        <ssh server="graal.ens-lyon.fr" login="hdail"/>
+          <!-- Optional: if login is not specified, the current login
+               will be used. -->
+        <env path="/home/hdail/local/LogCentral/bin:/home/hdail/local/LogCentral/examples:/home/hdail/local/src/diet/install/bin:/home/hdail/local/src/diet/src/examples/dmat_manips/"
+             LD_LIBRARY_PATH="/usr/lib:/home/hdail/local/src/diet/install/lib"/>
+             <!-- Optional: if you don't specify a path or
+                  LD_LIBRARY_PATH, your default paths on the system will
+                  be used. You can make the path shorter by putting
+                  links to all your binaries in one directory on the
+                  system. -->
+    </compute>
+    <compute label="localHost" disk="localDisk">
+        <ssh server="localhost"/>
+        <env path="/home/hdail/local/LogService/bin:/home/hdail/local/LogService/examples:/home/hdail/diet/omniORB-4.0.3/bin:/home/hdail/local/src/diet/install/bin:/home/hdail/local/src/diet/src/examples/dmat_manips/"
+             LD_LIBRARY_PATH="/home/hdail/local/src/diet/install/lib:/home/hdail/diet/omniORB-4.0.3/lib"/>
+    </compute>
+  </resources>
+ 
+  <!-- Define DIET services.  Must contain 1 "omni_names" section and
+       can optionally include 1 "log_central" and 1 "test_tool"
+       section.  Do not define "test_tool" without defining
+       "log_central". -->
+  <diet_services>
+
+    <omni_names port="2810">
+       <!-- Optional: if port is undefined, port 2809 will be used. -->
+        <config server="localHost" 
+                trace_level="1" 
+                remote_binary="omniNames"/>
+            <!-- "server" must refer to the label of one of your
+                      "compute" resources defined above.  GoDIET will
+                      run this service on that host.
+                 "trace_level" is optional
+                 "remote_binary" is the binary name to execute for the
+                      service. -->
+    </omni_names>
+
+    <log_central>
+        <config server="localHost" 
+                trace_level="1" 
+                remote_binary="LogCentral"/>
+    </log_central>
+    <test_tool>
+        <config server="localHost" 
+                trace_level="1" 
+                remote_binary="testTool"/>
+    </test_tool>
+  </diet_services>
+ 
+  <!-- Define desired DIET agent and server hierarchy.  Must include at
+       least 1 "master_agent" section; all other sections are optional.
+       -->
+  <diet_hierarchy>
+
+    <!-- Define config for "master_agent". -->
+    <master_agent label="MyMA">
+      <!-- "label" is optional.  If defined, it is used as a prefix for
+           an automatically generated name.  The system will name this
+           agent "MyMA_MA_0". -->
+        <!-- See config explanation under "services" section -->
+        <config server="localHost"
+                trace_level="1"
+                remote_binary="dietAgent"/>
+
+        <!-- See "master_agent" explanation above. This agent will be 
+             named MyLA_LA_0 -->
+        <local_agent label="MyLA">
+            <config server="localHost"
+                    trace_level="1"
+                    remote_binary="dietAgent"/>
+            
+            <SeD label="MySeD">
+                <config server="localHost"
+                        remote_binary="server"/>
+                <parameters string="T"/>
+            </SeD>
+        </local_agent>
+        <SeD label="MySeD">
+            <config server="localHost"
+                    remote_binary="server"/>
+             <parameters string="T"/>
+        </SeD>
+    </master_agent>
+  </diet_hierarchy>      
+
+</diet_configuration>

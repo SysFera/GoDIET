@@ -16,13 +16,13 @@ import java.io.*;
  */
 public class SshUtils {
     
-    /** Creates a new instance of Launcher */
+    /** Creates a new instance of SshUtils */
     public SshUtils() {
     }
     
     public void stageWithScp(String localBase, String runLabel, 
                              String filename,StorageResource storeRes,
-                             int debugLevel) {
+                             RunConfig runConfig) {
         AccessMethod access = storeRes.getAccessMethod("scp");
         
         String command = new String("/usr/bin/scp ");
@@ -42,7 +42,7 @@ public class SshUtils {
             command += storeRes.getScratchBase() + "/" + runLabel;
         }
         java.lang.Runtime runtime = java.lang.Runtime.getRuntime();
-        if(debugLevel >= 2){
+        if(runConfig.debugLevel >= 2){
           System.out.println("Running: " + command);
         }
         try {
@@ -56,7 +56,8 @@ public class SshUtils {
     }
     
     // TODO: move ssh functionality to sshUtils & incorporate Elagi usage
-    public void runWithSsh(Elements element,ComputeResource compRes,int debugLevel) {
+    public void runWithSsh(Elements element,ComputeResource compRes,
+            RunConfig runConfig) {
         String className = element.getClass().getName();
         StorageResource storage = compRes.getStorageResource();
         String scratch = storage.getScratchBase() + "/" + storage.getRunLabel();
@@ -94,7 +95,7 @@ public class SshUtils {
         // Provide command line parameters. Needed by SeDs only.
         if( (className.compareTo("goDiet.Model.ServerDaemon") == 0) &&
             (((ServerDaemon)element).isParametersSet())){
-            remoteCommand += ((ServerDaemon)element).getParameters();
+            remoteCommand += ((ServerDaemon)element).getParameters() + " ";
         }
         // Give -start parameter to omniNames.
         if(element.getName().compareTo("OmniNames") == 0){
@@ -103,12 +104,29 @@ public class SshUtils {
                 remoteCommand += element.getPort() + " ";
             }
         }
-        remoteCommand += "< /dev/null > /dev/null 2>& 1 &\"";
+        // Redirect stdin/stdout/stderr so ssh can exit cleanly w/ live process
+        remoteCommand += "< /dev/null ";
+        if(!(runConfig.saveStdOut) && !(runConfig.saveStdErr)){
+            remoteCommand += "> /dev/null 2>&1 ";
+        } else {
+            if(runConfig.saveStdOut){
+                remoteCommand += "> " + element.getName() + ".out ";
+            } else {
+                remoteCommand += "> /dev/null ";
+            }
+            if(runConfig.saveStdErr){
+                remoteCommand += "2> " + element.getName() + ".err ";
+            } else {
+                remoteCommand += "2> /dev/null ";
+            }
+        }
+        // Background process and give correct quotes
+        remoteCommand += "&\"";
         
         String[] command = {"/usr/bin/ssh", 
                             access.getLogin() + "@" + access.getServer(), 
                             remoteCommand};
-        for(int i = 0; (i < command.length) && (debugLevel >= 2); i++){
+        for(int i = 0; (i < command.length) && (runConfig.debugLevel >= 2); i++){
             System.out.println("Command element " + i + " is " + command[i]);
         }
     

@@ -3,7 +3,9 @@
 <!DOCTYPE diet_configuration SYSTEM "../GoDIET.dtd">
 
 <diet_configuration>
-  <goDiet debug="1"/>
+  <goDiet debug="2"
+          saveStdOut="yes"
+          saveStdErr="yes"/>
     
   <resources>
     <scratch dir="/home/hdail/tmp/diet_scratch1"/>

@@ -16,9 +16,9 @@ import java.io.IOException;
  * @author  hdail
  */
 public class DietPlatformController implements java.util.Observer {
-    private String                         xmlFile;
-    // current debugLevels = 0 (least) : 2 (most)
-    private int                            debugLevel = 1;
+    private String                         xmlFile; 
+    private goDiet.Model.RunConfig         runConfig;
+    
     private goDiet.Utils.XmlScanner        xmlScanner;
     private goDiet.Model.DietPlatform      dietPlatform;
     private goDiet.Model.ResourcePlatform  resourcePlatform;
@@ -26,6 +26,7 @@ public class DietPlatformController implements java.util.Observer {
         
     /** Creates a new instance of DietPlatformController */
     public DietPlatformController(){
+        runConfig           = new goDiet.Model.RunConfig();
         xmlScanner          = new goDiet.Utils.XmlScanner();
         dietPlatform        = new goDiet.Model.DietPlatform();
         resourcePlatform    = new goDiet.Model.ResourcePlatform();
@@ -34,10 +35,12 @@ public class DietPlatformController implements java.util.Observer {
     }
     
     /** Creates a new instance of DietPlatformController */
-    public DietPlatformController(XmlScanner xmlScanner,
+    public DietPlatformController(RunConfig runConfig,
+                                  XmlScanner xmlScanner,
                                   DietPlatform dietPlatform, 
                                   ResourcePlatform resourcePlatform,
                                   Launcher launcher) {
+        this.runConfig      = runConfig;
         this.xmlScanner     = xmlScanner;
         this.dietPlatform   = dietPlatform;
         this.resourcePlatform = resourcePlatform;
@@ -48,20 +51,13 @@ public class DietPlatformController implements java.util.Observer {
     public void update(java.util.Observable observable, Object obj) {
         java.awt.AWTEvent e = (java.awt.AWTEvent)obj;
          if ( (e instanceof AddElementsEvent) &&
-              (debugLevel == 2)){            
+              (this.runConfig.debugLevel >= 2)){            
             System.out.println("New Elements : "+((Elements)e.getSource()).getName());;
         }else if (e instanceof AddServiceEvent){
             System.out.println("New service : "+e.getSource());
         }
     }
    
-    public void setDebugLevel(int level){
-        this.debugLevel = level;
-    }
-    public int getDebugLevel(){
-        return this.debugLevel;
-    }
-    
     /* Interfaces for parsing the platform description xml */
     public void parseXmlFile(String xmlFile){
         try {
@@ -71,6 +67,13 @@ public class DietPlatformController implements java.util.Observer {
             System.err.println("Parsing of " + xmlFile + " failed. Exiting.");
             System.exit(1);
         }
+    }
+    
+    public void addRunConfig(RunConfig runCfg){
+        this.runConfig = runCfg;
+    }
+    public RunConfig getRunConfig(){
+        return this.runConfig;
     }
     
     /* Interfaces for building the diet platform model */   
@@ -168,7 +171,7 @@ public class DietPlatformController implements java.util.Observer {
             System.exit(1);
         }
         
-        runLabel = launcher.createLocalScratch(scratch,debugLevel);
+        runLabel = launcher.createLocalScratch(scratch,this.runConfig.debugLevel);
         if(runLabel != null){
             resourcePlatform.setRunLabel(runLabel);
             resourcePlatform.setLocalScratchReady(true);
@@ -223,6 +226,15 @@ public class DietPlatformController implements java.util.Observer {
             ComputeResource compRes = 
                 resourcePlatform.getComputeResource(hostRef);
             launchElement(currElement,compRes);
+        
+            try {
+               Thread.sleep(2000);
+            }
+            catch (InterruptedException x) {
+                System.err.println("LaunchPlatform: Unexpected sleep " +
+                    "interruption. Exiting.");
+                System.exit(1);
+            }
         }
     }    
        
@@ -244,7 +256,7 @@ public class DietPlatformController implements java.util.Observer {
                                resourcePlatform.getLocalScratchBase(),
                                resourcePlatform.getRunLabel(),
                                dietPlatform.useLogCentral(), 
-                               debugLevel);
+                               this.runConfig);
     }
     
 }
