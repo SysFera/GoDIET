@@ -122,4 +122,51 @@ public class DietPlatform extends java.util.Observable {
     public java.util.Vector getServerDaemons() {
         return this.serverDaemons;
     }
+    
+    public void printStatus(){
+        java.util.Iterator it;
+        MasterAgent mAgent;
+        LocalAgent lAgent;
+        ServerDaemon sed;
+        
+        String platStatus = "Platform status is:" +
+            "\n\tOmniNames: " + getRunStatus(omniNames);
+        if(haveLogCentral){
+            platStatus +=
+                "\n\tLogCentral: " + getRunStatus(logCentral);
+            if(haveTestTool){
+                platStatus += 
+                    "\n\ttestTool: " + getRunStatus(testTool);
+            }
+        }
+        for(it = masterAgents.iterator(); it.hasNext();){
+            mAgent = (MasterAgent) it.next();
+            platStatus += "\n\t" + mAgent.getName() + ": " +
+                getRunStatus(mAgent);
+        }
+        for(it = localAgents.iterator(); it.hasNext();){
+            lAgent = (LocalAgent) it.next();
+            platStatus += "\n\t" + lAgent.getName() + ": " +
+                getRunStatus(lAgent);
+        }
+        for(it = serverDaemons.iterator(); it.hasNext();){
+            sed = (ServerDaemon) it.next();
+            platStatus += "\n\t" + sed.getName() + ": " +
+                getRunStatus(sed);
+        }
+       
+        System.out.println(platStatus);
+    }
+    private String getRunStatus(Elements element){
+        String status = null;
+        if((element == null) ||
+           (element.getLaunchInfo() == null) ||
+           (!element.getLaunchInfo().running)) {
+            status = "not running";
+        } else {
+            status = "running on " + element.getHostReference() +
+                " with pid " + element.getLaunchInfo().pid;
+        }
+        return status;
+    }
 }
