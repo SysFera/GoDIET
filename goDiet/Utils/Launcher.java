@@ -218,7 +218,7 @@ public class Launcher {
     private void writeCfgFileOmniNames(OmniNames omni,FileWriter out) throws IOException {
         out.write("InitRef = NameService=corbaname::" +
         omni.getContact() + ":" + omni.getPort() + "\n");
-        out.write("giopMaxMsgSize = 33554432\n");
+        out.write("giopMaxMsgSize = 1073741000\n");
         out.write("supportBootstrapAgent = 1\n");
     }
     
