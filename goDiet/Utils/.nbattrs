@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE attributes PUBLIC "-//NetBeans//DTD DefaultAttributes 1.0//EN" "http://www.netbeans.org/dtds/attributes-1_0.dtd">
-<attributes version="1.0">
-    <fileobject name="XmlScanner.java">
-        <attr name="NetBeansAttrArguments" serialvalue="aced0005757200135b4c6a6176612e6c616e672e537472696e673badd256e7e91d7b4702000078700000000174002e2f686f6d652f686461696c2f656c6167692f476f444945542f6578616d706c65732f6578616d706c65322e786d6c"/>
-        <attr name="class_dependency_org.xml.sax.ErrorHandler" stringvalue="XmlScanner"/>
-    </fileobject>
-</attributes>
