@@ -62,7 +62,7 @@
   >
   
 <!--- Define other DIET services to run alongside hierarchy -->
-<!ELEMENT diet_services (omni_names,log_central?,test_tool?)>
+<!ELEMENT diet_services (omni_names,log_central?,test_tool?,diet_statistics?)>
 <!ELEMENT omni_names (config)>
 <!ATTLIST omni_names
     contact CDATA #REQUIRED
@@ -70,6 +70,7 @@
   >
 <!ELEMENT log_central (config)>
 <!ELEMENT test_tool (config)>
+<!ELEMENT diet_statistics EMPTY>
 
 <!--- Define hierarchy of agents and SeDs -->
 <!ELEMENT diet_hierarchy (master_agent+)>
