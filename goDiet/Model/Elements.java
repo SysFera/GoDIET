@@ -28,6 +28,8 @@ public class Elements extends java.util.Observable {
     private String cfgFileName = null;
     private boolean haveCfgFileName = false;
 
+    private LaunchInfo launchInfo = null;
+    
     /* Constructor for Elements.  Once an Element is created,
        the Name can not be changed. */
     public Elements(String name,String hostReference,String binary) {
@@ -35,7 +37,7 @@ public class Elements extends java.util.Observable {
         this.hostRef = hostReference;
         this.binary = binary;
     }
-    
+        
     public void setName(String name) {
         this.name = name;
     }
@@ -86,4 +88,14 @@ public class Elements extends java.util.Observable {
     
     public boolean isCfgFileNameSet() {return this.haveCfgFileName;}
     public String getCfgFileName() {return this.cfgFileName;}
+    
+    public void setLaunchInfo(LaunchInfo launchInfo){
+        this.launchInfo = launchInfo;
+    }
+    public LaunchInfo getLaunchInfo(){
+        return this.launchInfo;
+    }
+    public boolean isRunning(){
+        return this.launchInfo.running;
+    }
 }

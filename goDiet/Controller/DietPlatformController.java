@@ -183,6 +183,10 @@ public class DietPlatformController implements java.util.Observer {
     public void launchOmniNames() {
         Elements omni = this.dietPlatform.getOmniNames();
         launchService(omni);
+        if(!omni.isRunning()){
+            System.err.println("OmniNames launch failed.  Exiting.");
+            System.exit(1);
+        } 
     }
     
     public void launchLogCentral() {

@@ -93,6 +93,7 @@ public class SshUtils {
         if(element.getName().compareTo("OmniNames") == 0){
             String omniRemove = "/bin/rm -f " + scratch + "/omninames-*.log ";
             omniRemove += scratch + "/omninames-*.bak ";
+            omniRemove += "> /dev/null 2> /dev/null ";
             
             String[] commandOmni = {"/usr/bin/ssh", 
                             access.getLogin() + "@" + access.getServer(), 
@@ -110,7 +111,8 @@ public class SshUtils {
         }
         
         /** Build remote command for launching the job */
-        String remoteCommand = "/bin/sh -c \"";
+        //String remoteCommand = "/bin/sh -c \"";
+        String remoteCommand = "";
         // Set PATH.  Used to find binaries (unless user provides full path)
         if(compRes.getEnvPath() != null) {
             remoteCommand += "export PATH=" + compRes.getEnvPath() + ":\\$PATH ; ";
@@ -165,9 +167,9 @@ public class SshUtils {
             }
         }
         // Background process and give correct quotes
-        remoteCommand += "&\"";
-        
-        String[] command = {"/usr/bin/ssh", 
+        //remoteCommand += "&\"";
+        execSshGetPid(element, access, remoteCommand, runConfig, scratch);
+        /*String[] command = {"/usr/bin/ssh", 
                             access.getLogin() + "@" + access.getServer(), 
                             remoteCommand};
         for(i = 0; (i < command.length) && (runConfig.debugLevel >= 2); i++){
@@ -180,6 +182,73 @@ public class SshUtils {
         catch (IOException x) {
             System.err.println("runElement failed to run the task " + 
                 element.getName() + ".");
+        }*/
+    }
+    
+    // input: command ; command ; command
+    private void execSshGetPid(Elements element, AccessMethod access, 
+            String remoteCommand, RunConfig runConfig, String scratch ){
+        String newCommand = null;
+        LaunchInfo launchInfo = new LaunchInfo();
+    
+        newCommand = "( /bin/echo \"" + remoteCommand + "&\" ; ";
+        newCommand += "/bin/echo '/bin/echo ${!}' ) | ";
+        newCommand += "/usr/bin/ssh ";
+        newCommand += access.getLogin() + "@" + access.getServer() + " ";
+        newCommand += "tee - " + scratch + "/" + element.getName() + ".launch ";
+        newCommand += "| /bin/sh - ";
+        
+        String[] commandArray = {"/bin/sh", "-c", newCommand};
+        launchInfo.commandArray = commandArray;
+        
+        for(int i = 0; (i < commandArray.length) && (runConfig.debugLevel >= 2); i++){
+            System.out.println("Command element " + i + " is " + commandArray[i]);
         }
+         
+        launchInfo.running = false;
+        try {
+            // Run the process
+            Process p = Runtime.getRuntime().exec(commandArray);
+            
+            // Get output and error from launch
+            BufferedReader brErr = new BufferedReader(
+                    new InputStreamReader(p.getErrorStream()));
+            launchInfo.launchStdErr = brErr.readLine();
+            BufferedReader brOut = new BufferedReader(
+                    new InputStreamReader(p.getInputStream()));
+            launchInfo.launchStdOut = brOut.readLine();       
+        }
+        catch (IOException x) {
+            System.err.println("Launch of " + element.getName() + 
+                " failed with following exception.");
+            x.printStackTrace();
+            element.setLaunchInfo(launchInfo);
+            return;
+        }
+        
+        if(launchInfo.launchStdErr != null){
+            System.err.println("Launch of " + element.getName() + 
+                " failed with stdErr " + launchInfo.launchStdErr);
+        } else if(launchInfo.launchStdOut == null){ 
+            System.err.println("Launch of " + element.getName() + 
+                 " failed to return PID.");
+        } else {    
+            System.out.println("line: " + launchInfo.launchStdOut);
+            try{
+                launchInfo.pid = Integer.parseInt(launchInfo.launchStdOut);
+                if(runConfig.debugLevel >= 2){
+                    System.out.println("PID: " + launchInfo.pid);
+                }
+                launchInfo.running = true;
+            } catch(NumberFormatException x){
+                System.err.println("Launch of " + element.getName() + 
+                    " failed.");
+                System.err.println("Could not parse PID in stdout: " + 
+                    launchInfo.launchStdOut);
+                launchInfo.pid = -1;
+            }
+        }
+        element.setLaunchInfo(launchInfo);
+        return;
     }
 }
