@@ -165,7 +165,6 @@ public class XmlScanner implements ErrorHandler {
             if (attr.getName().equals("debug")) { 
                 tempInt = (new Integer(attr.getValue())).intValue();
                 if(tempInt < 0) { runCfg.debugLevel = 0;
-                } else if(tempInt > 2) { runCfg.debugLevel = 2;
                 } else { runCfg.debugLevel = tempInt; }
             }
             if (attr.getName().equals("saveStdOut")) {
@@ -374,7 +373,6 @@ public class XmlScanner implements ErrorHandler {
                 }
                 if (nodeElement.getTagName().equals("node")){
                     visitElement_node(nodeElement, envCfg, storRes, login);
-                    System.out.println("Visiting node.");
                 }
             }
         }
@@ -392,7 +390,6 @@ public class XmlScanner implements ErrorHandler {
             org.w3c.dom.Attr attr = (org.w3c.dom.Attr)attrs.item(i);
             if (attr.getName().equals("label")) { 
                 resourceLabel = attr.getValue();
-                System.out.println("Found label " + resourceLabel);
             }
         } 
         compRes = new ComputeResource(resourceLabel, storRes);
