@@ -198,11 +198,12 @@ public class Launcher {
     }
     private void writeCfgFileDiet(Elements element,FileWriter out,
             boolean useLogService) throws IOException {
-        out.write("name = " + element.getName() + "\n");      
         String className = element.getClass().getName();
         if( className.compareTo("goDiet.Model.MasterAgent") == 0) {
+            out.write("name = " + element.getName() + "\n");
             out.write("agentType = DIET_MASTER_AGENT\n");
         } else if( className.compareTo("goDiet.Model.LocalAgent") == 0) {
+            out.write("name = " + element.getName() + "\n");
             out.write("agentType = DIET_LOCAL_AGENT\n");
             LocalAgent agent = (LocalAgent)element;
             out.write("parentName = " + (agent.getParent()).getName() + "\n");
