@@ -3,11 +3,13 @@
 <project basedir="." default="all" name="GoDIET">
 
     <target name="init">
+        <tstamp/>
         <property name="project" value="GoDIET"/>
         <property name="src" value="goDiet"/>
         <property name="build" value="build"/>
         <property name="dist" value="."/>
         <property name="apidoc" value="doc"/>
+        <property name="version" value="dev"/>        
     </target>
 
     <target depends="init" name="compile">
@@ -17,11 +19,16 @@
     </target>
 
     <target depends="init,compile" description="Build the jar." name="jar">
-         <jar basedir="${build}" compress="true" jarfile="${project}.jar" manifest="${project}.mf">
-            <exclude name="**/*.java"/>
-            <exclude name="**/*.form"/>
-            <exclude name="${project}.mf"/>
-            <exclude name="${project}.jar"/>
+         <jar basedir="${build}" compress="true" jarfile="${project}.jar">
+            <manifest>
+                <attribute name="Built-By" value="${user.name}"/>                
+                <section name="Project Descriptions">
+                    <attribute name="Project-Title" value="${project}"/>
+                    <attribute name="Project-Version" value="${version}"/>
+                    <attribute name="Release-date" value=" ${TODAY}"/>
+                </section>
+                <attribute name="Main-Class" value="goDiet/GoDIET"/>                
+            </manifest>            
         </jar>
     </target>
 
