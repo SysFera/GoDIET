@@ -177,6 +177,14 @@ public class XmlScanner implements ErrorHandler {
                     runCfg.saveStdErr = true;
                 }
             }
+            if (attr.getName().equals("useUniqueDirs")) {
+                tempStr = attr.getValue();
+                if(tempStr.equals("no")){
+                    runCfg.useUniqueDirs = false;
+                } else if(tempStr.equals("yes")){
+                    runCfg.useUniqueDirs = true;
+                }
+            }
         }
         mainController.addRunConfig(runCfg);
     }

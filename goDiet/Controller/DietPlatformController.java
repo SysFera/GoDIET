@@ -171,7 +171,7 @@ public class DietPlatformController implements java.util.Observer {
             System.exit(1);
         }
         
-        runLabel = launcher.createLocalScratch(scratch,this.runConfig.debugLevel);
+        runLabel = launcher.createLocalScratch(scratch,this.runConfig);
         if(runLabel != null){
             resourcePlatform.setRunLabel(runLabel);
             resourcePlatform.setLocalScratchReady(true);

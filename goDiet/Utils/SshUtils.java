@@ -30,16 +30,29 @@ public class SshUtils {
         // If remote scratch not yet available, create it and stage file by 
         // recursive copy.  Else, copy just the file.
         if(storeRes.isScratchReady() == false){
-            // scp -r localScratchBase/runLabel remoteScratchBase/
-            command += "-r ";                            // make it recursive
-            command += localBase + "/" + runLabel + " "; // source
+            if(runConfig.useUniqueDirs){
+                // scp -r localScratchBase/runLabel remoteScratchBase/
+                command += "-r " + localBase + "/" + runLabel + " "; // source
+            } else {
+                // scp localScratchBase/* remoteScratchBase/
+                command += localBase + "/" + filename + ".cfg "; // source
+                command += localBase + "/omniORB4.cfg "; // omniORB                
+            }
             command += access.getLogin() + "@" + access.getServer() + ":";
             command += storeRes.getScratchBase();
         } else {
             // format: /usr/bin/scp filename login@host:remoteFile
-            command += localBase + "/" + runLabel + "/" + filename + " ";                    
+            if(runConfig.useUniqueDirs){
+                command += localBase + "/" + runLabel + "/" + filename + " ";
+            } else {
+                command += localBase + "/" + filename + " ";
+            }
             command += access.getLogin() + "@" + access.getServer() + ":";
-            command += storeRes.getScratchBase() + "/" + runLabel;
+            if(runConfig.useUniqueDirs){
+                command += storeRes.getScratchBase() + "/" + runLabel;
+            } else {
+                command += storeRes.getScratchBase();                
+            }
         }
         java.lang.Runtime runtime = java.lang.Runtime.getRuntime();
         if(runConfig.debugLevel >= 2){
@@ -60,7 +73,12 @@ public class SshUtils {
             RunConfig runConfig) {
         String className = element.getClass().getName();
         StorageResource storage = compRes.getStorageResource();
-        String scratch = storage.getScratchBase() + "/" + storage.getRunLabel();
+        String scratch;
+        if(runConfig.useUniqueDirs){
+           scratch = storage.getScratchBase() + "/" + storage.getRunLabel();
+        } else {
+           scratch = storage.getScratchBase();
+        }
         
         AccessMethod access = compRes.getAccessMethod("ssh");
         if(access == null){

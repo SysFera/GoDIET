@@ -5,7 +5,8 @@
 <diet_configuration>
   <goDiet debug="2"
           saveStdOut="yes"
-          saveStdErr="yes"/>
+          saveStdErr="yes"
+          useUniqueDirs="no"/>
     
   <resources>
     <scratch dir="/home/hdail/tmp/diet_scratch1"/>

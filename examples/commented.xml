@@ -21,7 +21,8 @@
        allow configuration of goDIET behavior. -->
   <goDiet debug="1"
           saveStdOut="yes"
-          saveStdErr="no"/>
+          saveStdErr="no"
+          useUniqueDirs="yes"/>
         <!-- Optional: debug controls the verbosity of goDIET output from
                   0 (no debugging) -> 2 (very verbose) 
              Optional: saveStdOut controls whether stdout is redirected
@@ -29,6 +30,10 @@
                   space called <componentName>.out.
              Optional: saveStdErr as above with a file named 
                   <componentName>.err.
+             Optional: for useUniqueDirs, yes specifies that a unique
+                  subdirectory will be created under the scratch space
+                  on each machine for all files relevant to the run.
+                  If no, all files are written in the scratch directly.
           -->
    
   <!-- Use the resources section to define what machines you

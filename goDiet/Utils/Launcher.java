@@ -22,8 +22,8 @@ public class Launcher {
     public Launcher() {
     }
     
-    public String createLocalScratch(String scratchBase,int debugLevel) {
-        if(debugLevel >= 1){
+    public String createLocalScratch(String scratchBase,RunConfig runCfg) {
+        if(runCfg.debugLevel >= 1){
            System.out.println("Preparing local scratch directory in " + scratchBase);
         }
         String dirName = null;
@@ -36,7 +36,7 @@ public class Launcher {
         runLabel = "run_" + dateString;
         
         File dirHdl = new File(scratchBase,runLabel);
-        if( dirHdl.exists() ) {
+        if( runCfg.useUniqueDirs && dirHdl.exists() ) {
             int i = 0;
             do {
                 i++;
@@ -84,8 +84,13 @@ public class Launcher {
                 " on " + compRes.getName());
         } 
         try {
-            createCfgFile(element,localScratchBase + "/" + runLabel,
+            if(runConfig.useUniqueDirs){
+                createCfgFile(element,localScratchBase + "/" + runLabel,
                     useLogService,runConfig);
+            } else {
+                createCfgFile(element,localScratchBase,
+                    useLogService,runConfig);
+            }
         }
         catch (IOException x) {
             System.err.println("Exception writing cfg file for " + element.getName());
@@ -116,7 +121,6 @@ public class Launcher {
     private void runElement(Elements element,ComputeResource compRes,
             RunConfig runConfig) {
         StorageResource storage = compRes.getStorageResource();
-        String scratch = storage.getScratchBase() + "/" + storage.getRunLabel();
         if(runConfig.debugLevel >= 1){
            System.out.println("Executing element " + element.getName() + 
                 " on resource " + compRes.getName());
