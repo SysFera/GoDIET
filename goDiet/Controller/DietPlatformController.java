@@ -78,17 +78,17 @@ public class DietPlatformController implements java.util.Observer {
     }
     
     /* Interfaces for building the diet platform model */   
-    public void addOmniNames(Elements newElement){
-        this.dietPlatform.addOmniNames(newElement);
-        newElement.addObserver(this);
+    public void addOmniNames(OmniNames omni){
+        this.dietPlatform.addOmniNames(omni);
+        omni.addObserver(this);
     }
-    public void addLogCentral(Elements newElement){
-        this.dietPlatform.addLogCentral(newElement);
-        newElement.addObserver(this);
+    public void addLogCentral(Services newService){
+        this.dietPlatform.addLogCentral(newService);
+        newService.addObserver(this);
     }
-    public void addTestTool(Elements newElement){
-        this.dietPlatform.addTestTool(newElement);
-        newElement.addObserver(this);
+    public void addTestTool(Services newService){
+        this.dietPlatform.addTestTool(newService);
+        newService.addObserver(this);
     }
     public void addMasterAgent(MasterAgent newMA){
         this.dietPlatform.addMasterAgent(newMA);
@@ -172,7 +172,7 @@ public class DietPlatformController implements java.util.Observer {
     }
     
     public void launchOmniNames() {
-        Elements omni = this.dietPlatform.getOmniNames();
+        OmniNames omni = this.dietPlatform.getOmniNames();
         launchService(omni);
         if(!omni.isRunning()){
             System.err.println("OmniNames launch failed.  Exiting.");
@@ -191,9 +191,7 @@ public class DietPlatformController implements java.util.Observer {
     }
         
     public void launchService(Elements service){
-        String hostRef = service.getHostReference();
-        ComputeResource compRes = 
-                resourcePlatform.getComputeResource(hostRef);
+        ComputeResource compRes = service.getComputeResource();
         launchElement(service,compRes);
         try {
             Thread.sleep(3000);
@@ -224,9 +222,7 @@ public class DietPlatformController implements java.util.Observer {
         String hostRef = null;
         for( int i = 0; i < elements.size(); i++) {
             currElement = (Elements) elements.elementAt(i);
-            hostRef = currElement.getHostReference();
-            ComputeResource compRes = 
-                resourcePlatform.getComputeResource(hostRef);
+            ComputeResource compRes = currElement.getComputeResource();
             launchElement(currElement,compRes);
         
             try {
@@ -257,7 +253,6 @@ public class DietPlatformController implements java.util.Observer {
             return;
         }
         launcher.launchElement(element, 
-                               compRes,
                                resourcePlatform.getLocalScratchBase(),
                                resourcePlatform.getRunLabel(),
                                dietPlatform.useLogCentral(), 
@@ -310,9 +305,7 @@ public class DietPlatformController implements java.util.Observer {
     }
         
     public void stopService(Elements service){
-        String hostRef = service.getHostReference();
-        ComputeResource compRes = 
-                resourcePlatform.getComputeResource(hostRef);
+        ComputeResource compRes = service.getComputeResource();
         stopElement(service,compRes);
         try {
             Thread.sleep(2000);
@@ -328,9 +321,7 @@ public class DietPlatformController implements java.util.Observer {
         String hostRef = null;
         for( int i = 0; i < elements.size(); i++) {
             currElement = (Elements) elements.elementAt(i);
-            hostRef = currElement.getHostReference();
-            ComputeResource compRes = 
-                resourcePlatform.getComputeResource(hostRef);
+            ComputeResource compRes = currElement.getComputeResource();
             stopElement(currElement,compRes);
         
             try {
@@ -357,7 +348,6 @@ public class DietPlatformController implements java.util.Observer {
             return;
         }
         launcher.stopElement(element, 
-                             compRes,
                              this.runConfig);
     }
     
