@@ -10,6 +10,8 @@ import goDiet.Utils.*;
 import goDiet.Model.*;
 import goDiet.Events.*;
 import java.io.IOException;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 
 /**
  *
@@ -238,6 +240,7 @@ public class DietPlatformController implements java.util.Observer {
        
     private void launchElement(Elements element,
                                ComputeResource compRes) {
+        boolean userCont = true;
         if(element == null){
             System.err.println("Can not launch null element.");
             System.exit(1);
@@ -252,11 +255,40 @@ public class DietPlatformController implements java.util.Observer {
                 " is already running.  Launch request ignored.");
             return;
         }
-        launcher.launchElement(element, 
+        if(runConfig.debugLevel >= 3){
+            userCont = waitUserReady(element);
+        }
+        if(userCont){
+            launcher.launchElement(element, 
                                resourcePlatform.getLocalScratchBase(),
                                resourcePlatform.getRunLabel(),
                                dietPlatform.useLogCentral(), 
                                this.runConfig);
+        } 
+    }
+    
+    private boolean waitUserReady(Elements element){
+        System.out.println("\nType <return> to launch " + element.getName() +
+                ", <no> to skip this element, or <stop> to quit ...");
+        String userInput = "";
+        BufferedReader stdin = new BufferedReader(
+                new InputStreamReader(System.in));
+        try {
+            userInput = stdin.readLine();
+        } catch(Exception x) {
+            System.err.println("Exception caught while waiting for input. " +
+                "Ignoring exception.");
+        }
+        userInput = userInput.trim();
+        if(userInput.equals("no")){
+            System.out.println("Skipping launch of " + element.getName() +
+                ".  The launch of any sub-elements will fail!");   
+            return false;
+        } else if(userInput.equals("stop")){
+            stopPlatform();
+            System.exit(1);
+        }
+        return true;
     }
     
     /* Interfaces for stopping the diet platform, or parts thereof */
@@ -306,13 +338,15 @@ public class DietPlatformController implements java.util.Observer {
         
     public void stopService(Elements service){
         ComputeResource compRes = service.getComputeResource();
-        stopElement(service,compRes);
-        try {
-            Thread.sleep(2000);
-        } catch (InterruptedException x){
-            System.err.println("StopService: Unexpected sleep " +
-                "interruption.  Exiting.");
-            System.exit(1);
+        if(stopElement(service,compRes)){
+            // If stop command was run, sleep afterwards for cleanup time
+            try {
+                Thread.sleep(2000);
+            } catch (InterruptedException x){
+                System.err.println("StopService: Unexpected sleep " +
+                    "interruption.  Exiting.");
+                System.exit(1);
+            }
         }
     }
     
@@ -322,33 +356,35 @@ public class DietPlatformController implements java.util.Observer {
         for( int i = 0; i < elements.size(); i++) {
             currElement = (Elements) elements.elementAt(i);
             ComputeResource compRes = currElement.getComputeResource();
-            stopElement(currElement,compRes);
-        
-            try {
-               Thread.sleep(1000);
-            }
-            catch (InterruptedException x) {
-                System.err.println("StopElements: Unexpected sleep " +
-                    "interruption. Exiting.");
-                System.exit(1);
+            if( stopElement(currElement,compRes) ){
+                // If stop command was run, sleep afterwards for cleanup time
+                try {
+                   Thread.sleep(1000);
+                }
+                catch (InterruptedException x) {
+                    System.err.println("StopElements: Unexpected sleep " +
+                        "interruption. Exiting.");
+                    System.exit(1);
+                }
             }
         }
     } 
     
-    private void stopElement(Elements element,
+    private boolean stopElement(Elements element,
                              ComputeResource compRes) {
         if(element == null){
             System.err.println("Can not run stop on null element.");
-            return;
+            return false;
         }
         if((element.getLaunchInfo() == null) ||
            (!element.getLaunchInfo().running)){
             System.err.println("Element " + element.getName() + " is not " +
                 "running. Ignoring stop command.");
-            return;
+            return false;
         }
         launcher.stopElement(element, 
                              this.runConfig);
+        return true;
     }
     
     public void printPlatformStatus(){
