@@ -156,7 +156,20 @@ public class SshUtils {
             remoteCommand += "-start " + ((OmniNames)element).getPort() + " ";
         }
         if(element.getName().compareTo("LogCentral") == 0){
-            remoteCommand += "-config LogCentral.cfg";
+            remoteCommand += "-config LogCentral.cfg ";
+            if(compRes.getEndPointContact() != null){
+                remoteCommand += "-ORBendPoint giop:tcp:" + 
+                    compRes.getEndPointContact() + ":";
+            } else if(compRes.getEndPointStartPort() > 0){
+                remoteCommand += "-ORBendPoint giop:tcp::";
+            }
+            if(compRes.getEndPointStartPort() > 0){
+                int port = compRes.allocateEndPointPort();
+                if(port > 0){
+                    remoteCommand += port;
+                }
+            }
+            remoteCommand += " ";
         }
         // Redirect stdin/stdout/stderr so ssh can exit cleanly w/ live process
         remoteCommand += "< /dev/null ";
