@@ -15,8 +15,8 @@ public class Agents extends Elements {
     private java.util.Vector children;
     
     /** Creates a new instance of Agents */
-    public Agents(String name,String hostName,String binary) {
-        super(name, hostName, binary);
+    public Agents(String name,ComputeResource compRes,String binary) {
+        super(name, compRes, binary);
         this.children= new java.util.Vector();
     }
     

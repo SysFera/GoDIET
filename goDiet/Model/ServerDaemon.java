@@ -18,9 +18,9 @@ public class ServerDaemon extends Elements {
     private Agents parent;
     
     /** Creates a new instance of ServerDaemon */
-    public ServerDaemon(String name,String hostName,
+    public ServerDaemon(String name,ComputeResource compRes,
                         String binary,Agents parent) {
-        super(name, hostName, binary);
+        super(name, compRes, binary);
         this.parent=parent;
         //services = new java.util.Vector();
     }

@@ -13,10 +13,10 @@ import goDiet.Events.*;
  * @author  hdail
  */
 public class DietPlatform extends java.util.Observable {
-    private Elements omniNames;
-    private Elements logCentral;
+    private OmniNames omniNames;
+    private Services logCentral;
     private boolean haveLogCentral = false;
-    private Elements testTool;
+    private Services testTool;
     private boolean haveTestTool = false;
     
     private java.util.Vector masterAgents;
@@ -36,14 +36,14 @@ public class DietPlatform extends java.util.Observable {
         this.serverDaemons= new java.util.Vector();
     }
     
-    public void addOmniNames(Elements omni){
+    public void addOmniNames(OmniNames omni){
         this.omniNames = omni;
         setChanged();
         notifyObservers(new AddElementsEvent(omni));
         clearChanged();
     }
     
-    public void addLogCentral(Elements logCentral){
+    public void addLogCentral(Services logCentral){
         this.logCentral = logCentral;
         this.haveLogCentral = true;
         setChanged();
@@ -51,7 +51,7 @@ public class DietPlatform extends java.util.Observable {
         clearChanged();
     }
     
-    public void addTestTool(Elements testTool){
+    public void addTestTool(Services testTool){
         this.testTool = testTool;
         this.haveTestTool = true;
         setChanged();
@@ -61,7 +61,7 @@ public class DietPlatform extends java.util.Observable {
     
     public void addMasterAgent(MasterAgent newMA){
         String label = newMA.getName();
-        if( label != null ) {
+        if( (label != null) && (label.length() > 0)) {
             newMA.setName(label + "_" + MA_ID);
         } else {
             newMA.setName("MA_" + MA_ID);
@@ -74,7 +74,7 @@ public class DietPlatform extends java.util.Observable {
     }
     public void addLocalAgent(LocalAgent newLA){
         String label = newLA.getName();
-        if( label != null ) {
+        if((label != null) & (label.length() > 0)) {
             newLA.setName(label + "_" + LA_ID);
         } else {
             newLA.setName("LA_" + LA_ID);
@@ -87,7 +87,7 @@ public class DietPlatform extends java.util.Observable {
     }
     public void addServerDaemon(ServerDaemon newSeD){
         String label = newSeD.getName();
-        if( label != null ) {
+        if( (label != null) && (label.length() > 0)) {
             newSeD.setName(label + "_" + SeD_ID);
         } else {
             newSeD.setName("SeD_" + SeD_ID);
@@ -98,16 +98,16 @@ public class DietPlatform extends java.util.Observable {
         notifyObservers(new AddElementsEvent(newSeD));
         clearChanged();
     }
-    public Elements getOmniNames(){
+    public OmniNames getOmniNames(){
         return this.omniNames;
     }
-    public Elements getLogCentral(){
+    public Services getLogCentral(){
         return this.logCentral;
     }
     public boolean useLogCentral(){
         return this.haveLogCentral;
     }
-    public Elements getTestTool(){
+    public Services getTestTool(){
         return this.testTool;
     }
     public boolean useTestTool(){
@@ -162,9 +162,10 @@ public class DietPlatform extends java.util.Observable {
         if((element == null) ||
            (element.getLaunchInfo() == null) ||
            (!element.getLaunchInfo().running)) {
-            status = "not running";
+            status = "not running  [sched for " + 
+                element.getComputeResource().getName() + "]";
         } else {
-            status = "running on " + element.getHostReference() +
+            status = "running on " + element.getComputeResource().getName() +
                 " with pid " + element.getLaunchInfo().pid;
         }
         return status;

@@ -15,8 +15,9 @@ public class LocalAgent extends Agents {
     private Agents parent;
     
     /** Creates a new instance of LocalAgent */
-    public LocalAgent(String name,String hostName,String binary, Agents parent) {
-        super(name, hostName, binary);
+    public LocalAgent(String name,ComputeResource compRes,
+                      String binary, Agents parent) {
+        super(name, compRes, binary);
         this.parent=parent;
     }
     
