@@ -144,26 +144,13 @@ public class Launcher {
             return;
         }
         
-        if( element.getCfgFileName() == null){
-            element.setCfgFileName(element.getName() + ".cfg");
-        }
-        String fileName = element.getCfgFileName();
+        element.setCfgFileName(element.getName() + ".cfg");
+        File cfgFile = new File(localScratch, element.getCfgFileName());
         
         if(runConfig.debugLevel >= 1){
-            System.out.println("Writing config file " + fileName);
+            System.out.println("Writing config file " + element.getCfgFileName());
         }
         
-        File cfgFile = new File(localScratch, fileName);
-        if( cfgFile.exists() ) {
-            int i = 0;
-            do {
-                i++;
-                fileName = element.getCfgFileName() + "_" + i;
-                cfgFile = new File(localScratch, fileName);
-            } while (cfgFile.exists());
-            element.setCfgFileName(fileName);
-        }
-
         try {
             cfgFile.createNewFile();
             FileWriter out = new FileWriter(cfgFile);      

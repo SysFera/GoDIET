@@ -35,7 +35,7 @@ public class SshUtils {
                 command += "-r " + localBase + "/" + runLabel + " "; // source
             } else {
                 // scp localScratchBase/* remoteScratchBase/
-                command += localBase + "/" + filename + ".cfg "; // source
+                command += localBase + "/" + filename + " "; // source
                 command += localBase + "/omniORB4.cfg "; // omniORB                
             }
             command += access.getLogin() + "@" + access.getServer() + ":";
@@ -74,6 +74,7 @@ public class SshUtils {
         String className = element.getClass().getName();
         StorageResource storage = compRes.getStorageResource();
         String scratch;
+        int i;
         if(runConfig.useUniqueDirs){
            scratch = storage.getScratchBase() + "/" + storage.getRunLabel();
         } else {
@@ -87,6 +88,28 @@ public class SshUtils {
             return;
         }
         
+        /** If element is omniNames, need to ensure old log file is deleted so 
+            can use "omniNames -start port" command. */
+        if(element.getName().compareTo("OmniNames") == 0){
+            String omniRemove = "/bin/rm -f " + scratch + "/omninames-*.log ";
+            omniRemove += scratch + "/omninames-*.bak ";
+            
+            String[] commandOmni = {"/usr/bin/ssh", 
+                            access.getLogin() + "@" + access.getServer(), 
+                            omniRemove};
+            for(i = 0; (i < commandOmni.length) && (runConfig.debugLevel >= 2); i++){
+                System.out.println("Command element " + i + " is " + commandOmni[i]);
+            }
+
+            try {
+                Runtime.getRuntime().exec(commandOmni);
+            }
+            catch (IOException x) {
+                System.err.println("runElement failed to remove omni log file.");
+            } 
+        }
+        
+        /** Build remote command for launching the job */
         String remoteCommand = "/bin/sh -c \"";
         // Set PATH.  Used to find binaries (unless user provides full path)
         if(compRes.getEnvPath() != null) {
@@ -144,7 +167,7 @@ public class SshUtils {
         String[] command = {"/usr/bin/ssh", 
                             access.getLogin() + "@" + access.getServer(), 
                             remoteCommand};
-        for(int i = 0; (i < command.length) && (runConfig.debugLevel >= 2); i++){
+        for(i = 0; (i < command.length) && (runConfig.debugLevel >= 2); i++){
             System.out.println("Command element " + i + " is " + command[i]);
         }
     
@@ -152,7 +175,8 @@ public class SshUtils {
             Runtime.getRuntime().exec(command);
         }
         catch (IOException x) {
-            System.out.println("runElement failed.");
+            System.err.println("runElement failed to run the task " + 
+                element.getName() + ".");
         }
     }
 }
