@@ -168,7 +168,14 @@ public class SshUtils {
         }
         // Give -start parameter to omniNames.
         if(element instanceof goDiet.Model.OmniNames){
-            remoteCommand += "-start " + ((OmniNames)element).getPort() + " ";
+            if(((OmniNames)element).getContact() != null){
+              remoteCommand += "-start 2815 -ignoreport ";
+              remoteCommand += "-ORBendPoint giop:tcp:" +
+                  ((OmniNames)element).getContact() + ":" +
+                  ((OmniNames)element).getPort() + " ";
+            } else {
+              remoteCommand += "-start " + ((OmniNames)element).getPort() + " ";
+            }
         }
         if(element.getName().compareTo("LogCentral") == 0){
             remoteCommand += "-config LogCentral.cfg ";

@@ -18,8 +18,8 @@
 
         <compute label="localHost" disk="localDisk">
             <ssh server="localhost"/>
-            <env path="/home/hdail/diet/omniORB-4.0.3/bin:/home/hdail/local/src/diet/install/bin:/home/hdail/local/src/diet/src/examples/dmat_manips/"
-                 LD_LIBRARY_PATH="/home/hdail/local/src/diet/install/lib:/home/hdail/diet/omniORB-4.0.3/lib"/>
+            <env path="/home/hdail/diet/omniORB-4.0.6/bin:/home/hdail/diet/diet/build_dir/install/bin:/home/hdail/diet/diet/build_dir/src/examples/dmat_manips/"
+                 LD_LIBRARY_PATH="/home/hdail/diet/diet/build_dir/install/lib:/home/hdail/diet/omniORB-4.0.6/lib"/>
         </compute>
     </resources>
   
