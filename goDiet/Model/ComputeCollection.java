@@ -54,6 +54,7 @@ public class ComputeCollection {
     public int getComputeResourceCount(){
         return this.computeResources.size();
     }
+    public java.util.Vector getComputeResources(){return computeResources;}
     
     public ComputeResource getComputeResource(String name) {
         ComputeResource resource = null;

@@ -31,6 +31,8 @@ public class Elements extends java.util.Observable {
         this.binaryName = binary;
         this.cfgFileName = this.getName() + ".cfg";
         this.launchInfo = new LaunchInfo();
+        compRes.addElement(this);
+        compRes.getCollection().getStorageResource().addElement(this);
     }
     
     public void setName(String name) {

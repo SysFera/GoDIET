@@ -5,7 +5,7 @@
  */
 
 package goDiet.Model;
-
+import java.util.Vector;
 /**
  *
  * @author  hdail
@@ -20,10 +20,11 @@ public class StorageResource extends Resources {
     private String runLabel = null; // necessary?
     private boolean scratchReady = false;
     private boolean omniCfgReady = false;
+      
     
     /** Creates a new instance of StorageResource */
     public StorageResource(String name){
-        super(name);
+        super(name);    
     }
     
     /** config-related methods */

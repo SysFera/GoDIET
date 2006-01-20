@@ -8,13 +8,13 @@ package goDiet.Model;
 
 import goDiet.Events.*;
 
-import java.util.Iterator;
+import java.util.*;
 
 /**
  *
  * @author  hdail
  */
-public class ResourcePlatform extends java.util.Observable {
+public class ResourcePlatform /*extends java.util.Observable*/ {
     /** config=related items
      * These should not be changed while jobs are running on the platform */
     private java.util.Vector computeCollections;
@@ -32,10 +32,11 @@ public class ResourcePlatform extends java.util.Observable {
                 newColl.getName() + " already exists. Addition refused.");
             return;
         }
-        this.computeCollections.add(newColl);
-        setChanged();
-        notifyObservers(new AddElementsEvent(newColl));
-        clearChanged();
+        this.computeCollections.add(newColl);        
+//        setChanged();
+//        notifyObservers(new AddElementsEvent(newColl));
+//        clearChanged();
+        
     }
     public int getComputeCollectionCount(){
         return this.computeCollections.size();
@@ -71,10 +72,10 @@ public class ResourcePlatform extends java.util.Observable {
                 newStore.getName() + " already exists. Addition refused.");
             return;
         }
-        this.storageResources.add(newStore);
-        setChanged();
-        notifyObservers(new AddElementsEvent(newStore));
-        clearChanged();
+        this.storageResources.add(newStore);        
+//        setChanged();
+//        notifyObservers(new AddElementsEvent(newStore));
+//        clearChanged();
     }
      public StorageResource getStorageResource(String name) {
         StorageResource resource = null;
@@ -125,5 +126,27 @@ public class ResourcePlatform extends java.util.Observable {
         }
         
         System.out.println("ResourcePlatform unit test succeeded.");
+    }
+    
+    public Vector getUsedStorageResources(){        
+        Vector usedStorageResouces = new Vector();
+        for (Iterator it= storageResources.iterator();it.hasNext();){
+            StorageResource stRes = (StorageResource)it.next();
+            if (stRes.isUsed())
+                usedStorageResouces.add(stRes);
+        }
+        return usedStorageResouces;
+    }
+    public Vector getUsedComputeResources(){
+        Vector usedComputeResouces = new Vector();
+        for (Iterator it1= computeCollections.iterator();it1.hasNext();){
+            ComputeCollection cpColl = (ComputeCollection)it1.next();            
+            for (Iterator it2= cpColl.getComputeResources().iterator();it2.hasNext();){
+                ComputeResource cpRes = (ComputeResource)it2.next();
+                if (cpRes.isUsed())
+                    usedComputeResouces.add(cpRes);
+            }
+        }
+        return usedComputeResouces;
     }
 }
