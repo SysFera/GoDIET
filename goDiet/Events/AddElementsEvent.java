@@ -13,7 +13,7 @@ package goDiet.Events;
 public class AddElementsEvent extends java.awt.AWTEvent {
     
     /** Creates a new instance of AddElementsEvent */
-    public AddElementsEvent(java.lang.Object source) {
+    public AddElementsEvent(goDiet.Model.Elements source) {
         super(source, 110);
     } 
 }
