@@ -122,17 +122,47 @@ public class Launcher {
         // LAUNCH STAGE 3: Launch element
         runElement(element);
     }
-    
+    /* launchElement2 is the second method for launching components of the DIET
+     * hierarchy.  This method performs the following actions:
+     *      - check that element, compRes, & scratch base are non-null     
+     *      - run the element on the remote host
+     *      - don't need to create and stage cfg file, it suppose to be already done.
+     */
+    public void launchElement2(Elements element,
+                              boolean useLogService){        
+        RunConfig runCfg = consoleCtrl.getRunConfig();
+        if(element == null){
+            consoleCtrl.printError("launchElement called with null element. " +
+                "Launch request ignored.", 1);
+            return;
+        }
+        if(element.getComputeResource() == null){
+            consoleCtrl.printError("LaunchElement called with null resource. " +
+                "Launch request ignored.");
+            return;
+        }        
+        consoleCtrl.printOutput("\n** Launching element " + 
+            element.getName() + " on " +
+            element.getComputeResource().getName(),1);                
+        // LAUNCH STAGE 1: Launch element
+        runElement(element);
+    }
     // TODO: incorporate Elagi usage
-    private void stageFile(String filename,StorageResource storeRes) {
+    public void stageFile(String filename,StorageResource storeRes) {
         consoleCtrl.printOutput("Staging file " + filename + " to " + 
-            storeRes.getName(),1);
-        //AccessMethod access = storeRes.getAccessMethod("scp");
+            storeRes.getName(),1);        
         
         SshUtils sshUtil = new SshUtils(consoleCtrl);
         sshUtil.stageWithScp(filename,storeRes,consoleCtrl.getRunConfig());
     }
-    
+    // TODO: incorporate Elagi usage
+    public void stageAllFile(StorageResource storeRes) {        
+        consoleCtrl.printOutput("Staging file to " + 
+            storeRes.getName(),1);        
+        
+        SshUtils sshUtil = new SshUtils(consoleCtrl);
+        sshUtil.stageFilesWithScp(storeRes,consoleCtrl.getRunConfig());
+    }
     // TODO: incorporate Elagi usage
     private void runElement(Elements element) {
         ComputeResource compRes = element.getComputeResource();
@@ -156,7 +186,7 @@ public class Launcher {
         sshUtil.stopWithSsh(element,consoleCtrl.getRunConfig());
     }
     
-    private void createCfgFile(Elements element,
+    public void createCfgFile(Elements element,
                                boolean useLogService) throws IOException {
         RunConfig runCfg = consoleCtrl.getRunConfig();
         if( element.getName().compareTo("TestTool") == 0){
