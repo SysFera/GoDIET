@@ -115,7 +115,7 @@ public class SshUtils {
             Elements el=(Elements)itEl.next();
             files.add(el.getCfgFileName());
         }
-        if (files.contains("omniORB4.cfg"))
+        if (!files.contains("omniORB4.cfg"))
             files.add("omniORB4.cfg");
         for (Iterator itFile = files.iterator();itFile.hasNext();){
             String filename = itFile.next().toString();
