@@ -608,7 +608,9 @@ public class DeploymentController extends java.util.Observable
         java.util.Vector seds = this.dietPlatform.getServerDaemons();
         
         createCfgFile((Elements)omni);
-        createCfgFile((Elements)logger);
+        if(this.dietPlatform.useLogCentral()){
+            createCfgFile((Elements)logger);
+        }
         Iterator it=null;
         for (it = mAgents.iterator();it.hasNext();){
             createCfgFile((Elements)it.next());
