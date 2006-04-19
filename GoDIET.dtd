@@ -81,17 +81,20 @@
 <!ELEMENT master_agent (config,local_agent*,SeD*)>
 <!ATTLIST master_agent
     label CDATA #IMPLIED
+    useDietStats CDATA #IMPLIED
   >
 
 <!ELEMENT local_agent (config,local_agent*,SeD*)>
 <!ATTLIST local_agent
     label CDATA #IMPLIED
+    useDietStats CDATA #IMPLIED
   >
 
 <!ELEMENT SeD (config,parameters?)>
 <!ATTLIST SeD 
     label CDATA #IMPLIED
     maxConcurrentJobs CDATA #IMPLIED
+    useDietStats CDATA #IMPLIED
   >
 
 <!--- Configuration for agents and seds -->
