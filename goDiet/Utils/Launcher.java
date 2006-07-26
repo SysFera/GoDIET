@@ -258,6 +258,11 @@ public class Launcher {
         if(element instanceof goDiet.Model.MasterAgent) {
             out.write("name = " + element.getName() + "\n");
             out.write("agentType = DIET_MASTER_AGENT\n");
+        } else if( element instanceof goDiet.Model.Ma_dag) {
+            out.write("name = " + element.getName() + "\n");
+            out.write("agentType = DIET_MA_DAG\n");
+            Ma_dag mad = (Ma_dag)element;
+            out.write("parentName = " + (mad.getParent()).getName() + "\n");
         } else if( element instanceof goDiet.Model.LocalAgent) {
             out.write("name = " + element.getName() + "\n");
             out.write("agentType = DIET_LOCAL_AGENT\n");
