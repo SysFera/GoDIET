@@ -215,6 +215,7 @@ public class SshUtils {
         // Set OMNIORB_CONFIG.  Needed by omniNames & all diet components.
         remoteCommand += "export OMNIORB_CONFIG=" + scratch + "/omniORB4.cfg ; ";
         if( (element instanceof goDiet.Model.MasterAgent) ||
+                (element instanceof goDiet.Model.Ma_dag) ||
                 (element instanceof goDiet.Model.LocalAgent) ||
                 (element instanceof goDiet.Model.ServerDaemon)){
             if( element.getUseDietStats()){
@@ -228,6 +229,7 @@ public class SshUtils {
         remoteCommand += "nohup " + element.getBinaryName() + " ";
         // Provide config file name with full path.  Needed by agents and seds.
         if( (element instanceof goDiet.Model.MasterAgent) ||
+                (element instanceof goDiet.Model.Ma_dag) ||
                 (element instanceof goDiet.Model.LocalAgent) ||
                 (element instanceof goDiet.Model.ServerDaemon)){
             remoteCommand += scratch + "/" + element.getCfgFileName() + " ";
