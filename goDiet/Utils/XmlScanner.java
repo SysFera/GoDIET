@@ -746,6 +746,9 @@ public class XmlScanner implements ErrorHandler {
                     mainController.addMasterAgent(newMA);
                 }
                 if( newMA != null ) {
+                    if (nodeElement.getTagName().equals("ma_dag")) {
+                        visitElement_ma_dag(nodeElement, newMA);
+                    }
                     if (nodeElement.getTagName().equals("local_agent")) {
                         visitElement_local_agent(nodeElement, newMA);
                     }
@@ -755,7 +758,7 @@ public class XmlScanner implements ErrorHandler {
                 }
             }
         }
-    }
+    }     
     
     void visitElement_local_agent(org.w3c.dom.Element element,
             Agents parentAgent) { // <local_agent>
@@ -826,6 +829,69 @@ public class XmlScanner implements ErrorHandler {
                         visitElement_SeD(nodeElement, newLA);
                     }
                 }
+            }
+        }
+    }
+    void visitElement_ma_dag(org.w3c.dom.Element element,
+            Agents parentAgent) { // <local_agent>
+        Ma_dag ma_dag = null;
+        String ma_dagName="";
+        Config config = new Config();
+        int useDietStats = -1;
+                
+        org.w3c.dom.NamedNodeMap attrs = element.getAttributes();
+        for (int i = 0; i < attrs.getLength(); i++) {
+            org.w3c.dom.Attr attr = (org.w3c.dom.Attr)attrs.item(i);
+            if (attr.getName().equals("label")) { // <local_agent label="???">
+                ma_dagName = attr.getValue();
+            }else if (attr.getName().equals("useDietStats")) {
+                int val=-1;
+                try{
+                val = (new Integer(attr.getValue())).intValue();
+                }catch (NumberFormatException e){ 
+                    System.err.println("In "+element.getTagName()+" attribut "+attr.getName()+
+                            " has invalid value \""+attr.getValue()+
+                        "\", it must be 0 or 1");
+                    System.exit(1);
+                }
+                if (val !=0 && val!=1){
+                    System.err.println("In "+element.getTagName()+" useDietStats value \"" + val
+                            + "\" is invalid.  Choose 0 or 1 ");
+                    System.exit(1);
+                } else {
+                    useDietStats = val;
+                }
+            }
+        }
+        org.w3c.dom.NodeList nodes = element.getChildNodes();
+        for (int i = 0; i < nodes.getLength(); i++) {
+            org.w3c.dom.Node node = nodes.item(i);
+            if( node.getNodeType() == org.w3c.dom.Node.ELEMENT_NODE) {
+                org.w3c.dom.Element nodeElement = (org.w3c.dom.Element)node;
+                if (nodeElement.getTagName().equals("config")) {
+                    config = visitElement_config(nodeElement);
+                    ComputeResource compRes =
+                            mainController.getComputeResource(config.server);
+                    if(compRes == null){
+                        System.err.println("Definition of " + ma_dagName +
+                                "incorrect.  Host label " + config.server +
+                                " does not refer to valid compute resource.");
+                        System.exit(1);
+                    }
+                    ma_dag = new Ma_dag(ma_dagName, compRes,
+                            config.binary, parentAgent);
+                    if (config.haveTraceLevel) {
+                        ma_dag.setTraceLevel(config.traceLevel);
+                    }
+                    //newLA.setUseDietStats(mainController.getUseDietStats());
+                    if (useDietStats==-1 // the user don't give any value
+                            && mainController.getUseDietStats()) {// the user set the option for all
+                        ma_dag.setUseDietStats(mainController.getUseDietStats());
+                    }else{ // the user give a value to useDietStats ( 0 or 1)
+                        ma_dag.setUseDietStats((useDietStats==1));
+                    }
+                    mainController.addMa_dag(ma_dag);
+                }                
             }
         }
     }
