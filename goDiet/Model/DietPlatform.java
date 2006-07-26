@@ -17,6 +17,7 @@ public class DietPlatform extends java.util.Observable {
     private ConsoleController consoleCtrl;
     
     private java.util.Vector masterAgents;
+    private java.util.Vector ma_dags;
     private java.util.Vector localAgents;
     private java.util.Vector serverDaemons;
 
@@ -31,6 +32,7 @@ public class DietPlatform extends java.util.Observable {
     // each new DIET component is assigned unique ID.
     // ID counts incremented at each addition & are not re-used.
     private int MA_ID = 0;
+    private int MA_DAG_ID = 0;    
     private int LA_ID = 0;
     private int SeD_ID = 0;
     
@@ -39,6 +41,7 @@ public class DietPlatform extends java.util.Observable {
         this.consoleCtrl = consoleController;
         
         this.masterAgents= new java.util.Vector();
+        this.ma_dags = new java.util.Vector();
         this.localAgents= new java.util.Vector();
         this.serverDaemons= new java.util.Vector();
     }
@@ -82,6 +85,19 @@ public class DietPlatform extends java.util.Observable {
         this.masterAgents.add(newMA);
         setChanged();
         notifyObservers(new AddElementsEvent(newMA));
+        clearChanged();
+    }
+    public void addMa_dag(Ma_dag newMa_dag){
+        String label = newMa_dag.getName();
+        if( (label != null) && (label.length() > 0)) {
+            newMa_dag.setName(label + "_" + MA_DAG_ID);
+        } else {
+            newMa_dag.setName("MA_DAG_" + MA_DAG_ID);
+        }
+        MA_DAG_ID++;
+        this.ma_dags.add(newMa_dag);
+        setChanged();
+        notifyObservers(new AddElementsEvent(newMa_dag));
         clearChanged();
     }
     public void addLocalAgent(LocalAgent newLA){
@@ -134,6 +150,9 @@ public class DietPlatform extends java.util.Observable {
     public java.util.Vector getMasterAgents() {
         return this.masterAgents;
     }
+    public java.util.Vector getMa_dags() {
+        return this.ma_dags;
+    }
     public java.util.Vector getLocalAgents() {
         return this.localAgents;
     }
@@ -144,6 +163,7 @@ public class DietPlatform extends java.util.Observable {
     public void printStatus(){
         java.util.Iterator it;
         MasterAgent mAgent;
+        Ma_dag ma_dag;
         LocalAgent lAgent;
         ServerDaemon sed;
         
@@ -159,6 +179,10 @@ public class DietPlatform extends java.util.Observable {
         for(it = masterAgents.iterator(); it.hasNext();){
             mAgent = (MasterAgent) it.next();
             platStatus += getStatusString(mAgent);
+        }
+        for(it = ma_dags.iterator(); it.hasNext();){
+            ma_dag = (Ma_dag) it.next();
+            platStatus += getStatusString(ma_dag);
         }
         for(it = localAgents.iterator(); it.hasNext();){
             lAgent = (LocalAgent) it.next();
