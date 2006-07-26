@@ -192,6 +192,7 @@ public class DeploymentController extends java.util.Observable
             }*/
         }
         launchMasterAgents();
+        launchMa_dags();
         launchLocalAgents();
         launchServerDaemons();
         endTime = new java.util.Date();
@@ -226,6 +227,7 @@ public class DeploymentController extends java.util.Observable
             }
         }
         launchMasterAgents();
+        launchMa_dags();
         launchLocalAgents();
         launchServerDaemons();
         endTime = new java.util.Date();
@@ -308,6 +310,10 @@ public class DeploymentController extends java.util.Observable
     
     public void launchMasterAgents() {
         java.util.Vector mAgents = this.dietPlatform.getMasterAgents();
+        launchElements(mAgents);
+    }
+    public void launchMa_dags() {
+        java.util.Vector mAgents = this.dietPlatform.getMa_dags();
         launchElements(mAgents);
     }
     
@@ -503,6 +509,7 @@ public class DeploymentController extends java.util.Observable
     public void stopPlatform() {
         stopServerDaemons();
         stopLocalAgents();
+        stopMa_dags();
         stopMasterAgents();
         
         if(this.dietPlatform.getLogCentral() != null){
@@ -527,6 +534,10 @@ public class DeploymentController extends java.util.Observable
     public void stopMasterAgents() {
         java.util.Vector mAgents = this.dietPlatform.getMasterAgents();
         stopElements(mAgents);
+    }
+    public void stopMa_dags() {
+        java.util.Vector ma_dags = this.dietPlatform.getMa_dags();
+        stopElements(ma_dags);
     }
     
     public void stopOmniNames() {
@@ -604,6 +615,7 @@ public class DeploymentController extends java.util.Observable
         OmniNames omni = this.dietPlatform.getOmniNames();
         Elements logger = this.dietPlatform.getLogCentral();
         java.util.Vector mAgents = this.dietPlatform.getMasterAgents();
+        java.util.Vector ma_dags = this.dietPlatform.getMa_dags();
         java.util.Vector lAgents = this.dietPlatform.getLocalAgents();
         java.util.Vector seds = this.dietPlatform.getServerDaemons();
         
@@ -613,6 +625,9 @@ public class DeploymentController extends java.util.Observable
         }
         Iterator it=null;
         for (it = mAgents.iterator();it.hasNext();){
+            createCfgFile((Elements)it.next());
+        }
+        for (it = ma_dags.iterator();it.hasNext();){
             createCfgFile((Elements)it.next());
         }
         for (it = lAgents.iterator();it.hasNext();){
