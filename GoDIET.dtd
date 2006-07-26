@@ -78,12 +78,17 @@
 <!--- Define hierarchy of agents and SeDs -->
 <!ELEMENT diet_hierarchy (master_agent+)>
 
-<!ELEMENT master_agent (config,local_agent*,SeD*)>
+<!ELEMENT master_agent (config,ma_dag*,local_agent*,SeD*)>
 <!ATTLIST master_agent
     label CDATA #IMPLIED
     useDietStats CDATA #IMPLIED
   >
-
+<!ELEMENT ma_dag (config,parameters?)>
+<!ATTLIST ma_dag 
+    label CDATA #IMPLIED    
+    useDietStats CDATA #IMPLIED
+>
+  
 <!ELEMENT local_agent (config,local_agent*,SeD*)>
 <!ATTLIST local_agent
     label CDATA #IMPLIED
