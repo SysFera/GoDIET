@@ -81,6 +81,10 @@ public class DietPlatformController implements java.util.Observer {
         this.dietPlatform.addMasterAgent(newMA);
         newMA.addObserver(this);
     }
+    public void addMa_dag(Ma_dag newMa_dag){
+        this.dietPlatform.addMa_dag(newMa_dag);
+        newMa_dag.addObserver(this);
+    }
     public void addLocalAgent(LocalAgent newLA, Agents parent){
         parent.addChild(newLA);
         this.dietPlatform.addLocalAgent(newLA);
