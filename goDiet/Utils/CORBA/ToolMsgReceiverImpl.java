@@ -1,3 +1,4 @@
+/*@GODIET_LICENSE*/
 package goDiet.Utils.CORBA;
 
 public class ToolMsgReceiverImpl extends ToolMsgReceiverPOA {

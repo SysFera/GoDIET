@@ -1,3 +1,4 @@
+/*@GODIET_LICENSE*/
 package goDiet.Utils;
 
 import goDiet.Controller.*;

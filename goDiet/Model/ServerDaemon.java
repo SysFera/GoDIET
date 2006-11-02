@@ -1,3 +1,4 @@
+/*@GODIET_LICENSE*/
 /*
  * ServerDaemon.java
  *

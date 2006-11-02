@@ -1,37 +1,4 @@
-/****************************************************************************/
-/* General type definitions used by the new LogService                      */
-/*                                                                          */
-/*  Author(s):                                                              */
-/*    - Georg Hoesch (hoesch@in.tum.de)                                     */
-/*    - Cyrille Pontvieux (cyrille.pontvieux@edu.univ-fcomte.fr)            */
-/*                                                                          */
-/* $LICENSE$                                                                */
-/****************************************************************************/
-/* $Id$
- * $Log$
- * Revision 1.1  2004/07/13 14:09:24  hdail
- * Fairly major re-factor / improvements:
- * - Moved launch-related control to DeploymentController, which now has
- *   own thread, allowing real-time text updates in graphical mode
- * - Added communication with LogCentral for feedback about the
- *   run-time status of components.  LogCentralCommController controls
- *   this process, and has its own thread
- * - Launch timing is based on communications from log central, when
- *   available
- * - Cleaned up the model, esp for run-time attributes
- *
- * Revision 1.1  2004/06/11 00:19:01  rbolze
- * need for CORBA connection to LogCentral
- *
- * Revision 1.2  2004/01/13 15:09:39  ghoesch
- * changed type of logtime to be compatible with omniORB3
- *
- * Revision 1.1  2004/01/09 11:07:12  ghoesch
- * Restructured the whole LogService source tree.
- * Added autotools make process. Cleaned up code.
- * Removed some testers. Ready to release.
- *
- ****************************************************************************/
+/*@GODIET_LICENSE*/
 
 #ifndef _LOGTYPES_IDL_
 #define _LOGTYPES_IDL_
