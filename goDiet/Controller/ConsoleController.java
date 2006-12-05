@@ -121,35 +121,40 @@ public class ConsoleController extends java.util.Observable
     }
     
     public boolean doCommand(String cmd){
-        history.add(cmd);
-        java.util.StringTokenizer strTok = new java.util.StringTokenizer(cmd," ");
-        String command= strTok.nextToken();
-        boolean giveUserCtrl = true;
-        if (command.compareTo("load") == 0){
-            if(!fileLoaded && !interfaceMode){
-                try{
-                    loadXmlFile(strTok.nextToken());
-                }catch(Exception x){
-                    printOutput("Usage load <file.xml>", 0);
-                }
-            }else{
-                printOutput("You have already loaded a file", 0);
-            }
-        }else if (command.compareTo("launch") == 0){
-            launch();
-            giveUserCtrl = false;
-        }else if (command.compareTo("stop") == 0 ){
-            stop();
-            giveUserCtrl = false;
-        }else if (command.compareTo("status") == 0){
-            status();
-        }else if (command.compareTo("history") == 0){
-            history();
-        }else if (command.compareTo("exit") == 0){
-            exit();
-        }else{
-            help();
-        }
+    	boolean giveUserCtrl = true;
+    	if(cmd != null && !cmd.equalsIgnoreCase("") && !cmd.equalsIgnoreCase(" ")){
+    		history.add(cmd);
+    		java.util.StringTokenizer strTok = new java.util.StringTokenizer(cmd," ");
+    		String command= strTok.nextToken();
+    		if (command.compareTo("load") == 0){
+    			if(!fileLoaded && !interfaceMode){
+    				try{
+    					loadXmlFile(strTok.nextToken());
+    				}catch(Exception x){
+    					printOutput("Usage load <file.xml>", 0);
+    				}
+    			}else{
+    				printOutput("You have already loaded a file", 0);
+    			}
+    		}else if (command.compareTo("launch") == 0){
+    			launch();
+    			giveUserCtrl = false;
+    		}else if (command.compareTo("stop") == 0 ){
+    			stop();
+    			giveUserCtrl = false;
+    		}else if (command.compareTo("status") == 0){
+    			status();
+    		}else if (command.compareTo("history") == 0){
+    			history();
+    		}else if (command.compareTo("exit") == 0){
+    			exit();
+    		}else{
+    			help();
+    		}
+    	}
+    	else{
+    		help();
+    	}
         return giveUserCtrl;
     }
 
