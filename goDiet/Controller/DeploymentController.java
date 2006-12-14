@@ -677,4 +677,146 @@ public class DeploymentController extends java.util.Observable
     private StorageResource getStorageResource(Elements el){
         return el.getComputeResource().getCollection().getStorageResource();
     }
+
+    public void checkPlatform() {
+	checkOmniNames();
+	checkMasterAgents();
+        checkMa_dags();
+        checkLocalAgents();
+        checkServerDaemons();
+    }
+    public void checkOmniNames() {
+	System.out.println("cheking omniNames");
+    }
+
+    public void checkMasterAgents() {
+        java.util.Vector mAgents = this.dietPlatform.getMasterAgents();
+        checkElements(mAgents, MA_IOR);
+    }
+
+    public void checkMa_dags() {
+    }
+
+    public void checkLocalAgents() {
+        java.util.Vector lAgents = this.dietPlatform.getLocalAgents();
+        checkElements(lAgents, LA_IOR);
+    }
+
+    public void checkServerDaemons() {
+        java.util.Vector seds = this.dietPlatform.getServerDaemons();
+        checkElements(seds, SED_IOR);
+    }
+
+    public void checkElements(java.util.Vector elements,
+				 String eltType) {
+        Elements currElement = null;
+        String hostRef = null;
+        LaunchInfo parentLI = null;
+        boolean didLaunch = false;
+        for( int i = 0; i < elements.size(); i++) {
+            currElement = (Elements) elements.elementAt(i);
+            ComputeResource compRes = currElement.getComputeResource();
+            checkElement(currElement, compRes, eltType);
+        }
+    }
+
+    private boolean checkElement(Elements element,
+				   ComputeResource compRes,
+				   String eltType) {
+
+	//	System.out.println("cheking element " + element.getName() + " [" + eltType + "]");
+        ComputeCollection coll = element.getComputeResource().getCollection();
+        StorageResource storeRes = coll.getStorageResource();
+	String [] cmd = {"/usr/bin/ssh",
+			 storeRes.getAccessMethod("scp").getLogin() + "@" + 
+			 storeRes.getAccessMethod("scp").getServer(),
+			 "cat " +
+			 storeRes.getScratchBase() + "/" +
+			 element.getName() + ".out"};
+	//	System.out.println("======" + cmd[0] + " " + cmd[1] + " " + cmd[2]);
+	try {
+            Process p = Runtime.getRuntime().exec(cmd);
+	    BufferedReader in = new BufferedReader(new InputStreamReader(p.getInputStream()));
+            BufferedReader error = new BufferedReader(new InputStreamReader(p.getErrorStream()));
+            String line = "";
+	    String ior = "";
+	    String state = "UNKNOWN";
+            while ((line=in.readLine())!=null) {
+		//		System.out.println("@" + line);
+		if (line.startsWith("## "+ eltType)) {
+		    ior = line.split(" ")[2];
+		    state = checkIOR(ior, eltType);
+		}
+	    }
+	    System.out.println("# STATEOF " +
+			       element.getName() + " " +
+			       state);
+
+            in.close();
+
+	    /*
+            while ((line=error.readLine())!=null) {
+		System.out.println("@@@" + line);
+	    }
+	    */
+
+        } catch (IOException x) {
+	    System.out.println("# STATEOF " +
+			       element.getName() + " " +
+			       "UNKNOWN");
+            consoleCtrl.printError("stageWithScp failed.",0);
+        }
+
+        return true;
+    }
+
+    public String checkIOR(String ior, String eltType) {
+	String [] args = null;
+	org.omg.CORBA.ORB orb = org.omg.CORBA.ORB.init(args, null); 
+	
+	String state = "UNKNOWN";
+	if (eltType.equals(MA_IOR)) {
+	    diet.corba.MasterAgent ma = null;
+	    ma = diet.corba.MasterAgentHelper.narrow(orb.string_to_object(ior));
+	    try {
+		ma.ping();
+		return STATE_OK;
+	    }
+	    catch (Exception e) {
+		return STATE_DOWN;
+	    }
+	}
+	if (eltType.equals(LA_IOR)) {
+	    diet.corba.LocalAgent la = null;
+	    la = diet.corba.LocalAgentHelper.narrow(orb.string_to_object(ior));
+	    try {
+		la.ping();
+		return STATE_OK;
+	    }
+	    catch (Exception e) {
+		return STATE_DOWN;
+	    }
+	}
+	if (eltType.equals(SED_IOR)) {
+	    diet.corba.SeD sed = null;
+	    sed = diet.corba.SeDHelper.narrow(orb.string_to_object(ior));
+	    try {
+		sed.ping();
+		return STATE_OK;
+	    }
+	    catch (Exception e) {
+		return STATE_DOWN;
+	    }
+
+	}
+	return state;
+    }
+
+    public final static String MA_IOR  = "MA_IOR";
+    public final static String LA_IOR  = "LA_IOR";
+    public final static String SED_IOR = "SED_IOR";
+
+    public final static String STATE_DOWN = "DOWN";
+    public final static String STATE_OK = "OK";
+    public final static String STATE_FAILED = "PROABLY FAILED";
 }
