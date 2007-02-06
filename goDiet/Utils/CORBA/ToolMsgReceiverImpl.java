@@ -14,7 +14,7 @@ public class ToolMsgReceiverImpl extends ToolMsgReceiverPOA {
             //System.out.println("SendMsg");
             logCentralConnection.recieveMsg(msgBuf[i]);
         }
-        throw new UnsupportedOperationException();
+        //throw new UnsupportedOperationException();
     }
     
     public void _initialize_inheritance_tree() {//GEN-BEGIN:M_void__initialize_inheritance_tree_
