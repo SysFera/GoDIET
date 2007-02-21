@@ -22,13 +22,13 @@ import org.w3c.dom.*;
  */
 public class XmlScanner implements ErrorHandler {
     org.w3c.dom.Document document;
-    
+
     private static final String USAGE =
             "USAGE: XmlImporter <file.xml>\n";
-    
+
     private goDiet.Controller.DietPlatformController mainController;
     private goDiet.Controller.ConsoleController consoleCtrl;
-    
+
     private class Config {
         public Config() {};
         public String server = null;
@@ -36,74 +36,74 @@ public class XmlScanner implements ErrorHandler {
         public int traceLevel = -1;
         public boolean haveTraceLevel = false;
     }
-    
+
     private class EnvDesc {
         public EnvDesc() {};
         public String path = null;
         public String ldLibraryPath = null;
     }
-    
+
     private class EndPoint {
         public EndPoint() {};
         public String contact = null;
         public int startPort = -1;
         public int endPort = -1;
     }
-    
+
     /**
      * Create new SimpleScanner with org.w3c.dom.Document.
      */
     public XmlScanner() {
-        System.out.println("XmlScanner constructor");
+        //System.out.println("XmlScanner constructor");
     }
-    
+
     /* Implementation of ErrorHandler for parser */
     public void error(org.xml.sax.SAXParseException sAXParseException)
     throws org.xml.sax.SAXException {
         System.err.println("XML Parse Error:  " + sAXParseException);
         throw sAXParseException;
     }
-    
+
     /* Implementation of ErrorHandler for parser */
     public void fatalError(org.xml.sax.SAXParseException sAXParseException)
     throws org.xml.sax.SAXException {
         System.err.println("XML Parse Fatal Error:  " + sAXParseException);
         throw sAXParseException;
     }
-    
+
     /* Implementation of ErrorHandler for parser */
     public void warning(org.xml.sax.SAXParseException sAXParseException) {
         System.err.println("XML Parse Warning:  " + sAXParseException);
     }
-    
+
     public boolean buildDietModel(String xmlFile,
             DietPlatformController mainController,
             ConsoleController consoleCtrl)
             throws IOException {
-        
+
         Document doc1;
         this.mainController = mainController;
         this.consoleCtrl = consoleCtrl;
-        
+
         try {
             doc1 = readXml(xmlFile);
         } catch (IOException ioe) {
             ioe.printStackTrace();
             throw ioe;
         }
-        
+
         visitDocument(doc1);
         return true;
     }
-    
+
     public Document readXml(String xmlFile) throws IOException {
         Document doc;
-        
+
         DocumentBuilderFactory factory =
                 DocumentBuilderFactory.newInstance();
         factory.setValidating(true);
         //factory.setNamespaceAware(true);
-        
+
         try {
             DocumentBuilder builder = factory.newDocumentBuilder();
             builder.setErrorHandler(this);
@@ -115,12 +115,12 @@ public class XmlScanner implements ErrorHandler {
                 x = sxe.getException();*/
             sxe.printStackTrace();
             throw new IOException("Parsing of " + xmlFile + " failed. Parser error." );
-            
+
         } catch (ParserConfigurationException pce) {
             // Parser with specified options can't be built
             pce.printStackTrace();
             throw new IOException("Parsing of " + xmlFile + " failed. Parser configuration error." );
-            
+
         } catch (IOException ioe) {
             // I/O error
             ioe.printStackTrace();
@@ -128,16 +128,16 @@ public class XmlScanner implements ErrorHandler {
         }
         return doc;
     }
-    
+
     public void visitDocument(Document document) {
         // Initialize counters for unique labels on components seen in document
-        
+
         org.w3c.dom.Element element = document.getDocumentElement();
         if ((element != null) && element.getTagName().equals("diet_configuration")) {
             visitElement_diet_configuration(element);
         }
     }
-    
+
     void visitElement_diet_configuration(org.w3c.dom.Element element) { // <diet_configuration>
         org.w3c.dom.NodeList nodes = element.getChildNodes();
         for (int i = 0; i < nodes.getLength(); i++) {
@@ -159,7 +159,7 @@ public class XmlScanner implements ErrorHandler {
             }
         }
     }
-    
+
     void visitElement_goDiet(org.w3c.dom.Element element) {
         RunConfig runCfg = consoleCtrl.getRunConfig();
         String tempStr;
@@ -198,7 +198,7 @@ public class XmlScanner implements ErrorHandler {
             }
         }
     }
-    
+
     void visitElement_resources(org.w3c.dom.Element element) {
         String scratchDir = null;
         org.w3c.dom.NodeList nodes = element.getChildNodes();
@@ -223,7 +223,7 @@ public class XmlScanner implements ErrorHandler {
             }
         }
     }
-    
+
     void visitElement_storage(org.w3c.dom.Element element) { // <storage>
         String resourceLabel = null;
         String scratchDir = null;
@@ -262,13 +262,13 @@ public class XmlScanner implements ErrorHandler {
                     resourceLabel + ". Exiting.");
             System.exit(1);
         }
-        
+
         StorageResource storRes = new StorageResource(resourceLabel);
         storRes.setScratchBase(scratchDir);
         storRes.addAccessMethod(scpAccess);
         mainController.addStorageResource(storRes);
     }
-    
+
     String visitElement_scratch(org.w3c.dom.Element element) { // <scratch>
         String directory = null;
         org.w3c.dom.NamedNodeMap attrs = element.getAttributes();
@@ -280,7 +280,7 @@ public class XmlScanner implements ErrorHandler {
         }
         return directory;
     }
-    
+
     void visitElement_compute(org.w3c.dom.Element element) { // <compute>
         String resourceLabel = null;
         String diskLabel = null;
@@ -290,7 +290,7 @@ public class XmlScanner implements ErrorHandler {
         EndPoint endPoint = null;
         ComputeResource compRes = null;
         ComputeCollection compColl = null;
-        
+
         org.w3c.dom.NamedNodeMap attrs = element.getAttributes();
         for (int i = 0; i < attrs.getLength(); i++) {
             org.w3c.dom.Attr attr = (org.w3c.dom.Attr)attrs.item(i);
@@ -310,7 +310,7 @@ public class XmlScanner implements ErrorHandler {
                     " has invalid storage reference " + diskLabel + ". Not added.");
             return;
         }
-        
+
         org.w3c.dom.NodeList nodes = element.getChildNodes();
         for (int i = 0; i < nodes.getLength(); i++) {
             org.w3c.dom.Node node = nodes.item(i);
@@ -341,14 +341,14 @@ public class XmlScanner implements ErrorHandler {
         }
         compColl.addComputeResource(compRes);
         compColl.addStorageResource(storRes);
-        
+
         if(envCfg != null){
             compColl.setEnvPath(envCfg.path);
             compColl.setEnvLdLibraryPath(envCfg.ldLibraryPath);
         }
         mainController.addComputeCollection(compColl);
     }
-    
+
     void visitElement_cluster(org.w3c.dom.Element element) {
         String clusLabel = null;
         String diskLabel = null;
@@ -356,7 +356,7 @@ public class XmlScanner implements ErrorHandler {
         EnvDesc envCfg = null;
         //ComputeResource compRes = null;
         ComputeCollection compColl = null;
-        
+
         org.w3c.dom.NamedNodeMap attrs = element.getAttributes();
         for (int i = 0; i < attrs.getLength(); i++) {
             org.w3c.dom.Attr attr = (org.w3c.dom.Attr)attrs.item(i);
@@ -376,7 +376,7 @@ public class XmlScanner implements ErrorHandler {
                     " has invalid storage reference " + diskLabel + ". Not added.");
             return;
         }
-        
+
         /** First retrieve env parameters, and create collection */
         org.w3c.dom.NodeList nodes = element.getChildNodes();
         for (int i = 0; i < nodes.getLength(); i++) {
@@ -391,20 +391,20 @@ public class XmlScanner implements ErrorHandler {
         }
         compColl = new ComputeCollection(clusLabel);
         compColl.addStorageResource(storRes);
-        
+
         if(envCfg.path != null){
             compColl.setEnvPath(envCfg.path);
         }
         if(envCfg.ldLibraryPath != null){
             compColl.setEnvLdLibraryPath(envCfg.ldLibraryPath);
         }
-        
+
         /** Next find all resources that go in this collection */
         for (int i = 0; i < nodes.getLength(); i++) {
             org.w3c.dom.Node node = nodes.item(i);
             if( node.getNodeType() == org.w3c.dom.Node.ELEMENT_NODE) {
                 org.w3c.dom.Element nodeElement = (org.w3c.dom.Element)node;
-                
+
                 if (nodeElement.getTagName().equals("node")){
                     visitElement_node(nodeElement, compColl, login);
                 }
@@ -412,7 +412,7 @@ public class XmlScanner implements ErrorHandler {
         }
         mainController.addComputeCollection(compColl);
     }
-    
+
     void visitElement_node(org.w3c.dom.Element element,
             ComputeCollection collection,
             String clusLogin){
@@ -420,7 +420,7 @@ public class XmlScanner implements ErrorHandler {
         AccessMethod sshAccess = null;
         EndPoint endPoint = null;
         ComputeResource compRes = null;
-        
+
         org.w3c.dom.NamedNodeMap attrs = element.getAttributes();
         for (int i = 0; i < attrs.getLength(); i++) {
             org.w3c.dom.Attr attr = (org.w3c.dom.Attr)attrs.item(i);
@@ -429,7 +429,7 @@ public class XmlScanner implements ErrorHandler {
             }
         }
         compRes = new ComputeResource(resourceLabel, collection);
-        
+
         org.w3c.dom.NodeList nodes = element.getChildNodes();
         for (int i = 0; i < nodes.getLength(); i++) {
             org.w3c.dom.Node node = nodes.item(i);
@@ -442,7 +442,7 @@ public class XmlScanner implements ErrorHandler {
                 }
             }
         }
-        
+
         if(sshAccess != null){
             compRes.addAccessMethod(sshAccess);
         } else {
@@ -463,7 +463,7 @@ public class XmlScanner implements ErrorHandler {
         collection.addComputeResource(compRes);
         return;
     }
-    
+
     AccessMethod visitElement_scp(org.w3c.dom.Element element) { // <scp>
         AccessMethod scpAccess = null;
         String login = null, server = null;
@@ -484,7 +484,7 @@ public class XmlScanner implements ErrorHandler {
         }
         return scpAccess;
     }
-    
+
     AccessMethod visitElement_ssh(org.w3c.dom.Element element,String clusLogin) {
         AccessMethod sshAccess = null;
         String login = null, server = null;
@@ -507,7 +507,7 @@ public class XmlScanner implements ErrorHandler {
         }
         return sshAccess;
     }
-    
+
     EndPoint visitElement_end_point(org.w3c.dom.Element element) {
         EndPoint endPoint = new EndPoint();
         org.w3c.dom.NamedNodeMap attrs = element.getAttributes();
@@ -523,7 +523,7 @@ public class XmlScanner implements ErrorHandler {
         }
         return endPoint;
     }
-    
+
     EnvDesc visitElement_env(org.w3c.dom.Element element) { // <env>
         EnvDesc env = new EnvDesc();
         org.w3c.dom.NamedNodeMap attrs = element.getAttributes();
@@ -538,7 +538,7 @@ public class XmlScanner implements ErrorHandler {
         }
         return env;
     }
-    
+
     void visitElement_diet_services(org.w3c.dom.Element element) { // <diet_services>
         org.w3c.dom.NodeList nodes = element.getChildNodes();
         for (int i = 0; i < nodes.getLength(); i++) {
@@ -557,14 +557,14 @@ public class XmlScanner implements ErrorHandler {
             }
         }
     }
-    
+
     void visitElement_omni_names(org.w3c.dom.Element element) { // <omni_names>
         OmniNames omniNames = null;
         Config config = new Config();
         int port = -1;
         String contact = null;
         ComputeResource compRes = null;
-        
+
         org.w3c.dom.NamedNodeMap attrs = element.getAttributes();
         for (int i = 0; i < attrs.getLength(); i++) {
             org.w3c.dom.Attr attr = (org.w3c.dom.Attr)attrs.item(i);
@@ -601,12 +601,12 @@ public class XmlScanner implements ErrorHandler {
         omniNames.setCfgFileName("omniORB4.cfg");
         mainController.addOmniNames(omniNames);
     }
-    
+
     void visitElement_log_central(org.w3c.dom.Element element) { // <log_central>
         Config config = new Config();
         ComputeResource compRes = null;
         boolean connectDuringLaunch = true;
-        
+
         org.w3c.dom.NamedNodeMap attrs = element.getAttributes();
         for (int i = 0; i < attrs.getLength(); i++) {
             org.w3c.dom.Attr attr = (org.w3c.dom.Attr)attrs.item(i);
@@ -619,7 +619,7 @@ public class XmlScanner implements ErrorHandler {
                 }
             }
         }
-        
+
         org.w3c.dom.NodeList nodes = element.getChildNodes();
         for (int i = 0; i < nodes.getLength(); i++) {
             org.w3c.dom.Node node = nodes.item(i);
@@ -630,7 +630,7 @@ public class XmlScanner implements ErrorHandler {
                 }
             }
         }
-        
+
         compRes = mainController.getComputeResource(config.server);
         if(compRes == null){
             System.err.println("Definition of " + element.getTagName() +
@@ -638,17 +638,17 @@ public class XmlScanner implements ErrorHandler {
                     "to valid compute resource.");
             System.exit(1);
         }
-        
+
         LogCentral logger = new LogCentral(
                 "LogCentral", compRes, config.binary, connectDuringLaunch);
         logger.setCfgFileName("config.cfg");
         mainController.addLogCentral(logger);
     }
-    
+
     void visitElement_log_tool(org.w3c.dom.Element element) { // <test_tool>
         Config config = new Config();
         ComputeResource compRes = null;
-        
+
         org.w3c.dom.NodeList nodes = element.getChildNodes();
         for (int i = 0; i < nodes.getLength(); i++) {
             org.w3c.dom.Node node = nodes.item(i);
@@ -659,7 +659,7 @@ public class XmlScanner implements ErrorHandler {
                 }
             }
         }
-        
+
         compRes = mainController.getComputeResource(config.server);
         if(compRes == null){
             System.err.println("Definition of " + element.getTagName() +
@@ -667,11 +667,11 @@ public class XmlScanner implements ErrorHandler {
                     "to valid compute resource.");
             System.exit(1);
         }
-        
+
         Services service = new Services("TestTool",compRes,config.binary);
         mainController.addTestTool(service);
     }
-    
+
     void visitElement_diet_hierarchy(org.w3c.dom.Element element) { // <diet_hierarchy>
         org.w3c.dom.NodeList nodes = element.getChildNodes();
         for (int i = 0; i < nodes.getLength(); i++) {
@@ -684,15 +684,15 @@ public class XmlScanner implements ErrorHandler {
             }
         }
     }
-    
+
     void visitElement_master_agent(org.w3c.dom.Element element) { // <master_agent>
         MasterAgent newMA = null;
         String maName = "";
         int port = -1;
         Config config = new Config();
         int useDietStats = -1;
-        
-        
+
+
         org.w3c.dom.NamedNodeMap attrs = element.getAttributes();
         for (int i = 0; i < attrs.getLength(); i++) {
             org.w3c.dom.Attr attr = (org.w3c.dom.Attr)attrs.item(i);
@@ -702,7 +702,7 @@ public class XmlScanner implements ErrorHandler {
                 int val=-1;
                 try{
                 val = (new Integer(attr.getValue())).intValue();
-                }catch (NumberFormatException e){ 
+                }catch (NumberFormatException e){
                     System.err.println("In "+element.getTagName()+" attribut "+attr.getName()+
                             " has invalid value \""+attr.getValue()+
                         "\", it must be 0 or 1");
@@ -732,7 +732,7 @@ public class XmlScanner implements ErrorHandler {
                                 " does not refer to valid compute resource.");
                         System.exit(1);
                     }
-                    
+
                     newMA = new MasterAgent(maName,compRes,config.binary);
                     if( config.haveTraceLevel ) {
                         newMA.setTraceLevel(config.traceLevel);
@@ -759,16 +759,16 @@ public class XmlScanner implements ErrorHandler {
                 }
             }
         }
-    }     
-    
+    }
+
     void visitElement_local_agent(org.w3c.dom.Element element,
             Agents parentAgent) { // <local_agent>
         LocalAgent newLA = null;
         String laName="";
         Config config = new Config();
         int useDietStats = -1;
-        
-        
+
+
         org.w3c.dom.NamedNodeMap attrs = element.getAttributes();
         for (int i = 0; i < attrs.getLength(); i++) {
             org.w3c.dom.Attr attr = (org.w3c.dom.Attr)attrs.item(i);
@@ -778,7 +778,7 @@ public class XmlScanner implements ErrorHandler {
                 int val=-1;
                 try{
                 val = (new Integer(attr.getValue())).intValue();
-                }catch (NumberFormatException e){ 
+                }catch (NumberFormatException e){
                     System.err.println("In "+element.getTagName()+" attribut "+attr.getName()+
                             " has invalid value \""+attr.getValue()+
                         "\", it must be 0 or 1");
@@ -839,7 +839,7 @@ public class XmlScanner implements ErrorHandler {
         String ma_dagName="";
         Config config = new Config();
         int useDietStats = -1;
-                
+
         org.w3c.dom.NamedNodeMap attrs = element.getAttributes();
         for (int i = 0; i < attrs.getLength(); i++) {
             org.w3c.dom.Attr attr = (org.w3c.dom.Attr)attrs.item(i);
@@ -849,7 +849,7 @@ public class XmlScanner implements ErrorHandler {
                 int val=-1;
                 try{
                 val = (new Integer(attr.getValue())).intValue();
-                }catch (NumberFormatException e){ 
+                }catch (NumberFormatException e){
                     System.err.println("In "+element.getTagName()+" attribut "+attr.getName()+
                             " has invalid value \""+attr.getValue()+
                         "\", it must be 0 or 1");
@@ -892,11 +892,11 @@ public class XmlScanner implements ErrorHandler {
                         ma_dag.setUseDietStats((useDietStats==1));
                     }
                     mainController.addMa_dag(ma_dag);
-                }                
+                }
             }
         }
     }
-    
+
     void visitElement_SeD(org.w3c.dom.Element element,
             Agents parentAgent) { // <SeD>
         ServerDaemon newSeD = null;
@@ -906,7 +906,7 @@ public class XmlScanner implements ErrorHandler {
         int useDietStats = -1;
         Config config = new Config();
         String parameters = null;
-        
+
         org.w3c.dom.NamedNodeMap attrs = element.getAttributes();
         for (int i = 0; i < attrs.getLength(); i++) {
             org.w3c.dom.Attr attr = (org.w3c.dom.Attr)attrs.item(i);
@@ -926,7 +926,7 @@ public class XmlScanner implements ErrorHandler {
                 int val=-1;
                 try{
                 val = (new Integer(attr.getValue())).intValue();
-                }catch (NumberFormatException e){ 
+                }catch (NumberFormatException e){
                     System.err.println("In "+element.getTagName()+" attribut "+attr.getName()+
                             " has invalid value \""+attr.getValue()+
                         "\", it must be 0 or 1");
@@ -982,7 +982,7 @@ public class XmlScanner implements ErrorHandler {
             }
         }
     }
-    
+
     Config visitElement_config(org.w3c.dom.Element element) { // <config>
         Config config = new Config();
         org.w3c.dom.NamedNodeMap attrs = element.getAttributes();
@@ -1001,7 +1001,7 @@ public class XmlScanner implements ErrorHandler {
         }
         return config;
     }
-    
+
     String visitElement_parameters(org.w3c.dom.Element element) { // <parameters>
         String parameters = null;
         org.w3c.dom.NamedNodeMap attrs = element.getAttributes();
@@ -1013,22 +1013,22 @@ public class XmlScanner implements ErrorHandler {
         }
         return parameters;
     }
-    
+
     public static void main(String args[]) {
         String xmlFile = "";
         XmlScanner scanner = null;
-        
+
         System.out.println("Running unit test for XmlImporter.");
-        
+
         if( args.length != 1 ) {
             System.err.println(USAGE);
             System.exit(1);
         }
-        
+
         xmlFile = args[0];
         ConsoleController consoleController = new ConsoleController();
         consoleController.loadXmlFile(xmlFile);
-        
+
         System.out.println("XmlScanner unit test finished.");
     }
 }

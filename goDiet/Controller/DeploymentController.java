@@ -27,21 +27,21 @@ public class DeploymentController extends java.util.Observable
     private ConsoleController consoleCtrl;
     private DietPlatformController modelCtrl;
     private LogCentralCommController logCommCtrl;
-    
+
     private goDiet.Model.DietPlatform      dietPlatform;
     private goDiet.Model.ResourcePlatform  resourcePlatform;
     private goDiet.Utils.Launcher          launcher;
     private java.lang.Thread               dcThread;
-    
+
     private java.util.Vector requestQueue;
     private int deployState;
     private Elements waitingOn = null;
-    
-    private boolean stageFileBefore = true;    
+
+    private boolean stageFileBefore = true;
     private static final int WAITING_TIME_FOR_SERVICE=3000;
     private static final int WAITING_TIME_FOR_ELEMENT_LOG_CONNEXION = 10000;
     private static final int WAITING_TIME_FOR_ELEMENT=2000;
-    
+
     public DeploymentController(ConsoleController consoleController,
             DietPlatformController modelController){
         this.consoleCtrl    = consoleController;
@@ -50,7 +50,7 @@ public class DeploymentController extends java.util.Observable
         this.logCommCtrl = new LogCentralCommController(this.consoleCtrl,
                 this.modelCtrl);
         this.logCommCtrl.addObserver(this);
-        
+
         dietPlatform        = modelCtrl.getDietPlatform();
         resourcePlatform    = modelCtrl.getResourcePlatform();
         launcher            = new goDiet.Utils.Launcher(consoleController);
@@ -59,7 +59,7 @@ public class DeploymentController extends java.util.Observable
         dcThread            = new java.lang.Thread(this);
         dcThread.start();
     }
-    
+
     public void run() {
         consoleCtrl.printOutput("DeploymentController thread starting up.",2);
         String request;
@@ -79,7 +79,7 @@ public class DeploymentController extends java.util.Observable
             }
         }
     }
-    
+
     public void update(java.util.Observable observable, Object obj) {
         java.awt.AWTEvent e = (java.awt.AWTEvent)obj;
         String request;
@@ -131,7 +131,7 @@ public class DeploymentController extends java.util.Observable
             }
         }
     }
-    
+
     /* Interfaces for launching the diet platform, or parts thereof */
     public void requestLaunch(String request){
         boolean deploySuccess = false;
@@ -140,14 +140,14 @@ public class DeploymentController extends java.util.Observable
         notifyObservers(new goDiet.Events.DeployStateChange(
                 this,goDiet.Defaults.DEPLOY_LAUNCHING));
         clearChanged();
-        
-        if(request.compareTo("all") == 0){           
+
+        if(request.compareTo("all") == 0){
             if (stageFileBefore)
                 deploySuccess = launchPlatform2();
             else
                 deploySuccess = launchPlatform();
         }
-        
+
         setChanged();
         if(deploySuccess){
             consoleCtrl.printOutput("Deployer: Sending deploy state ACTIVE.", 3);
@@ -160,14 +160,14 @@ public class DeploymentController extends java.util.Observable
         }
         clearChanged();
     }
-    
+
     public boolean launchPlatform() {
         java.util.Date startTime, endTime;
         double timeDiff;
         startTime = new java.util.Date();
         consoleCtrl.printOutput("* Launching DIET platform at " +
                 startTime.toString());
-        
+
         prepareScratch();
         if(launchOmniNames() == false){
             return false;
@@ -208,10 +208,10 @@ public class DeploymentController extends java.util.Observable
         java.util.Date startTime, endTime;
         double timeDiff;
         startTime = new java.util.Date();
-        consoleCtrl.printOutput("* Launching Method 2");        
+        consoleCtrl.printOutput("* Launching Method 2");
         consoleCtrl.printOutput("* Launching DIET platform at " +
                 startTime.toString());
-        
+
         prepareScratch();
         createAllCfgFiles();
         stageAllCfgFiles();
@@ -237,10 +237,10 @@ public class DeploymentController extends java.util.Observable
                 " [time= " + timeDiff + " sec]");
         consoleCtrl.printOutput("* StorageResource used ="+resourcePlatform.getUsedStorageResources().size());
         consoleCtrl.printOutput("* ComputeResource used ="+resourcePlatform.getUsedComputeResources().size());
-        
+
         return true;
     }
-    
+
     public void prepareScratch() {
         String runLabel = null;
         RunConfig runCfg = consoleCtrl.getRunConfig();
@@ -249,12 +249,12 @@ public class DeploymentController extends java.util.Observable
                     runCfg.getLocalScratch() + " already ready.", 2);
             return;
         }
-        
+
         // Create physical scratch space and set runCfg variables
         // runLabel, localScratch, and scratchReady
         launcher.createLocalScratch();
     }
-    
+
     public boolean launchOmniNames() {
         OmniNames omni = this.dietPlatform.getOmniNames();
         launchService(omni);
@@ -266,15 +266,15 @@ public class DeploymentController extends java.util.Observable
         }
         return true;
     }
-    
+
     public void launchLogCentral() {
         Elements logger = this.dietPlatform.getLogCentral();
         launchService(logger);
     }
-    
+
     public void connectLogCentral() {
         LogCentral logger = this.dietPlatform.getLogCentral();
-        
+
         if(logger.logCentralConnected()){
             consoleCtrl.printError("* Error: log central already connected.", 1);
             return;
@@ -284,7 +284,7 @@ public class DeploymentController extends java.util.Observable
             logger.setLogCentralConnected(false);
             return;
         }
-        
+
         OmniNames omni = this.dietPlatform.getOmniNames();
         if(logCommCtrl.connectLogService(omni) == true){
             consoleCtrl.printOutput("* Connected to Log Central.", 1);
@@ -298,17 +298,17 @@ public class DeploymentController extends java.util.Observable
             logger.setLogCentralConnected(false);
         }
     }
-    
+
     public void launchTestTool() {
         Elements testTool = this.dietPlatform.getTestTool();
         launchService(testTool);
     }
-    
+
     public void launchService(Elements service){
         ComputeResource compRes = service.getComputeResource();
         launchElement(service,compRes);
     }
-    
+
     public void launchMasterAgents() {
         java.util.Vector mAgents = this.dietPlatform.getMasterAgents();
         launchElements(mAgents);
@@ -317,17 +317,17 @@ public class DeploymentController extends java.util.Observable
         java.util.Vector mAgents = this.dietPlatform.getMa_dags();
         launchElements(mAgents);
     }
-    
+
     public void launchLocalAgents() {
         java.util.Vector lAgents = this.dietPlatform.getLocalAgents();
         launchElements(lAgents);
     }
-    
+
     public void launchServerDaemons() {
         java.util.Vector seds = this.dietPlatform.getServerDaemons();
         launchElements(seds);
     }
-    
+
     public void launchElements(java.util.Vector elements) {
         Elements currElement = null;
         String hostRef = null;
@@ -339,11 +339,11 @@ public class DeploymentController extends java.util.Observable
             didLaunch = launchElement(currElement,compRes);
         }
     }
-    
+
     private boolean launchElement(Elements element,
             ComputeResource compRes) {
         //boolean userCont = true;
-        
+
         if(checkLaunchReady(element, compRes) == false){
             return false;
         }
@@ -351,18 +351,18 @@ public class DeploymentController extends java.util.Observable
             userCont = waitUserReady(element);
         }
         if(userCont){*/
-        
+
         /*** LAUNCH */
         if (stageFileBefore){
             launcher.launchElement2(element,dietPlatform.useLogCentral());
         }else
             launcher.launchElement(element,dietPlatform.useLogCentral());
-        
+
         waitAfterLaunch(element, compRes);
-        
+
         return true;
     }
-    
+
     /*** ERROR CHECKING FOR VALID LAUNCH CONDITIONS */
     private boolean checkLaunchReady(Elements element,
             ComputeResource compRes){
@@ -381,7 +381,7 @@ public class DeploymentController extends java.util.Observable
                     " is already running.  Launch request ignored.", 0);
             return false;
         }
-        
+
         if(!(element instanceof OmniNames)){
             // No launch if omniNames is not already running
             // [unless we're currently launching omniNames!]
@@ -391,7 +391,7 @@ public class DeploymentController extends java.util.Observable
                         " Launch for " + element.getName() + " refused.");
                 return false;
             }
-            
+
             // No launch if user wants log feedback to guide launch progress
             // and log central is not correctly connected
             if(!(element instanceof LogCentral) &&
@@ -404,7 +404,7 @@ public class DeploymentController extends java.util.Observable
                 }
             }
         }
-        
+
         // For elements with parent in hierarchy, check on run status of parent
         LaunchInfo parentLI = null;
         Agents parent = null;
@@ -435,7 +435,7 @@ public class DeploymentController extends java.util.Observable
         }
         return true;
     }
-    
+
     /*** WAIT FOR PROPER LAUNCH BEFORE RETURNING */
     private void waitAfterLaunch(Elements element,
             ComputeResource compRes){
@@ -481,7 +481,7 @@ public class DeploymentController extends java.util.Observable
             }
         }
     }
-    
+
     /*private boolean waitUserReady(Elements element){
         System.out.println("\nType <return> to launch " + element.getName() +
         ", <no> to skip this element, or <stop> to quit ...");
@@ -505,14 +505,14 @@ public class DeploymentController extends java.util.Observable
         }
         return true;
     }*/
-    
+
     /* Interfaces for stopping the diet platform, or parts thereof */
     public void stopPlatform() {
         stopServerDaemons();
         stopLocalAgents();
         stopMa_dags();
         stopMasterAgents();
-        
+
         if(this.dietPlatform.getLogCentral() != null){
             if(this.dietPlatform.getTestTool() != null){
                 stopTestTool();
@@ -521,17 +521,17 @@ public class DeploymentController extends java.util.Observable
         }
         stopOmniNames();
     }
-    
+
     public void stopServerDaemons() {
         java.util.Vector seds = this.dietPlatform.getServerDaemons();
         stopElements(seds);
     }
-    
+
     public void stopLocalAgents() {
         java.util.Vector lAgents = this.dietPlatform.getLocalAgents();
         stopElements(lAgents);
     }
-    
+
     public void stopMasterAgents() {
         java.util.Vector mAgents = this.dietPlatform.getMasterAgents();
         stopElements(mAgents);
@@ -540,22 +540,22 @@ public class DeploymentController extends java.util.Observable
         java.util.Vector ma_dags = this.dietPlatform.getMa_dags();
         stopElements(ma_dags);
     }
-    
+
     public void stopOmniNames() {
         Elements omni = this.dietPlatform.getOmniNames();
         stopService(omni);
     }
-    
+
     public void stopLogCentral() {
         Elements logger = this.dietPlatform.getLogCentral();
         stopService(logger);
     }
-    
+
     public void stopTestTool() {
         Elements testTool = this.dietPlatform.getTestTool();
         stopService(testTool);
     }
-    
+
     public void stopService(Elements service){
         ComputeResource compRes = service.getComputeResource();
         if(stopElement(service,compRes)){
@@ -569,7 +569,7 @@ public class DeploymentController extends java.util.Observable
             }
         }
     }
-    
+
     public void stopElements(java.util.Vector elements) {
         Elements currElement = null;
         String hostRef = null;
@@ -587,7 +587,7 @@ public class DeploymentController extends java.util.Observable
             }
         }
     }
-    
+
     private boolean stopElement(Elements element,
             ComputeResource compRes) {
         if(element == null){
@@ -610,7 +610,7 @@ public class DeploymentController extends java.util.Observable
         launcher.stopElement(element);
         return true;
     }
-    
+
     private  void createAllCfgFiles(){
         consoleCtrl.printOutput("* create all Cfg Files",0);
         OmniNames omni = this.dietPlatform.getOmniNames();
@@ -619,7 +619,7 @@ public class DeploymentController extends java.util.Observable
         java.util.Vector ma_dags = this.dietPlatform.getMa_dags();
         java.util.Vector lAgents = this.dietPlatform.getLocalAgents();
         java.util.Vector seds = this.dietPlatform.getServerDaemons();
-        
+
         createCfgFile((Elements)omni);
         if(this.dietPlatform.useLogCentral()){
             createCfgFile((Elements)logger);
@@ -650,7 +650,7 @@ public class DeploymentController extends java.util.Observable
             System.exit(1);     /// TODO: Add error handling and don't exit
         }
     }
-    
+
     private void stageAllCfgFiles(){
         consoleCtrl.printOutput("* stage all Cfg Files",0);
 //        for (Iterator itCpRes = resourcePlatform.getUsedComputeResources().iterator();itCpRes.hasNext();){
@@ -686,7 +686,7 @@ public class DeploymentController extends java.util.Observable
         checkServerDaemons();
     }
     public void checkOmniNames() {
-	System.out.println("cheking omniNames");
+	consoleCtrl.printOutput("cheking omniNames");
     }
 
     public void checkMasterAgents() {
@@ -728,7 +728,7 @@ public class DeploymentController extends java.util.Observable
         ComputeCollection coll = element.getComputeResource().getCollection();
         StorageResource storeRes = coll.getStorageResource();
 	String [] cmd = {"/usr/bin/ssh",
-			 storeRes.getAccessMethod("scp").getLogin() + "@" + 
+			 storeRes.getAccessMethod("scp").getLogin() + "@" +
 			 storeRes.getAccessMethod("scp").getServer(),
 			 "cat " +
 			 storeRes.getScratchBase() + "/" +
@@ -748,7 +748,7 @@ public class DeploymentController extends java.util.Observable
 		    state = checkIOR(ior, eltType);
 		}
 	    }
-	    System.out.println("# STATEOF " +
+	    consoleCtrl.printOutput("# STATEOF " +
 			       element.getName() + " " +
 			       state);
 
@@ -761,7 +761,7 @@ public class DeploymentController extends java.util.Observable
 	    */
 
         } catch (IOException x) {
-	    System.out.println("# STATEOF " +
+            consoleCtrl.printOutput("# STATEOF " +
 			       element.getName() + " " +
 			       "UNKNOWN");
             consoleCtrl.printError("stageWithScp failed.",0);
@@ -772,8 +772,8 @@ public class DeploymentController extends java.util.Observable
 
     public String checkIOR(String ior, String eltType) {
 	String [] args = null;
-	org.omg.CORBA.ORB orb = org.omg.CORBA.ORB.init(args, null); 
-	
+	org.omg.CORBA.ORB orb = org.omg.CORBA.ORB.init(args, null);
+
 	String state = "UNKNOWN";
 	if (eltType.equals(MA_IOR)) {
 	    diet.corba.MasterAgent ma = null;

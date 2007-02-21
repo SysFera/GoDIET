@@ -15,6 +15,7 @@ import goDiet.Model.RunConfig;
 import goDiet.Defaults;
 
 import java.io.IOException;
+import java.io.OutputStream;
 
 
 /**
@@ -27,16 +28,18 @@ public class ConsoleController extends java.util.Observable
     private RunConfig runCfg;       // configure behavior of GoDIET
     private DietPlatformController modelController;
     private DeploymentController deployCtrl;
-   
+
     private XmlScanner xmlScanner;
     private String xmlFileName;
-    
+
     private GoDIETConsolePanel goDietConsolePanel;
     private javax.swing.JTextArea goDIETconsole;
     private java.util.Vector history;
     private boolean fileLoaded = false;
     private static boolean interfaceMode;
     private int deployState = goDiet.Defaults.DEPLOY_NONE;
+
+    private OutputStream outStream = null;
 
     protected static final String HELP =
 	"The following commands are available:\n" +
@@ -49,11 +52,11 @@ public class ConsoleController extends java.util.Observable
 	"   check:      check the platform status\n" +
 	"   stop_check: stop the platform status then check its status before exit\n" +
 	"   exit:       exit GoDIET, do not change running platform.\n";
-    
+
     /** Creates a new instance of ConsoleController */
     public ConsoleController(goDiet.Interface.GoDIETConsolePanel consolePanel) {
-        this.interfaceMode=true;        
-        
+        this.interfaceMode=true;
+
         this.goDietConsolePanel=consolePanel;
         this.goDIETconsole=goDietConsolePanel.getGoDIETConsole();
         goDietConsolePanel.getCommandTextField().addActionListener(this);
@@ -64,20 +67,24 @@ public class ConsoleController extends java.util.Observable
 
         initNonGraphic();
     }
-    
+
     public ConsoleController(java.util.Observer deployObserver){
         this.interfaceMode=false;
-        
+
         initNonGraphic();
         this.deployCtrl.addObserver(deployObserver);
     }
-    
+
+    public void setOutputStream(OutputStream anOutputstream){
+        outStream = anOutputstream;
+    }
+
     public ConsoleController(){
         this.interfaceMode=false;
-        
+
         initNonGraphic();
     }
-    
+
     /** To be called by all contructors */
     private void initNonGraphic(){
         this.runCfg = new RunConfig();  // Set defaults
@@ -85,17 +92,17 @@ public class ConsoleController extends java.util.Observable
         this.modelController = new DietPlatformController(this);
         this.deployCtrl = new DeploymentController(this, modelController);
         this.deployCtrl.addObserver(this);
-        this.xmlScanner = new XmlScanner();        
+        this.xmlScanner = new XmlScanner();
     }
-    
+
     public void setRunConfig(RunConfig runCfg){
         this.runCfg = runCfg;
     }
-    
+
     public RunConfig getRunConfig(){
         return this.runCfg;
     }
-    
+
     public void actionPerformed(java.awt.event.ActionEvent e) {
         Object source = e.getSource();
         if (source instanceof javax.swing.JTextField ){
@@ -112,7 +119,7 @@ public class ConsoleController extends java.util.Observable
             } catch(java.lang.NullPointerException x){
                 printOutput("You must load a xml file", 0);
             }
-           
+
         } else if ( source == goDietConsolePanel.getLaunchButton()){
             launch();
         } else if ( source == goDietConsolePanel.getStopButton()){
@@ -121,7 +128,7 @@ public class ConsoleController extends java.util.Observable
             status();
         }
     }
-    
+
     public boolean doCommand(String cmd){
     	boolean giveUserCtrl = true;
     	if(cmd != null && !cmd.equalsIgnoreCase("") && !cmd.equalsIgnoreCase(" ")){
@@ -183,7 +190,7 @@ public class ConsoleController extends java.util.Observable
         }
         setFileloaded();
     }
-    
+
     private void launch(){
         if (fileLoaded){
             setChanged();
@@ -199,7 +206,7 @@ public class ConsoleController extends java.util.Observable
             printError("You must load the XML file before launch !");
         }
     }
-    
+
     private void stop(){
         java.util.Date startTime, endTime;
         double timeDiff;
@@ -239,10 +246,11 @@ public class ConsoleController extends java.util.Observable
         }
     }
     private String exit(){
-        System.exit(0);
+        if(outStream == null)
+            System.exit(0);
         return "exit";
     }
-    
+
     public void printOutput(String msg){
         this.printOutput(msg, 0);
     }
@@ -254,7 +262,15 @@ public class ConsoleController extends java.util.Observable
                 this.goDietConsolePanel.update(goDietConsolePanel.getGraphics());
                 this.goDietConsolePanel.updateUI();
                 this.goDIETconsole.setCaretPosition(goDIETconsole.getText().length());
-            } else {
+            } else if(outStream != null){
+                try{
+                    outStream.write(msg.getBytes());
+                    outStream.flush();
+                }catch(Exception e){
+                    e.printStackTrace();
+                }
+            }
+            else{
                 System.out.println(msg);
             }
         }
@@ -269,12 +285,19 @@ public class ConsoleController extends java.util.Observable
                 this.goDIETconsole.append(msg+"\n");
                 this.goDietConsolePanel.update(goDietConsolePanel.getGraphics());
                 this.goDietConsolePanel.updateUI();
+            }else if(outStream != null){
+                try{
+                    outStream.write(msg.getBytes());
+                    outStream.flush();
+                }catch(Exception e){
+                    e.printStackTrace();
+                }
             }else{
                 System.err.println(msg);
             }
         }
     }
-   
+
     private void setFileloaded(){
         this.fileLoaded=true;
         if (this.goDIETconsole != null){
@@ -300,11 +323,11 @@ public class ConsoleController extends java.util.Observable
     }
 
     public void check(){
-	System.out.println("## BEGIN CHECK");
+	printOutput("## BEGIN CHECK");
         if (fileLoaded){
 	    deployCtrl.checkPlatform();
         } else {
-            System.out.println("[Check]: You must load the XML file before check the platform status !");
+            printOutput("[Check]: You must load the XML file before check the platform status !");
         }
     }
 
