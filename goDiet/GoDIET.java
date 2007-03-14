@@ -86,7 +86,12 @@ public class GoDIET implements java.util.Observer {
             consoleController.doCommand("launch");
             consoleController.printOutput("GoDIET finished.");
         } else if (interfaceMode){
-            new GoDIETFrame().show();
+            java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                new GoDIETFrame().setVisible(true);
+            }
+            });
+            
         } else if (shellMode){
             ConsoleController consoleController = new ConsoleController(goDiet);
             consoleController.loadXmlFile(xmlFile);

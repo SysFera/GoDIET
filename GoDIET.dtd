@@ -9,6 +9,7 @@
     saveStdOut CDATA #IMPLIED
     saveStdErr CDATA #IMPLIED
     useUniqueDirs CDATA #IMPLIED
+    log CDATA #IMPLIED
   >
 
 <!--- Define resources available for data storage and compution -->

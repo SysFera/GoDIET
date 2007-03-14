@@ -196,6 +196,12 @@ public class XmlScanner implements ErrorHandler {
                     runCfg.useUniqueDirs = true;
                 }
             }
+            if (attr.getName().equals("log")) {
+                tempStr = attr.getValue();
+                if(tempStr.equals("yes")){
+                    consoleCtrl.setLogFile("GoDIET.log");
+                }
+            }
         }
     }
 
