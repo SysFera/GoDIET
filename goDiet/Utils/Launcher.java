@@ -249,7 +249,7 @@ public class Launcher {
     private void writeCfgFileOmniNames(OmniNames omni,FileWriter out) throws IOException {
         out.write("InitRef = NameService=corbaname::" +
                 omni.getContact() + ":" + omni.getPort() + "\n");
-        out.write("giopMaxMsgSize = 1073741000\n");
+        out.write("giopMaxMsgSize = "+omni.getGiopMaxMsgSize()+"\n");
         out.write("supportBootstrapAgent = 1\n");
     }
     
@@ -274,8 +274,19 @@ public class Launcher {
             out.write("parentName = " + (sed.getParent()).getName() + "\n");
             if(sed.isConcurrentJobLimitEnabled()) {
                 out.write("useConcJobLimit = 1\n");
-                out.write("maxConcJobs = " + sed.getMaxConcurrentJobLimit() +
-                        "\n");
+                out.write("maxConcJobs = " + sed.getMaxConcurrentJobLimit() +"\n");
+            }
+            if (!sed.getBatchName().equals("")){
+                out.write("batchName = " + sed.getBatchName() +"\n");
+            }
+            if (!sed.getBatchQueue().equals("")){
+                out.write("batchQueue = " + sed.getBatchQueue() +"\n");
+            }
+            if (!sed.getPathToNFS().equals("")){
+                out.write("pathToNFS = " + sed.getPathToNFS() +"\n");
+            }
+            if (!sed.getPathToTmp().equals("")){
+                out.write("pathToTmp = " + sed.getPathToTmp() +"\n");
             }
         }
         

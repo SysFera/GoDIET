@@ -568,6 +568,7 @@ public class XmlScanner implements ErrorHandler {
         OmniNames omniNames = null;
         Config config = new Config();
         int port = -1;
+        long giopMaxMsgSize = -1;
         String contact = null;
         ComputeResource compRes = null;
 
@@ -578,6 +579,8 @@ public class XmlScanner implements ErrorHandler {
                 contact = attr.getValue();
             } else if(attr.getName().equals("port")) {
                 port = (new Integer(attr.getValue())).intValue();
+            } else if(attr.getName().equals("maxMsgSize")) {
+                giopMaxMsgSize = (new Long(attr.getValue())).longValue();
             }
         }
         org.w3c.dom.NodeList nodes = element.getChildNodes();
@@ -603,6 +606,9 @@ public class XmlScanner implements ErrorHandler {
         } else {
             omniNames = new OmniNames("OmniNames",compRes,config.binary,
                     contact);
+        }
+        if (giopMaxMsgSize!=-1){
+            omniNames.setGiopMaxMsgSize(giopMaxMsgSize);
         }
         omniNames.setCfgFileName("omniORB4.cfg");
         mainController.addOmniNames(omniNames);
@@ -911,7 +917,12 @@ public class XmlScanner implements ErrorHandler {
         boolean useMaxConcJobs = false;
         int useDietStats = -1;
         Config config = new Config();
+        String batchName="";
+        String batchQueue="";
+        String pathToNFS="";
+        String pathToTmp="";
         String parameters = null;
+        
 
         org.w3c.dom.NamedNodeMap attrs = element.getAttributes();
         for (int i = 0; i < attrs.getLength(); i++) {
@@ -945,8 +956,20 @@ public class XmlScanner implements ErrorHandler {
                 } else {
                     useDietStats = val;
                 }
+            }else if (attr.getName().equals("batchName")){
+                batchName=attr.getValue();
+            }
+            else if (attr.getName().equals("batchQueue")){
+                batchQueue=attr.getValue();
+            }
+            else if (attr.getName().equals("pathToNFS")){
+                pathToNFS=attr.getValue();
+            }
+            else if (attr.getName().equals("pathToTmp")){
+                pathToTmp=attr.getValue();
             }
         }
+        
         org.w3c.dom.NodeList nodes = element.getChildNodes();
         for (int i = 0; i < nodes.getLength(); i++) {
             org.w3c.dom.Node node = nodes.item(i);
@@ -979,10 +1002,22 @@ public class XmlScanner implements ErrorHandler {
                     }
                     mainController.addServerDaemon(newSeD, parentAgent);
                 }
-                if( newSeD != null ) {
+                if( newSeD != null ) {                    
                     if (nodeElement.getTagName().equals("parameters")) {
                         parameters = visitElement_parameters(nodeElement);
                         newSeD.setParameters(parameters);
+                    }
+                    if (!batchName.equals("")){
+                        newSeD.setBatchName(batchName);
+                    }
+                    if (!batchQueue.equals("")){
+                        newSeD.setBatchQueue(batchName);
+                    }
+                    if (!pathToNFS.equals("")){
+                        newSeD.setPathToNFS(pathToNFS);
+                    }
+                    if (!pathToTmp.equals("")){
+                        newSeD.setPathToTmp(pathToTmp);
                     }
                 }
             }
