@@ -68,6 +68,7 @@
 <!ATTLIST omni_names
     contact CDATA #REQUIRED
     port CDATA #IMPLIED
+    maxMsgSize CDATA #IMPLIED
   >
 <!ELEMENT log_central (config)>
 <!ATTLIST log_central
@@ -101,6 +102,10 @@
     label CDATA #IMPLIED
     maxConcurrentJobs CDATA #IMPLIED
     useDietStats CDATA #IMPLIED
+    batchName CDATA #IMPLIED
+    batchQueue CDATA #IMPLIED
+    pathToNFS CDATA #IMPLIED
+    pathToTmp CDATA #IMPLIED
   >
 
 <!--- Configuration for agents and seds -->
