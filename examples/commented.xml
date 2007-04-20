@@ -22,7 +22,8 @@
   <goDiet debug="1"
           saveStdOut="yes"
           saveStdErr="no"
-          useUniqueDirs="yes"/>
+          useUniqueDirs="yes"
+          log="no"/>
         <!-- Optional: debug controls the verbosity of goDIET output from
                   0 (no debugging) -> 2 (very verbose) 
              Optional: saveStdOut controls whether stdout is redirected
@@ -34,6 +35,8 @@
                   subdirectory will be created under the scratch space
                   on each machine for all files relevant to the run.
                   If no, all files are written in the scratch directly.
+              Optional: log controls whether stdout and stderr of GoDIET is saved
+                  in respectively GoDIET.log.out GoDIET.log.err
           -->
    
   <!-- Use the resources section to define what machines you
@@ -108,11 +111,13 @@
        "log_central". -->
   <diet_services>
 
-    <omni_names contact="<ip or hostname>" port="2810">
+    <omni_names contact="<ip or hostname>" port="2810" maxMsgSize="2097152">
        <!-- Optional: If contact is given, it is used in omniORB4.cfg
             to help all other corba components find omniNames.  For example,
             if you have no DNS, you should put here the IP address. -->
        <!-- Optional: if port is undefined, port 2809 will be used. -->
+       <!-- Optional: if maxMsgSize is undefined, giopMaxMsgSize 2097152 (2MBytes) will be use in omniORB4.cfg 
+                Default value is 1073741824 (1Go)-->
         <config server="clusterX_host1" 
                 trace_level="1" 
                 remote_binary="omniNames"/>
@@ -164,11 +169,12 @@
                 trace_level="1"
                 remote_binary="<binary name for diet agent on this server>"/>
 
-        <!-- See "master_agent" explanation above. This agent will be 
-             named MyLA_0 -->
+        
         <local_agent label="MyLA" useDietStats="0">
+            <!-- See "master_agent" explanation above. This agent will be 
+             named MyLA_0 -->
 	   <!-- "useDietStats" is optional and can be set to 0 or 1.  If useDietStats=0
-	   MA  will not use statistic output file even if diet_statistics tag
+	   LA  will not use statistic output file even if diet_statistics tag
 	   has been definied. If useDietStats=1 will use statistic output file even
 	   if diet_statistics tag has not been definied.-->
             <config server="host2"
@@ -176,13 +182,40 @@
                     remote_binary="dietAgent"/>
             
             <SeD label="MySeD">
+                <!-- "label" is optional.  If defined, it is used as a prefix for
+                    an automatically generated name.  The system will name this
+                    agent "MySeD_0". -->
+                    <!-- "useDietStats" is optional and can be set to 0 or 1.  If useDietStats is
+                    no defined, SeD  will use statistic output file if diet_statistics tag
+                    has been definied. -->
                 <config server="clusterX_host2"
                         remote_binary="<binary name for this diet SeD on this server>"/>
                 <parameters string="T"/>
             </SeD>
         </local_agent>
-        <SeD label="MySeD">
+        <SeD label="MySeD" maxConcurrentJobs="1">
+            <!-- "maxConcurrentJobs" is optional.  If defined, it must be >= 0
+                    It define the number of ConcurrentJobs the SeD will accept.
+                    The SeD can accept more than maxConcurrentJobs= put it will put the extra job in queue-->
             <config server="clusterX_host1"
+                    remote_binary="server"/>
+            <parameters string="T"/>
+        </SeD>
+        
+        <SeD label="MySeD" batchName="oar1.6" batchQueue="queue_2_8">
+            <!-- "batchName" define the name of the batch software -->
+            <!-- "batchQueue" define the name of the queue where batchJob are submitted -->
+            <config server="host1"
+                    remote_binary="server"/>
+            <parameters string="T"/>
+        </SeD>
+        
+        <SeD label="MySeD" batchName="oar1.6" batchQueue="queue_2_8" pathToNFS="/home/ycaniou/tmp" pathToTmp="/tmp/ycaniou">
+            <!-- "batchName" define the name of the batch software -->
+            <!-- "batchQueue" define the name of the queue where batchJob are submitted -->
+            <!-- "pathToNFS" define the path to the NFS directory -->
+            <!-- "pathToTmp" define the path to the tmp directory -->
+            <config server="host2"
                     remote_binary="server"/>
             <parameters string="T"/>
         </SeD>
