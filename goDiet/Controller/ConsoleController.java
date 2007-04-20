@@ -289,9 +289,9 @@ public class ConsoleController extends java.util.Observable
             } else{
                 System.out.println(msg);
             }
-            if (this.logFileName!=null){
-                logOutput(msg);
-            }
+        }
+        if (this.logFileName!=null){
+            logOutput(msg);
         }
     }
     private void logOutput(String msg){
@@ -322,9 +322,10 @@ public class ConsoleController extends java.util.Observable
             }else{
                 System.err.println(msg);
             }
-            if (this.logFileName!=null){
-                logError(msg);
-            }
+            
+        }
+        if (this.logFileName!=null){
+            logError(msg);
         }
     }
     private void logError(String msg){
