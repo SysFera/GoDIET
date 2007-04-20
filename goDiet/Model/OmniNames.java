@@ -13,7 +13,9 @@ package goDiet.Model;
  */
 public class OmniNames extends Services {
     private String contact = null;          
-    private int port = -1;          
+    private int port = -1;
+    // giopMaxMsgSize This value defines the ORB-wide limit on the size of GIOP message
+    private long giopMaxMsgSize = 1073741824; // giopMaxMsgSize in octet default = 1Go 
     
     public OmniNames(String name, ComputeResource compRes, String binary,
                      String contact) {
@@ -34,4 +36,8 @@ public class OmniNames extends Services {
     public int getPort(){
         return this.port;
     }
+    
+    public long getGiopMaxMsgSize(){return giopMaxMsgSize;}
+    
+    public void setGiopMaxMsgSize(long newVal){giopMaxMsgSize=newVal;}
 }
