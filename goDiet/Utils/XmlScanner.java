@@ -5,6 +5,7 @@ import goDiet.Controller.*;
 import goDiet.Model.*;
 
 import java.io.IOException;
+import java.util.Hashtable;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -35,12 +36,14 @@ public class XmlScanner implements ErrorHandler {
         public String binary = null;
         public int traceLevel = -1;
         public boolean haveTraceLevel = false;
-    }
-
+    }   
     private class EnvDesc {
         public EnvDesc() {};
         public String path = null;
         public String ldLibraryPath = null;
+        //public String libPath=null;
+        //public String dynLibraryPath=null;
+        public Hashtable vars= new Hashtable();
     }
 
     private class EndPoint {
@@ -49,7 +52,10 @@ public class XmlScanner implements ErrorHandler {
         public int startPort = -1;
         public int endPort = -1;
     }
-
+    private class Var {
+        public String name=null;
+        public String value=null;
+    }
     /**
      * Create new SimpleScanner with org.w3c.dom.Document.
      */
@@ -347,10 +353,11 @@ public class XmlScanner implements ErrorHandler {
         }
         compColl.addComputeResource(compRes);
         compColl.addStorageResource(storRes);
-
+	
         if(envCfg != null){
-            compColl.setEnvPath(envCfg.path);
-            compColl.setEnvLdLibraryPath(envCfg.ldLibraryPath);
+            //compColl.setEnvPath(envCfg.path);
+            //compColl.setEnvLdLibraryPath(envCfg.ldLibraryPath);
+            compColl.setEnvVars(envCfg.vars);
         }
         mainController.addComputeCollection(compColl);
     }
@@ -398,11 +405,14 @@ public class XmlScanner implements ErrorHandler {
         compColl = new ComputeCollection(clusLabel);
         compColl.addStorageResource(storRes);
 
-        if(envCfg.path != null){
+        /*if(envCfg.path != null){
             compColl.setEnvPath(envCfg.path);
         }
         if(envCfg.ldLibraryPath != null){
             compColl.setEnvLdLibraryPath(envCfg.ldLibraryPath);
+        }*/
+        if (!envCfg.vars.isEmpty()){
+            compColl.setEnvVars(envCfg.vars);
         }
 
         /** Next find all resources that go in this collection */
@@ -531,20 +541,37 @@ public class XmlScanner implements ErrorHandler {
     }
 
     EnvDesc visitElement_env(org.w3c.dom.Element element) { // <env>
-        EnvDesc env = new EnvDesc();
-        org.w3c.dom.NamedNodeMap attrs = element.getAttributes();
-        for (int i = 0; i < attrs.getLength(); i++) {
-            org.w3c.dom.Attr attr = (org.w3c.dom.Attr)attrs.item(i);
-            if (attr.getName().equals("path")) { // <env path="???">
-                env.path = attr.getValue();
+        EnvDesc env = new EnvDesc();       
+        org.w3c.dom.NodeList nodes = element.getChildNodes();
+        for (int i = 0; i < nodes.getLength(); i++) {
+            org.w3c.dom.Node node = nodes.item(i);
+            if( node.getNodeType() == org.w3c.dom.Node.ELEMENT_NODE) {
+                org.w3c.dom.Element nodeElement = (org.w3c.dom.Element)node;
+                if (nodeElement.getTagName().equals("var")) {
+                  Var v=  visitElement_var(nodeElement);
+                  env.vars.put(v.name,v.value);                  
+                }
             }
-            if (attr.getName().equals("LD_LIBRARY_PATH")) { // <env LD_LIBRARY_PATH="???">
-                env.ldLibraryPath = attr.getValue();
-            }
-        }
+        }        
         return env;
     }
-
+    Var visitElement_var(org.w3c.dom.Element element){
+        Var v = new Var();
+        org.w3c.dom.NamedNodeMap attrs = element.getAttributes();
+        String var_name ="";
+        String var_value="";
+        for (int i = 0; i < attrs.getLength(); i++) {
+            org.w3c.dom.Attr attr = (org.w3c.dom.Attr)attrs.item(i);
+            if (attr.getName().equals("name")) {
+                v.name = attr.getValue();
+            }
+            if (attr.getName().equals("value")){
+                v.value = attr.getValue();
+            }
+        }        
+        return v;
+    }
+    
     void visitElement_diet_services(org.w3c.dom.Element element) { // <diet_services>
         org.w3c.dom.NodeList nodes = element.getChildNodes();
         for (int i = 0; i < nodes.getLength(); i++) {

@@ -72,13 +72,18 @@
                to machine.
                Optional: if login is not specified, the local login
                will be used. -->
-        <env path="<bindir1>:<bindir2>:..."
-             LD_LIBRARY_PATH="<libdir1>:<libdir2>:..."/>
+	       <env>
+		       <var name="PATH" value="<bindir1>:<bindir2>:...:$PATH"/>
+		       <var name="LD_LIBRARY_PATH" value="<libdir1>:<libdir2>:..."/>
+	       </env>
              <!-- Optional: if you don't specify a path or
                   LD_LIBRARY_PATH, your default paths on the system will
                   be used. You can make the path shorter by putting
                   links to all your binaries in one directory on the
-                  system. -->
+		  system. 
+		  You can also specify whatever variable you want. it will
+		  export to the shell.
+		  -->
         <end_point contact="192.5.59.198"/>
              <!-- Optional: for some networks, it is necessary to be
                   explicit about which IP to use to communicate with 
@@ -86,8 +91,10 @@
     </compute>
     <compute label="host2" disk="disk1">
         <ssh server="host2.site1.fr"/>
-        <env path="<bindir1>:<bindir2>:..."
-             LD_LIBRARY_PATH="<libdir1>:<libdir2>:..."/>
+	       <env>
+		       <var name="PATH" value="<bindir1>:<bindir2>:..."/>
+		       <var name="LD_LIBRARY_PATH" value="<libdir1>:<libdir2>:..."/>
+	       </env>
     </compute>
 
     <cluster label="clusterX" disk="clusterX_disk" login="<your login>"/>
@@ -111,7 +118,7 @@
        "log_central". -->
   <diet_services>
 
-    <omni_names contact="<ip or hostname>" port="2810" maxMsgSize="2097152">
+	  <omni_names contact="<ip or hostname>" port="2810" maxMsgSize="2097152">
        <!-- Optional: If contact is given, it is used in omniORB4.cfg
             to help all other corba components find omniNames.  For example,
             if you have no DNS, you should put here the IP address. -->

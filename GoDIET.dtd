@@ -50,18 +50,22 @@
 <!ATTLIST ssh
     server CDATA #REQUIRED
   >
-<!ELEMENT env EMPTY>
-<!ATTLIST env
+<!ELEMENT env (var*)>
+<!--ATTLIST env
     path CDATA #IMPLIED
     LD_LIBRARY_PATH CDATA #IMPLIED
-  >
+-->
 <!ELEMENT end_point EMPTY>
 <!ATTLIST end_point
     contact CDATA #IMPLIED
     startPort CDATA #IMPLIED
     endPort CDATA #IMPLIED
   >
-  
+<!ELEMENT var EMPTY>
+<!ATTLIST var
+   name CDATA #REQUIRED
+   value CDATA #REQUIRED
+  >
 <!--- Define other DIET services to run alongside hierarchy -->
 <!ELEMENT diet_services (omni_names,log_central?,log_tool?,diet_statistics?)>
 <!ELEMENT omni_names (config)>

@@ -199,6 +199,7 @@ public class SshUtils {
         
         /** Build remote command for launching the job */
         String remoteCommand = "";
+	/*
         // Set PATH.  Used to find binaries (unless user provides full path)
         String envPath = compRes.getCollection().getEnvPath();
         if(envPath != null) {
@@ -208,6 +209,14 @@ public class SshUtils {
         String ldPath = compRes.getCollection().getEnvLdLibraryPath();
         if(ldPath != null){
             remoteCommand += "export LD_LIBRARY_PATH=" + ldPath + " ; ";
+        }
+        */
+        Hashtable envVars = compRes.getCollection().getEnvVars();
+        if (!envVars.isEmpty()){
+            for (java.util.Iterator it = envVars.keySet().iterator();it.hasNext();){
+                String var = (String)it.next();
+                remoteCommand += "export "+var+"=" + (String)envVars.get(var) + " ; ";
+            }                
         }
         // Set OMNINAMES_LOGDIR.  Needed by omniNames.
         if(element instanceof goDiet.Model.OmniNames){
