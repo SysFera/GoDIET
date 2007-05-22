@@ -8,7 +8,7 @@
 package goDiet.Model;
 
 import java.util.Iterator;
-
+import java.util.Hashtable;
 /**
  *
  * @author  hdail
@@ -18,8 +18,9 @@ public class ComputeCollection {
     private String name;
     private StorageResource storageResource = null;
     private java.util.Vector computeResources;    
-    private String envPath = null;
-    private String envLdLibraryPath = null;
+    //private String envPath = null;
+    //private String envLdLibraryPath = null;
+    private Hashtable envVars = new Hashtable();
     
     /** Runtime-related items. */
     private int jobCount = 0;
@@ -68,7 +69,7 @@ public class ComputeCollection {
         return null;
     }
     
-    public void setEnvPath(String path){
+    /*public void setEnvPath(String path){
         this.envPath = path;
     }
     public String getEnvPath(){
@@ -80,8 +81,14 @@ public class ComputeCollection {
     }
     public String getEnvLdLibraryPath(){
         return this.envLdLibraryPath;
+    }*/
+     public Hashtable getEnvVars() {
+        return envVars;
     }
-    
+
+    public void setEnvVars(Hashtable envVars) {
+        this.envVars = envVars;
+    }
     /** Run-time related methods. */
     /** This method should be called only by compute resources belonging 
      * to this collection */
@@ -96,4 +103,6 @@ public class ComputeCollection {
     public int getJobCount(){
         return this.jobCount;
     }
+
+   
 }
