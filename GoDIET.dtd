@@ -88,6 +88,7 @@
 <!ATTLIST master_agent
     label CDATA #IMPLIED
     useDietStats CDATA #IMPLIED
+    initRequestID CDATA #IMPLIED
   >
 <!ELEMENT ma_dag (config,parameters?)>
 <!ATTLIST ma_dag 
