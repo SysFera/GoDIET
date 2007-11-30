@@ -1050,7 +1050,7 @@ public class XmlScanner implements ErrorHandler {
                         newSeD.setBatchName(batchName);
                     }
                     if (!batchQueue.equals("")){
-                        newSeD.setBatchQueue(batchName);
+                        newSeD.setBatchQueue(batchQueue);
                     }
                     if (!pathToNFS.equals("")){
                         newSeD.setPathToNFS(pathToNFS);
