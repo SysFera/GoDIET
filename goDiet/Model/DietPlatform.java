@@ -78,12 +78,16 @@ public class DietPlatform extends java.util.Observable {
     public void addMasterAgent(MasterAgent newMA){
         String label = newMA.getName();
         if( (label != null) && (label.length() > 0)) {
-            newMA.setName(label + "_" + MA_ID);
+            //newMA.setName(label + "_" + MA_ID);
+            newMA.setName(label);
         } else {
-            newMA.setName("MA_" + MA_ID);
+            newMA.setName("MA_" + MA_ID);            
         }
         MA_ID++;
-        this.masterAgents.add(newMA);
+        if(haveLogCentral){
+           addLogServiceOption(newMA);
+        }
+        this.masterAgents.add(newMA);        
         setChanged();
         notifyObservers(new AddElementsEvent(newMA));
         clearChanged();
@@ -109,6 +113,9 @@ public class DietPlatform extends java.util.Observable {
             newLA.setName("LA_" + LA_ID);
         }
         LA_ID++;
+        if(haveLogCentral){
+           addLogServiceOption(newLA);
+        }
         this.localAgents.add(newLA);
         setChanged();
         notifyObservers(new AddElementsEvent(newLA));
@@ -122,6 +129,9 @@ public class DietPlatform extends java.util.Observable {
             newSeD.setName("SeD_" + SeD_ID);
         }
         SeD_ID++;
+        if(haveLogCentral){
+           addLogServiceOption(newSeD);
+        }
         this.serverDaemons.add(newSeD);
         setChanged();
         notifyObservers(new AddElementsEvent(newSeD));
@@ -236,5 +246,10 @@ public class DietPlatform extends java.util.Observable {
             }
             return output;
         }
+    }
+    private void addLogServiceOption(DietElements dEl){
+        dEl.getElementCfg().addOption(new Option("useLogService","1"));
+        dEl.getElementCfg().addOption(new Option("lsOutbuffersize","0"));
+        dEl.getElementCfg().addOption(new Option("lsFlushinterval","10000"));          
     }
 }

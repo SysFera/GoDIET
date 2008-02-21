@@ -8,7 +8,7 @@
 package goDiet.Model;
 
 import java.util.Iterator;
-import java.util.Hashtable;
+import java.util.Vector;
 /**
  *
  * @author  hdail
@@ -20,7 +20,7 @@ public class ComputeCollection {
     private java.util.Vector computeResources;    
     //private String envPath = null;
     //private String envLdLibraryPath = null;
-    private Hashtable envVars = new Hashtable();
+    private Vector envVars = new Vector();
     
     /** Runtime-related items. */
     private int jobCount = 0;
@@ -82,27 +82,27 @@ public class ComputeCollection {
     public String getEnvLdLibraryPath(){
         return this.envLdLibraryPath;
     }*/
-     public Hashtable getEnvVars() {
+     public Vector getEnvVars() {
         return envVars;
     }
 
-    public void setEnvVars(Hashtable envVars) {
+    public void setEnvVars(Vector envVars) {
         this.envVars = envVars;
     }
-    /** Run-time related methods. */
-    /** This method should be called only by compute resources belonging 
-     * to this collection */
-    public void incJobCount(){
-        this.jobCount++;
-    }
-    /** This method should be called only by compute resources belonging 
-     * to this collection */
-    public void decJobCount(){
-        this.jobCount--;
-    }
-    public int getJobCount(){
-        return this.jobCount;
-    }
+//    /** Run-time related methods. */
+//    /** This method should be called only by compute resources belonging 
+//     * to this collection */
+//    public void incJobCount(){
+//        this.jobCount++;
+//    }
+//    /** This method should be called only by compute resources belonging 
+//     * to this collection */
+//    public void decJobCount(){
+//        this.jobCount--;
+//    }
+//    public int getJobCount(){
+//        return this.jobCount;
+//    }
 
    
 }

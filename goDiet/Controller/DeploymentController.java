@@ -449,7 +449,7 @@ public class DeploymentController extends java.util.Observable
                         "interruption.",0);
             }
         } else if(this.dietPlatform.useLogCentral() &&
-                this.dietPlatform.getLogCentral().logCentralConnected()){
+                element.getElementCfg().getOption("useLogService").getValue().equals("1")){
             consoleCtrl.printOutput(
                     "Waiting on log service feedback",1);
             try {
@@ -637,6 +637,7 @@ public class DeploymentController extends java.util.Observable
         for (it = seds.iterator();it.hasNext();){
             createCfgFile((Elements)it.next());
         }
+        //System.exit(1);
     }
     private void createCfgFile(Elements element){
         try {
@@ -653,23 +654,11 @@ public class DeploymentController extends java.util.Observable
 
     private void stageAllCfgFiles(){
         consoleCtrl.printOutput("* stage all Cfg Files",0);
-//        for (Iterator itCpRes = resourcePlatform.getUsedComputeResources().iterator();itCpRes.hasNext();){
-//            ComputeResource cpRes = (ComputeResource)itCpRes.next();
-//            //consoleCtrl.printOutput("### Used ComputeResource ="+cpRes.getName(),3);
-//            for (Iterator itEl = cpRes.getElementList().iterator();itEl.hasNext();){
-//                Elements el = (Elements)itEl.next();
-//                //consoleCtrl.printOutput("\t Element ="+el.getName()+", Storage ="+getStorageResourceServer(el),3);
-//            }
-//        }
         for (Iterator itStRes = resourcePlatform.getUsedStorageResources().iterator();itStRes.hasNext();){
             StorageResource stRes = (StorageResource)itStRes.next();
-            //consoleCtrl.printOutput("Used storageResource ="+stRes.getName(),3);
+            consoleCtrl.printOutput("Used storageResource ="+stRes.getName(),3);
             launcher.stageAllFile(stRes);
-//            for (Iterator itEl = stRes.getElementList().iterator();itEl.hasNext();){
-//                Elements el = (Elements)itEl.next();
-//                //consoleCtrl.printOutput("\t Element ="+el.getName());
-//            }
-        }
+        }        
     }
     private String getStorageResourceServer(Elements el){
         return el.getComputeResource().getCollection().getStorageResource().getAccessMethod("scp").getServer();

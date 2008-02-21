@@ -80,6 +80,10 @@ public class LogCentralConnection {
             consoleCtrl.printError("LogCentralConnection: " + 
                 "Cannot find the servant.", 0);
             return false;
+        } catch (Exception e){
+            consoleCtrl.printError("LogCentralConnection: \n" + e.getMessage()+
+                "\nCannot find the servant.", 0);
+            return false;
         }
         return true;
     }

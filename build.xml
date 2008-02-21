@@ -9,8 +9,7 @@
         <property name="build" value="build"/>
         <property name="dist" value="."/>
         <property name="apidoc" value="doc"/>
-        <property name="version" value="2.2.1"/>
-        <!--<property name="version" value="1.1.0"/>-->
+        <property name="version" value="2.3.0"/>        
         <property name="jarfile" value="${project}-${version}.jar"/>        
         <taskdef resource="net/sf/antcontrib/antcontrib.properties">
           <classpath>
@@ -110,12 +109,13 @@
 
 
     <target depends="init,package,package_diet" name="compile">
-        <mkdir dir="${build}"/>
+        <mkdir dir="${build}"/>        
         <javac debug="true" deprecation="true" destdir="${build}" srcdir="${src}">
-          </javac>
+        </javac>
+        <copy file="${src}/Utils/cfg_options.properties" tofile="${build}/Utils/cfg_options.properties"/>
     </target>
 
-    <target depends="init,compile" description="Build the jar." name="jar">
+    <target depends="init,compile" description="Build the jar." name="jar">        
          <jar basedir="${build}" compress="true" jarfile="${jarfile}">
             <manifest>
                 <attribute name="Built-By" value="${user.name}"/>                

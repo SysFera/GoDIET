@@ -7,6 +7,9 @@
 
 package goDiet.Model;
 
+import java.io.FileWriter;
+import java.io.IOException;
+
 /**
  *
  * @author  hdail
@@ -29,7 +32,26 @@ public class LogCentral extends Services {
         super(name, compRes, binary);
         this.useLogToGuideLaunch = useLogToGuideLaunch;
     }
-    
+    public void writeCfgFile(FileWriter out) throws IOException{
+        out.write("[General]\n\n");
+        out.write("[DynamicTagList]\n");
+        out.write("[StaticTagList]\n");
+        out.write("ADD_SERVICE\n");
+        out.write("[UniqueTagList]\n");
+        out.write("[VolatileTagList]\n");
+        out.write("ASK_FOR_SED\n");
+        out.write("SED_CHOSEN\n");
+        out.write("BEGIN_SOLVE\n");
+        out.write("END_SOLVE\n");
+        out.write("DATA_STORE\n");
+        out.write("DATA_RELEASE\n");
+        out.write("DATA_TRANSFER_BEGIN\n");
+        out.write("DATA_TRANSFER_END\n");
+        out.write("MEM\n");
+        out.write("LOAD\n");
+        out.write("LATENCY\n");
+        out.write("BANDWIDTH\n");
+    }
     public boolean useLogToGuideLaunch(){
         return this.useLogToGuideLaunch;
     }

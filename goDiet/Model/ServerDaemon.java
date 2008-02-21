@@ -11,23 +11,20 @@ package goDiet.Model;
  *
  * @author  rbolze
  */
-public class ServerDaemon extends Elements {
+public class ServerDaemon extends DietElements {
     /** Config-related items.  These should never change while SeD is running */
     private Agents parent;
     private String parameters = null;
     private int maxConcJobs;
     private boolean useConcJobLimit;    
-    private String batchName="";
-    private String batchQueue="";
-    private String pathToNFS="";
-    private String pathToTmp="";
     /** Creates a new instance of ServerDaemon */
     public ServerDaemon(String name, ComputeResource compRes,
                         String binary, Agents parent){
         super(name,compRes,binary);
         this.parent=parent;
         maxConcJobs = 1;
-        useConcJobLimit = false;        
+        useConcJobLimit = false;
+        this.getElementCfg().addOption(new Option("parentName", parent.getName()));
     }
        
     public Agents getParent(){
@@ -60,36 +57,6 @@ public class ServerDaemon extends Elements {
         return this.useConcJobLimit;
     }
 
-    public String getBatchName() {
-        return batchName;
-    }
 
-    public void setBatchName(String batchName) {
-        this.batchName = batchName;
-    }
-
-    public String getBatchQueue() {
-        return batchQueue;
-    }
-
-    public void setBatchQueue(String batchQueue) {
-        this.batchQueue = batchQueue;
-    }
-
-    public String getPathToNFS() {
-        return pathToNFS;
-    }
-
-    public void setPathToNFS(String pathToNFS) {
-        this.pathToNFS = pathToNFS;
-    }
-
-    public String getPathToTmp() {
-        return pathToTmp;
-    }
-
-    public void setPathToTmp(String pathToTmp) {
-        this.pathToTmp = pathToTmp;
-    }
         
 }

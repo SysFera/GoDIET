@@ -19,6 +19,8 @@ public class Ma_dag extends Agents {
             ,Agents parent){
         super(name, compRes, binary);
         this.parent=parent;
+        this.getElementCfg().addOption(new Option("agentType", "DIET_MA_DAG"));
+        this.getElementCfg().addOption(new Option("parentName", parent.getName()));
     }
     
     public Agents getParent(){

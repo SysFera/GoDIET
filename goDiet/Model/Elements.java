@@ -6,21 +6,22 @@
  */
 
 package goDiet.Model;
-import goDiet.Defaults;
+import Model.ElementCfg;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.Iterator;
 /**
  *
  * @author  hdail
  */
-public class Elements extends java.util.Observable {
+public abstract class Elements extends java.util.Observable {
     /** Config-related items.  These should never be changed if the element
      * is currently running */
-    private String          name =          null;
-    private ComputeResource compHost =      null;
-    private String          binaryName =    null;
-    private int             traceLevel =    goDiet.Defaults.TRACE_LEVEL;
-    private boolean         useLogService = goDiet.Defaults.USE_LOG_SERVICE;
-    private boolean         useDietStats =  goDiet.Defaults.USE_DIET_STATS;
-    private String          cfgFileName =   null;
+    protected String          name =          null;
+    protected ComputeResource compHost =      null;
+    protected String          binaryName =    null;
+    protected ElementCfg      elConfig = null;
+    protected boolean         useDietStats =  goDiet.Defaults.USE_DIET_STATS;
    
     /** Run-related items */
     private LaunchInfo launchInfo = null;
@@ -30,14 +31,15 @@ public class Elements extends java.util.Observable {
         this.name = name;
         this.compHost = compRes;
         this.binaryName = binary;
-        this.cfgFileName = this.getName() + ".cfg";
+        this.elConfig = new ElementCfg(name+".cfg");
         this.launchInfo = new LaunchInfo();
         compRes.addElement(this);
-        compRes.getCollection().getStorageResource().addElement(this);
-    }
+        compRes.getCollection().getStorageResource().addElement(this);        
+    }    
+    public abstract void writeCfgFile(FileWriter out) throws IOException;
     
     public void setName(String name) {
-        this.name = name;
+        this.name = name;        
     }
     public String getName() {return this.name;}
 
@@ -53,38 +55,25 @@ public class Elements extends java.util.Observable {
     }
     public String getBinaryName() {return this.binaryName;}
     
-    public void setTraceLevel(int traceLevel){
-        this.traceLevel = traceLevel;
-    }
-    public int getTraceLevel(){
-        return this.traceLevel;
-    }
-
-    public void setUseLogService(boolean flag){
-        this.useLogService = flag;
-    }
-    public boolean getUseLogService() {
-        return this.useLogService;
-    }
-
     public void setUseDietStats(boolean flag){
         this.useDietStats = flag;
     }
     public boolean getUseDietStats(){
         return this.useDietStats;
+    }            
+    public String getCfgFileName() {        
+        return this.elConfig.getCfgFileName();        
     }
-        
-    public void setCfgFileName(String fileName){
-        this.cfgFileName = fileName;
+    public String setCfgFileName(String cfgFileName) {
+        return this.elConfig.setCfgFileName(cfgFileName);
     }
-    public String getCfgFileName() {
-        return this.cfgFileName;
-    }
-    
     public void setLaunchInfo(LaunchInfo launchInfo){
         this.launchInfo = launchInfo;
     }
     public LaunchInfo getLaunchInfo(){
         return this.launchInfo;
+    }
+    public ElementCfg getElementCfg(){
+        return this.elConfig;
     }
 }

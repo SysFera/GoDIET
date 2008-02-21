@@ -47,14 +47,11 @@
     label CDATA #REQUIRED
   >
 <!ELEMENT ssh EMPTY>
-<!ATTLIST ssh
+<!ATTLIST ssh    
     server CDATA #REQUIRED
+    login CDATA #IMPLIED
   >
 <!ELEMENT env (var*)>
-<!--ATTLIST env
-    path CDATA #IMPLIED
-    LD_LIBRARY_PATH CDATA #IMPLIED
--->
 <!ELEMENT end_point EMPTY>
 <!ATTLIST end_point
     contact CDATA #IMPLIED
@@ -68,11 +65,10 @@
   >
 <!--- Define other DIET services to run alongside hierarchy -->
 <!ELEMENT diet_services (omni_names,log_central?,log_tool?,diet_statistics?)>
-<!ELEMENT omni_names (config)>
+<!ELEMENT omni_names (config,cfg_options?)>
 <!ATTLIST omni_names
     contact CDATA #REQUIRED
-    port CDATA #IMPLIED
-    maxMsgSize CDATA #IMPLIED
+    port CDATA #IMPLIED    
   >
 <!ELEMENT log_central (config)>
 <!ATTLIST log_central
@@ -84,43 +80,44 @@
 <!--- Define hierarchy of agents and SeDs -->
 <!ELEMENT diet_hierarchy (master_agent+)>
 
-<!ELEMENT master_agent (config,ma_dag*,local_agent*,SeD*)>
+<!ELEMENT master_agent (config,cfg_options?,ma_dag*,local_agent*,SeD*)>
 <!ATTLIST master_agent
     label CDATA #IMPLIED
     useDietStats CDATA #IMPLIED
-    initRequestID CDATA #IMPLIED
   >
-<!ELEMENT ma_dag (config,parameters?)>
+<!ELEMENT ma_dag (config,cfg_options?,parameters?)>
 <!ATTLIST ma_dag 
-    label CDATA #IMPLIED    
-    useDietStats CDATA #IMPLIED
+    label CDATA #IMPLIED
+    useDietStats CDATA #IMPLIED        
 >
   
-<!ELEMENT local_agent (config,local_agent*,SeD*)>
+<!ELEMENT local_agent (config,cfg_options?,local_agent*,SeD*)>
 <!ATTLIST local_agent
     label CDATA #IMPLIED
-    useDietStats CDATA #IMPLIED
+    useDietStats CDATA #IMPLIED    
   >
 
-<!ELEMENT SeD (config,parameters?)>
+<!ELEMENT SeD (config,cfg_options?,parameters?)>
 <!ATTLIST SeD 
     label CDATA #IMPLIED
-    maxConcurrentJobs CDATA #IMPLIED
-    useDietStats CDATA #IMPLIED
-    batchName CDATA #IMPLIED
-    batchQueue CDATA #IMPLIED
-    pathToNFS CDATA #IMPLIED
-    pathToTmp CDATA #IMPLIED
+    useDietStats CDATA #IMPLIED    
   >
 
 <!--- Configuration for agents and seds -->
 <!ELEMENT config EMPTY>
 <!ATTLIST config
-    remote_binary CDATA #REQUIRED
-    trace_level CDATA #IMPLIED
+    remote_binary CDATA #REQUIRED    
     server CDATA #REQUIRED
   >
 <!ELEMENT parameters EMPTY>
 <!ATTLIST parameters 
     string CDATA #REQUIRED
   >  
+  <!--- Cfg options for agents, seds and also omniNames -->
+  <!ELEMENT cfg_options (option+)>
+ <!ELEMENT option EMPTY>
+ <!ATTLIST option
+   name CDATA #REQUIRED
+   value CDATA #REQUIRED
+  >
+  

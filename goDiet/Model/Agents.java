@@ -11,7 +11,7 @@ package goDiet.Model;
  *
  * @author  rbolze
  */
-public class Agents extends Elements {   
+public class Agents extends DietElements {   
     private java.util.Vector children;
     
     /** Creates a new instance of Agents */
@@ -26,7 +26,10 @@ public class Agents extends Elements {
         //notifyObservers(new Events.AddElementsEvent(newChild));
         //clearChanged();
     }
-    
+    public void setName(String name){
+        super.setName(name);
+        this.elConfig.addOption(new Option("name", name));
+    }
     public java.util.Vector getChildren(){
         return this.children;
     }

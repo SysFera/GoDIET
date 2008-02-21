@@ -199,32 +199,7 @@ public class SshUtils {
         
         /** Build remote command for launching the job */
         String remoteCommand = "";
-	/*
-        // Set PATH.  Used to find binaries (unless user provides full path)
-        String envPath = compRes.getCollection().getEnvPath();
-        if(envPath != null) {
-            remoteCommand += "export PATH=" + envPath + ":\\$PATH ; ";
-        }
-        // set LD_LIBRARY_PATH.  Needed by omniNames & servers
-        String ldPath = compRes.getCollection().getEnvLdLibraryPath();
-        if(ldPath != null){
-            remoteCommand += "export LD_LIBRARY_PATH=" + ldPath + " ; ";
-        }
-        */
-        Hashtable envVars = compRes.getCollection().getEnvVars();
-        if (!envVars.isEmpty()){
-            for (java.util.Iterator it = envVars.keySet().iterator();it.hasNext();){
-                String var = (String)it.next();
-                remoteCommand += "export "+var+"=" + (String)envVars.get(var) + " ; ";
-            }                
-        }
-        // Set OMNINAMES_LOGDIR.  Needed by omniNames.
-        if(element instanceof goDiet.Model.OmniNames){
-            remoteCommand += "export OMNINAMES_LOGDIR=" + scratch + " ; ";
-        }
-        // Set OMNIORB_CONFIG.  Needed by omniNames & all diet components.
-        remoteCommand += "export OMNIORB_CONFIG=" + scratch + "/omniORB4.cfg ; ";
-        if( (element instanceof goDiet.Model.MasterAgent) ||
+         if( (element instanceof goDiet.Model.MasterAgent) ||
                 (element instanceof goDiet.Model.Ma_dag) ||
                 (element instanceof goDiet.Model.LocalAgent) ||
                 (element instanceof goDiet.Model.ServerDaemon)){
@@ -232,6 +207,20 @@ public class SshUtils {
                 remoteCommand += "export DIET_STAT_FILE_NAME=" + scratch +
                         "/" + element.getName() + ".stats ; ";
             }
+        }        	        
+        // Set OMNINAMES_LOGDIR.  Needed by omniNames.
+        if(element instanceof goDiet.Model.OmniNames){
+            remoteCommand += "export OMNINAMES_LOGDIR=" + scratch + " ; ";
+        }
+        // Set OMNIORB_CONFIG.  Needed by omniNames & all diet components.
+        remoteCommand += "export OMNIORB_CONFIG=" + scratch + "/omniORB4.cfg ; ";
+        // Set all user Variables;
+        Vector envVars = compRes.getCollection().getEnvVars();
+        if (!envVars.isEmpty()){
+            for (java.util.Iterator it = envVars.iterator();it.hasNext();){
+                EnvVar v = (EnvVar)it.next();
+                remoteCommand += "export "+v.getName()+"=" + v.getValue() + " ; ";
+            }                
         }
         // Get into correct directory. Needed by LogCentral and testTool.
         remoteCommand += "cd " + scratch + " ; ";
@@ -261,11 +250,11 @@ public class SshUtils {
             }
         }
         if(element.getName().compareTo("LogCentral") == 0){
-            remoteCommand += "-config LogCentral.cfg ";
+            remoteCommand += "-config "+element.getCfgFileName();
             if(compRes.getEndPointContact() != null){
                 remoteCommand += "-ORBendPoint giop:tcp:" +
                         compRes.getEndPointContact() + ":";
-            } else if(compRes.getBegAllowedPorts() > 0){
+            }else if(compRes.getBegAllowedPorts() > 0){
                 remoteCommand += "-ORBendPoint giop:tcp::";
             }
             if(compRes.getBegAllowedPorts() > 0){

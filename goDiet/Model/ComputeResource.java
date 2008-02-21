@@ -61,19 +61,19 @@ public class ComputeResource extends Resources {
         }*/  
     
     /** Runtime-related methods */
-    public void incJobCount(){
-        this.jobCount++;
-        this.myCollection.incJobCount();
-        this.myCollection.getStorageResource().incJobCount();
-    }
-    public void decJobCount(){
-        this.jobCount--;
-        this.myCollection.decJobCount();
-        this.myCollection.getStorageResource().decJobCount();
-    }
-    public int getJobCount(){
-        return this.jobCount;
-    }
+//    public void incJobCount(){
+//        this.jobCount++;
+//        this.myCollection.incJobCount();
+//        this.myCollection.getStorageResource().incJobCount();
+//    }
+//    public void decJobCount(){
+//        this.jobCount--;
+//        this.myCollection.decJobCount();
+//        this.myCollection.getStorageResource().decJobCount();
+//    }
+//    public int getJobCount(){
+//        return this.jobCount;
+//    }
                  
     /** If user specified constraints on ports to be used as end points, 
      * the next unallocated port is allocated and returned.  If the
@@ -94,7 +94,7 @@ public class ComputeResource extends Resources {
                 "] already allocated.");
            return -1;
         }
-
+        //System.out.println("["+this.begAllowedPorts+","+this.endAllowedPorts+"] "+this.allocatedPorts);
         int newPort = this.begAllowedPorts + this.allocatedPorts;
         this.allocatedPorts++;
         return newPort;

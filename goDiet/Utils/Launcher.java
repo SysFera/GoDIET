@@ -106,7 +106,7 @@ public class Launcher {
                 element.getComputeResource().getName(),1);
         try {
             // LAUNCH STAGE 1: Write config file
-            createCfgFile(element, useLogService);
+            createCfgFile(element, useLogService);            
         } catch (IOException x) {
             consoleCtrl.printError("Exception writing cfg file for " +
                     element.getName(), 0);
@@ -192,70 +192,56 @@ public class Launcher {
         if (element != null){
             if( element.getName().compareTo("TestTool") == 0){
                 return;
-            }
-            
-            if(element instanceof goDiet.Model.OmniNames){
-                element.setCfgFileName("omniORB4.cfg");
-            } else {
-                element.setCfgFileName(element.getName() + ".cfg");
-            }
-            
+            }                                                
             File cfgFile = new File(runCfg.getLocalScratch(),
                     element.getCfgFileName());
-            
-            consoleCtrl.printOutput("Writing config file " +
-                    element.getCfgFileName(),1);
-            
-            try {
+            try {                                
                 cfgFile.createNewFile();
-                FileWriter out = new FileWriter(cfgFile);
-                
-                if( element.getName().compareTo("LogCentral") ==  0){
-                    writeCfgFileLogCentral(element,out);
-                } else if(element instanceof goDiet.Model.OmniNames){
-                    writeCfgFileOmniNames((OmniNames)element,out);
-                } else {
-                    writeCfgFileDiet(element,out,useLogService);
-                }
+                consoleCtrl.printOutput("Writing config file " +
+                    element.getCfgFileName(),1);
+                FileWriter out = new FileWriter(cfgFile); 
+                element.writeCfgFile(out);                
                 out.close();
             } catch (IOException x) {
-                System.err.println("Failed to write " + cfgFile.getPath());
+                consoleCtrl.printError("Failed to write " + cfgFile.getPath());                
                 throw x;
             }
-        }
+        }        
     }
     
     private void writeCfgFileLogCentral(Elements element,FileWriter out) throws IOException {
-        out.write("[General]\n\n");
-        out.write("[DynamicTagList]\n");
-        out.write("[StaticTagList]\n");
-        out.write("ADD_SERVICE\n");
-        out.write("[UniqueTagList]\n");
-        out.write("[VolatileTagList]\n");
-        out.write("ASK_FOR_SED\n");
-        out.write("SED_CHOSEN\n");
-        out.write("BEGIN_SOLVE\n");
-        out.write("END_SOLVE\n");
-        out.write("DATA_STORE\n");
-        out.write("DATA_RELEASE\n");
-        out.write("DATA_TRANSFER_BEGIN\n");
-        out.write("DATA_TRANSFER_END\n");
-        out.write("MEM\n");
-        out.write("LOAD\n");
-        out.write("LATENCY\n");
-        out.write("BANDWIDTH\n");
+          element.writeCfgFile(out);
+//        out.write("[General]\n\n");
+//        out.write("[DynamicTagList]\n");
+//        out.write("[StaticTagList]\n");
+//        out.write("ADD_SERVICE\n");
+//        out.write("[UniqueTagList]\n");
+//        out.write("[VolatileTagList]\n");
+//        out.write("ASK_FOR_SED\n");
+//        out.write("SED_CHOSEN\n");
+//        out.write("BEGIN_SOLVE\n");
+//        out.write("END_SOLVE\n");
+//        out.write("DATA_STORE\n");
+//        out.write("DATA_RELEASE\n");
+//        out.write("DATA_TRANSFER_BEGIN\n");
+//        out.write("DATA_TRANSFER_END\n");
+//        out.write("MEM\n");
+//        out.write("LOAD\n");
+//        out.write("LATENCY\n");
+//        out.write("BANDWIDTH\n");
     }
     
     private void writeCfgFileOmniNames(OmniNames omni,FileWriter out) throws IOException {
-        out.write("InitRef = NameService=corbaname::" +
-                omni.getContact() + ":" + omni.getPort() + "\n");
-        out.write("giopMaxMsgSize = "+omni.getGiopMaxMsgSize()+"\n");
-        out.write("supportBootstrapAgent = 1\n");
+        omni.writeCfgFile(out);
+        //out.write("InitRef = NameService=corbaname::" +
+        //        omni.getContact() + ":" + omni.getPort() + "\n");
+        //out.write("giopMaxMsgSize = "+omni.getGiopMaxMsgSize()+"\n");
+        //out.write("supportBootstrapAgent = 1\n");
     }
     
-    private void writeCfgFileDiet(Elements element,FileWriter out,
-            boolean useLogService) throws IOException {
-        ComputeResource compRes = element.getComputeResource();
+    private void writeCfgFileDiet(Elements element,FileWriter out) throws IOException {        
+        element.writeCfgFile(out);
+        /*ComputeResource compRes = element.getComputeResource();
         if(element instanceof goDiet.Model.MasterAgent) {
             out.write("name = " + element.getName() + "\n");
             out.write("agentType = DIET_MASTER_AGENT\n");
@@ -314,6 +300,6 @@ public class Launcher {
             out.write("useLogService = 0\n");
         }
         out.write("lsOutbuffersize = 0\n");
-        out.write("lsFlushinterval = 10000\n");
+        out.write("lsFlushinterval = 10000\n");*/
     }
 }

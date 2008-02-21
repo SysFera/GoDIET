@@ -19,6 +19,8 @@ public class LocalAgent extends Agents {
                       String binary, Agents parent) {
         super(name, compRes, binary);
         this.parent=parent;
+        this.getElementCfg().addOption(new Option("agentType", "DIET_LOCAL_AGENT"));
+        this.getElementCfg().addOption(new Option("parentName", parent.getName()));
     }
     
     public Agents getParent(){
