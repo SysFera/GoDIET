@@ -49,7 +49,7 @@ public class OptionChecker {
             String line;
             while ((line = bReader.readLine()) != null) {
                 currentNbLine++;
-                if (line.isEmpty()){continue;}
+                if (line.equals("")){continue;}
                 if (line.substring(0,1).equals("#")) {continue;}
                 StringTokenizer strTok = new StringTokenizer(line);
                 ValidOption valid_opt = new ValidOption(strTok.nextToken());                                
@@ -83,7 +83,7 @@ public class OptionChecker {
         }else{
             message+="WARNING : you try to add an unknown option :'"+option_name+"' to '"+element_type+"'";
         }
-        if(!message.isEmpty()){
+        if(!message.equals("")){
             StringTokenizer strToken = new StringTokenizer(checkFile.getFile(),"!");
             strToken.nextToken();            
             message+="\n\tCheck file :"+strToken.nextToken();
