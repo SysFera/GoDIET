@@ -19,6 +19,7 @@ import java.io.OutputStream;
 import java.io.FileWriter;
 import java.io.File;
 import java.util.Date;
+import java.util.Vector;
 
 /**
  *
@@ -361,14 +362,16 @@ public class ConsoleController extends java.util.Observable
         }
     }
     
-    public void check(){
+    public Vector check(){ 
+        Vector checks= null;
         printOutput("## BEGIN CHECK");
         if (fileLoaded){
-            deployCtrl.checkPlatform();
+            checks= deployCtrl.checkPlatform();
         } else {
             printOutput("[Check]: You must load the XML file before check the platform status !");
         }
-    }
+        return checks;
+    }    
     
     public void stop_check() {
         java.util.Date startTime, endTime;
