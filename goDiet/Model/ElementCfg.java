@@ -6,6 +6,7 @@
 package Model;
 
 import goDiet.Model.Option;
+import java.util.Iterator;
 import java.util.Vector;
 
 /**
@@ -32,8 +33,9 @@ public class ElementCfg {
             message+="WARNING : "+o.getName() +" = "+o.getValue();
             options.remove(index);
             options.insertElementAt(o,index);
+        }else{
+            this.options.add(o);
         }
-        this.options.add(o);
         return message;
     }
 
@@ -48,13 +50,20 @@ public class ElementCfg {
     public Vector getOptions() {
         return options;
     }
-    public Option getOption(String name){
-        Option o = new Option();    
+    public Option getOption(String name){        
+        Option o = new Option();
+        o.setName(name);
         if (!options.isEmpty()){
-            int index = options.indexOf(name);
+            int index = options.indexOf(o);            
             o =(Option)options.get(index);
         }
         return o;
     }
-    
+    public String toString(){
+        String out = this.cfgFileName+"\n";
+        for (Iterator it = this.options.iterator();it.hasNext();){
+            out+=(Option)it.next()+"\n";
+        }
+        return out;
+    }
 }

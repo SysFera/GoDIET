@@ -250,7 +250,7 @@ public class SshUtils {
             }
         }
         if(element.getName().compareTo("LogCentral") == 0){
-            remoteCommand += "-config "+element.getCfgFileName();
+            remoteCommand += "-config "+element.getCfgFileName()+" ";
             if(compRes.getEndPointContact() != null){
                 remoteCommand += "-ORBendPoint giop:tcp:" +
                         compRes.getEndPointContact() + ":";

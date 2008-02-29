@@ -427,14 +427,17 @@ public class DeploymentController extends java.util.Observable
                 consoleCtrl.printError("Can not launch " + element.getName() +
                         " because parent " + parent.getName() + " is not running.", 1);
                 return false;
-            }
+            }            
             if (this.dietPlatform.useLogCentral() &&
                     this.dietPlatform.getLogCentral().useLogToGuideLaunch() &&
                     this.dietPlatform.getLogCentral().logCentralConnected() &&
-                    (parentLI.getLogState() != goDiet.Defaults.LOG_STATE_RUNNING)) {
+                    parent.getElementCfg().getOption("useLogService").getValue().equals("1") &&
+                    (parentLI.getLogState() != goDiet.Defaults.LOG_STATE_RUNNING))                    
+                    {                
                 consoleCtrl.printError("Can not launch " + element.getName() +
                         " because parent " + parent.getName() +
                         " did not register with log.", 1);
+                
                 return false;
             }
         }

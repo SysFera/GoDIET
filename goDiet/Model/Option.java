@@ -38,4 +38,7 @@ public class Option {
         }
         return false;
     }
+    public String toString(){
+        return name+" = "+value;
+    }
 }

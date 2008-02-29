@@ -43,9 +43,10 @@ public class DietPlatformController implements java.util.Observer {
         java.awt.AWTEvent e = (java.awt.AWTEvent)obj;
         if ( e instanceof AddElementsEvent){
             ((Elements)e.getSource()).addObserver(this);
-            consoleCtrl.printOutput("New Elements : "+((Elements)e.getSource()).getName(),2);
+            consoleCtrl.printOutput("New Element : "+((Elements)e.getSource()).getName(),2);
+            consoleCtrl.printOutput("Elements Cfg: "+((Elements)e.getSource()).getElementCfg(),3);
         }else if (e instanceof AddServiceEvent){
-            consoleCtrl.printOutput("New service : " + e.getSource(),1);
+            consoleCtrl.printOutput("New service : " + e.getSource(),1);            
         }else if (e instanceof StatusInfosEvent){
             consoleCtrl.printOutput("Infos :" + e.getSource(),0);
         }
