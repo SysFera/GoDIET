@@ -135,7 +135,7 @@
              "remote_binary" is the binary name to execute for the
                       service. -->
                 <cfg_option>
-                    <var name="tracelevel" value="10"/>
+                    <option name="tracelevel" value="10"/>
                 </cfg_option>
             <!-- Optional: you can specify addition configuration option into
                   the omniORB4.cfg file.                 
@@ -180,8 +180,8 @@
 	   has been definied. If useDietStats=1 will use statistic output file even
 	   if diet_statistics tag has not been definied.-->
            <cfg_options>
-		       <var name="initRequestID" value="201"/>
-		       <var name="tracelevel" value="1"/>
+		       <option name="initRequestID" value="201"/>
+		       <option name="tracelevel" value="1"/>
 	   </cfg_options>
              <!-- Optional: you can specify addition configuration option into
                   the cfg file of the MA.                 
@@ -199,7 +199,7 @@
             <!-- See "master_agent" explanation above. This agent will be 
              named MyLA_0 -->
 	   <cfg_options>		       
-		       <var name="tracelevel" value="1"/>
+		       <option name="tracelevel" value="1"/>
 	   </cfg_options>
              <!-- Optional: you can specify addition configuration option into
                   the cfg file of the LA.                 
@@ -243,8 +243,8 @@
             <config server="host2"
                     remote_binary="batch_server"/>
             <cfg_options>		       
-		    <var name="batchName" value="LOADLEVELER"/><!-- "batchName" define the name of the batch software -->
-                    <var name="batchQueue" value="decrypthon"/><!-- "batchQueue" define the name of the queue where batchJob are submitted -->
+		    <option name="batchName" value="LOADLEVELER"/><!-- "batchName" define the name of the batch software -->
+                    <option name="batchQueue" value="decrypthon"/><!-- "batchQueue" define the name of the queue where batchJob are submitted -->
                     <!-- ... -->
 	    </cfg_options>
             <!-- Optional: you can specify addition configuration option into
