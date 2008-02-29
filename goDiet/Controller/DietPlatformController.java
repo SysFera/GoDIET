@@ -95,15 +95,7 @@ public class DietPlatformController implements java.util.Observer {
         parent.addChild(newSeD);
         this.dietPlatform.addServerDaemon(newSeD);
         newSeD.addObserver(this);
-    }
-    
-    /* Interfaces for building the resource platform model */
-    /*public void addLocalScratchBase(String scratchDir){
-        this.resourcePlatform.setLocalScratchBase(scratchDir);
-    }
-    public String getLocalScratchBase(){
-        return this.resourcePlatform.getLocalScratchBase();
-    }*/
+    }        
     
     public void addComputeCollection(ComputeCollection compColl){
         this.resourcePlatform.addComputeCollection(compColl);
@@ -123,11 +115,7 @@ public class DietPlatformController implements java.util.Observer {
     }
     public StorageResource getStorageResource(String resourceLabel){
         return this.resourcePlatform.getStorageResource(resourceLabel);
-    }
-   
-    /*public void verifyPlatform(){
-       
-    }*/
+    }      
     
     public void printPlatformStatus(){
         this.dietPlatform.printStatus();
