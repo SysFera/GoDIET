@@ -40,7 +40,14 @@ public class DeploymentController extends java.util.Observable
     private static final int WAITING_TIME_FOR_SERVICE = 3000;
     private static final int WAITING_TIME_FOR_ELEMENT_LOG_CONNEXION = 10000;
     private static final int WAITING_TIME_FOR_ELEMENT = 2000;
-
+    
+    public final static String MA_IOR = "MA_IOR";
+    public final static String MADAG_IOR = "MADAG_IOR";
+    public final static String LA_IOR = "LA_IOR";
+    public final static String SED_IOR = "SED_IOR";
+    public final static String STATE_DOWN = "DOWN";
+    public final static String STATE_OK = "OK";
+    public final static String STATE_FAILED = "PROABLY FAILED";
     public DeploymentController(ConsoleController consoleController,
             DietPlatformController modelController) {
         this.consoleCtrl = consoleController;
@@ -686,7 +693,7 @@ public class DeploymentController extends java.util.Observable
         Vector checks = new Vector();
         //checks.addAll(checkOmniNames());
         checks.addAll(checkMasterAgents());
-        //checks.addAll(checkMa_dags());
+        checks.addAll(checkMa_dags());
         checks.addAll(checkLocalAgents());
         checks.addAll(checkServerDaemons());
         return checks;
@@ -703,10 +710,10 @@ public class DeploymentController extends java.util.Observable
         return checkElements(mAgents, MA_IOR);
     }
 
-    /* 
-     * TODO
-     */
-    private void checkMa_dags() {        
+    
+    private Vector checkMa_dags() {        
+           java.util.Vector madgas = this.dietPlatform.getMa_dags();
+        return checkElements(madgas, MADAG_IOR);
     }
 
     private Vector checkLocalAgents() {
@@ -890,6 +897,16 @@ public class DeploymentController extends java.util.Observable
                 state = STATE_DOWN;
             }
         }
+        if (elType.equals(MADAG_IOR)) {
+            diet.corba.MaDag madag = null;
+            madag = diet.corba.MaDagHelper.narrow(orb.string_to_object(ior));
+            try {
+                ping = madag.ping();
+                state = STATE_OK;
+            } catch (Exception e) {
+                state = STATE_DOWN;
+            }
+        }
         if (elType.equals(LA_IOR)) {
             diet.corba.LocalAgent la = null;
             la = diet.corba.LocalAgentHelper.narrow(orb.string_to_object(ior));
@@ -914,11 +931,5 @@ public class DeploymentController extends java.util.Observable
         prop.setProperty("state", state);
         prop.setProperty("pid", ""+ping);           
         return prop;
-    }
-    public final static String MA_IOR = "MA_IOR";
-    public final static String LA_IOR = "LA_IOR";
-    public final static String SED_IOR = "SED_IOR";
-    public final static String STATE_DOWN = "DOWN";
-    public final static String STATE_OK = "OK";
-    public final static String STATE_FAILED = "PROABLY FAILED";
+    }    
 }

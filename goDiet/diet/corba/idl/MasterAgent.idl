@@ -8,11 +8,21 @@
 /****************************************************************************/
 /* $Id$
  * $Log$
- * Revision 1.1  2007/01/24 13:09:39  aamar
- * DIET idl files added.
+ * Revision 1.2  2008/03/21 10:25:20  rbolze
+ * update idl files.
+ * add MaDag.idl in order to be able to call ping() function and so test the MaDag.
+ * fill check_MaDag() function.
  *
- * Revision 1.1.1.1  2006/12/08 18:11:12  aamar
- * Import DIET DashBoard without svn files and unnecessary files.
+ * Revision 1.9  2007/07/13 16:44:40  ecaron
+ * Remove deprecated code (ALTPREDICT part)
+ *
+ * Revision 1.8  2006/11/06 15:45:53  aamar
+ * Workflow support: modify submit_pb_set prototype to manage the reqID.
+ *
+ * Revision 1.7  2006/10/20 08:11:27  aamar
+ * Remove the submit_wf function from Master Agent interface.
+ * Changing the submit_pb_set prototype by adding the set size to handle
+ * the request id in workflow submission.
  *
  * Revision 1.6  2006/04/14 14:13:10  aamar
  * Interface extension for workflow support.
@@ -41,18 +51,12 @@
 
 #include "Agent.idl"
 
+
 interface MasterAgent : Agent {
   
   /** Submission function: called by the clients to submit a problem. */
-#if ! HAVE_ALTPREDICT
   corba_response_t submit(in corba_pb_desc_t pb_profile,
 			  in unsigned long maxServers);
-#else // HAVE_ALTPREDICT
-  corba_response_t submit(in corba_pb_desc_t pb_profile,
-			  in unsigned long maxServers,
-                          in string clientHostname,
-                          in string clientLocID);
-#endif
   
   /** get number of the current session */
   long get_session_num();
@@ -118,15 +122,11 @@ interface MasterAgent : Agent {
 #ifdef HAVE_WORKFLOW
   /** 
    * Workflow submission function. *
-   * TO REMOVE *
-   */
-  wf_response_t submit_wf (in corba_wf_desc_t wf_desc);
-
-  /** 
-   * Another submission function *
    * called by the MA_DAG or a client to submit a set of problems *
    */
-  wf_response_t submit_pb_set (in corba_pb_desc_seq_t seq_pb);
+  wf_response_t submit_pb_set (in corba_pb_desc_seq_t seq_pb,
+			       in long set_size,
+			       in boolean used);
 #endif // HAVE_WORKFLOW
 };
 

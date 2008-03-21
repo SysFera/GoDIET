@@ -1,0 +1,91 @@
+/****************************************************************************/
+/* MA DAG IDL description                                                   */
+/*                                                                          */
+/*  Author(s):                                                              */
+/*    - Abdelkader Amar (Abdelkader.Amar@ens-lyon.fr)                       */
+/*                                                                          */
+/* $LICENSE$                                                                */
+/****************************************************************************/
+/* $Id$
+ * $Log$
+ * Revision 1.1  2008/03/21 10:25:20  rbolze
+ * update idl files.
+ * add MaDag.idl in order to be able to call ping() function and so test the MaDag.
+ * fill check_MaDag() function.
+ *
+ * Revision 1.4  2006/11/06 15:45:22  aamar
+ * Changing the submit_wf prototype (to manage the reqID in the MA side).
+ *
+ * Revision 1.3  2006/10/20 08:14:13  aamar
+ * Changing the submit_wf prototype (the return type)
+ * Add the following function to the MA DAG interface
+ *   - void setAsDone, setDagAsDone, registerClt
+ *
+ * Revision 1.2  2006/07/10 08:57:30  aamar
+ * Adding the function "remainingDag" to the MA DAG interface
+ *
+ * Revision 1.1  2006/04/14 13:41:48  aamar
+ * MA DAG IDL interface.
+ *
+ ****************************************************************************/
+
+#ifndef _MADAG_IDL_
+#define _MADAG_IDL_
+
+#include "common_types.idl"
+#include "response.idl"
+
+/****************************************************************************/
+/* MA DAG interface                                                          */
+/****************************************************************************/
+
+struct wf_node_response {
+  string node_id;
+  corba_response_t response;  
+} ;
+
+typedef sequence<wf_node_response> wf_scheduling_response;
+
+interface MaDag {
+  /** 
+   * Workflow submission function. *
+   * This function returns workflow ordering and mapping*
+   */
+  wf_sched_response_t submit_wf (in corba_wf_desc_t wf_desc,
+				 in boolean used);
+
+  /**
+   * Another workflow submission function *
+   * return only the ordering of the nodes execution *
+   */
+  wf_ordering_t get_wf_ordering(in corba_wf_desc_t wf_desc);
+
+  /**
+   * set the remaining dag
+   */
+  void remainingDag(in string dag_descr);
+
+  /*
+   * inform the MA DAG that node execution is done
+   */
+  void 
+  setAsDone(in string dag_id, in string nodeId);
+
+  /**
+   * inform the ma dag that the dag execution is complete
+   */
+  void 
+  setDagAsDone(in string dag_id);
+
+  /*
+   * register a dag to the ma dag
+   */
+  void
+  registerClt(in string dag_id, in string client_ref);
+
+  /** Used to test if this process is alive. */
+  long ping();
+
+};
+
+#endif // _MADAG_IDL_

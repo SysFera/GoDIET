@@ -9,11 +9,58 @@
 /****************************************************************************/
 /* $Id$
  * $Log$
- * Revision 1.1  2007/01/24 13:09:39  aamar
- * DIET idl files added.
+ * Revision 1.2  2008/03/21 10:25:20  rbolze
+ * update idl files.
+ * add MaDag.idl in order to be able to call ping() function and so test the MaDag.
+ * fill check_MaDag() function.
  *
- * Revision 1.1.1.1  2006/12/08 18:11:12  aamar
- * Import DIET DashBoard without svn files and unnecessary files.
+ * Revision 1.26  2008/01/19 01:40:35  glemahec
+ * Reverting the previous commit for DTM. DTM doesn't seem to support the
+ * bug correction...
+ * Warning : When using DTM, undefined result may appear when using data of
+ * size > 2GB...
+ * DAGDA still uses the correction.
+ *
+ * Revision 1.25  2008/01/18 15:28:34  glemahec
+ * Bug correction:
+ * 	"long" => "unsigned long long" (<=> size_t) for all the data sizes
+ * 	fields.
+ *
+ * Revision 1.24  2008/01/14 10:31:22  glemahec
+ * Adds the "dataManager" field in the corba_data_desc_t object to differentiate
+ * the replicas of a data.
+ *
+ * Revision 1.23  2007/07/13 16:44:40  ecaron
+ * Remove deprecated code (ALTPREDICT part)
+ *
+ * Revision 1.22  2007/06/28 18:23:19  rbolze
+ * add dietReqID in the profile.
+ * and propagate this change to all functions that  have both reqID and profile parameters.
+ * TODO : look at the asynchronous mechanism (client->SED) to propage this change.
+ *
+ * Revision 1.21  2007/04/16 22:43:43  ycaniou
+ * Make all necessary changes to have the new option HAVE_ALT_BATCH operational.
+ * This is indented to replace HAVE_BATCH.
+ *
+ * First draw to manage batch systems with a new Cori plug-in.
+ *
+ * Revision 1.20  2007/03/26 13:25:17  glemahec
+ * Adds the definition of corba_agg_user_t aggregator type and modification of the corba_agg_specific_t type. Conditioned to USERSCHED definition.
+ *
+ * Revision 1.19  2006/08/27 18:40:10  ycaniou
+ * Modified parallel submission API
+ * - client: diet_call_batch() -> diet_parallel_call()
+ * - SeD: diet_profile_desc_set_batch() -> [...]_parallel()
+ * - from now, internal fields are related to parallel not batch
+ * and corrected a bug:
+ * - 3 types of submission: request among only seq, only parallel, or all
+ *   available services (second wasn't implemented, third bug)
+ *
+ * Revision 1.18  2006/07/25 14:26:08  ycaniou
+ * Changed dietJobID -> dietReqID
+ *
+ * Revision 1.17  2006/06/03 21:13:58  ycaniou
+ * Batch: add nbprocess field to corba structures
  *
  * Revision 1.16  2006/04/14 14:14:06  aamar
  * Adding the IDL data structures for workflow support.
@@ -21,10 +68,6 @@
  * Revision 1.15  2006/04/12 16:12:28  ycaniou
  * Put back the right common_types.idl and made C commentaries from C++
  *   (discard compilation warnings)
- *
- * Revision 1.13  2005/09/05 15:56:34  hdail
- * Addition of client hostname and location information to request
- * (experimental and protected by HAVE_ALTPREDICT)
  *
  * Revision 1.12  2005/08/31 14:52:54  alsu
  * New plugin scheduling interface: new data model for the estimation
@@ -222,11 +265,25 @@ struct corba_agg_default_t {
 struct corba_agg_priority_t {
   sequence<long> priorityList;
 };
+/** New : The aggregator for user scheduler support.      */
+/** The same as the default aggregator. Maybe not needed. */
+#ifdef USERSCHED
+struct corba_agg_user_t {
+  octet dummy;
+};
+#endif
+/**********************************************************/
 union corba_agg_specific_t switch (long) {
  case 0:
    corba_agg_default_t agg_default;
  case 1:
    corba_agg_priority_t agg_priority;
+/** New : The aggregator for user scheduler support. */
+#ifdef USERSCHED
+ case 2:
+   corba_agg_user_t agg_user;
+#endif
+/*****************************************************/
 };
 struct corba_aggregator_desc_t {
   corba_agg_specific_t agg_specific;
@@ -239,6 +296,7 @@ struct corba_profile_desc_t {
   long   last_inout;
   long   last_out;
   sequence<corba_arg_desc_t> param_desc;
+  long parallel_flag ;
   corba_aggregator_desc_t aggregator;
 };
 typedef sequence<corba_profile_desc_t> SeqCorbaProfileDesc_t;
@@ -265,6 +323,10 @@ struct corba_pb_desc_t {
   long   last_inout;
   long   last_out;
   SeqCorbaDataDesc_t param_desc;
+  long   parallel_flag ;
+  long   nbprocs ;
+  long   nbprocess ;
+  long   walltime ;
 };
 
 /** The complete problem, sent from client to server. */
@@ -273,6 +335,11 @@ struct corba_profile_t {
   long   last_inout;
   long   last_out;
   SeqCorbaData_t parameters;
+  unsigned long dietReqID ;
+  long   parallel_flag ;
+  long   nbprocs ;
+  long   nbprocess ;
+  long   walltime ;
 };
 
 
@@ -322,12 +389,11 @@ struct corba_estimation_t {
   SeqEstValue_t estValues;
 };
 
-#ifdef HAVE_WORKFLOW
 /** The workflow description structure. */
 struct corba_wf_desc_t {
   string abstract_wf;
 };
-#endif
+
 
 #endif // _COMMON_TYPES_IDL_
 
