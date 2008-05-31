@@ -211,95 +211,13 @@ public class Launcher {
     
     private void writeCfgFileLogCentral(Elements element,FileWriter out) throws IOException {
           element.writeCfgFile(out);
-//        out.write("[General]\n\n");
-//        out.write("[DynamicTagList]\n");
-//        out.write("[StaticTagList]\n");
-//        out.write("ADD_SERVICE\n");
-//        out.write("[UniqueTagList]\n");
-//        out.write("[VolatileTagList]\n");
-//        out.write("ASK_FOR_SED\n");
-//        out.write("SED_CHOSEN\n");
-//        out.write("BEGIN_SOLVE\n");
-//        out.write("END_SOLVE\n");
-//        out.write("DATA_STORE\n");
-//        out.write("DATA_RELEASE\n");
-//        out.write("DATA_TRANSFER_BEGIN\n");
-//        out.write("DATA_TRANSFER_END\n");
-//        out.write("MEM\n");
-//        out.write("LOAD\n");
-//        out.write("LATENCY\n");
-//        out.write("BANDWIDTH\n");
     }
     
     private void writeCfgFileOmniNames(OmniNames omni,FileWriter out) throws IOException {
-        omni.writeCfgFile(out);
-        //out.write("InitRef = NameService=corbaname::" +
-        //        omni.getContact() + ":" + omni.getPort() + "\n");
-        //out.write("giopMaxMsgSize = "+omni.getGiopMaxMsgSize()+"\n");
-        //out.write("supportBootstrapAgent = 1\n");
+        omni.writeCfgFile(out);        
     }
     
     private void writeCfgFileDiet(Elements element,FileWriter out) throws IOException {        
-        element.writeCfgFile(out);
-        /*ComputeResource compRes = element.getComputeResource();
-        if(element instanceof goDiet.Model.MasterAgent) {
-            out.write("name = " + element.getName() + "\n");
-            out.write("agentType = DIET_MASTER_AGENT\n");
-            if ( ((MasterAgent)element).getInitRequestID() > 0 ){
-                out.write("initRequestID = " + ((MasterAgent)element).getInitRequestID() + "\n");
-            }
-        } else if( element instanceof goDiet.Model.Ma_dag) {
-            out.write("name = " + element.getName() + "\n");
-            out.write("agentType = DIET_MA_DAG\n");
-            Ma_dag mad = (Ma_dag)element;
-            out.write("parentName = " + (mad.getParent()).getName() + "\n");
-        } else if( element instanceof goDiet.Model.LocalAgent) {
-            out.write("name = " + element.getName() + "\n");
-            out.write("agentType = DIET_LOCAL_AGENT\n");
-            LocalAgent agent = (LocalAgent)element;
-            out.write("parentName = " + (agent.getParent()).getName() + "\n");
-        } else if(element instanceof goDiet.Model.ServerDaemon){
-            ServerDaemon sed = (ServerDaemon)element;
-            out.write("parentName = " + (sed.getParent()).getName() + "\n");
-            if(sed.isConcurrentJobLimitEnabled()) {
-                out.write("useConcJobLimit = 1\n");
-                out.write("maxConcJobs = " + sed.getMaxConcurrentJobLimit() +"\n");
-            }
-            if (!sed.getBatchName().equals("")){
-                out.write("batchName = " + sed.getBatchName() +"\n");
-            }
-            if (!sed.getBatchQueue().equals("")){
-                out.write("batchQueue = " + sed.getBatchQueue() +"\n");
-            }
-            if (!sed.getPathToNFS().equals("")){
-                out.write("pathToNFS = " + sed.getPathToNFS() +"\n");
-            }
-            if (!sed.getPathToTmp().equals("")){
-                out.write("pathToTmp = " + sed.getPathToTmp() +"\n");
-            }
-        }
-        
-        out.write("traceLevel = " + element.getTraceLevel() + "\n");
-        
-        int port = compRes.allocateAllowedPort();
-        // port will be -1 if we don't need to use port, or if all ports
-        // have been allocated (in which case we try without specifying port)
-        if(port > 0){
-            out.write("dietPort = " + port + "\n");
-        }
-        if(compRes.getEndPointContact() != null){
-            out.write("dietHostname = " +
-                    compRes.getEndPointContact() + "\n");
-        }
-        out.write("fastUse = 0\n"); // TODO: support config in xml
-        out.write("ldapUse = 0\n"); // TODO: support config in xml
-        out.write("nwsUse = 0\n");  // TODO: support config in xml
-        if(useLogService){
-            out.write("useLogService = 1\n");
-        } else {
-            out.write("useLogService = 0\n");
-        }
-        out.write("lsOutbuffersize = 0\n");
-        out.write("lsFlushinterval = 10000\n");*/
+        element.writeCfgFile(out);        
     }
 }
