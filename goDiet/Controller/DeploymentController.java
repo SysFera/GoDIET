@@ -455,7 +455,7 @@ public class DeploymentController extends java.util.Observable
     private void waitAfterLaunch(Elements element,
             ComputeResource compRes) {
         // the case of Ma_dag should be remove when the Ma_dag will use the LogService
-        if (element instanceof goDiet.Model.Services || element instanceof goDiet.Model.Ma_dag) { 
+        if (element instanceof goDiet.Model.Services /*|| element instanceof goDiet.Model.Ma_dag*/) { 
             consoleCtrl.printOutput(
                     "Waiting for 3 seconds after service launch", 1);
             try {

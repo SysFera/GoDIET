@@ -99,6 +99,9 @@ public class DietPlatform extends java.util.Observable {
         } else {
             newMa_dag.setName("MA_DAG_" + MA_DAG_ID);
         }
+        if(haveLogCentral){
+           addLogServiceOption(newMa_dag);
+        }
         MA_DAG_ID++;
         this.ma_dags.add(newMa_dag);
         setChanged();
