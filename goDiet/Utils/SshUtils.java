@@ -233,10 +233,14 @@ public class SshUtils {
                 (element instanceof goDiet.Model.ServerDaemon)){
             remoteCommand += scratch + "/" + element.getCfgFileName() + " ";
         }
-        // Provide command line parameters. Needed by SeDs only.
+        // Provide command line parameters. Needed by SeDs and Ma_dag only.
         if( (element instanceof goDiet.Model.ServerDaemon) &&
                 (((ServerDaemon)element).getParameters() != null)){
             remoteCommand += ((ServerDaemon)element).getParameters() + " ";
+        }
+        if( (element instanceof goDiet.Model.Ma_dag) &&
+                (((Ma_dag)element).getParameters() != null)){
+            remoteCommand += ((Ma_dag)element).getParameters() + " ";
         }
         // Give -start parameter to omniNames.
         if(element instanceof goDiet.Model.OmniNames){

@@ -13,7 +13,7 @@ package goDiet.Model;
  */
 public class Ma_dag extends Agents {    
     private Agents parent;
-    
+    private String parameters = null;
     /** Creates a new instance of MasterAgent */
     public Ma_dag(String name, ComputeResource compRes, String binary
             ,Agents parent){
@@ -25,5 +25,11 @@ public class Ma_dag extends Agents {
     
     public Agents getParent(){
         return this.parent;
+    }
+    public void setParameters(String parameters) {
+        this.parameters = parameters;
+    }    
+    public String getParameters() {
+        return this.parameters;
     }
 }

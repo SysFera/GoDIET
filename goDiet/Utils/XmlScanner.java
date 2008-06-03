@@ -897,6 +897,7 @@ public class XmlScanner implements ErrorHandler {
         String ma_dagName = "";
         Config config = new Config();
         int useDietStats = -1;
+        String parameters = null;
 
         org.w3c.dom.NamedNodeMap attrs = element.getAttributes();
         for (int i = 0; i < attrs.getLength(); i++) {
@@ -950,6 +951,10 @@ public class XmlScanner implements ErrorHandler {
                     }
                     mainController.addMa_dag(ma_dag);
                 }
+                if (nodeElement.getTagName().equals("parameters")) {
+                        parameters = visitElement_parameters(nodeElement);
+                        ma_dag.setParameters(parameters);
+                }
                 if (nodeElement.getTagName().equals("cfg_options")) {
                     visitElement_cfg_options(nodeElement, ma_dag);
                 }
@@ -962,13 +967,7 @@ public class XmlScanner implements ErrorHandler {
         ServerDaemon newSeD = null;
         String sedName = "";
         Config config = new Config();
-        int useDietStats = -1;
-        /*int maxConcJobs = -1;
-        boolean useMaxConcJobs = false;        
-        String batchName="";
-        String batchQueue="";
-        String pathToNFS="";
-        String pathToTmp="";*/
+        int useDietStats = -1;      
         String parameters = null;
 
 
@@ -994,24 +993,7 @@ public class XmlScanner implements ErrorHandler {
                 } else {
                     useDietStats = val;
                 }
-            }/* else if (attr.getName().equals("maxConcurrentJobs")) {
-        maxConcJobs = (new Integer(attr.getValue())).intValue();
-        if (maxConcJobs <= 0) {
-        System.err.println("SeD maxConcurrentJobs value " + maxConcJobs + " invalid.  Choose a value greater than 0 or remove " +
-        "the setting.");
-        System.exit(1);
-        } else {
-        useMaxConcJobs = true;
-        }
-        } else if (attr.getName().equals("batchName")) {
-        batchName = attr.getValue();
-        } else if (attr.getName().equals("batchQueue")) {
-        batchQueue = attr.getValue();
-        } else if (attr.getName().equals("pathToNFS")) {
-        pathToNFS = attr.getValue();
-        } else if (attr.getName().equals("pathToTmp")) {
-        pathToTmp = attr.getValue();
-        }*/
+            }
         }
 
         org.w3c.dom.NodeList nodes = element.getChildNodes();
@@ -1031,19 +1013,12 @@ public class XmlScanner implements ErrorHandler {
                     }
                     newSeD = new ServerDaemon(sedName, compRes,
                             config.binary, parentAgent);
-                    /*if (config.haveTraceLevel) {
-                    newSeD.setTraceLevel(config.traceLevel);
-                    }*/
-                    //newSeD.setUseDietStats(mainController.getUseDietStats());
                     if (useDietStats == -1 // the user don't give any value
                             && mainController.getUseDietStats()) {// the user set the option for all
                         newSeD.setUseDietStats(mainController.getUseDietStats());
                     } else { // the user give a value to useDietStats ( 0 or 1)
                         newSeD.setUseDietStats((useDietStats == 1));
-                    }
-                    /*if (useMaxConcJobs){
-                    newSeD.enableConcurrentJobLimit(maxConcJobs);
-                    }*/
+                    }                 
                     mainController.addServerDaemon(newSeD, parentAgent);
                 }
                 if (newSeD != null) {

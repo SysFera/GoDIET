@@ -17,7 +17,7 @@ import java.util.Iterator;
  */
 public class DietElements extends Elements {
 
-    protected boolean useDietStats = goDiet.Defaults.USE_DIET_STATS;
+    protected boolean useDietStats = goDiet.Defaults.USE_DIET_STATS;     
 
     /* Constructor for Elements. */
     public DietElements(String name, ComputeResource compRes, String binary) {
