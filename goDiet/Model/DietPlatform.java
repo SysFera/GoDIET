@@ -95,7 +95,8 @@ public class DietPlatform extends java.util.Observable {
     public void addMa_dag(Ma_dag newMa_dag){
         String label = newMa_dag.getName();
         if( (label != null) && (label.length() > 0)) {
-            newMa_dag.setName(label + "_" + MA_DAG_ID);
+            //newMa_dag.setName(label + "_" + MA_DAG_ID);
+             newMa_dag.setName(label);
         } else {
             newMa_dag.setName("MA_DAG_" + MA_DAG_ID);
         }

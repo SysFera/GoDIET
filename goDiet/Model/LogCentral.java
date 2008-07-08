@@ -37,6 +37,7 @@ public class LogCentral extends Services {
         out.write("[DynamicTagList]\n");
         out.write("[StaticTagList]\n");
         out.write("ADD_SERVICE\n");
+        out.write("MADAG_SCHEDULER\n");
         out.write("[UniqueTagList]\n");
         out.write("[VolatileTagList]\n");
         out.write("ASK_FOR_SED\n");
