@@ -161,7 +161,7 @@ public class DeploymentController extends java.util.Observable
         if (deploySuccess) {
             consoleCtrl.printOutput("Deployer: Sending deploy state ACTIVE.", 3);
             notifyObservers(new goDiet.Events.DeployStateChange(
-                    this, goDiet.Defaults.DEPLOY_ACTIVE));
+                    this, goDiet.Defaults.DEPLOY_ACTIVE));            
         } else {
             consoleCtrl.printOutput("Deployer: Sending deploy state INACTIVE.", 3);
             notifyObservers(new goDiet.Events.DeployStateChange(
@@ -247,7 +247,13 @@ public class DeploymentController extends java.util.Observable
                 " [time= " + timeDiff + " sec]");
         consoleCtrl.printOutput("* StorageResource used =" + resourcePlatform.getUsedStorageResources().size());
         consoleCtrl.printOutput("* ComputeResource used =" + resourcePlatform.getUsedComputeResources().size());
-
+        if (this.dietPlatform.useLogCentral()) {            
+            if (this.dietPlatform.getLogCentral().useLogToGuideLaunch()
+                    && this.dietPlatform.getLogCentral().logCentralConnected()){                
+                this.logCommCtrl.disconnect();
+                consoleCtrl.printOutput("* Disconnect from LogCentral");
+            }
+        }
         return true;
     }
 
