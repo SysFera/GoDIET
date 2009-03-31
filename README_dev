@@ -1,5 +1,11 @@
 README file for users of GoDIET CVS version
 
+Requirements:
+ GoDIET requires java 1.6.
+ When using java 1.5 a bug can occur:
+  if you run GoDIET on the same node as the MA, you can get a
+  java.lang.NullException.
+
 Compilation:
   - Simply type:
       > ant
