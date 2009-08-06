@@ -119,8 +119,7 @@ public class XmlScanner implements ErrorHandler {
 
         } catch (IOException ioe) {
             // I/O error
-            ioe.getMessage();
-            throw new IOException("Parsing of " + xmlFile + " failed.  I/O error.");
+            throw new IOException("Parsing of " + xmlFile + " failed.  I/O error: " + ioe.getMessage());
         }
         return doc;
     }

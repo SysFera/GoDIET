@@ -202,7 +202,7 @@ public class ConsoleController extends java.util.Observable
         try {
             xmlScanner.buildDietModel(xmlFileName, modelController,this);
         } catch (IOException ioe) {
-            ioe.getMessage();
+            this.printError("Error: " + ioe.getMessage());
             this.printError("Can not continue without valid XML.  Exiting.");
             System.exit(1);
         }

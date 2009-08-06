@@ -799,54 +799,90 @@ public class DeploymentController extends java.util.Observable
             ComputeResource compRes,
             String eltType) {
         Properties checkProperties = null;
-        ComputeCollection coll = element.getComputeResource().getCollection();
-        StorageResource storeRes = coll.getStorageResource();
-        String[] cmd = {"/usr/bin/ssh",
-            storeRes.getAccessMethod("scp").getLogin() + "@" +
-            storeRes.getAccessMethod("scp").getServer(),
-            "cat " +
-            storeRes.getScratchBase() + "/" +
-            element.getName() + ".out"
-        };
-        //	System.out.println("======" + cmd[0] + " " + cmd[1] + " " + cmd[2]);
         try {
-            Process p = Runtime.getRuntime().exec(cmd);
-            BufferedReader in = new BufferedReader(new InputStreamReader(p.getInputStream()));
-            BufferedReader error = new BufferedReader(new InputStreamReader(p.getErrorStream()));
-            String line = "";
-            String ior = "";                       
-            Properties props = new Properties();
-            props.put("org.omg.CORBA.ORBInitialHost", dietPlatform.getOmniNames().getContact());
-            props.put("org.omg.CORBA.ORBInitialPort", "" + dietPlatform.getOmniNames().getPort());
-            org.omg.CORBA.ORB orb = org.omg.CORBA.ORB.init((String[]) null, props);
-            while ((line = in.readLine()) != null) {
-                //		System.out.println("@" + line);
-                if (line.startsWith("## " + eltType)) {
-                    ior = line.split(" ")[2];                    
-                    checkProperties = checkIOR2(ior, eltType, orb);
+            ComputeCollection coll = null;
+            coll = element.getComputeResource().getCollection();
+            StorageResource storeRes = null;
+            storeRes = coll.getStorageResource();
+
+            String[] cmd = {"/usr/bin/ssh",
+                storeRes.getAccessMethod("scp").getLogin() + "@" +
+                storeRes.getAccessMethod("scp").getServer(),
+                "cat " +
+                storeRes.getScratchBase() + "/" +
+                element.getName() + ".out"
+            };
+            //	System.out.println("======" + cmd[0] + " " + cmd[1] + " " + cmd[2]);
+            try {
+                Process p = Runtime.getRuntime().exec(cmd);
+                BufferedReader in = new BufferedReader(new InputStreamReader(p.getInputStream()));
+                BufferedReader error = new BufferedReader(new InputStreamReader(p.getErrorStream()));
+                String line = "";
+                String ior = "";
+                Properties props = new Properties();
+                props.put("org.omg.CORBA.ORBInitialHost", dietPlatform.getOmniNames().getContact());
+                props.put("org.omg.CORBA.ORBInitialPort", "" + dietPlatform.getOmniNames().getPort());
+                org.omg.CORBA.ORB orb = org.omg.CORBA.ORB.init((String[]) null, props);
+                while ((line = in.readLine()) != null) {
+                    // consoleCtrl.printOutput("@" + line);
+                    if (line.startsWith("## " + eltType)) {
+                        ior = line.split(" ")[2];
+                        checkProperties = checkIOR2(ior, eltType, orb);
+                    }
                 }
+            
+                if (checkProperties != null) {
+                    checkProperties.setProperty("type", element.getName());
+                    checkProperties.setProperty("hostname", element.getComputeResource().getAccessMethod("ssh").getServer());
+                    checkProperties.setProperty("name", element.getComputeResource().getName());
+                    consoleCtrl.printOutput("# STATEOF " +
+                        element.getName() + "\t" +
+                        checkProperties.getProperty("state")+"\t"+
+                        checkProperties.getProperty("pid")+"\t"+
+                        checkProperties.getProperty("name"));
+                } else {
+                    /* if checkProperties is still null, then no line was found in *.out */
+                    in.close();
+                    error.close();
+
+                    /* Try to get results in *.err file, and show last 5 lines */
+                    cmd[2] = "cat " + storeRes.getScratchBase() + "/" +
+                            element.getName() + ".err";
+
+                    p = Runtime.getRuntime().exec(cmd);
+                    in = new BufferedReader(new InputStreamReader(p.getInputStream()));
+                    error = new BufferedReader(new InputStreamReader(p.getErrorStream()));
+
+                    String[] err = {"","","","",""};
+
+                    int i = 0;
+                    while ((line = in.readLine()) != null) {
+                        err[i%5] = line;
+                    }
+
+                    consoleCtrl.printOutput("# STATEOF " + element.getName()
+                           + " " + "UNKNOWN");
+                    consoleCtrl.printOutput("Last lines in '" + element.getName() + ".err':");
+                    for (i = 0; i < 5; ++ i)
+                        if (!err[i].equals(""))
+                            consoleCtrl.printOutput(err[i]);
+                }
+                in.close();
+                error.close();
+            /*
+            while ((line=error.readLine())!=null) {
+            System.out.println("@@@" + line);
             }
-            checkProperties.setProperty("type", element.getName());
-            checkProperties.setProperty("hostname", element.getComputeResource().getAccessMethod("ssh").getServer());
-            checkProperties.setProperty("name", element.getComputeResource().getName());
-            consoleCtrl.printOutput("# STATEOF " +
-                    element.getName() + "\t" +
-                    checkProperties.getProperty("state")+"\t"+
-                    checkProperties.getProperty("pid")+"\t"+
-                    checkProperties.getProperty("name"));
-            in.close();
+            */
 
-        /*
-        while ((line=error.readLine())!=null) {
-        System.out.println("@@@" + line);
-        }
-         */
-
-        } catch (IOException x) {
-            consoleCtrl.printOutput("# STATEOF " +
-                    element.getName() + " " +
-                    "UNKNOWN");
-            consoleCtrl.printError("stageWithScp failed.", 0);
+            } catch (IOException x) {
+                consoleCtrl.printOutput("# STATEOF " +
+                        element.getName() + " " +
+                        "UNKNOWN");
+                consoleCtrl.printError("stageWithScp failed.", 0);
+            }
+        } catch (Exception x) {
+            consoleCtrl.printOutput("### Error: " + x.getMessage());
         }
 
         return checkProperties;
