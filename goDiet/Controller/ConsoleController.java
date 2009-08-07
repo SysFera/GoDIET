@@ -51,6 +51,7 @@ public class ConsoleController extends java.util.Observable
     protected static final String HELP =
             "The following commands are available:\n" +
             "   launch:     launch entire DIET platform\n" +
+            "   relaunch:   kill the current platform and launch entire DIET platform once again\n" +
             "   stop:       kill entire DIET platform using kill pid\n" +
             //        "   kill:       kill entire DIET platform using kill -9 pid\n" +
             "   status:     print run status of each DIET component\n" +
@@ -169,6 +170,9 @@ public class ConsoleController extends java.util.Observable
             }else if (command.compareTo("launch") == 0){
                 launch();
                 giveUserCtrl = false;
+            }else if (command.compareTo("relaunch") == 0){
+                relaunch();
+                giveUserCtrl = false;
             }else if (command.compareTo("stop") == 0 ){
                 stop();
                 giveUserCtrl = false;
@@ -224,6 +228,40 @@ public class ConsoleController extends java.util.Observable
             printError("You must load the XML file before launch !");
         }
     }
+
+    private void relaunch(){
+        java.util.Date startTime, endTime;
+        double timeDiff;
+
+        if (fileLoaded){
+            startTime = new java.util.Date();
+            printOutput("\n* Stopping DIET platform at " + startTime.toString());
+            deployCtrl.stopPlatform();
+            endTime = new java.util.Date();
+            timeDiff = (endTime.getTime() - startTime.getTime())/1000;
+            printOutput("\n* DIET platform stopped at " + endTime.toString() +
+                    "[time= " + timeDiff + " sec]", 0);
+
+            if(interfaceMode){
+                goDietConsolePanel.getStopButton().setEnabled(false);
+                goDietConsolePanel.getLaunchButton().setEnabled(true);
+            }
+
+            
+            setChanged();
+            this.printOutput("sending launch request all", 3);
+            notifyObservers(new goDiet.Events.LaunchRequest(this,"all"));
+            clearChanged();
+
+            /*if(interfaceMode){
+              goDietConsolePanel.getStopButton().setEnabled(true);
+              goDietConsolePanel.getLaunchButton().setEnabled(false);
+              }*/
+        } else {
+            printError("You must load the XML file before launch !");
+        }
+    }
+
     
     private void stop(){
         java.util.Date startTime, endTime;
