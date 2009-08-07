@@ -336,6 +336,8 @@ public class XmlScanner implements ErrorHandler {
         }
         if (endPoint != null) {
             if (endPoint.contact != null) {
+                if (endPoint.contact.equals("localhost"))
+                    endPoint.contact = "127.0.0.1";
                 compRes.setEndPointContact(endPoint.contact);
             }
             if (endPoint.startPort != -1) {
@@ -451,6 +453,8 @@ public class XmlScanner implements ErrorHandler {
         }
         if (endPoint != null) {
             if (endPoint.contact != null) {
+                if (endPoint.contact.equals("localhost"))
+                    endPoint.contact = "127.0.0.1";
                 compRes.setEndPointContact(endPoint.contact);
             }
             if (endPoint.startPort != -1) {

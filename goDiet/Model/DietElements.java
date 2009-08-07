@@ -26,7 +26,7 @@ public class DietElements extends Elements {
     }
 
     protected void updateCfg() {
-        if (compHost.getEndPointContact() != null) {            
+        if (compHost.getEndPointContact() != null) {
             elConfig.addOption(new Option("dietHostname",compHost.getEndPointContact()));
         }
         int port = compHost.allocateAllowedPort();
