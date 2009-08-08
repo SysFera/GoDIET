@@ -13,6 +13,7 @@ import goDiet.Events.DeployStateChange;
 
 import java.io.*;
 import java.util.*;
+import jline.*;
 
 /**
  *
@@ -97,28 +98,43 @@ public class GoDIET implements java.util.Observer {
             consoleController.loadXmlFile(xmlFile);
             BufferedReader stdin = new BufferedReader(
                 new InputStreamReader(System.in));
-            String command;
-            while(true){
-                System.out.print("GoDIET> ");
-                command = "";
-                try {
-                    command = stdin.readLine();
-                    giveUserCtrl = consoleController.doCommand(command);
-                } catch(Exception x) {
-                    consoleController.printOutput("Exception: " + x.toString());
-                    //break;
-                }
-                if(giveUserCtrl == false){
+
+            try {
+                ConsoleReader reader = new ConsoleReader();
+                reader.setBellEnabled(false);
+
+                List completors = new LinkedList();
+                completors.add(new SimpleCompletor(new String[] { "launch",
+                    "relaunch", "stop", "status", "history", "help", "check",
+                    "stop_check", "exit"}));
+                reader.addCompletor(new ArgumentCompletor(completors));
+
+                String command;
+                while(true){
+                    System.out.print("GoDIET> ");
+                    command = "";
                     try {
-                        synchronized(goDiet){
-                            goDiet.wait();
-                        }
-                    }    
-                    catch (InterruptedException x) {
-                        System.out.println("Unexpected sleep interruption.");
+                        //command = stdin.readLine();
+                        command = reader.readLine();
+                        giveUserCtrl = consoleController.doCommand(command);
+                    } catch(Exception x) {
+                        consoleController.printOutput("Exception: " + x.toString());
+                        //break;
                     }
-                }       
-            }           // End while(true)
+                    if(giveUserCtrl == false){
+                        try {
+                            synchronized(goDiet){
+                                goDiet.wait();
+                            }
+                        }
+                        catch (InterruptedException x) {
+                            System.out.println("Unexpected sleep interruption.");
+                        }
+                    }
+                }           // End while(true)
+            } catch (IOException ioe) {
+                System.out.println(ioe.getMessage());
+            }
         }               // End Shell mode context
     }                   // End main{}
 }                       // End GoDIET

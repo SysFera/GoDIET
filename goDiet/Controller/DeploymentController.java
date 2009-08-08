@@ -492,7 +492,7 @@ public class DeploymentController extends java.util.Observable
                         " did not register with log before deadline.", 1);
             // TODO: any special launch handling required here?
             }
-        } else {
+        } else if (element instanceof goDiet.Model.Agents) {
             consoleCtrl.printOutput(
                     "Waiting for 2 seconds after launch without log service feedback", 1);
             try {
@@ -856,16 +856,21 @@ public class DeploymentController extends java.util.Observable
                     String[] err = {"","","","",""};
 
                     int i = 0;
+                    boolean nStr = true;
                     while ((line = in.readLine()) != null) {
                         err[i%5] = line;
+                        if (!line.equals(""))
+                            nStr = false;
                     }
 
                     consoleCtrl.printOutput("# STATEOF " + element.getName()
                            + " " + "UNKNOWN");
-                    consoleCtrl.printOutput("Last lines in '" + element.getName() + ".err':");
-                    for (i = 0; i < 5; ++ i)
-                        if (!err[i].equals(""))
-                            consoleCtrl.printOutput(err[i]);
+                    if (! nStr) {
+                        consoleCtrl.printOutput("Last lines in '" + element.getName() + ".err':");
+                        for (i = 0; i < 5; ++ i)
+                            if (!err[i].equals(""))
+                                consoleCtrl.printOutput(err[i]);
+                    }
                 }
                 in.close();
                 error.close();

@@ -11,7 +11,9 @@
         <property name="version" value="2.3.0"/>        
         <property name="jarfile" value="${project}-${version}.jar"/>  
 	<property name="utils" value="compilUtils"/>
-	<property name="utilsBuild" value="compilUtilsBuild"/>      
+	<property name="utilsBuild" value="compilUtilsBuild"/>
+	<property name="LIBDIR" value="lib"/>
+	<property name="jline-jar" value="jline-0.9.94.jar"/>
     </target>
 
     <target depends="init" name="idlj">
@@ -117,6 +119,9 @@
     <target depends="init,package,package_diet" name="compile">
         <mkdir dir="${build}"/>        
         <javac debug="true" deprecation="true" destdir="${build}" srcdir="${src}">
+            <classpath>
+                <pathelement location="${LIBDIR}/${jline-jar}"/>
+            </classpath>
         </javac>
         <copy file="${src}/Utils/cfg_options.properties" tofile="${build}/Utils/cfg_options.properties"/>
     </target>
@@ -124,7 +129,8 @@
     <target depends="init,compile" description="Build the jar." name="jar">        
          <jar basedir="${build}" compress="true" jarfile="${jarfile}">
             <manifest>
-                <attribute name="Built-By" value="${user.name}"/>                
+                <attribute name="Built-By" value="${user.name}"/>
+                <attribute name="Class-Path" value="${LIBDIR}/${jline-jar}"/>
                 <section name="Project Descriptions">
                     <attribute name="Project-Title" value="${project}"/>
                     <attribute name="Project-Version" value="${version}"/>
@@ -198,6 +204,9 @@
 	</copy>
         <copy todir="${basedir}/${project}-${version}/${src}">
             <fileset dir="${basedir}/${src}"/>           
+        </copy>
+        <copy todir="${basedir}/${project}-${version}/${LIBDIR}">
+            <fileset dir="${LIBDIR}"/>
         </copy>
         <delete>
             <fileset dir="${basedir}/${project}-${version}/${src}/Utils/CORBA" id="idlGenerated">
