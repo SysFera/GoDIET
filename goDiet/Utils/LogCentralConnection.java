@@ -49,7 +49,7 @@ public class LogCentralConnection {
         filter.componentList[0] = "*";    
     }
     
-    public void recieveMsg(goDiet.Utils.CORBA.log_msg_t msg){
+    public void receiveMsg(goDiet.Utils.CORBA.log_msg_t msg){
         commController.queueMsg(msg);
     }
     public boolean connect(){        

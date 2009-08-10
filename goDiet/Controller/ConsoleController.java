@@ -52,7 +52,7 @@ public class ConsoleController extends java.util.Observable
             "The following commands are available:\n" +
             "   launch:     launch entire DIET platform\n" +
             "   relaunch:   kill the current platform and launch entire DIET platform once again\n" +
-            "   stop:       kill entire DIET platform using kill pid\n" +
+            "   stop:       kill entire DIET platform using kill pid (or ctrl+d)\n" +
             //        "   kill:       kill entire DIET platform using kill -9 pid\n" +
             "   status:     print run status of each DIET component\n" +
             "   history:    print history of commands executed\n" +

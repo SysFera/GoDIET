@@ -11,8 +11,7 @@ import goDiet.Model.*;
 import goDiet.Events.*;
 import goDiet.Defaults;
 
-import java.io.IOException;
-import java.io.BufferedReader;
+import java.io.*;
 import java.util.Iterator;
 import java.io.InputStreamReader;
 import java.util.Properties;
@@ -572,6 +571,7 @@ public class DeploymentController extends java.util.Observable
     public void stopLogCentral() {
         Elements logger = this.dietPlatform.getLogCentral();
         stopService(logger);
+        ((LogCentral) this.dietPlatform.getLogCentral()).setLogCentralConnected(false);
     }
 
     public void stopTestTool() {
@@ -660,7 +660,55 @@ public class DeploymentController extends java.util.Observable
         for (it = seds.iterator(); it.hasNext();) {
             createCfgFile((Elements) it.next());
         }
+
+        createClientCfgFile(mAgents, ma_dags);
     //System.exit(1);
+    }
+
+    private void createClientCfgFile(java.util.Vector mAgents,
+            java.util.Vector ma_dags) {
+        RunConfig runCfg = consoleCtrl.getRunConfig();
+        File cfgFile = new File(runCfg.getLocalScratch(),
+                    "client.cfg");
+        try {
+            cfgFile.createNewFile();
+            consoleCtrl.printOutput("Writing config file client.cfg", 1);
+            FileWriter out = new FileWriter(cfgFile);
+
+            out.write("# Available MA: ");
+            boolean first = true;
+            String MAc = "";
+            for (Iterator it = mAgents.iterator(); it.hasNext();) {
+                MasterAgent MA = (MasterAgent)it.next();
+                out.write(MA.getName() + " ");
+                if (first) {
+                    first = false;
+                    MAc = MA.getName();
+                }
+            }
+            out.write("\n");
+            out.write("MAName = " + MAc + "\n\n");
+
+            first = true;
+            String line = "";
+            String MADc = "";
+            for (Iterator it = ma_dags.iterator(); it.hasNext();) {
+                Ma_dag MAD = (Ma_dag)it.next();
+                line += MAD.getName() + " ";
+                if (first) {
+                    first = false;
+                    MADc = MAD.getName();
+                }
+            }
+            if (! first) {
+                out.write("# Available MA DAG: " + line + "\n");
+                out.write("MADAGNAME = " + MADc);
+            }
+
+            out.close();
+        } catch (IOException x) {
+            consoleCtrl.printError("Failed to write " + cfgFile.getPath());
+        }
     }
 
     private void createCfgFile(Elements element) {

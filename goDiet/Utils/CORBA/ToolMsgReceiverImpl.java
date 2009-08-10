@@ -12,7 +12,7 @@ public class ToolMsgReceiverImpl extends ToolMsgReceiverPOA {
         for (int i = 0 ; i < msgBuf.length ; i++) {
             //sendMsg(msgBuf[i]);
             //System.out.println("SendMsg");
-            logCentralConnection.recieveMsg(msgBuf[i]);
+            logCentralConnection.receiveMsg(msgBuf[i]);
         }
         //throw new UnsupportedOperationException();
     }

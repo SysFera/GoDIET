@@ -602,7 +602,11 @@ public class XmlScanner implements ErrorHandler {
         for (int i = 0; i < attrs.getLength(); i++) {
             org.w3c.dom.Attr attr = (org.w3c.dom.Attr) attrs.item(i);
             if (attr.getName().equals("contact")) {
-                contact = attr.getValue();
+                String val = attr.getValue();
+                if (val.equals("localhost"))
+                    contact = "127.0.0.1";
+                else
+                    contact = val;
             } else if (attr.getName().equals("port")) {
                 port = (new Integer(attr.getValue())).intValue();
             }
