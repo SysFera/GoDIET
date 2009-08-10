@@ -153,7 +153,10 @@ public class ConsoleController extends java.util.Observable
     
     public boolean doCommand(String cmd){
         boolean giveUserCtrl = true;
-        if(cmd != null && !cmd.equalsIgnoreCase("") && !cmd.equalsIgnoreCase(" ")){
+        // For CTRL + D: cmd == null, we consider that CTRL + D == stop
+        if (cmd == null)
+            cmd = "stop";
+        if(!cmd.equalsIgnoreCase("") && !cmd.equalsIgnoreCase(" ")){
             history.add(cmd);
             java.util.StringTokenizer strTok = new java.util.StringTokenizer(cmd," ");
             String command= strTok.nextToken();
@@ -173,7 +176,7 @@ public class ConsoleController extends java.util.Observable
             }else if (command.compareTo("relaunch") == 0){
                 relaunch();
                 giveUserCtrl = false;
-            }else if (command.compareTo("stop") == 0 ){
+            }else if (command.compareTo("stop") == 0){
                 stop();
                 giveUserCtrl = false;
             }else if (command.compareTo("status") == 0){

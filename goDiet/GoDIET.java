@@ -44,7 +44,7 @@ public class GoDIET implements java.util.Observer {
             }
         }
     }
-    
+
     public static void main(String[] args) {
         GoDIET goDiet = new GoDIET();
         boolean launchMode = false;
