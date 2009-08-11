@@ -31,7 +31,7 @@ public class GoDIET implements java.util.Observer {
     public void update(Observable observable, Object obj) {
         java.awt.AWTEvent e = (java.awt.AWTEvent)obj;
         int newState;
-        if ( e instanceof goDiet.Events.DeployStateChange){
+        if ( e instanceof DeployStateChange){
             newState = ((DeployStateChange)e).getNewState();
             //System.out.println("godiet Changing state to : " +
               //  goDiet.Defaults.getDeployStateString(newState));
