@@ -6,7 +6,7 @@
  */
 
 package goDiet.Model;
-import Model.ElementCfg;
+
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Iterator;
