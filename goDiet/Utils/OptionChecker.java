@@ -33,7 +33,7 @@ public class OptionChecker {
         }
     }
     
-    private URL checkFile = getClass().getResource("/Utils/cfg_options.properties");
+    private URL checkFile = getClass().getResource("/goDiet/Utils/cfg_options.properties");
     public Vector valid_options = new Vector();
     
     public OptionChecker(){
