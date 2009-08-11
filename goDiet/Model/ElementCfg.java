@@ -3,7 +3,7 @@
  * 
  */
 
-package Model;
+package goDiet.Model;
 
 import goDiet.Model.Option;
 import java.util.Iterator;
