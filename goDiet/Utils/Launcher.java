@@ -7,7 +7,13 @@
 
 package goDiet.Utils;
 
-import goDiet.Model.*;
+import goDiet.Model.AccessMethod;
+import goDiet.Model.ComputeCollection;
+import goDiet.Model.ComputeResource;
+import goDiet.Model.Elements;
+import goDiet.Model.OmniNames;
+import goDiet.Model.RunConfig;
+import goDiet.Model.StorageResource;
 
 import java.io.*;
 import java.util.*;
