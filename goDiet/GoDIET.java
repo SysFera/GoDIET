@@ -21,9 +21,9 @@ import jline.*;
  */
 public class GoDIET implements java.util.Observer {
     protected static final String USAGE =
-            "USAGE: GoDiet [--launch] <file.xml>\n" +
+            "USAGE: GoDiet [--launch|--launch_check] <file.xml>\n" +
             "       GoDiet --interface";
-    private int deployState = goDiet.Defaults.DEPLOY_NONE;
+    private int deployState = Defaults.DEPLOY_NONE;
     
     public GoDIET() {
     }
@@ -52,6 +52,7 @@ public class GoDIET implements java.util.Observer {
         boolean interfaceMode = false;
         String xmlFile = "";
         boolean giveUserCtrl = true;
+        boolean check_mode = false;
         int i;
         //System.out.println("args.length :"+args.length);
         if (args.length<1 || args.length>2){
@@ -67,6 +68,13 @@ public class GoDIET implements java.util.Observer {
                 launchMode =true;
                 xmlFile = args[args.length - 1];
             }   
+            if(args[0].compareTo("--launch_check") == 0){
+                shellMode = false;
+                interfaceMode=false;
+                launchMode =true;
+                check_mode = true;
+                xmlFile = args[args.length - 1];
+            } 
         }
         if (args.length==1){
             if (args[0].compareTo("--interface") == 0){
@@ -84,7 +92,8 @@ public class GoDIET implements java.util.Observer {
             ConsoleController consoleController = new ConsoleController(goDiet);
             consoleController.loadXmlFile(xmlFile);            
             consoleController.printOutput("* Launching DIET platform.");
-            consoleController.doCommand("launch");
+            if(check_mode) consoleController.doCommand("launch_check");
+            else consoleController.doCommand("launch");
             consoleController.printOutput("GoDIET finished.");
         } else if (interfaceMode){
             java.awt.EventQueue.invokeLater(new Runnable() {
@@ -104,7 +113,7 @@ public class GoDIET implements java.util.Observer {
                 reader.setBellEnabled(false);
 
                 List completors = new LinkedList();
-                completors.add(new SimpleCompletor(new String[] { "launch",
+                completors.add(new SimpleCompletor(new String[] { "launch", "launch_check",
                     "relaunch", "stop", "status", "history", "help", "check",
                     "stop_check", "exit"}));
                 reader.addCompletor(new ArgumentCompletor(completors));

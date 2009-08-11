@@ -50,16 +50,17 @@ public class ConsoleController extends java.util.Observable
     
     protected static final String HELP =
             "The following commands are available:\n" +
-            "   launch:     launch entire DIET platform\n" +
-            "   relaunch:   kill the current platform and launch entire DIET platform once again\n" +
-            "   stop:       kill entire DIET platform using kill pid (or ctrl+d)\n" +
+            "   launch:       launch entire DIET platform\n" +
+            "   launch_check: launch entire DIET platform then check its status\n" +
+            "   relaunch:     kill the current platform and launch entire DIET platform once again\n" +
+            "   stop:         kill entire DIET platform using kill pid\n" +
             //        "   kill:       kill entire DIET platform using kill -9 pid\n" +
-            "   status:     print run status of each DIET component\n" +
-            "   history:    print history of commands executed\n" +
-            "   help:       print this message\n" +
-            "   check:      check the platform status\n" +
-            "   stop_check: stop the platform status then check its status before exit\n" +
-            "   exit:       exit GoDIET, do not change running platform.\n";
+            "   status:       print run status of each DIET component\n" +
+            "   history:      print history of commands executed\n" +
+            "   help:         print this message\n" +
+            "   check:        check the platform status\n" +
+            "   stop_check:   stop the platform status then check its status before exit\n" +
+            "   exit:         exit GoDIET, do not change running platform.\n";
     
     /** Creates a new instance of ConsoleController */
     public ConsoleController(goDiet.Interface.GoDIETConsolePanel consolePanel) {
@@ -173,7 +174,13 @@ public class ConsoleController extends java.util.Observable
             }else if (command.compareTo("launch") == 0){
                 launch();
                 giveUserCtrl = false;
-            }else if (command.compareTo("relaunch") == 0){
+
+            }
+            else if (command.compareTo("launch_check") == 0){
+            	launchCheck();
+            	giveUserCtrl = false;
+            }
+            else if (command.compareTo("relaunch") == 0){
                 relaunch();
                 giveUserCtrl = false;
             }else if (command.compareTo("stop") == 0){
@@ -221,6 +228,22 @@ public class ConsoleController extends java.util.Observable
             setChanged();
             this.printOutput("sending launch request all", 3);
             notifyObservers(new goDiet.Events.LaunchRequest(this,"all"));
+            clearChanged();
+            
+            /*if(interfaceMode){
+              goDietConsolePanel.getStopButton().setEnabled(true);
+              goDietConsolePanel.getLaunchButton().setEnabled(false);
+              }*/
+        } else {
+            printError("You must load the XML file before launch !");
+        }
+    }
+    
+    private void launchCheck(){
+        if (fileLoaded){
+            setChanged();
+            this.printOutput("sending launch_check request all", 3);
+            notifyObservers(new goDiet.Events.LaunchCheckRequest(this,"all"));
             clearChanged();
             
             /*if(interfaceMode){
@@ -405,7 +428,6 @@ public class ConsoleController extends java.util.Observable
     
     public Vector check(){ 
         Vector checks= null;
-        printOutput("## BEGIN CHECK");
         if (fileLoaded){
             checks= deployCtrl.checkPlatform();
         } else {
