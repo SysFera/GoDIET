@@ -81,6 +81,10 @@ public class DeploymentController extends java.util.Observable
                     consoleCtrl.printOutput("got launch all request", 2);
                     requestLaunch("all");
                 }
+                if (request.compareTo("launch_check all") == 0) {
+                    consoleCtrl.printOutput("got launch_check all request", 2);
+                    requestLaunchCheck("all");
+                }
             }
         }
     }
@@ -96,7 +100,8 @@ public class DeploymentController extends java.util.Observable
             synchronized (this) {
                 notifyAll();
             }
-        } else if (e instanceof LogStateChange) {
+        } 
+        else if (e instanceof LogStateChange) {
             int newState = ((LogStateChange) e).getNewState();
             String elementName = ((LogStateChange) e).getElementName();
             String elementType = ((LogStateChange) e).getElementType();
@@ -119,6 +124,14 @@ public class DeploymentController extends java.util.Observable
                         " verification by log for " + elementName, 1);
             // TODO: find element and change log state
             // [TODO: better ID handling for SeDs]
+            }
+        }
+        else if(e instanceof LaunchCheckRequest){
+        	request = ((LaunchCheckRequest) e).getLaunchAndRequest();
+            consoleCtrl.printOutput("Got launch_check request : " + request, 3);
+            queueRequest("launch_check " + request);
+            synchronized (this) {
+                notifyAll();
             }
         }
     }
@@ -155,7 +168,7 @@ public class DeploymentController extends java.util.Observable
                 deploySuccess = launchPlatform();
             }
         }
-
+        
         setChanged();
         if (deploySuccess) {
             consoleCtrl.printOutput("Deployer: Sending deploy state ACTIVE.", 3);
@@ -166,6 +179,37 @@ public class DeploymentController extends java.util.Observable
             notifyObservers(new goDiet.Events.DeployStateChange(
                     this, goDiet.Defaults.DEPLOY_INACTIVE));
         }
+        clearChanged();
+    }
+    
+    /* Interfaces for launching the diet platform, or parts thereof */
+    public void requestLaunchCheck(String request) {
+        boolean deploySuccess = false;
+        setChanged();
+        consoleCtrl.printOutput("Deployer: Sending deploy state LAUNCHING.", 3);
+        notifyObservers(new goDiet.Events.DeployStateChange(
+                this, goDiet.Defaults.DEPLOY_LAUNCHING));
+        clearChanged();
+
+        if (request.compareTo("all") == 0) {
+            if (stageFileBefore) {
+                deploySuccess = launchPlatform2();
+            } else {
+                deploySuccess = launchPlatform();
+            }
+        }
+        checkPlatform();
+        setChanged();
+        if (deploySuccess) {
+            consoleCtrl.printOutput("Deployer: Sending deploy state ACTIVE.", 3);
+            notifyObservers(new goDiet.Events.DeployStateChange(
+                    this, goDiet.Defaults.DEPLOY_ACTIVE));            
+        } else {
+            consoleCtrl.printOutput("Deployer: Sending deploy state INACTIVE.", 3);
+            notifyObservers(new goDiet.Events.DeployStateChange(
+                    this, goDiet.Defaults.DEPLOY_INACTIVE));
+        }
+        
         clearChanged();
     }
 
@@ -745,6 +789,7 @@ public class DeploymentController extends java.util.Observable
      */
  
     public Vector checkPlatform() {
+    	consoleCtrl.printOutput("## BEGIN CHECK");
         Vector checks = new Vector();
         //checks.addAll(checkOmniNames());
         checks.addAll(checkMasterAgents());
@@ -947,8 +992,8 @@ public class DeploymentController extends java.util.Observable
 
         String state = "UNKNOWN";
         if (eltType.equals(MA_IOR)) {
-            diet.corba.MasterAgent ma = null;
-            ma = diet.corba.MasterAgentHelper.narrow(orb.string_to_object(ior));
+            goDiet.diet.corba.MasterAgent ma = null;
+            ma = goDiet.diet.corba.MasterAgentHelper.narrow(orb.string_to_object(ior));
             try {
                 ma.ping();
                 return STATE_OK;
@@ -957,8 +1002,8 @@ public class DeploymentController extends java.util.Observable
             }
         }
         if (eltType.equals(LA_IOR)) {
-            diet.corba.LocalAgent la = null;
-            la = diet.corba.LocalAgentHelper.narrow(orb.string_to_object(ior));
+            goDiet.diet.corba.LocalAgent la = null;
+            la = goDiet.diet.corba.LocalAgentHelper.narrow(orb.string_to_object(ior));
             try {
                 la.ping();
                 return STATE_OK;
@@ -967,8 +1012,8 @@ public class DeploymentController extends java.util.Observable
             }
         }
         if (eltType.equals(SED_IOR)) {
-            diet.corba.SeD sed = null;
-            sed = diet.corba.SeDHelper.narrow(orb.string_to_object(ior));
+            goDiet.diet.corba.SeD sed = null;
+            sed = goDiet.diet.corba.SeDHelper.narrow(orb.string_to_object(ior));
             try {
                 sed.ping();
                 return STATE_OK;
@@ -991,8 +1036,8 @@ public class DeploymentController extends java.util.Observable
         System.setOut(null);
 
         if (elType.equals(MA_IOR)) {
-            diet.corba.MasterAgent ma = null;
-            ma = diet.corba.MasterAgentHelper.narrow(orb.string_to_object(ior));
+            goDiet.diet.corba.MasterAgent ma = null;
+            ma = goDiet.diet.corba.MasterAgentHelper.narrow(orb.string_to_object(ior));
             try {
                 ping = ma.ping();
                 state = STATE_OK;
@@ -1001,8 +1046,8 @@ public class DeploymentController extends java.util.Observable
             }
         }
         if (elType.equals(MADAG_IOR)) {
-            diet.corba.MaDag madag = null;
-            madag = diet.corba.MaDagHelper.narrow(orb.string_to_object(ior));
+            goDiet.diet.corba.MaDag madag = null;
+            madag = goDiet.diet.corba.MaDagHelper.narrow(orb.string_to_object(ior));
             try {
                 ping = madag.ping();
                 state = STATE_OK;
@@ -1011,8 +1056,8 @@ public class DeploymentController extends java.util.Observable
             }
         }
         if (elType.equals(LA_IOR)) {
-            diet.corba.LocalAgent la = null;
-            la = diet.corba.LocalAgentHelper.narrow(orb.string_to_object(ior));
+            goDiet.diet.corba.LocalAgent la = null;
+            la = goDiet.diet.corba.LocalAgentHelper.narrow(orb.string_to_object(ior));
             try {                
                 ping = la.ping();
                 state = STATE_OK;
@@ -1021,8 +1066,8 @@ public class DeploymentController extends java.util.Observable
             }
         }
         if (elType.equals(SED_IOR)) {
-            diet.corba.SeD sed = null;
-            sed = diet.corba.SeDHelper.narrow(orb.string_to_object(ior));
+            goDiet.diet.corba.SeD sed = null;
+            sed = goDiet.diet.corba.SeDHelper.narrow(orb.string_to_object(ior));
             try {
                 ping = sed.ping();
                 state = STATE_OK;
