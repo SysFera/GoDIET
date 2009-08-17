@@ -1030,11 +1030,13 @@ public class DeploymentController extends java.util.Observable
         int ping = -1;
 
         /* Awful hack to remove stacktrace printout everytime a ping() fails */
-        PrintStream err = System.err;
+
+        /*PrintStream err = System.err;
         PrintStream out = System.out;
         System.setErr(null);
         System.setOut(null);
-
+         */
+        
         if (elType.equals(MA_IOR)) {
             goDiet.diet.corba.MasterAgent ma = null;
             ma = goDiet.diet.corba.MasterAgentHelper.narrow(orb.string_to_object(ior));
@@ -1076,9 +1078,9 @@ public class DeploymentController extends java.util.Observable
             }
         }
 
-        System.setErr(err);
-        System.setOut(out);
-        
+        /*System.setErr(err);
+        System.setOut(out);*/
+    
         Properties prop = new Properties();
         prop.setProperty("state", state);
         prop.setProperty("pid", ""+ping);           
