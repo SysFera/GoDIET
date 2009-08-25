@@ -27,7 +27,10 @@ public class AccessMethod {
     public AccessMethod(String type, String server, String login) {
         this.type = type;
         this.server = server;
-        this.login = login;
+        if (login == null || login.equals(""))
+            this.login = this.discoverLogin();
+        else
+            this.login = login;
     }
     
     public String getServer(){
@@ -44,7 +47,10 @@ public class AccessMethod {
     
     /* Use environment variable retrieval to find out current login name */
     private String discoverLogin() {
-        return System.getProperty("user.name");
+        String loginTmp = System.getProperty("user.name");
+        if (loginTmp == null || loginTmp.equals(""))
+                loginTmp = System.getenv("USER");
+        return loginTmp;
     }
     
     public static void main(String args[]) {
