@@ -136,7 +136,6 @@ public class Launcher {
      */
     public void launchElement2(Elements element,
             boolean useLogService){
-        RunConfig runCfg = consoleCtrl.getRunConfig();
         if(element == null){
             consoleCtrl.printError("launchElement called with null element. " +
                     "Launch request ignored.", 1);
