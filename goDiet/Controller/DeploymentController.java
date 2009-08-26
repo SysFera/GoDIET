@@ -915,7 +915,9 @@ public class DeploymentController extends java.util.Observable
                 Properties props = new Properties();
                 props.put("org.omg.CORBA.ORBInitialHost", dietPlatform.getOmniNames().getContact());
                 props.put("org.omg.CORBA.ORBInitialPort", "" + dietPlatform.getOmniNames().getPort());
-                org.omg.CORBA.ORB orb = org.omg.CORBA.ORB.init((String[]) null, props);
+                String [] emptyArgs = {""};
+                org.omg.CORBA.ORB orb = org.omg.CORBA.ORB.init(emptyArgs, props);
+                //org.omg.CORBA.ORB orb = org.omg.CORBA.ORB.init((String[]) null, props);
                 while ((line = in.readLine()) != null) {
                     // consoleCtrl.printOutput("@" + line);
                     if (line.startsWith("## " + eltType)) {
