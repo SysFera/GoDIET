@@ -11,6 +11,8 @@ import goDiet.Model.AccessMethod;
 import goDiet.Model.ComputeCollection;
 import goDiet.Model.ComputeResource;
 import goDiet.Model.Elements;
+import goDiet.Model.Agents;
+import goDiet.Model.ServerDaemon;
 import goDiet.Model.OmniNames;
 import goDiet.Model.RunConfig;
 import goDiet.Model.StorageResource;
@@ -188,7 +190,10 @@ public class Launcher {
     public void stopElement(Elements element){
         consoleCtrl.printOutput("Trying to stop element " + element.getName(),1);
         SshUtils sshUtil = new SshUtils(consoleCtrl);
-        sshUtil.stopWithSsh(element,consoleCtrl.getRunConfig());
+        if (element instanceof Agents || element instanceof ServerDaemon)
+            sshUtil.stopWithSsh(element,consoleCtrl.getRunConfig(), true);
+        else
+            sshUtil.stopWithSsh(element,consoleCtrl.getRunConfig(), false);
     }
     
     public void createCfgFile(Elements element,

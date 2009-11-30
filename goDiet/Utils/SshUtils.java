@@ -359,7 +359,8 @@ public class SshUtils {
         return;
     }
     
-    public void stopWithSsh(Elements element,RunConfig runConfig) {
+    public void stopWithSsh(Elements element,RunConfig runConfig,
+                            boolean SIGINT) {
         ComputeResource compRes = element.getComputeResource();
         AccessMethod access = compRes.getAccessMethod("ssh");
         LaunchInfo launch = element.getLaunchInfo();
@@ -373,8 +374,13 @@ public class SshUtils {
                     element.getName() + ". Ignoring stop request.");
         }
         
-        String stopJob = "kill " + element.getLaunchInfo().getPID();
-        
+        String stopJob;
+        if (SIGINT)
+            stopJob = "kill -s SIGINT " + element.getLaunchInfo().getPID();
+        else
+            stopJob = "kill -9 " + element.getLaunchInfo().getPID();
+
+
         String[] commandStop = {"/usr/bin/ssh",
                 access.getLogin() + "@" + access.getServer(),
                 stopJob};
