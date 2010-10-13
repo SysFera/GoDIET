@@ -50,17 +50,18 @@ public class ConsoleController extends java.util.Observable
     
     protected static final String HELP =
             "The following commands are available:\n" +
-            "   launch:       launch entire DIET platform\n" +
-            "   launch_check: launch entire DIET platform then check its status\n" +
-            "   relaunch:     kill the current platform and launch entire DIET platform once again\n" +
-            "   stop:         kill entire DIET platform using kill pid\n" +
+            "   launch:          launch entire DIET platform\n" +
+            "   launch_check:    launch entire DIET platform then check its status\n" +
+            "   relaunch:        kill the current platform and launch entire DIET platform once again\n" +
+            "   relaunch_failed: relaunch only failed elements\n" +
+            "   stop:            kill entire DIET platform using kill pid\n" +
             //        "   kill:       kill entire DIET platform using kill -9 pid\n" +
-            "   status:       print run status of each DIET component\n" +
-            "   history:      print history of commands executed\n" +
-            "   help:         print this message\n" +
-            "   check:        check the platform status\n" +
-            "   stop_check:   stop the platform status then check its status before exit\n" +
-            "   exit:         exit GoDIET, do not change running platform.\n";
+            "   status:          print run status of each DIET component\n" +
+            "   history:         print history of commands executed\n" +
+            "   help:            print this message\n" +
+            "   check:           check the platform status\n" +
+            "   stop_check:      stop the platform status then check its status before exit\n" +
+            "   exit:            exit GoDIET, do not change running platform.\n";
     
     /** Creates a new instance of ConsoleController */
     public ConsoleController(goDiet.Interface.GoDIETConsolePanel consolePanel) {
@@ -183,6 +184,10 @@ public class ConsoleController extends java.util.Observable
             else if (command.compareTo("relaunch") == 0){
                 relaunch();
                 giveUserCtrl = false;
+            }
+            else if (command.compareTo("relaunch_failed") == 0){
+                relaunch_failed();
+                //giveUserCtrl = false;
             }else if (command.compareTo("stop") == 0){
                 stop();
                 giveUserCtrl = false;
@@ -288,7 +293,18 @@ public class ConsoleController extends java.util.Observable
         }
     }
 
-    
+
+    private void relaunch_failed(){
+        if (fileLoaded){
+            setChanged();
+            deployCtrl.checkRelaunchPlatform();
+            clearChanged();
+        } else {
+            printOutput("[Relaunch-Failed]: You must load the XML file before checking the platform status !");
+        }
+    }
+
+
     private void stop(){
         java.util.Date startTime, endTime;
         double timeDiff;
@@ -431,7 +447,7 @@ public class ConsoleController extends java.util.Observable
         if (fileLoaded){
             checks= deployCtrl.checkPlatform();
         } else {
-            printOutput("[Check]: You must load the XML file before check the platform status !");
+            printOutput("[Check]: You must load the XML file before checking the platform status !");
         }
         return checks;
     }    

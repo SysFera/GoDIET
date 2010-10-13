@@ -8,7 +8,7 @@
         <property name="build" value="build"/>
         <property name="dist" value="."/>
         <property name="apidoc" value="doc"/>
-        <property name="version" value="2.3.0"/>        
+        <property name="version" value="2.4.0"/>
         <property name="jarfile" value="${project}-${version}.jar"/>  
 	<property name="utils" value="compilUtils"/>
 	<property name="utilsBuild" value="compilUtilsBuild"/>
@@ -130,7 +130,7 @@
          <jar basedir="${build}" compress="true" jarfile="${jarfile}">
             <manifest>
                 <attribute name="Built-By" value="${user.name}"/>
-                <attribute name="Class-Path" value="${LIBDIR}/${jline-jar}"/>
+                <attribute name="Class-Path" value="${LIBDIR}/${jline-jar} ${jline-jar}"/>
                 <section name="Project Descriptions">
                     <attribute name="Project-Title" value="${project}"/>
                     <attribute name="Project-Version" value="${version}"/>

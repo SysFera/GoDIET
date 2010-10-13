@@ -6,16 +6,17 @@
  */
 package goDiet.Controller;
 
-import goDiet.Utils.*;
 import goDiet.Model.*;
 import goDiet.Events.*;
-import goDiet.Defaults;
 
 import java.io.*;
 import java.util.Iterator;
 import java.io.InputStreamReader;
 import java.util.Properties;
 import java.util.Vector;
+import org.omg.CosNaming.*;
+import org.omg.PortableServer.*;
+import org.omg.PortableServer.POA;
 
 /**
  *
@@ -506,7 +507,8 @@ public class DeploymentController extends java.util.Observable
         // the case of Ma_dag should be remove when the Ma_dag will use the LogService
         if (element instanceof goDiet.Model.Services /*|| element instanceof goDiet.Model.Ma_dag*/) { 
             consoleCtrl.printOutput(
-                    "Waiting for 3 seconds after service launch", 1);
+                    "Waiting for " + WAITING_TIME_FOR_SERVICE/1000
+                    + " seconds after service launch", 1);
             try {
                 Thread.sleep(WAITING_TIME_FOR_SERVICE);
             } catch (InterruptedException x) {
@@ -537,7 +539,8 @@ public class DeploymentController extends java.util.Observable
             }
         } else if (element instanceof goDiet.Model.Agents) {
             consoleCtrl.printOutput(
-                    "Waiting for 2 seconds after launch without log service feedback", 1);
+                    "Waiting for " + WAITING_TIME_FOR_ELEMENT/1000
+                    + " seconds after launch without log service feedback", 1);
             try {
                 Thread.sleep(WAITING_TIME_FOR_ELEMENT);
             } catch (InterruptedException x) {
@@ -798,7 +801,135 @@ public class DeploymentController extends java.util.Observable
         checks.addAll(checkServerDaemons());
         return checks;
     }
-     /* 
+
+    private Vector checkRelaunchElements(java.util.Vector elements,
+                                         String eltType) {
+        Vector checks = new Vector();
+        Vector elementsDown = new Vector();
+        Vector elementsReconnect = new Vector();
+        Properties checkProperties = null;
+        Elements currElement = null;
+        for (int i = 0; i < elements.size(); i++) {
+            currElement = (Elements) elements.elementAt(i);
+            ComputeResource compRes = currElement.getComputeResource();
+            //checkElement(currElement, compRes, eltType);
+
+            checkProperties = checkElement2(currElement, compRes, eltType);
+            checks.add(checkProperties);
+
+            /* Do we need to relaunch this element? */
+            if (checkProperties == null ||
+                checkProperties.getProperty("state") == STATE_DOWN) {
+        	consoleCtrl.printOutput("## An element is down");
+                currElement.getLaunchInfo().setLaunchState(goDiet.Defaults.LAUNCH_STATE_FAILED);
+                elementsDown.add(currElement);
+
+                    if (currElement instanceof Agents) {
+                        elementsReconnect.addAll(((Agents) currElement).getChildren());
+                    }
+            }
+        }
+
+        /* Relaunch elements which are down */
+        if (! elementsDown.isEmpty()) {
+            consoleCtrl.printOutput("# Relaunching killed elements.");
+            launchElements(elementsDown);
+        }
+        
+        return elementsReconnect;
+    }
+
+    private boolean reconnectElement(Elements element) {
+        OmniNames omni = this.dietPlatform.getOmniNames();
+        Properties props = new Properties();
+        props.put("org.omg.CORBA.ORBInitialHost", omni.getContact());
+        props.put("org.omg.CORBA.ORBInitialPort", omni.getPort());
+        props.put("org.omg.CORBA.ORBInitRef",
+                  "NameService=corbaname::" + omni.getContact() + ":" + omni.getPort());
+        org.omg.CORBA.ORB orb = org.omg.CORBA.ORB.init(new String[0], props);
+
+        try {
+            org.omg.CORBA.Object rootPOARef =
+                orb.resolve_initial_references("RootPOA");
+            POA rootpoa = POAHelper.narrow(rootPOARef);
+            rootpoa.the_POAManager().activate();
+
+            org.omg.CORBA.Object ncObjRef =
+                orb.resolve_initial_references("NameService");
+            NamingContextExt ncRef = NamingContextExtHelper.narrow(ncObjRef);
+
+
+            NameComponent nc1 = null;
+            if (element instanceof ServerDaemon)
+                nc1 = new NameComponent("dietSeD","");
+            else
+                nc1 = new NameComponent("dietAgent","");
+            NameComponent nc2 = new NameComponent(element.getName(), "");
+            NameComponent path[] = {nc1, nc2};
+            consoleCtrl.printOutput("Reconnecting " +  element.getName());
+
+            org.omg.CORBA.Object objref = ncRef.resolve(path);
+
+            if (element instanceof ServerDaemon) {
+                goDiet.diet.corba.SeD SeD = null;
+                SeD = goDiet.diet.corba.SeDHelper.narrow(objref);
+                SeD.bindParent(((ServerDaemon)element).getParent().getName());
+            } else {
+                goDiet.diet.corba.LocalAgent LA;
+                LA = goDiet.diet.corba.LocalAgentHelper.narrow(objref);
+                LA.bindParent(((LocalAgent)element).getParent().getName());
+            }
+        } catch(org.omg.CORBA.UserException ex2) {
+            consoleCtrl.printError("Connection to element " + element.getName()
+                    + ": Cannot find the servant.", 0);
+            return false;
+        } catch (Exception e){
+            consoleCtrl.printError("Connection to element " + element.getName()
+                    + " (err: " + e.getMessage()
+                    + "). Cannot find the servant.", 0);
+            return false;
+        }
+
+        return true;
+    }
+
+    private void reconnectElements(Vector elements) {
+        Elements currElement = null;
+        for (int i = 0; i < elements.size(); i++) {
+            currElement = (Elements) elements.elementAt(i);
+            if (currElement instanceof ServerDaemon ||
+                currElement instanceof LocalAgent)
+                reconnectElement(currElement);
+        }
+ 
+    }
+
+    public void checkRelaunchPlatform() {
+    	consoleCtrl.printOutput("## BEGIN CHECK & RELAUNCH");
+        Vector elementsReconnect = new Vector();
+        //checkRelaunchOmniNames();
+        elementsReconnect.addAll(checkRelaunchMasterAgents());
+        elementsReconnect.addAll(checkRelaunchMa_dags());
+        elementsReconnect.addAll(checkRelaunchLocalAgents());
+        elementsReconnect.addAll(checkRelaunchServerDaemons());
+
+        /* Reconnect elements whose parent was down */
+        if (! elementsReconnect.isEmpty()) {
+            consoleCtrl.printOutput("Waiting for " + WAITING_TIME_FOR_SERVICE/1000
+                    + " seconds after service launch", 1);
+            try {
+                Thread.sleep(WAITING_TIME_FOR_SERVICE);
+            } catch (InterruptedException x) {
+                consoleCtrl.printError("Launch Service: Unexpected sleep interruption.", 0);
+            }
+
+            consoleCtrl.printOutput("# Reconnecting hierarchy.");
+            reconnectElements(elementsReconnect);
+        }
+    }
+
+
+    /*
      * TODO
      */
     private void checkOmniNames() {
@@ -810,10 +941,19 @@ public class DeploymentController extends java.util.Observable
         return checkElements(mAgents, MA_IOR);
     }
 
+    private Vector checkRelaunchMasterAgents() {
+        java.util.Vector mAgents = this.dietPlatform.getMasterAgents();
+        return checkRelaunchElements(mAgents, MA_IOR);
+    }
     
     private Vector checkMa_dags() {        
            java.util.Vector madgas = this.dietPlatform.getMa_dags();
         return checkElements(madgas, MADAG_IOR);
+    }
+
+    private Vector checkRelaunchMa_dags() {
+           java.util.Vector madgas = this.dietPlatform.getMa_dags();
+        return checkRelaunchElements(madgas, MADAG_IOR);
     }
 
     private Vector checkLocalAgents() {
@@ -821,9 +961,19 @@ public class DeploymentController extends java.util.Observable
         return checkElements(lAgents, LA_IOR);
     }
 
+    private Vector checkRelaunchLocalAgents() {
+        java.util.Vector lAgents = this.dietPlatform.getLocalAgents();
+        return checkRelaunchElements(lAgents, LA_IOR);
+    }
+
     private Vector checkServerDaemons() {
         java.util.Vector seds = this.dietPlatform.getServerDaemons();
         return checkElements(seds, SED_IOR);
+    }
+
+    private Vector checkRelaunchServerDaemons() {
+        java.util.Vector seds = this.dietPlatform.getServerDaemons();
+        return checkRelaunchElements(seds, SED_IOR);
     }
 
     private Vector checkElements(java.util.Vector elements,

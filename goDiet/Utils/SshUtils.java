@@ -376,7 +376,8 @@ public class SshUtils {
         
         String stopJob;
         if (SIGINT)
-            stopJob = "kill -s SIGINT " + element.getLaunchInfo().getPID();
+//            stopJob = "kill -s SIGINT " + element.getLaunchInfo().getPID();
+            stopJob = "kill -9 " + element.getLaunchInfo().getPID();
         else
             stopJob = "kill -9 " + element.getLaunchInfo().getPID();
 

@@ -46,6 +46,7 @@ public class DietElements extends Elements {
     public void setName(String name) {
         super.setName(name);
         this.elConfig.setCfgFileName(name + ".cfg");
+        this.elConfig.addOption(new Option("name", name));
     }
 
     public void setUseDietStats(boolean flag) {

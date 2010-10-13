@@ -26,10 +26,12 @@ public class Agents extends DietElements {
         //notifyObservers(new Events.AddElementsEvent(newChild));
         //clearChanged();
     }
-    public void setName(String name){
+/*    public void setName(String name){
         super.setName(name);
         this.elConfig.addOption(new Option("name", name));
     }
+ */
+
     public java.util.Vector getChildren(){
         return this.children;
     }
