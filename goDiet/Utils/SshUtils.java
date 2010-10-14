@@ -174,12 +174,17 @@ public class SshUtils {
         }
         
         /** If element is omniNames, need to ensure old log file is deleted so
-         * can use "omniNames -start port" command. */
-        if( (element instanceof goDiet.Model.OmniNames) &&
-                (!runConfig.useUniqueDirs)){
+         * can use "omniNames -start port" command.
+         * Unless we want to restart omniNames with the backup file, in this
+         * case the "- start" option is removed, and we do not remove log and
+         * backup files.
+         */
+        if( (element instanceof goDiet.Model.OmniNames)
+             && (!runConfig.useUniqueDirs)
+             && ! ((OmniNames)element).getBackupRestart()){
             String omniRemove = "/bin/sh -c \" /bin/rm -f " + scratch +
-                    "/omninames-*.log ";
-            omniRemove += scratch + "/omninames-*.bak \" ";
+                    "/omninames*.log ";
+            omniRemove += scratch + "/omninames*.bak \" ";
             
             String[] commandOmni = {"/usr/bin/ssh",
                     access.getLogin() + "@" + access.getServer(),
@@ -244,14 +249,22 @@ public class SshUtils {
         }
         // Give -start parameter to omniNames.
         if(element instanceof goDiet.Model.OmniNames){
-            if(((OmniNames)element).getContact() != null){
-                remoteCommand += "-start 2815 -ignoreport ";
-                remoteCommand += "-ORBendPoint giop:tcp:" +
-                        ((OmniNames)element).getContact() + ":" +
-                        ((OmniNames)element).getPort() + " ";
-            } else {
-                remoteCommand += "-start " + ((OmniNames)element).getPort() + " ";
+            if (((OmniNames) element).getContact() != null) {
+                /* If we are restarting omniNames, then we do not add the
+                 * "-start" option.
+                 */
+                if (!((OmniNames) element).getBackupRestart()) {
+                    remoteCommand += "-start 2815 -ignoreport ";
+                }
+                remoteCommand += "-ORBendPoint giop:tcp:"
+                        + ((OmniNames) element).getContact() + ":"
+                        + ((OmniNames) element).getPort() + " ";
+            } else /* If we are restarting omniNames, then we do not add the
+             * "-start" option.
+             */ if (!((OmniNames) element).getBackupRestart()) {
+                remoteCommand += "-start " + ((OmniNames) element).getPort() + " ";
             }
+            remoteCommand += "-nohostname ";
         }
         if(element.getName().compareTo("LogCentral") == 0){
             remoteCommand += "-config "+element.getCfgFileName()+" ";

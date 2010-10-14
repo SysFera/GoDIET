@@ -18,6 +18,7 @@ import java.util.Iterator;
 public class OmniNames extends Services {
     private String contact = null;          
     private int port = -1;
+    private boolean backupRelaunch = false;
     // giopMaxMsgSize This value defines the ORB-wide limit on the size of GIOP message
     //private long giopMaxMsgSize = 1073741824; // giopMaxMsgSize in octet default = 1Go 
     
@@ -58,6 +59,14 @@ public class OmniNames extends Services {
             Option o = (Option)it.next();            
             out.write(o.getName() + " = " + o.getValue() + "\n");
         }    
+    }
+
+    public void setBackupRestart(boolean val) {
+        this.backupRelaunch = val;
+    }
+
+    public boolean getBackupRestart() {
+        return this.backupRelaunch;
     }
         
 //    public long getGiopMaxMsgSize(){return giopMaxMsgSize;}

@@ -40,6 +40,8 @@ public class DeploymentController extends java.util.Observable
     private static final int WAITING_TIME_FOR_SERVICE = 3000;
     private static final int WAITING_TIME_FOR_ELEMENT_LOG_CONNEXION = 10000;
     private static final int WAITING_TIME_FOR_ELEMENT = 2000;
+    private static final int WAITING_TIME_FOR_RECONNECT = 1000;
+    private static final int MAX_RECONNECT_TRY = 3;
     
     public final static String MA_IOR = "MA_IOR";
     public final static String MADAG_IOR = "MADAG_IOR";
@@ -794,7 +796,7 @@ public class DeploymentController extends java.util.Observable
     public Vector checkPlatform() {
     	consoleCtrl.printOutput("## BEGIN CHECK");
         Vector checks = new Vector();
-        //checks.addAll(checkOmniNames());
+        checks.add(checkOmniNames());
         checks.addAll(checkMasterAgents());
         checks.addAll(checkMa_dags());
         checks.addAll(checkLocalAgents());
@@ -819,7 +821,7 @@ public class DeploymentController extends java.util.Observable
 
             /* Do we need to relaunch this element? */
             if (checkProperties == null ||
-                checkProperties.getProperty("state") == STATE_DOWN) {
+                checkProperties.getProperty("state") != STATE_OK) {
         	consoleCtrl.printOutput("## An element is down");
                 currElement.getLaunchInfo().setLaunchState(goDiet.Defaults.LAUNCH_STATE_FAILED);
                 elementsDown.add(currElement);
@@ -846,51 +848,79 @@ public class DeploymentController extends java.util.Observable
         props.put("org.omg.CORBA.ORBInitialPort", omni.getPort());
         props.put("org.omg.CORBA.ORBInitRef",
                   "NameService=corbaname::" + omni.getContact() + ":" + omni.getPort());
-        org.omg.CORBA.ORB orb = org.omg.CORBA.ORB.init(new String[0], props);
+
+        boolean reconnected = false;
+        int nbRetry = 0;
+
+        org.omg.CORBA.ORB orb = null;
 
         try {
-            org.omg.CORBA.Object rootPOARef =
-                orb.resolve_initial_references("RootPOA");
-            POA rootpoa = POAHelper.narrow(rootPOARef);
-            rootpoa.the_POAManager().activate();
-
-            org.omg.CORBA.Object ncObjRef =
-                orb.resolve_initial_references("NameService");
-            NamingContextExt ncRef = NamingContextExtHelper.narrow(ncObjRef);
-
-
-            NameComponent nc1 = null;
-            if (element instanceof ServerDaemon)
-                nc1 = new NameComponent("dietSeD","");
-            else
-                nc1 = new NameComponent("dietAgent","");
-            NameComponent nc2 = new NameComponent(element.getName(), "");
-            NameComponent path[] = {nc1, nc2};
-            consoleCtrl.printOutput("Reconnecting " +  element.getName());
-
-            org.omg.CORBA.Object objref = ncRef.resolve(path);
-
-            if (element instanceof ServerDaemon) {
-                goDiet.diet.corba.SeD SeD = null;
-                SeD = goDiet.diet.corba.SeDHelper.narrow(objref);
-                SeD.bindParent(((ServerDaemon)element).getParent().getName());
-            } else {
-                goDiet.diet.corba.LocalAgent LA;
-                LA = goDiet.diet.corba.LocalAgentHelper.narrow(objref);
-                LA.bindParent(((LocalAgent)element).getParent().getName());
-            }
-        } catch(org.omg.CORBA.UserException ex2) {
-            consoleCtrl.printError("Connection to element " + element.getName()
-                    + ": Cannot find the servant.", 0);
-            return false;
-        } catch (Exception e){
-            consoleCtrl.printError("Connection to element " + element.getName()
-                    + " (err: " + e.getMessage()
-                    + "). Cannot find the servant.", 0);
+            orb = org.omg.CORBA.ORB.init(new String[0], props);
+        } catch (org.omg.CORBA.INITIALIZE ex) {
+            consoleCtrl.printError("ORB initialization problem ("
+                    + ex.getMessage() + ")");
             return false;
         }
 
-        return true;
+        while (!reconnected && nbRetry < MAX_RECONNECT_TRY) {
+            try {
+                if (nbRetry > 0) {
+                    consoleCtrl.printError("Waiting "
+                            + WAITING_TIME_FOR_RECONNECT/1000 + " second"
+                            + " before trying to reconnect.");
+                    try {
+                        Thread.sleep(WAITING_TIME_FOR_RECONNECT);
+                    } catch (InterruptedException x) {
+                        consoleCtrl.printError("Reconnect: Unexpected sleep interruption.", 0);
+                    }
+                }
+
+                org.omg.CORBA.Object rootPOARef =
+                        orb.resolve_initial_references("RootPOA");
+                POA rootpoa = POAHelper.narrow(rootPOARef);
+                rootpoa.the_POAManager().activate();
+
+                org.omg.CORBA.Object ncObjRef =
+                        orb.resolve_initial_references("NameService");
+                NamingContextExt ncRef = NamingContextExtHelper.narrow(ncObjRef);
+
+
+                NameComponent nc1 = null;
+                if (element instanceof ServerDaemon) {
+                    nc1 = new NameComponent("dietSeD", "");
+                } else {
+                    nc1 = new NameComponent("dietAgent", "");
+                }
+                NameComponent nc2 = new NameComponent(element.getName(), "");
+                NameComponent path[] = {nc1, nc2};
+                consoleCtrl.printOutput("Reconnecting " + element.getName());
+
+                org.omg.CORBA.Object objref = ncRef.resolve(path);
+
+                if (element instanceof ServerDaemon) {
+                    goDiet.diet.corba.SeD SeD = null;
+                    SeD = goDiet.diet.corba.SeDHelper.narrow(objref);
+                    SeD.bindParent(((ServerDaemon) element).getParent().getName());
+                } else {
+                    goDiet.diet.corba.LocalAgent LA;
+                    LA = goDiet.diet.corba.LocalAgentHelper.narrow(objref);
+                    LA.bindParent(((LocalAgent) element).getParent().getName());
+                }
+
+                reconnected = true;
+            } catch (org.omg.CORBA.UserException ex2) {
+                consoleCtrl.printError("Connection to element " + element.getName()
+                        + ": Cannot find the servant.", 0);
+                nbRetry ++;
+            } catch (Exception e) {
+                consoleCtrl.printError("Connection to element " + element.getName()
+                        + " (" + e.getMessage()
+                        + "). Cannot find the servant.", 0);
+                nbRetry ++;
+            }
+        }
+
+        return reconnected;
     }
 
     private void reconnectElements(Vector elements) {
@@ -907,7 +937,7 @@ public class DeploymentController extends java.util.Observable
     public void checkRelaunchPlatform() {
     	consoleCtrl.printOutput("## BEGIN CHECK & RELAUNCH");
         Vector elementsReconnect = new Vector();
-        //checkRelaunchOmniNames();
+        checkRelaunchOmniNames();
         elementsReconnect.addAll(checkRelaunchMasterAgents());
         elementsReconnect.addAll(checkRelaunchMa_dags());
         elementsReconnect.addAll(checkRelaunchLocalAgents());
@@ -932,8 +962,64 @@ public class DeploymentController extends java.util.Observable
     /*
      * TODO
      */
-    private void checkOmniNames() {
-        consoleCtrl.printOutput("cheking omniNames");
+    private Properties checkOmniNames() {
+        OmniNames omni = this.dietPlatform.getOmniNames();
+        Properties props = new Properties();
+        props.put("org.omg.CORBA.ORBInitialHost", omni.getContact());
+        props.put("org.omg.CORBA.ORBInitialPort", omni.getPort());
+        props.put("org.omg.CORBA.ORBInitRef",
+                  "NameService=corbaname::" + omni.getContact() + ":" + omni.getPort());
+
+        Properties checkProperties = new Properties();
+
+        checkProperties.setProperty("type", omni.getName());
+        checkProperties.setProperty("hostname", omni.getComputeResource().getAccessMethod("ssh").getServer());
+        checkProperties.setProperty("name", omni.getComputeResource().getName());
+        checkProperties.setProperty("pid", "N/A");
+        checkProperties.setProperty("state", STATE_OK);
+
+        try {
+            org.omg.CORBA.ORB orb = org.omg.CORBA.ORB.init(new String[0], props);
+
+            try {
+                org.omg.CORBA.Object rootPOARef =
+                        orb.resolve_initial_references("RootPOA");
+                POA rootpoa = POAHelper.narrow(rootPOARef);
+                rootpoa.the_POAManager().activate();
+
+                org.omg.CORBA.Object ncObjRef =
+                        orb.resolve_initial_references("NameService");
+                NamingContextExt ncRef = NamingContextExtHelper.narrow(ncObjRef);
+            } catch (Exception e) {
+                consoleCtrl.printError("Connection to NameService failed ("
+                        + e.getMessage() + ")", 0);
+                checkProperties.setProperty("state", STATE_DOWN);
+            }
+        } catch (org.omg.CORBA.INITIALIZE ex) {
+            consoleCtrl.printError("ORB initialization problem ("
+                    + ex.getMessage() + ")");
+            checkProperties.setProperty("state", STATE_DOWN);
+        }
+
+        consoleCtrl.printOutput("# STATEOF "
+                + omni.getName() + "\t"
+                + checkProperties.getProperty("state") + "\t"
+                + checkProperties.getProperty("pid") + "\t"
+                + checkProperties.getProperty("name"));
+
+        return checkProperties;
+    }
+
+    private void checkRelaunchOmniNames() {
+        if (checkOmniNames().getProperty("state") != STATE_OK) {
+            Vector elements = new Vector();
+            this.dietPlatform.getOmniNames().getLaunchInfo().setLaunchState(
+                    goDiet.Defaults.LAUNCH_STATE_FAILED);
+            this.dietPlatform.getOmniNames().setBackupRestart(true);
+            elements.add(this.dietPlatform.getOmniNames());
+            launchElements(elements);
+            this.dietPlatform.getOmniNames().setBackupRestart(false);
+        }
     }
 
     private Vector checkMasterAgents() {
