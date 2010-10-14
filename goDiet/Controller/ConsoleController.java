@@ -61,6 +61,8 @@ public class ConsoleController extends java.util.Observable
             "   help:            print this message\n" +
             "   check:           check the platform status\n" +
             "   stop_check:      stop the platform status then check its status before exit\n" +
+            "   start_watcher:   start a \"watcher process\" which periodically checks the platform status\n" +
+            "   stop_watcher:    start the \"watcher process\"\n" +
             "   exit:            exit GoDIET, do not change running platform.\n";
     
     /** Creates a new instance of ConsoleController */
@@ -186,7 +188,7 @@ public class ConsoleController extends java.util.Observable
                 giveUserCtrl = false;
             }
             else if (command.compareTo("relaunch_failed") == 0){
-                relaunch_failed();
+                relaunchFailed();
                 //giveUserCtrl = false;
             }else if (command.compareTo("stop") == 0){
                 stop();
@@ -199,6 +201,10 @@ public class ConsoleController extends java.util.Observable
                 check();
             } else if (command.compareTo("stop_check") == 0 ) {
                 stop_check();
+            } else if (command.compareTo("start_watcher") == 0 ) {
+                startWatcher();
+            } else if (command.compareTo("stop_watcher") == 0 ) {
+                stopWatcher();
             } else if (command.compareTo("exit") == 0){
                 exit();
             }else{
@@ -294,16 +300,31 @@ public class ConsoleController extends java.util.Observable
     }
 
 
-    private void relaunch_failed(){
+    private void relaunchFailed(){
         if (fileLoaded){
             setChanged();
-            deployCtrl.checkRelaunchPlatform();
+            deployCtrl.checkRelaunchPlatform(true);
             clearChanged();
         } else {
             printOutput("[Relaunch-Failed]: You must load the XML file before checking the platform status !");
         }
     }
 
+    private void startWatcher(){
+        if (fileLoaded){
+            deployCtrl.startWatcher();
+        } else {
+            printOutput("[Start Watcher]: You must load the XML file before checking the platform status !");
+        }
+    }
+
+    private void stopWatcher(){
+        if (fileLoaded){
+            deployCtrl.stopWatcher();
+        } else {
+            printOutput("[Stop Watcher]: You must load the XML file before checking the platform status !");
+        }
+    }
 
     private void stop(){
         java.util.Date startTime, endTime;

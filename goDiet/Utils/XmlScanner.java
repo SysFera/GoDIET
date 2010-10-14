@@ -200,6 +200,12 @@ public class XmlScanner implements ErrorHandler {
                     consoleCtrl.setLogFile("GoDIET.log");
                 }
             }
+            if (attr.getName().equals("watcherPeriod")) {
+                tempInt = (new Integer(attr.getValue())).intValue();
+                if (tempInt > 0) {
+                    runCfg.setWatcherPeriod(tempInt);
+                }
+            }
         }
     }
 

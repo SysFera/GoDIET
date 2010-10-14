@@ -37,10 +37,14 @@ public class DeploymentController extends java.util.Observable
     private int deployState;
     private Elements waitingOn = null;
     private boolean stageFileBefore = true;
+    private boolean checkingPlatform = false;
+    private java.util.Timer watchdog = null;
+    private Watcher watcher = null;
     private static final int WAITING_TIME_FOR_SERVICE = 3000;
     private static final int WAITING_TIME_FOR_ELEMENT_LOG_CONNEXION = 10000;
     private static final int WAITING_TIME_FOR_ELEMENT = 2000;
     private static final int WAITING_TIME_FOR_RECONNECT = 1000;
+    private static final int WATCHER_PERIOD = 5000;
     private static final int MAX_RECONNECT_TRY = 3;
     
     public final static String MA_IOR = "MA_IOR";
@@ -578,6 +582,7 @@ public class DeploymentController extends java.util.Observable
 
     /* Interfaces for stopping the diet platform, or parts thereof */
     public void stopPlatform() {
+        stopWatcher();
         stopServerDaemons();
         stopLocalAgents();
         stopMa_dags();
@@ -790,9 +795,28 @@ public class DeploymentController extends java.util.Observable
         return el.getComputeResource().getCollection().getStorageResource();
     }
      /*
-     * TODO add omniNames and MaDag Checks
+     * TODO add MaDag Check
      */
- 
+
+    public void startWatcher() {
+        if (this.watchdog == null || this.watcher == null) {
+            this.watchdog = new java.util.Timer();
+            this.watcher = new Watcher();
+            RunConfig runCfg = consoleCtrl.getRunConfig();
+            this.watchdog.schedule(watcher, runCfg.getWatcherPeriod(),
+                                   runCfg.getWatcherPeriod());
+        }
+    }
+
+    public void stopWatcher() {
+        if (this.watchdog != null || this.watcher != null) {
+            this.watchdog.cancel();
+            this.watcher.cancel();
+            this.watchdog = null;
+            this.watcher = null;
+        }
+    }
+
     public Vector checkPlatform() {
     	consoleCtrl.printOutput("## BEGIN CHECK");
         Vector checks = new Vector();
@@ -934,7 +958,11 @@ public class DeploymentController extends java.util.Observable
  
     }
 
-    public void checkRelaunchPlatform() {
+    public void checkRelaunchPlatform(boolean force) {
+        if (! force && checkingPlatform) {
+            return;
+        }
+        checkingPlatform = true;
     	consoleCtrl.printOutput("## BEGIN CHECK & RELAUNCH");
         Vector elementsReconnect = new Vector();
         checkRelaunchOmniNames();
@@ -956,6 +984,7 @@ public class DeploymentController extends java.util.Observable
             consoleCtrl.printOutput("# Reconnecting hierarchy.");
             reconnectElements(elementsReconnect);
         }
+        checkingPlatform = false;
     }
 
 
@@ -1323,5 +1352,14 @@ public class DeploymentController extends java.util.Observable
         prop.setProperty("state", state);
         prop.setProperty("pid", ""+ping);           
         return prop;
-    }    
+    }
+
+
+
+    private class Watcher extends java.util.TimerTask {
+        public void run(){
+            consoleCtrl.printError("# Watcher checking on the Platform", 1);
+            checkRelaunchPlatform(false);
+        }
+    }
 }

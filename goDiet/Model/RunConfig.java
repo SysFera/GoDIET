@@ -20,6 +20,7 @@ public class RunConfig {
     public String localScratch = null;
     public boolean localScratchReady = false;
     public String runLabel = "";
+    private int watcherPeriod = 30000;
     
     /** Creates a new instance of RunConfig */
     public RunConfig() {
@@ -59,5 +60,13 @@ public class RunConfig {
     }
     public boolean isLocalScratchReady(){
         return this.localScratchReady;
-    } 
+    }
+
+    public void setWatcherPeriod(int period) {
+        /* Period is given in seconds, but should be milliseconds in the code */
+        this.watcherPeriod = period * 1000;
+    }
+    public int getWatcherPeriod() {
+        return this.watcherPeriod;
+    }
 }

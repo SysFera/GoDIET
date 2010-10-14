@@ -115,7 +115,7 @@ public class GoDIET implements java.util.Observer {
                 List completors = new LinkedList();
                 completors.add(new SimpleCompletor(new String[] { "launch", "launch_check",
                     "relaunch", "relaunch_failed", "stop", "status", "history", "help", "check",
-                    "stop_check", "exit"}));
+                    "stop_check", "exit", "start_watcher", "stop_watcher"}));
                 reader.addCompletor(new ArgumentCompletor(completors));
 
                 String command;
