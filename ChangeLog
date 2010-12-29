@@ -1,0 +1,23 @@
++------------+
+| GoDIET 2.4 |
++------------+
+* Changes since 2.3:
+	- uses jline for a more interactive command line interface:
+	you can press the tab key to have command auto-completion
+	- new commands have been added:
+	  + launch_check: launch the platform and automatically checks its
+	    availability
+	  + relaunch: entirely kills the platform and relaunches it
+	  + relaunch_failed: do not kill the platform, but try to relaunch 
+	    all the elements that are currently unavailable. The DIET
+	    elements will be automatically reconnected to their parents
+	  + start_watcher/stop_watcher: starts or stops a watchdog which
+	    periodically checks all the elements, and tries to relaunch the
+	    unavailable elements.
+	  + stop_check: stops the platform, and then checks that every
+	    element has really been shut down.
+* limitations:
+	- currently GoDIET do not allow the deployment of DIET or
+	LogService forwarders.
+
+
