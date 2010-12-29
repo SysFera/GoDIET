@@ -16,7 +16,7 @@
 	    unavailable elements.
 	  + stop_check: stops the platform, and then checks that every
 	    element has really been shut down.
-* limitations:
+* known limitations:
 	- currently GoDIET do not allow the deployment of DIET or
 	LogService forwarders.
 
