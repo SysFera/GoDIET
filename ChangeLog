@@ -1,5 +1,5 @@
 +------------+
-| GoDIET 2.4 |
+| GoDIET 2.6 |
 +------------+
 * Changes since 2.3:
 	- uses jline for a more interactive command line interface:

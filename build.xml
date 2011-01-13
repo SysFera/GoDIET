@@ -8,7 +8,7 @@
         <property name="build" value="build"/>
         <property name="dist" value="."/>
         <property name="apidoc" value="doc"/>
-        <property name="version" value="2.4.0"/>
+        <property name="version" value="2.6.0"/>
         <property name="jarfile" value="${project}-${version}.jar"/>  
 	<property name="utils" value="compilUtils"/>
 	<property name="utilsBuild" value="compilUtilsBuild"/>
