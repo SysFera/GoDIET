@@ -196,7 +196,8 @@
                 <include name="README_dev"/>
                 <include name="GoDIET.dtd"/>
                 <include name="build.xml"/>
-                <include name="LICENSE.TXT"/>             
+                <include name="LICENSE.TXT"/>
+                <include name="ChangeLog"/>
 		</fileset>
         </copy>
 	<copy todir="${basedir}/${project}-${version}/${utils}">
