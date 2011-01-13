@@ -2,18 +2,18 @@
 
 <!DOCTYPE diet_configuration SYSTEM "../GoDIET.dtd">
 <!-- GoDIET.dtd defines the semantics for input xml files for DIET.
-     GoDIET uses a validating parser, so if your XML does not follow
-     the rules specified in the dtd it will not be accepted by the
-     parser. The comments below will help you write a valid XML for 
-     GoDIET.  All sections are required unless marked "Optional" -->
+GoDIET uses a validating parser, so if your XML does not follow
+the rules specified in the dtd it will not be accepted by the
+parser. The comments below will help you write a valid XML for 
+GoDIET.  All sections are required unless marked "Optional" -->
 
 <!-- The diet_configuration tags surround all of the other sections.
-     diet_configuration can optionally contain:
-       1 "goDiet" section: configure goDIET behavior
-     and must contain each of the following:
-       1 "resources" section: define storage and compute resources
-       1 "diet_services" section: define omniNames, LogCentral, etc.
-       1 "diet_hierarchy" section: define your agent hierarchy
+diet_configuration can optionally contain:
+1 "goDiet" section: configure goDIET behavior
+and must contain each of the following:
+1 "resources" section: define storage and compute resources
+1 "diet_services" section: define omniNames, LogCentral, etc.
+1 "diet_hierarchy" section: define your agent hierarchy
 -->
 <diet_configuration>
 
@@ -24,21 +24,21 @@
           saveStdErr="no"
           useUniqueDirs="yes"
           log="no"/>
-        <!-- Optional: debug controls the verbosity of goDIET output from
-                  0 (no debugging) -> 2 (very verbose) 
-             Optional: saveStdOut controls whether stdout is redirected
-                  to /dev/null or to a file in your remote scratch
-                  space called <componentName>.out.
-             Optional: saveStdErr as above with a file named 
-                  <componentName>.err.
-             Optional: for useUniqueDirs, yes specifies that a unique
-                  subdirectory will be created under the scratch space
-                  on each machine for all files relevant to the run.
-                  If no, all files are written in the scratch directly.
-              Optional: log controls whether stdout and stderr of GoDIET is saved
-                  in respectively GoDIET.log.out GoDIET.log.err
-          -->
-   
+  <!-- Optional: debug controls the verbosity of goDIET output from
+       0 (no debugging) -> 2 (very verbose) 
+       Optional: saveStdOut controls whether stdout is redirected
+       to /dev/null or to a file in your remote scratch
+       space called <componentName>.out.
+       Optional: saveStdErr as above with a file named 
+       <componentName>.err.
+       Optional: for useUniqueDirs, yes specifies that a unique
+       subdirectory will be created under the scratch space
+       on each machine for all files relevant to the run.
+       If no, all files are written in the scratch directly.
+       Optional: log controls whether stdout and stderr of GoDIET is saved
+       in respectively GoDIET.log.out GoDIET.log.err
+  -->
+  
   <!-- Use the resources section to define what machines you
        want to use for computation and storage, how to access those
        resources, and where to find binaries on each. You must include
@@ -53,121 +53,121 @@
     <!-- Define all storage space that will be needed to run 
          jobs on your compute hosts. -->
     <storage label="disk1">
-        <scratch dir="/tmp/run_scratch"/>
-        <scp server="hostX.site1.fr" login="your login on this machine"/>
-          <!-- Optional: if login is not specified, the current login
-               is used. -->
+      <scratch dir="/tmp/run_scratch"/>
+      <scp server="hostX.site1.fr" login="your login on this machine"/>
+      <!-- Optional: if login is not specified, the current login
+           is used. -->
     </storage>
     <storage label="clusterX_disk">
-        <scratch dir="/tmp/run_scratch"/>
-        <scp server="hostX.clusterX.fr"/>
+      <scratch dir="/tmp/run_scratch"/>
+      <scp server="hostX.clusterX.fr"/>
     </storage>
 
     <!-- Define all compute hosts that you want to use. -->
     <!-- Use "compute" tags for individual machines, "cluster" to 
          simplify description of large numbers of machines -->
     <compute label="host1" disk="disk1">
-        <ssh server="host1.site1.fr" login="your_login"/>
-          <!-- Define hostname and login to be used for ssh access
-               to machine.
-               Optional: if login is not specified, the local login
-               will be used. -->
-	<env>
-	      <var name="PATH" value="bindir1:bindir2:...:$PATH"/>
-	      <var name="LD_LIBRARY_PATH" value="libdir1:libdir2:..."/>
-	</env>
-        <!-- Optional: if you don't specify a path or
-             LD_LIBRARY_PATH, your default paths on the system will
-             be used. You can make the path shorter by putting
-             links to all your binaries in one directory on the
-	     system. 
-	     You can also specify whatever variable you want. it will
-	     export to the shell.
-		  -->
-        <end_point contact="192.5.59.198"/>
-             <!-- Optional: for some networks, it is necessary to be
-                  explicit about which IP to use to communicate with 
-                  running components. -->
+      <ssh server="host1.site1.fr" login="your_login"/>
+      <!-- Define hostname and login to be used for ssh access
+           to machine.
+           Optional: if login is not specified, the local login
+           will be used. -->
+      <env>
+        <var name="PATH" value="bindir1:bindir2:...:$PATH"/>
+        <var name="LD_LIBRARY_PATH" value="libdir1:libdir2:..."/>
+      </env>
+      <!-- Optional: if you don't specify a path or
+           LD_LIBRARY_PATH, your default paths on the system will
+           be used. You can make the path shorter by putting
+           links to all your binaries in one directory on the
+           system. 
+           You can also specify whatever variable you want. it will
+           export to the shell.
+      -->
+      <end_point contact="192.5.59.198"/>
+      <!-- Optional: for some networks, it is necessary to be
+           explicit about which IP to use to communicate with 
+           running components. -->
     </compute>
     <compute label="host2" disk="disk1">
-        <ssh server="host2.site1.fr" login="your login"/>
-	       <env>
-		       <var name="PATH" value="bindir1:bindir2:..."/>
-		       <var name="LD_LIBRARY_PATH" value="libdir1:libdir2:..."/>
-	       </env>
+      <ssh server="host2.site1.fr" login="your login"/>
+      <env>
+        <var name="PATH" value="bindir1:bindir2:..."/>
+        <var name="LD_LIBRARY_PATH" value="libdir1:libdir2:..."/>
+      </env>
     </compute>
 
-    <cluster label="clusterX" disk="clusterX_disk" login="your login"/>
-        <env>
-            <var name="PATH" value="bindir1:bindir2:..."/>
-	    <var name="LD_LIBRARY_PATH" value="libdir1:libdir2:..."/>
-	</env>
+    <cluster label="clusterX" disk="clusterX_disk" login="your login">
+      <env>
+        <var name="PATH" value="bindir1:bindir2:..."/>
+        <var name="LD_LIBRARY_PATH" value="libdir1:libdir2:..."/>
+      </env>
 
-        <node label="clusterX_host1" disk="clusterX_disk">
-            <ssh server="host1.clusterX.fr"/>
-            <end_point contact="192.5.80.103"/>
-        </node>
-        <node label="clusterX_host2" disk="clusterX_disk">
-            <ssh server="host2.clusterX.fr"/>
-        </node>
+      <node label="clusterX_host1">
+        <ssh server="host1.clusterX.fr"/>
+        <end_point contact="192.5.80.103"/>
+      </node>
+      <node label="clusterX_host2">
+        <ssh server="host2.clusterX.fr"/>
+      </node>
     </cluster>
 
   </resources>
- 
+  
   <!-- Define DIET services.  Must contain 1 "omni_names" section and
        can optionally include 1 "log_central" and 1 "log_tool"
        section.  Do not define "log_tool" without defining
        "log_central". -->
   <diet_services>
 
-	  <omni_names contact="ip or hostname" port="2810">
-       <!-- Optional: If contact is given, it is used in omniORB4.cfg
-            to help all other corba components find omniNames.  For example,
-            if you have no DNS, you should put here the IP address. -->
-       <!-- Optional: if port is undefined, port 2809 will be used. -->
-       
-       <!-- Optional: if maxMsgSize is undefined, giopMaxMsgSize 2097152 (2MBytes) will be use in omniORB4.cfg 
-                Default value is 1073741824 (1Go)-->
-        <config server="clusterX_host1"        
-                remote_binary="omniNames"/>
-        <!-- "server" must refer to the label of one of your
-             "compute" resources defined above.  GoDIET will run this service on that host.                 
-             "remote_binary" is the binary name to execute for the
-                      service. -->
-                <cfg_option>
-                    <option name="tracelevel" value="10"/>
-                </cfg_option>
-            <!-- Optional: you can specify addition configuration option into
-                  the omniORB4.cfg file.                 
-		  You can specify whatever valid variable you want. it will
-		  simply write it into the cfg file <name> = <value>
-                  see omniORB4 doc in order to know the complet list available option
-		  -->	   
+    <omni_names contact="ip or hostname" port="2810">
+      <!-- Optional: If contact is given, it is used in omniORB4.cfg
+           to help all other corba components find omniNames.  For example,
+           if you have no DNS, you should put here the IP address. -->
+      <!-- Optional: if port is undefined, port 2809 will be used. -->
+      
+      <!-- Optional: if maxMsgSize is undefined, giopMaxMsgSize 2097152 (2MBytes) will be use in omniORB4.cfg 
+           Default value is 1073741824 (1Go)-->
+      <config server="clusterX_host1"        
+              remote_binary="omniNames"/>
+      <!-- "server" must refer to the label of one of your
+           "compute" resources defined above.  GoDIET will run this service on that host.                 
+           "remote_binary" is the binary name to execute for the
+           service. -->
+      <cfg_options>
+        <option name="traceLevel" value="10"/>
+      </cfg_options>
+      <!-- Optional: you can specify addition configuration option into
+           the omniORB4.cfg file.                 
+           You can specify whatever valid variable you want. it will
+           simply write it into the cfg file <name> = <value>
+           see omniORB4 doc in order to know the complet list available option
+      -->	   
     </omni_names>
 
     <log_central connectDuringLaunch="no|yes">
-       <!-- Optional: If connectDuringLaunch is set to no, GoDIET will launch
-            LogCentral but will not try to use LogCentral feedback to guide
-            the launch. -->
-        <config server="clusterX_host2" 
-                remote_binary="LogCentral"/>
+      <!-- Optional: If connectDuringLaunch is set to no, GoDIET will launch
+           LogCentral but will not try to use LogCentral feedback to guide
+           the launch. -->
+      <config server="clusterX_host2" 
+              remote_binary="LogCentral"/>
     </log_central>
     <!-- Optional: If log_tool tag is included, the log file generator tool 
          will be launched after log_central. Note: LogCentral must be compiled
          with - -enable-background. -->
     <log_tool>
-        <config server="clusterX_host2" 
-                remote_binary="DIETLogTool"/>
+      <config server="clusterX_host2" 
+              remote_binary="DIETLogTool"/>
     </log_tool>
     <!-- Optional: If diet_statistics tag is included, GoDIET will use set
          unique statistics output file environment variable for every launched
 	 element. This is equivalent to set useDietStats=1 to each element.
 	 DIET must be configured with - -enable-stats. -->
   </diet_services>
- 
+  
   <!-- Define desired DIET agent and server hierarchy.  Must include at
        least 1 "master_agent" section; all other sections are optional.
-       -->
+  -->
   <diet_hierarchy>
 
     <!-- Define config for "master_agent". -->
@@ -179,81 +179,82 @@
 	   MA  will not use statistic output file even if diet_statistics tag
 	   has been definied. If useDietStats=1 will use statistic output file even
 	   if diet_statistics tag has not been definied.-->
-           <cfg_options>
-		       <option name="initRequestID" value="201"/>
-		       <option name="tracelevel" value="1"/>
-	   </cfg_options>
-             <!-- Optional: you can specify addition configuration option into
-                  the cfg file of the MA.                 
-		  You can specify whatever valid variable you want. it will
-		  simply write it into the cfg file <name> = <value>
-                  see DIET doc in order to know the complet list available option
-		  -->	   
-        <!-- See config explanation under "services" section -->
-        <config server="host1"
-                trace_level="1"
-                remote_binary="<binary name for diet agent on this server>"/>
+      <!-- See config explanation under "services" section -->
+      <config server="host1"
+              remote_binary="binary name for diet agent on this server"/>
+      <cfg_options>
+        <option name="initRequestID" value="201"/>
+        <option name="traceLevel" value="1"/>
+      </cfg_options>
+      <!-- Optional: you can specify addition configuration option into
+           the cfg file of the MA.                 
+           You can specify whatever valid variable you want. it will
+           simply write it into the cfg file <name> = <value>
+           see DIET doc in order to know the complet list available option
+      -->	   
 
-        
-        <local_agent label="MyLA">
-            <!-- See "master_agent" explanation above. This agent will be 
+      
+      <local_agent label="MyLA">
+        <!-- See "master_agent" explanation above. This agent will be 
              named MyLA_0 -->
-	   <cfg_options>		       
-		       <option name="tracelevel" value="1"/>
-	   </cfg_options>
-             <!-- Optional: you can specify addition configuration option into
-                  the cfg file of the LA.                 
-		  You can specify whatever valid variable you want. it will
-		  simply write it into the cfg file <name> = <value>
-                  see DIET doc in order to know the complet list available 
-                  if the option is not valid a WARNING appear.
-                  -->
-            <config server="host2"
-                    trace_level="1"
-                    remote_binary="dietAgent"/>
-            
-            <SeD label="MySeD" useDietStats="1">
-                <!-- "label" is optional.  If defined, it is used as a prefix for
-                    an automatically generated name.  The system will name this
-                    agent "MySeD_0". -->
-                    <!-- "useDietStats" is optional and can be set to 0 or 1.  If useDietStats is
-                    no defined, SeD  will use statistic output file if diet_statistics tag
-                    has been definied. -->
-                <config server="clusterX_host2"
-                        remote_binary="<binary name for this diet SeD on this server>"/>
-                <parameters string="T"/>
-            </SeD>
-        </local_agent>
-        <SeD label="MySeD" maxConcurrentJobs="1">
-            <!-- "maxConcurrentJobs" is optional.  If defined, it must be >= 0
-                    It define the number of ConcurrentJobs the SeD will accept.
-                    The SeD can accept more than maxConcurrentJobs= put it will put the extra job in queue-->
-            <config server="clusterX_host1"
-                    remote_binary="server"/>
-            <parameters string="T"/>
-        </SeD>
+        <config server="host2"
+                remote_binary="dietAgent"/>
+        <!-- Optional: you can specify addition configuration option into
+             the cfg file of the LA.                 
+             You can specify whatever valid variable you want. it will
+             simply write it into the cfg file <name> = <value>
+             see DIET doc in order to know the complet list available 
+             if the option is not valid a WARNING appear.
+        -->
+        <cfg_options>		       
+          <option name="traceLevel" value="1"/>
+        </cfg_options>
         
-        <SeD label="MySeD">                        
-            <config server="host1"
-                    remote_binary="server"/>
-            <parameters string="T"/>
+        <SeD label="MySeD" useDietStats="1">
+          <!-- "label" is optional.  If defined, it is used as a prefix for
+               an automatically generated name.  The system will name this
+               agent "MySeD_0". -->
+          <!-- "useDietStats" is optional and can be set to 0 or 1.  If useDietStats is
+               no defined, SeD  will use statistic output file if diet_statistics tag
+               has been definied. -->
+          <config server="clusterX_host2"
+                  remote_binary="binary name for this diet SeD on this server"/>
+          <parameters string="T"/>
         </SeD>
-        
-        <SeD label="MySeD" >
-            <config server="host2"
-                    remote_binary="batch_server"/>
-            <cfg_options>		       
-		    <option name="batchName" value="LOADLEVELER"/><!-- "batchName" define the name of the batch software -->
-                    <option name="batchQueue" value="decrypthon"/><!-- "batchQueue" define the name of the queue where batchJob are submitted -->
-                    <!-- ... -->
-	    </cfg_options>
-            <!-- Optional: you can specify addition configuration option into
-                  the cfg file of the SeD.                 
-		  You can specify whatever valid variable you want. it will
-		  simply write it into the cfg file <name> = <value>
-                  see DIET doc in order to know the complet list available option -->                        
-            <parameters string="add"/>
-        </SeD>
+      </local_agent>
+      <SeD label="MySeD">
+        <config server="clusterX_host1"
+                remote_binary="server"/>
+        <cfg_options>		       
+          <option name="maxConcJobs" value="1"/>
+          <!-- "maxConcJobs" is optional.  If defined, it must be >= 0
+               It define the number of Concurrent Jobs the SeD will accept.
+               The SeD can accept more than maxConcJobs= put it will put the extra job in queue-->
+        </cfg_options>
+        <parameters string="T"/>
+      </SeD>
+      
+      <SeD label="MySeD">                        
+        <config server="host1"
+                remote_binary="server"/>
+        <parameters string="T"/>
+      </SeD>
+      
+      <SeD label="MySeD" >
+        <config server="host2"
+                remote_binary="batch_server"/>
+        <cfg_options>		       
+          <option name="batchName" value="LOADLEVELER"/><!-- "batchName" define the name of the batch software -->
+          <option name="batchQueue" value="decrypthon"/><!-- "batchQueue" define the name of the queue where batchJob are submitted -->
+          <!-- ... -->
+        </cfg_options>
+        <!-- Optional: you can specify addition configuration option into
+             the cfg file of the SeD.                 
+             You can specify whatever valid variable you want. it will
+             simply write it into the cfg file <name> = <value>
+             see DIET doc in order to know the complet list available option -->                        
+        <parameters string="add"/>
+      </SeD>
     </master_agent>
   </diet_hierarchy>      
 
