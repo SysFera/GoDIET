@@ -794,9 +794,7 @@ public class DeploymentController extends java.util.Observable
     private StorageResource getStorageResource(Elements el) {
         return el.getComputeResource().getCollection().getStorageResource();
     }
-     /*
-     * TODO add MaDag Check
-     */
+
 
     public void startWatcher() {
         if (this.watchdog == null || this.watcher == null) {
@@ -988,9 +986,6 @@ public class DeploymentController extends java.util.Observable
     }
 
 
-    /*
-     * TODO
-     */
     private Properties checkOmniNames() {
         OmniNames omni = this.dietPlatform.getOmniNames();
         Properties props = new Properties();
