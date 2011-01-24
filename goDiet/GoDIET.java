@@ -22,7 +22,9 @@ import jline.*;
 public class GoDIET implements java.util.Observer {
     protected static final String USAGE =
             "USAGE: GoDiet [--launch|--launch_check] <file.xml>\n" +
-            "       GoDiet --interface";
+            "              (launch the command line interface, using <file.xml> file)\n" +
+            "       GoDiet --interface (launch GUI)\n" +
+            "       GoDiet --help (this help)";
     private int deployState = Defaults.DEPLOY_NONE;
     
     public GoDIET() {
@@ -55,7 +57,9 @@ public class GoDIET implements java.util.Observer {
         boolean check_mode = false;
         int i;
         //System.out.println("args.length :"+args.length);
-        if (args.length<1 || args.length>2){
+        if (args.length<1
+            || args.length>2
+            || (args[0].equals("--help") || args[0].equals("-h"))){
             System.out.println(USAGE);
             System.exit(1);
         }
