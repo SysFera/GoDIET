@@ -1,0 +1,314 @@
+#LyX 1.6.4 created this file. For more info see http://www.lyx.org/
+\lyxformat 345
+\begin_document
+\begin_header
+\textclass article
+\use_default_options true
+\language english
+\inputencoding auto
+\font_roman default
+\font_sans default
+\font_typewriter default
+\font_default_family default
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+
+\graphics default
+\paperfontsize default
+\spacing single
+\use_hyperref false
+\papersize a4paper
+\use_geometry false
+\use_amsmath 1
+\use_esint 1
+\cite_engine basic
+\use_bibtopic false
+\paperorientation portrait
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\defskip medskip
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\author "" 
+\author "" 
+\end_header
+
+\begin_body
+
+\begin_layout Section
+Objectif
+\end_layout
+
+\begin_layout Standard
+Aider le programmeur à comprendre la conception de GoDiet.
+ 
+\end_layout
+
+\begin_layout Section
+Résumé
+\end_layout
+
+\begin_layout Standard
+Une première partie d'analyse fonctionnelle de haut niveau.
+ Le but est de présenter GoDiet dans le contexte Diet.
+ 
+\end_layout
+
+\begin_layout Section
+Analyse fonctionnelle
+\end_layout
+
+\begin_layout Standard
+Diet est un framework de calculs distribués.
+ Sa fonction principale est de mettre en relation des clients et des services
+ de calculs.
+ Le framework Diet est composé : 
+\end_layout
+
+\begin_layout Itemize
+D'agents communicants (infrastructure Diet) qui prennent en charge les requêtes
+ 'clientes'.
+ Ils ont pour rôles de trouver les services qui répondent au mieux à ces
+ demandes et de les exécuter.
+ 
+\end_layout
+
+\begin_layout Itemize
+De moyens pour déployer l'infrastructure Diet sur une infrastructure physique.
+ 
+\end_layout
+
+\begin_layout Itemize
+De moyens pour interfacer une application cliente avec l'infrastructure
+ Diet.
+ 
+\end_layout
+
+\begin_layout Standard
+Acteurs:
+\end_layout
+
+\begin_layout Itemize
+Client: Utilisateur de la plateforme Diet.
+ Il souhaite résoudre un problème qui nécessite l'utilisation d'une plateforme
+ de calcul distribué.
+ 
+\end_layout
+
+\begin_layout Itemize
+AdminDiet: En charge de l'infrastructure Diet.
+ Il souhaite pouvoir la déployer, gérer et la monitorer.
+ 
+\end_layout
+
+\begin_layout Itemize
+AdminInfra: En charge de l'infrastructure physique (les machines).
+ Il expose ses resources au système Diet.
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename fig/Diet_Pieuvre.png
+
+\end_inset
+
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:Diagramme-Pieuvre-du"
+
+\end_inset
+
+Diagramme Pieuvre du système Diet
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+GoDiet est un outil facilitant le déploiement de l'infrastructure Diet sur
+ l'infrastructure physique.
+ Ansi ce composant logiciel à en charge d'implémenter les fonctions d'interactio
+ns FI_ADAI
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Diagramme-Pieuvre-du"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Section
+Exigences fonctionnelles
+\end_layout
+
+\begin_layout Enumerate
+\begin_inset CommandInset label
+LatexCommand label
+name "enu:Déployer-une-infrastructure"
+
+\end_inset
+
+AdminDiet doit être capable de déployer une infrastructure Diet sur l'infrastruc
+ture physique.
+\end_layout
+
+\begin_layout Enumerate
+\begin_inset CommandInset label
+LatexCommand label
+name "enu:Visualiser-l'état-de"
+
+\end_inset
+
+AdminDiet doit être capable visualiser l'état de l'infrastructure Diet.
+\end_layout
+
+\begin_layout Enumerate
+\begin_inset CommandInset label
+LatexCommand label
+name "enu:Modifier-son-infrastructure"
+
+\end_inset
+
+AdminDiet doit être capable de modifier dynamiquement l'infrastructure en
+ cours de déploiement.
+ 
+\end_layout
+
+\begin_layout Enumerate
+\begin_inset CommandInset label
+LatexCommand label
+name "enu:Prendre-en-compte"
+
+\end_inset
+
+? Le système Diet ? doit être capable de prendre en compte la modification
+ de l'inf rastructure physique sous-jacente.
+\end_layout
+
+\begin_layout Section
+Spécification fonctionnelle
+\end_layout
+
+\begin_layout Enumerate
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "enu:Déployer-une-infrastructure"
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+Prérequis: 'AdminDiet' est authentifié.
+ Avoir accès aux machines physiques qui vont être utilisé dans le cadre
+ du déploiement de l'infrastructure Diet.
+\end_layout
+
+\begin_layout Enumerate
+Récupérer et lire la topologie de l'infrastructure physique .
+ -> Définition d'un format de description d'infrastructure physique.
+\end_layout
+
+\begin_layout Enumerate
+Récupérer et lire la requête d'infrastructure Diet.
+ -> Définition d'un format de description d'infrastructure Diet.
+\end_layout
+
+\begin_layout Enumerate
+Exécuter la requête.
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "enu:Visualiser-l'état-de"
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+Prérequis: 'AdminDiet' est authentifié sur le sytème et 'infrastructure
+ Diet' déployé.
+\end_layout
+
+\begin_layout Enumerate
+Récupérer la topologie de l'infrastructure Diet.
+ -> Vers qui ? Quels sont les états des composants ? 
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "enu:Modifier-son-infrastructure"
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+Prérequis: AdminDiet est authentifié sur le sytème et infrastructure Diet
+ déployé.
+\end_layout
+
+\begin_layout Enumerate
+Permettre de changer l'état des composants de l'infrastructure Diet.
+ 
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "enu:Prendre-en-compte"
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+?? N'est pas une fonction à prendre en compte dans Diet ??
+\end_layout
+
+\end_deeper
+\begin_layout Section
+Conception
+\end_layout
+
+\end_body
+\end_document
