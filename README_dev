@@ -8,20 +8,11 @@ Requirements:
 
 Compilation:
   - Simply type:
-      > ant
+      > mvn assembly:assembly
 
-  - For alternative build options:
-      > ant -help
-
-  - Distribution:
-      > ant distrib
 
 Execution:
   - Using the examples directory, build a new xml file that describes
     your environment, the DIET platform you want to run, etc.  Then
     run:
-     > java -jar GoDIET.jar <youfile.xml>
-
-    If you encounter problems, check that your XML references a valid 
-    DTD file location.  Look for the following line in your XML:
-      <!DOCTYPE diet_configuration SYSTEM "../GoDIET.dtd">
+     > java -jar targe/goDIET-{Version}-jar-with-dependencies.jar <youfile.xml>
