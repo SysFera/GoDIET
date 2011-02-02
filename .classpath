@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<classpath>
-	<classpathentry excluding="compilUtils/|examples/|lib/|nbproject/" kind="src" path=""/>
-	<classpathentry kind="src" path="compilUtils"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="lib/jline-0.9.94.jar"/>
-	<classpathentry kind="output" path="build"/>
-</classpath>
