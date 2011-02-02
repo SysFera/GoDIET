@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package goDiet.Utils;
+package Utils;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -16,7 +16,7 @@ import java.util.Vector;
  * @author rbolze
  */
 public class OptionChecker {
-
+	 private URL checkFile = getClass().getResource("/cfg_options.properties");
     /* 
      * Helper class, this is use only here
      */
@@ -33,7 +33,7 @@ public class OptionChecker {
         }
     }
     
-    private URL checkFile = getClass().getResource("/goDiet/Utils/cfg_options.properties");
+   
     public Vector valid_options = new Vector();
     
     public OptionChecker(){

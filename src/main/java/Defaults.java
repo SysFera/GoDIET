@@ -5,7 +5,7 @@
  * Created on June 19, 2004, 11:00 AM
  */
 
-package goDiet;
+
 
 /**
  *

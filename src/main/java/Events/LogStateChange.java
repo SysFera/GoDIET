@@ -5,7 +5,7 @@
  * Created on 27 June 2004, 15:01
  */
 
-package goDiet.Events;
+package Events;
 
 /**
  *

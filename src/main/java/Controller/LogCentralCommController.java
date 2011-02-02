@@ -5,16 +5,12 @@
  * Created on 27 june 2004
  */
 
-package goDiet.Controller;
+package Controller;
 
-import goDiet.Utils.*;
-import goDiet.Model.*;
-import goDiet.Events.*;
-import goDiet.Defaults;
-
-//import java.io.IOException;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
+import com.sysfera.godiet.Events.LogStateChange;
+import com.sysfera.godiet.Model.OmniNames;
+import com.sysfera.godiet.Utils.LogCentralConnection;
+import com.sysfera.godiet.Utils.corba.generated.log_msg_t;
 
 /**
  *
@@ -62,7 +58,7 @@ public class LogCentralCommController extends java.util.Observable
         }
     }
     
-    public void queueMsg(goDiet.Utils.CORBA.log_msg_t msg){
+    public void queueMsg(log_msg_t msg){
         synchronized(pendingMsgQueue){
             this.pendingMsgQueue.add(msg);
         }
@@ -71,10 +67,10 @@ public class LogCentralCommController extends java.util.Observable
         }
     }
     
-    public goDiet.Utils.CORBA.log_msg_t deQueueMsg(){
+    public log_msg_t deQueueMsg(){
         synchronized(pendingMsgQueue){
             if(this.pendingMsgQueue.size() > 0){
-                return ((goDiet.Utils.CORBA.log_msg_t)this.pendingMsgQueue.remove(0));
+                return ((log_msg_t)this.pendingMsgQueue.remove(0));
             } else {
                 return null;
             }
@@ -89,7 +85,7 @@ public class LogCentralCommController extends java.util.Observable
     
     public void run() {
         consoleCtrl.printOutput("LogCentralCommController thread starting up.",2);
-        goDiet.Utils.CORBA.log_msg_t msg;
+        log_msg_t msg;
         while(true) { 
             try {
                 synchronized(this){
@@ -106,23 +102,23 @@ public class LogCentralCommController extends java.util.Observable
                 int newState;
                 
                 if(tag.compareTo("IN") == 0){
-                    newState = goDiet.Defaults.LOG_STATE_RUNNING;
+                    newState = com.sysfera.godiet.Defaults.LOG_STATE_RUNNING;
                     consoleCtrl.printOutput("Forwarding message: " + name + " tag: " 
                         + tag + " text: " + text, 2);
                 } else {
-                    newState = goDiet.Defaults.LOG_STATE_CONFUSED;
+                    newState = com.sysfera.godiet.Defaults.LOG_STATE_CONFUSED;
                     consoleCtrl.printOutput("Ignoring message: " + name + " tag: " 
                         + tag + " text: " + text, 2);
                 }
                 
-                if(newState == goDiet.Defaults.LOG_STATE_RUNNING){
+                if(newState == com.sysfera.godiet.Defaults.LOG_STATE_RUNNING){
                     // Tokens are: elementType parent machineName
                     java.util.StringTokenizer strTok = 
                         new java.util.StringTokenizer(text.toString()," ");
                     elementType = strTok.nextToken();
                     
                     setChanged();
-                    notifyObservers(new goDiet.Events.LogStateChange(
+                    notifyObservers(new LogStateChange(
                         this,name,elementType,newState));
                     clearChanged(); 
                 }

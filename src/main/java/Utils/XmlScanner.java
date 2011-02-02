@@ -1,18 +1,38 @@
 /*@GODIET_LICENSE*/
-package goDiet.Utils;
-
-import goDiet.Controller.*;
-import goDiet.Model.*;
+package Utils;
 
 import java.io.IOException;
-
 import java.util.Vector;
+
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.validation.Schema;
+import javax.xml.validation.SchemaFactory;
 
-import org.xml.sax.*;
-import org.w3c.dom.*;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.xml.sax.ErrorHandler;
+import org.xml.sax.SAXException;
+
+import com.sysfera.godiet.Controller.ConsoleController;
+import com.sysfera.godiet.Controller.DietPlatformController;
+import com.sysfera.godiet.Model.AccessMethod;
+import com.sysfera.godiet.Model.Agents;
+import com.sysfera.godiet.Model.ComputeCollection;
+import com.sysfera.godiet.Model.ComputeResource;
+import com.sysfera.godiet.Model.Elements;
+import com.sysfera.godiet.Model.EnvVar;
+import com.sysfera.godiet.Model.LocalAgent;
+import com.sysfera.godiet.Model.LogCentral;
+import com.sysfera.godiet.Model.Ma_dag;
+import com.sysfera.godiet.Model.MasterAgent;
+import com.sysfera.godiet.Model.OmniNames;
+import com.sysfera.godiet.Model.Option;
+import com.sysfera.godiet.Model.RunConfig;
+import com.sysfera.godiet.Model.ServerDaemon;
+import com.sysfera.godiet.Model.Services;
+import com.sysfera.godiet.Model.StorageResource;
 
 /*
  * @author hdail & rbolze
@@ -26,8 +46,8 @@ public class XmlScanner implements ErrorHandler {
     org.w3c.dom.Document document;
     private static final String USAGE =
             "USAGE: XmlImporter <file.xml>\n";
-    private goDiet.Controller.DietPlatformController mainController;
-    private goDiet.Controller.ConsoleController consoleCtrl;
+    private DietPlatformController mainController;
+    private ConsoleController consoleCtrl;
     private OptionChecker opt_checker;
     /* helper class, only use here */
     private class Config {
@@ -56,20 +76,20 @@ public class XmlScanner implements ErrorHandler {
     /* Implementation of ErrorHandler for parser */
     public void error(org.xml.sax.SAXParseException sAXParseException)
             throws org.xml.sax.SAXException {
-        System.err.println("XML Parse Error:  " + sAXParseException);
+    	sAXParseException.printStackTrace();
         throw sAXParseException;
     }
 
     /* Implementation of ErrorHandler for parser */
     public void fatalError(org.xml.sax.SAXParseException sAXParseException)
             throws org.xml.sax.SAXException {
-        System.err.println("XML Parse Fatal Error:  " + sAXParseException);
+      sAXParseException.printStackTrace();
         throw sAXParseException;
     }
 
     /* Implementation of ErrorHandler for parser */
     public void warning(org.xml.sax.SAXParseException sAXParseException) {
-        System.err.println("XML Parse Warning:  " + sAXParseException);
+    	sAXParseException.printStackTrace();
     }
 
     public boolean buildDietModel(String xmlFile,
@@ -97,7 +117,9 @@ public class XmlScanner implements ErrorHandler {
 
         DocumentBuilderFactory factory =
                 DocumentBuilderFactory.newInstance();
-        factory.setValidating(true);
+        
+
+        factory.setValidating(false);
         //factory.setNamespaceAware(true);
 
         try {
@@ -731,14 +753,14 @@ public class XmlScanner implements ErrorHandler {
         }
     }
 
-    public void visitElement_cfg_options(org.w3c.dom.Element element, goDiet.Model.Elements el) { // <cfg_options>               
+    public void visitElement_cfg_options(Element element, Elements el) { // <cfg_options>               
         org.w3c.dom.NodeList nodes = element.getChildNodes();        
         for (int i = 0; i < nodes.getLength(); i++) {
             org.w3c.dom.Node node = nodes.item(i);
             if (node.getNodeType() == org.w3c.dom.Node.ELEMENT_NODE) {
                 org.w3c.dom.Element nodeElement = (org.w3c.dom.Element) node;
                 if (nodeElement.getTagName().equals("option")) {
-                    Option o = visitElement_option(nodeElement);
+                    com.sysfera.godiet.Model.Option o = visitElement_option(nodeElement);
                     String message = el.getElementCfg().addOption(o);                    
                     String message2=opt_checker.check(OptionChecker.getObjectClass(el.getClass().getName()), o.getName());
                     if(!message.equals("")){
@@ -1093,7 +1115,6 @@ public class XmlScanner implements ErrorHandler {
 
     public static void main(String args[]) {
         String xmlFile = "";
-        XmlScanner scanner = null;
 
         System.out.println("Running unit test for XmlImporter.");
 

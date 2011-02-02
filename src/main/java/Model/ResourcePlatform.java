@@ -5,11 +5,10 @@
  * Created on 20 avril 2004, 14:51
  */
 
-package goDiet.Model;
+package Model;
 
-import goDiet.Events.*;
-
-import java.util.*;
+import java.util.Iterator;
+import java.util.Vector;
 
 /**
  *

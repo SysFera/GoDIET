@@ -5,9 +5,9 @@
  * Created on 20 avril 2004
  */
 
-package goDiet.Model;
-import java.util.Vector;
+package Model;
 import java.util.Iterator;
+import java.util.Vector;
 /**
  *
  * @author  hdail

@@ -5,7 +5,7 @@
  * Created on 26 May 2004, 14:44
  */
 
-package goDiet.Model;
+package Model;
 
 import java.io.FileWriter;
 import java.io.IOException;

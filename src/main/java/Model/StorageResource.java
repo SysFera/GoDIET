@@ -5,8 +5,7 @@
  * Created on April 20, 2004, 10:56 AM
  */
 
-package goDiet.Model;
-import java.util.Vector;
+package Model;
 /**
  *
  * @author  hdail

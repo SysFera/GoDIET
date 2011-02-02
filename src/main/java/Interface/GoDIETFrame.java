@@ -5,8 +5,7 @@
  * Created on 11 juin 2004, 02:34
  */
 
-package goDiet.Interface;
-import goDiet.Controller.ConsoleController;
+package Interface;
 /**
  *
  * @author  rbolze

@@ -5,15 +5,22 @@
  * Created on April 25, 2004, 12:40 PM
  */
 
-package goDiet;
 
-import goDiet.Controller.*;
-import goDiet.Interface.GoDIETFrame;
-import goDiet.Events.DeployStateChange;
 
-import java.io.*;
-import java.util.*;
-import jline.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Observable;
+
+import jline.ArgumentCompletor;
+import jline.ConsoleReader;
+import jline.SimpleCompletor;
+
+import com.sysfera.godiet.Controller.ConsoleController;
+import com.sysfera.godiet.Events.DeployStateChange;
+import com.sysfera.godiet.Interface.GoDIETFrame;
 
 /**
  *
@@ -38,8 +45,8 @@ public class GoDIET implements java.util.Observer {
             //System.out.println("godiet Changing state to : " +
               //  goDiet.Defaults.getDeployStateString(newState));
             this.deployState = newState;
-            if(newState != goDiet.Defaults.DEPLOY_LAUNCHING &&
-               newState != goDiet.Defaults.DEPLOY_STOPPING){
+            if(newState != com.sysfera.godiet.Defaults.DEPLOY_LAUNCHING &&
+               newState != com.sysfera.godiet.Defaults.DEPLOY_STOPPING){
                synchronized(this){
                   notifyAll();
                } 

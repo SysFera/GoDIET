@@ -5,7 +5,7 @@
  * Created on 13 avril 2004, 15:10
  */
 
-package goDiet.Model;
+package Model;
 
 /**
  *

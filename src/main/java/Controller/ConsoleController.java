@@ -5,21 +5,21 @@
  * Created on 11 juin 2004, 02:39
  */
 
-package goDiet.Controller;
+package Controller;
 
-import goDiet.Interface.GoDIETFrame;
-import goDiet.Interface.GoDIETConsolePanel;
-import goDiet.Utils.XmlScanner;
-import goDiet.Events.DeployStateChange;
-import goDiet.Model.RunConfig;
-import goDiet.Defaults;
-
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.FileWriter;
-import java.io.File;
 import java.util.Date;
 import java.util.Vector;
+
+import com.sysfera.godiet.Events.DeployStateChange;
+import com.sysfera.godiet.Events.LaunchCheckRequest;
+import com.sysfera.godiet.Events.LaunchRequest;
+import com.sysfera.godiet.Interface.GoDIETConsolePanel;
+import com.sysfera.godiet.Model.RunConfig;
+import com.sysfera.godiet.Utils.XmlScanner;
 
 /**
  *
@@ -40,7 +40,7 @@ public class ConsoleController extends java.util.Observable
     private java.util.Vector history;
     private boolean fileLoaded = false;
     private static boolean interfaceMode;
-    private int deployState = goDiet.Defaults.DEPLOY_NONE;
+    private int deployState = com.sysfera.godiet.Defaults.DEPLOY_NONE;
     
     private OutputStream outStream = null;
     
@@ -66,7 +66,7 @@ public class ConsoleController extends java.util.Observable
             "   exit:            exit GoDIET, do not change running platform.\n";
     
     /** Creates a new instance of ConsoleController */
-    public ConsoleController(goDiet.Interface.GoDIETConsolePanel consolePanel) {
+    public ConsoleController(GoDIETConsolePanel consolePanel) {
         this.interfaceMode=true;
         
         this.goDietConsolePanel=consolePanel;
@@ -238,7 +238,7 @@ public class ConsoleController extends java.util.Observable
         if (fileLoaded){
             setChanged();
             this.printOutput("sending launch request all", 3);
-            notifyObservers(new goDiet.Events.LaunchRequest(this,"all"));
+            notifyObservers(new LaunchRequest(this,"all"));
             clearChanged();
             
             /*if(interfaceMode){
@@ -254,7 +254,7 @@ public class ConsoleController extends java.util.Observable
         if (fileLoaded){
             setChanged();
             this.printOutput("sending launch_check request all", 3);
-            notifyObservers(new goDiet.Events.LaunchCheckRequest(this,"all"));
+            notifyObservers(new LaunchCheckRequest(this,"all"));
             clearChanged();
             
             /*if(interfaceMode){
@@ -287,7 +287,7 @@ public class ConsoleController extends java.util.Observable
             
             setChanged();
             this.printOutput("sending launch request all", 3);
-            notifyObservers(new goDiet.Events.LaunchRequest(this,"all"));
+            notifyObservers(new LaunchRequest(this,"all"));
             clearChanged();
 
             /*if(interfaceMode){
@@ -452,8 +452,8 @@ public class ConsoleController extends java.util.Observable
         if ( e instanceof DeployStateChange){
             newState = ((DeployStateChange)e).getNewState();
             this.printOutput("Changing state to : " +
-                    goDiet.Defaults.getDeployStateString(newState), 3);
-            if(newState == goDiet.Defaults.DEPLOY_ACTIVE){
+                    com.sysfera.godiet.Defaults.getDeployStateString(newState), 3);
+            if(newState == com.sysfera.godiet.Defaults.DEPLOY_ACTIVE){
                 if(interfaceMode){
                     goDietConsolePanel.getStopButton().setEnabled(true);
                     goDietConsolePanel.getLaunchButton().setEnabled(false);

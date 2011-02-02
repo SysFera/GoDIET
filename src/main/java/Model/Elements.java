@@ -5,11 +5,10 @@
  * Created on 13 avril 2004, 14:44
  */
 
-package goDiet.Model;
+package Model;
 
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.Iterator;
 /**
  *
  * @author  hdail
@@ -21,7 +20,7 @@ public abstract class Elements extends java.util.Observable {
     protected ComputeResource compHost =      null;
     protected String          binaryName =    null;
     protected ElementCfg      elConfig = null;
-    protected boolean         useDietStats =  goDiet.Defaults.USE_DIET_STATS;
+    protected boolean         useDietStats =  com.sysfera.godiet.Defaults.USE_DIET_STATS;
    
     /** Run-related items */
     private LaunchInfo launchInfo = null;

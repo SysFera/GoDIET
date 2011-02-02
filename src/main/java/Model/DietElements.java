@@ -4,7 +4,7 @@
  *
  * Created on 13 avril 2004, 14:44
  */
-package goDiet.Model;
+package Model;
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -16,7 +16,7 @@ import java.util.Iterator;
  */
 public class DietElements extends Elements {
 
-    protected boolean useDietStats = goDiet.Defaults.USE_DIET_STATS;     
+    protected boolean useDietStats = com.sysfera.godiet.Defaults.USE_DIET_STATS;     
 
     /* Constructor for Elements. */
     public DietElements(String name, ComputeResource compRes, String binary) {

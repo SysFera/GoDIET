@@ -1,5 +1,9 @@
 /*@GODIET_LICENSE*/
-package goDiet.Utils.CORBA;
+package Utils.CORBA;
+
+import com.sysfera.godiet.Utils.corba.generated.LogCentralToolPOA;
+import com.sysfera.godiet.Utils.corba.generated.ToolMsgReceiver;
+import com.sysfera.godiet.Utils.corba.generated.filter_t;
 
 public class LogCentralToolImpl extends LogCentralToolPOA {
     public LogCentralToolImpl() {

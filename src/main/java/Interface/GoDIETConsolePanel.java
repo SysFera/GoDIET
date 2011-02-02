@@ -5,9 +5,9 @@
  * Created on 11 juin 2004, 16:51
  */
 
-package goDiet.Interface;
+package Interface;
 
-import goDiet.Controller.ConsoleController;
+import com.sysfera.godiet.Controller.ConsoleController;
 /**
  *
  * @author  rbolze

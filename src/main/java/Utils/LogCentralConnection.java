@@ -5,17 +5,23 @@
  * Created on 8 juin 2004, 08:19
  */
 
-package goDiet.Utils;
+package Utils;
 
-import goDiet.Controller.LogCentralCommController;
-import goDiet.Controller.ConsoleController;
 
-import org.omg.CosNaming.*;
-import org.omg.CosNaming.NamingContextPackage.*;
-import org.omg.CORBA.*;
-import org.omg.PortableServer.*;
+import org.omg.CORBA.StringHolder;
+import org.omg.CosNaming.NameComponent;
+import org.omg.CosNaming.NamingContextExt;
+import org.omg.CosNaming.NamingContextExtHelper;
 import org.omg.PortableServer.POA;
-import java.text.SimpleDateFormat;
+import org.omg.PortableServer.POAHelper;
+
+import com.sysfera.godiet.Controller.ConsoleController;
+import com.sysfera.godiet.Controller.LogCentralCommController;
+import com.sysfera.godiet.Utils.corba.ToolMsgReceiverImpl;
+import com.sysfera.godiet.Utils.corba.generated.LogCentralTool;
+import com.sysfera.godiet.Utils.corba.generated.LogCentralToolHelper;
+import com.sysfera.godiet.Utils.corba.generated.filter_t;
+import com.sysfera.godiet.Utils.corba.generated.log_msg_t;
 
 /**
  *
@@ -26,8 +32,8 @@ public class LogCentralConnection {
     private ConsoleController consoleCtrl;
     private String name;
     private java.util.Properties props;
-    private  goDiet.Utils.CORBA.filter_t filter;
-    private  goDiet.Utils.CORBA.LogCentralTool LCTref;
+    private  filter_t filter;
+    private  LogCentralTool LCTref;
     
     /** Creates a new instance of LogCentralConnection */
     public LogCentralConnection(String name,String host,String port,
@@ -39,7 +45,7 @@ public class LogCentralConnection {
         this.props = new java.util.Properties();        
         this.props.put("org.omg.CORBA.ORBInitialHost", host);
         this.props.put("org.omg.CORBA.ORBInitialPort", port);
-        filter = new goDiet.Utils.CORBA.filter_t();
+        filter = new filter_t();
         filter.filterName = "allFilter";
         filter.tagList = new String[1];
         // Filter everything.  Still get all static and IN/OUT msgs
@@ -49,7 +55,7 @@ public class LogCentralConnection {
         filter.componentList[0] = "*";    
     }
     
-    public void receiveMsg(goDiet.Utils.CORBA.log_msg_t msg){
+    public void receiveMsg(log_msg_t msg){
         commController.queueMsg(msg);
     }
     public boolean connect(){        
@@ -69,10 +75,10 @@ public class LogCentralConnection {
             NameComponent path[] = {nc1, nc2};
                
             org.omg.CORBA.Object objref = ncRef.resolve(path);
-            LCTref = goDiet.Utils.CORBA.LogCentralToolHelper.narrow(objref);
+            LCTref = LogCentralToolHelper.narrow(objref);
             consoleCtrl.printOutput("LCTref="+LCTref, 2);
-            goDiet.Utils.CORBA.ToolMsgReceiverImpl TMRimpl = 
-                new goDiet.Utils.CORBA.ToolMsgReceiverImpl(this);
+            ToolMsgReceiverImpl TMRimpl = 
+                new ToolMsgReceiverImpl(this);
             StringHolder s = new StringHolder(name);
             LCTref.connectTool(s,TMRimpl._this(orb));
             LCTref.addFilter(name,filter);

@@ -5,24 +5,39 @@
  * Created on May 10, 2004, 1:59 PM
  */
 
-package goDiet.Utils;
+package Utils;
 
-import goDiet.Model.*;
-import goDiet.Defaults;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.Iterator;
+import java.util.Vector;
 
-import java.io.*;
-import java.util.*;
-import java.text.SimpleDateFormat;
+import com.sysfera.godiet.Controller.ConsoleController;
+import com.sysfera.godiet.Model.AccessMethod;
+import com.sysfera.godiet.Model.ComputeResource;
+import com.sysfera.godiet.Model.Elements;
+import com.sysfera.godiet.Model.EnvVar;
+import com.sysfera.godiet.Model.LaunchInfo;
+import com.sysfera.godiet.Model.LocalAgent;
+import com.sysfera.godiet.Model.Ma_dag;
+import com.sysfera.godiet.Model.MasterAgent;
+import com.sysfera.godiet.Model.OmniNames;
+import com.sysfera.godiet.Model.RunConfig;
+import com.sysfera.godiet.Model.ServerDaemon;
+import com.sysfera.godiet.Model.StorageResource;
 
 /**
  *
  * @author  hdail
  */
 public class SshUtils {
-    private goDiet.Controller.ConsoleController consoleCtrl;
+    private ConsoleController consoleCtrl;
     
     /** Creates a new instance of SshUtils */
-    public SshUtils(goDiet.Controller.ConsoleController consoleController) {
+    public SshUtils(ConsoleController consoleController) {
         this.consoleCtrl = consoleController;
     }
     
@@ -179,7 +194,7 @@ public class SshUtils {
          * case the "- start" option is removed, and we do not remove log and
          * backup files.
          */
-        if( (element instanceof goDiet.Model.OmniNames)
+        if( (element instanceof OmniNames)
              && (!runConfig.useUniqueDirs)
              && ! ((OmniNames)element).getBackupRestart()){
             String omniRemove = "/bin/sh -c \" /bin/rm -f " + scratch +
@@ -204,17 +219,17 @@ public class SshUtils {
         
         /** Build remote command for launching the job */
         String remoteCommand = "";
-         if( (element instanceof goDiet.Model.MasterAgent) ||
-                (element instanceof goDiet.Model.Ma_dag) ||
-                (element instanceof goDiet.Model.LocalAgent) ||
-                (element instanceof goDiet.Model.ServerDaemon)){
+         if( (element instanceof MasterAgent) ||
+                (element instanceof Ma_dag) ||
+                (element instanceof LocalAgent) ||
+                (element instanceof ServerDaemon)){
             if( element.getUseDietStats()){
                 remoteCommand += "export DIET_STAT_FILE_NAME=" + scratch +
                         "/" + element.getName() + ".stats ; ";
             }
         }        	        
         // Set OMNINAMES_LOGDIR.  Needed by omniNames.
-        if(element instanceof goDiet.Model.OmniNames){
+        if(element instanceof OmniNames){
             remoteCommand += "export OMNINAMES_LOGDIR=" + scratch + " ; ";
         }
         // Set OMNIORB_CONFIG.  Needed by omniNames & all diet components.
@@ -232,23 +247,23 @@ public class SshUtils {
         // Provide resiliency to the return from ssh with nohup.  Give binary.
         remoteCommand += "nohup " + element.getBinaryName() + " ";
         // Provide config file name with full path.  Needed by agents and seds.
-        if( (element instanceof goDiet.Model.MasterAgent) ||
-                (element instanceof goDiet.Model.Ma_dag) ||
-                (element instanceof goDiet.Model.LocalAgent) ||
-                (element instanceof goDiet.Model.ServerDaemon)){
+        if( (element instanceof MasterAgent) ||
+                (element instanceof Ma_dag) ||
+                (element instanceof LocalAgent) ||
+                (element instanceof ServerDaemon)){
             remoteCommand += scratch + "/" + element.getCfgFileName() + " ";
         }
         // Provide command line parameters. Needed by SeDs and Ma_dag only.
-        if( (element instanceof goDiet.Model.ServerDaemon) &&
+        if( (element instanceof ServerDaemon) &&
                 (((ServerDaemon)element).getParameters() != null)){
             remoteCommand += ((ServerDaemon)element).getParameters() + " ";
         }
-        if( (element instanceof goDiet.Model.Ma_dag) &&
+        if( (element instanceof Ma_dag) &&
                 (((Ma_dag)element).getParameters() != null)){
             remoteCommand += ((Ma_dag)element).getParameters() + " ";
         }
         // Give -start parameter to omniNames.
-        if(element instanceof goDiet.Model.OmniNames){
+        if(element instanceof OmniNames){
             if (((OmniNames) element).getContact() != null) {
                 /* If we are restarting omniNames, then we do not add the
                  * "-start" option.
@@ -342,31 +357,31 @@ public class SshUtils {
             System.err.println("Launch of " + element.getName() +
                     " failed with following exception.");
             x.printStackTrace();
-            launchInfo.setLaunchState(goDiet.Defaults.LAUNCH_STATE_FAILED);
+            launchInfo.setLaunchState(com.sysfera.godiet.Defaults.LAUNCH_STATE_FAILED);
             return;
         }
         
         if(launchInfo.getLastLaunchStdErr() != null){
             System.err.println("Launch of " + element.getName() +
                     " failed with stdErr " + launchInfo.getLastLaunchStdErr());
-            launchInfo.setLaunchState(goDiet.Defaults.LAUNCH_STATE_CONFUSED);
+            launchInfo.setLaunchState(com.sysfera.godiet.Defaults.LAUNCH_STATE_CONFUSED);
         } else if(launchInfo.getLastLaunchStdOut() == null){
             System.err.println("Launch of " + element.getName() +
                     " failed to return PID.");
-            launchInfo.setLaunchState(goDiet.Defaults.LAUNCH_STATE_CONFUSED);
+            launchInfo.setLaunchState(com.sysfera.godiet.Defaults.LAUNCH_STATE_CONFUSED);
         } else {
             try{
                 int pid = Integer.parseInt(launchInfo.getLastLaunchStdOut());
                 consoleCtrl.printOutput("PID: " + pid,2);
                 launchInfo.setPID(pid);
-                launchInfo.setLaunchState(goDiet.Defaults.LAUNCH_STATE_RUNNING);
+                launchInfo.setLaunchState(com.sysfera.godiet.Defaults.LAUNCH_STATE_RUNNING);
             } catch(NumberFormatException x){
                 System.err.println("Launch of " + element.getName() +
                         " failed.");
                 System.err.println("Could not parse PID in stdout: " +
                         launchInfo.getLastLaunchStdOut());
                 launchInfo.setPID(-1);
-                launchInfo.setLaunchState(goDiet.Defaults.LAUNCH_STATE_CONFUSED);
+                launchInfo.setLaunchState(com.sysfera.godiet.Defaults.LAUNCH_STATE_CONFUSED);
             }
         }
         return;
@@ -405,8 +420,8 @@ public class SshUtils {
                 }
                 try {
                     Runtime.getRuntime().exec(commandStop);
-                    launch.setLaunchState(goDiet.Defaults.LAUNCH_STATE_STOPPED);
-                    launch.setLogState(goDiet.Defaults.LOG_STATE_STOPPED);
+                    launch.setLaunchState(com.sysfera.godiet.Defaults.LAUNCH_STATE_STOPPED);
+                    launch.setLogState(com.sysfera.godiet.Defaults.LOG_STATE_STOPPED);
                 } catch (IOException x) {
                     consoleCtrl.printError("stopElement triggered an exception.", 0);
                     x.printStackTrace();

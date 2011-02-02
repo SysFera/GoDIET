@@ -4,19 +4,52 @@
  *
  * Created on 26 june 2004
  */
-package goDiet.Controller;
+package Controller;
 
-import goDiet.Model.*;
-import goDiet.Events.*;
-
-import java.io.*;
-import java.util.Iterator;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Iterator;
 import java.util.Properties;
 import java.util.Vector;
-import org.omg.CosNaming.*;
-import org.omg.PortableServer.*;
+
+import org.omg.CosNaming.NameComponent;
+import org.omg.CosNaming.NamingContextExt;
+import org.omg.CosNaming.NamingContextExtHelper;
 import org.omg.PortableServer.POA;
+import org.omg.PortableServer.POAHelper;
+
+import com.sysfera.godiet.Events.DeployStateChange;
+import com.sysfera.godiet.Events.LaunchCheckRequest;
+import com.sysfera.godiet.Events.LaunchRequest;
+import com.sysfera.godiet.Events.LogStateChange;
+import com.sysfera.godiet.Model.Agents;
+import com.sysfera.godiet.Model.ComputeCollection;
+import com.sysfera.godiet.Model.ComputeResource;
+import com.sysfera.godiet.Model.DietPlatform;
+import com.sysfera.godiet.Model.Elements;
+import com.sysfera.godiet.Model.LaunchInfo;
+
+import com.sysfera.godiet.Model.LogCentral;
+import com.sysfera.godiet.Model.Ma_dag;
+
+import com.sysfera.godiet.Model.OmniNames;
+import com.sysfera.godiet.Model.ResourcePlatform;
+import com.sysfera.godiet.Model.RunConfig;
+import com.sysfera.godiet.Model.ServerDaemon;
+import com.sysfera.godiet.Model.Services;
+import com.sysfera.godiet.Model.StorageResource;
+import com.sysfera.godiet.Utils.Launcher;
+import com.sysfera.godiet.diet.corba.generated.LocalAgent;
+import com.sysfera.godiet.diet.corba.generated.LocalAgentHelper;
+import com.sysfera.godiet.diet.corba.generated.MaDag;
+import com.sysfera.godiet.diet.corba.generated.MaDagHelper;
+import com.sysfera.godiet.diet.corba.generated.MasterAgent;
+import com.sysfera.godiet.diet.corba.generated.MasterAgentHelper;
+import com.sysfera.godiet.diet.corba.generated.SeD;
+import com.sysfera.godiet.diet.corba.generated.SeDHelper;
 
 /**
  *
@@ -29,9 +62,9 @@ public class DeploymentController extends java.util.Observable
     private ConsoleController consoleCtrl;
     private DietPlatformController modelCtrl;
     private LogCentralCommController logCommCtrl;
-    private goDiet.Model.DietPlatform dietPlatform;
-    private goDiet.Model.ResourcePlatform resourcePlatform;
-    private goDiet.Utils.Launcher launcher;
+    private DietPlatform dietPlatform;
+    private ResourcePlatform resourcePlatform;
+    private Launcher launcher;
     private java.lang.Thread dcThread;
     private java.util.Vector requestQueue;
     private int deployState;
@@ -65,9 +98,9 @@ public class DeploymentController extends java.util.Observable
 
         dietPlatform = modelCtrl.getDietPlatform();
         resourcePlatform = modelCtrl.getResourcePlatform();
-        launcher = new goDiet.Utils.Launcher(consoleController);
+        launcher = new Launcher(consoleController);
         this.requestQueue = new java.util.Vector();
-        this.deployState = goDiet.Defaults.DEPLOY_NONE;
+        this.deployState = com.sysfera.godiet.Defaults.DEPLOY_NONE;
         dcThread = new java.lang.Thread(this);
         dcThread.start();
     }
@@ -164,8 +197,8 @@ public class DeploymentController extends java.util.Observable
         boolean deploySuccess = false;
         setChanged();
         consoleCtrl.printOutput("Deployer: Sending deploy state LAUNCHING.", 3);
-        notifyObservers(new goDiet.Events.DeployStateChange(
-                this, goDiet.Defaults.DEPLOY_LAUNCHING));
+        notifyObservers(new DeployStateChange(
+                this, com.sysfera.godiet.Defaults.DEPLOY_LAUNCHING));
         clearChanged();
 
         if (request.compareTo("all") == 0) {
@@ -179,12 +212,12 @@ public class DeploymentController extends java.util.Observable
         setChanged();
         if (deploySuccess) {
             consoleCtrl.printOutput("Deployer: Sending deploy state ACTIVE.", 3);
-            notifyObservers(new goDiet.Events.DeployStateChange(
-                    this, goDiet.Defaults.DEPLOY_ACTIVE));            
+            notifyObservers(new DeployStateChange(
+                    this, com.sysfera.godiet.Defaults.DEPLOY_ACTIVE));            
         } else {
             consoleCtrl.printOutput("Deployer: Sending deploy state INACTIVE.", 3);
-            notifyObservers(new goDiet.Events.DeployStateChange(
-                    this, goDiet.Defaults.DEPLOY_INACTIVE));
+            notifyObservers(new DeployStateChange(
+                    this, com.sysfera.godiet.Defaults.DEPLOY_INACTIVE));
         }
         clearChanged();
     }
@@ -194,8 +227,8 @@ public class DeploymentController extends java.util.Observable
         boolean deploySuccess = false;
         setChanged();
         consoleCtrl.printOutput("Deployer: Sending deploy state LAUNCHING.", 3);
-        notifyObservers(new goDiet.Events.DeployStateChange(
-                this, goDiet.Defaults.DEPLOY_LAUNCHING));
+        notifyObservers(new DeployStateChange(
+                this, com.sysfera.godiet.Defaults.DEPLOY_LAUNCHING));
         clearChanged();
 
         if (request.compareTo("all") == 0) {
@@ -209,12 +242,12 @@ public class DeploymentController extends java.util.Observable
         setChanged();
         if (deploySuccess) {
             consoleCtrl.printOutput("Deployer: Sending deploy state ACTIVE.", 3);
-            notifyObservers(new goDiet.Events.DeployStateChange(
-                    this, goDiet.Defaults.DEPLOY_ACTIVE));            
+            notifyObservers(new DeployStateChange(
+                    this, com.sysfera.godiet.Defaults.DEPLOY_ACTIVE));            
         } else {
             consoleCtrl.printOutput("Deployer: Sending deploy state INACTIVE.", 3);
-            notifyObservers(new goDiet.Events.DeployStateChange(
-                    this, goDiet.Defaults.DEPLOY_INACTIVE));
+            notifyObservers(new DeployStateChange(
+                    this, com.sysfera.godiet.Defaults.DEPLOY_INACTIVE));
         }
         
         clearChanged();
@@ -239,17 +272,6 @@ public class DeploymentController extends java.util.Observable
             if (this.dietPlatform.useTestTool()) {
                 launchTestTool();
             }
-        /*LogCentral logCentral = this.dietPlatform.getLogCentral();
-        LaunchInfo logInfo = logCentral.getLaunchInfo();
-        if((logInfo.getLaunchState() == goDiet.Defaults.LAUNCH_STATE_RUNNING) &&
-        (this.dietPlatform.getTestTool() != null)) {
-        if(logCentral.getConnectDuringLaunch() == false){
-        launchTestTool();
-        } else if(logCentral.getConnectDuringLaunch() &&
-        (logInfo.getLogState() == goDiet.Defaults.LOG_STATE_RUNNING)){
-        launchTestTool();
-        }
-        }*/
         }
         launchMasterAgents();
         launchMa_dags();
@@ -325,7 +347,7 @@ public class DeploymentController extends java.util.Observable
         OmniNames omni = this.dietPlatform.getOmniNames();
         launchService(omni);
         if (omni.getLaunchInfo().getLaunchState() !=
-                goDiet.Defaults.LAUNCH_STATE_RUNNING) {
+                com.sysfera.godiet.Defaults.LAUNCH_STATE_RUNNING) {
             consoleCtrl.printError("OmniNames launch failed. " +
                     "All others will fail.", 0);
             return false;
@@ -338,7 +360,7 @@ public class DeploymentController extends java.util.Observable
         launchService(logger);
     }
 
-    public void connectLogCentral() {
+    private void connectLogCentral() {
         LogCentral logger = this.dietPlatform.getLogCentral();
 
         if (logger.logCentralConnected()) {
@@ -346,7 +368,7 @@ public class DeploymentController extends java.util.Observable
             return;
         }
         if (logger.getLaunchInfo().getLaunchState() !=
-                goDiet.Defaults.LAUNCH_STATE_RUNNING) {
+                com.sysfera.godiet.Defaults.LAUNCH_STATE_RUNNING) {
             logger.setLogCentralConnected(false);
             return;
         }
@@ -355,12 +377,12 @@ public class DeploymentController extends java.util.Observable
         if (logCommCtrl.connectLogService(omni) == true) {
             consoleCtrl.printOutput("* Connected to Log Central.", 1);
             logger.getLaunchInfo().setLogState(
-                    goDiet.Defaults.LOG_STATE_RUNNING);
+                    com.sysfera.godiet.Defaults.LOG_STATE_RUNNING);
             logger.setLogCentralConnected(true);
         } else {
             consoleCtrl.printError("* Error connecting to log central.", 1);
             logger.getLaunchInfo().setLogState(
-                    goDiet.Defaults.LOG_STATE_CONFUSED);
+                    com.sysfera.godiet.Defaults.LOG_STATE_CONFUSED);
             logger.setLogCentralConnected(false);
         }
     }
@@ -444,7 +466,7 @@ public class DeploymentController extends java.util.Observable
         }
         if ((element.getLaunchInfo() != null) &&
                 (element.getLaunchInfo().getLaunchState() ==
-                goDiet.Defaults.LAUNCH_STATE_RUNNING)) {
+                com.sysfera.godiet.Defaults.LAUNCH_STATE_RUNNING)) {
             consoleCtrl.printError("Element " + element.getName() +
                     " is already running.  Launch request ignored.", 0);
             return false;
@@ -454,7 +476,7 @@ public class DeploymentController extends java.util.Observable
             // No launch if omniNames is not already running
             // [unless we're currently launching omniNames!]
             if ((this.dietPlatform.getOmniNames()).getLaunchInfo().getLaunchState() !=
-                    goDiet.Defaults.LAUNCH_STATE_RUNNING) {
+                    com.sysfera.godiet.Defaults.LAUNCH_STATE_RUNNING) {
                 consoleCtrl.printError("OmniNames is not running. " +
                         " Launch for " + element.getName() + " refused.");
                 return false;
@@ -476,17 +498,17 @@ public class DeploymentController extends java.util.Observable
         // For elements with parent in hierarchy, check on run status of parent
         LaunchInfo parentLI = null;
         Agents parent = null;
-        if (element instanceof goDiet.Model.LocalAgent) {
-            parent = ((LocalAgent) element).getParent();
+        if (element instanceof com.sysfera.godiet.Model.LocalAgent) {
+            parent = ((com.sysfera.godiet.Model.LocalAgent) element).getParent();
             parentLI = parent.getLaunchInfo();
-        } else if (element instanceof goDiet.Model.ServerDaemon) {
+        } else if (element instanceof ServerDaemon) {
             parent = ((ServerDaemon) element).getParent();
             parentLI = parent.getLaunchInfo();
         }
-        if ((element instanceof goDiet.Model.LocalAgent) ||
-                (element instanceof goDiet.Model.ServerDaemon)) {
+        if ((element instanceof LocalAgent) ||
+                (element instanceof ServerDaemon)) {
             if (parentLI.getLaunchState() !=
-                    goDiet.Defaults.LAUNCH_STATE_RUNNING) {
+                    com.sysfera.godiet.Defaults.LAUNCH_STATE_RUNNING) {
                 consoleCtrl.printError("Can not launch " + element.getName() +
                         " because parent " + parent.getName() + " is not running.", 1);
                 return false;
@@ -495,7 +517,7 @@ public class DeploymentController extends java.util.Observable
                     this.dietPlatform.getLogCentral().useLogToGuideLaunch() &&
                     this.dietPlatform.getLogCentral().logCentralConnected() &&
                     parent.getElementCfg().getOption("useLogService").getValue().equals("1") &&
-                    (parentLI.getLogState() != goDiet.Defaults.LOG_STATE_RUNNING))                    
+                    (parentLI.getLogState() != com.sysfera.godiet.Defaults.LOG_STATE_RUNNING))                    
                     {                
                 consoleCtrl.printError("Can not launch " + element.getName() +
                         " because parent " + parent.getName() +
@@ -511,7 +533,7 @@ public class DeploymentController extends java.util.Observable
     private void waitAfterLaunch(Elements element,
             ComputeResource compRes) {
         // the case of Ma_dag should be remove when the Ma_dag will use the LogService
-        if (element instanceof goDiet.Model.Services /*|| element instanceof goDiet.Model.Ma_dag*/) { 
+        if (element instanceof Services /*|| element instanceof Ma_dag*/) { 
             consoleCtrl.printOutput(
                     "Waiting for " + WAITING_TIME_FOR_SERVICE/1000
                     + " seconds after service launch", 1);
@@ -535,7 +557,7 @@ public class DeploymentController extends java.util.Observable
                         "interruption.", 0);
             }
             if (element.getLaunchInfo().getLogState() ==
-                    goDiet.Defaults.LOG_STATE_RUNNING) {
+                    com.sysfera.godiet.Defaults.LOG_STATE_RUNNING) {
                 consoleCtrl.printOutput("Element " + element.getName() +
                         " registered with log.", 2);
             } else {
@@ -543,7 +565,7 @@ public class DeploymentController extends java.util.Observable
                         " did not register with log before deadline.", 1);
             // TODO: any special launch handling required here?
             }
-        } else if (element instanceof goDiet.Model.Agents) {
+        } else if (element instanceof Agents) {
             consoleCtrl.printOutput(
                     "Waiting for " + WAITING_TIME_FOR_ELEMENT/1000
                     + " seconds after launch without log service feedback", 1);
@@ -677,9 +699,9 @@ public class DeploymentController extends java.util.Observable
             return false;
         }
         if ((element.getLaunchInfo().getLaunchState() !=
-                goDiet.Defaults.LAUNCH_STATE_RUNNING) &&
+                com.sysfera.godiet.Defaults.LAUNCH_STATE_RUNNING) &&
                 (element.getLaunchInfo().getLaunchState() !=
-                goDiet.Defaults.LAUNCH_STATE_CONFUSED)) {
+                com.sysfera.godiet.Defaults.LAUNCH_STATE_CONFUSED)) {
             consoleCtrl.printError("Element " + element.getName() + " is not " +
                     "running. Ignoring stop command.");
             return false;
@@ -733,7 +755,7 @@ public class DeploymentController extends java.util.Observable
             boolean first = true;
             String MAc = "";
             for (Iterator it = mAgents.iterator(); it.hasNext();) {
-                MasterAgent MA = (MasterAgent)it.next();
+                com.sysfera.godiet.Model.MasterAgent MA = (com.sysfera.godiet.Model.MasterAgent)it.next();
                 out.write(MA.getName() + " ");
                 if (first) {
                     first = false;
@@ -773,7 +795,7 @@ public class DeploymentController extends java.util.Observable
                     element.getName(), 0);
             consoleCtrl.printError("Exception: " + x + "\nExiting.", 1);
             element.getLaunchInfo().setLaunchState(
-                    goDiet.Defaults.LAUNCH_STATE_CONFUSED);
+                    com.sysfera.godiet.Defaults.LAUNCH_STATE_CONFUSED);
             System.exit(1);     /// TODO: Add error handling and don't exit
         }
     }
@@ -845,7 +867,7 @@ public class DeploymentController extends java.util.Observable
             if (checkProperties == null ||
                 checkProperties.getProperty("state") != STATE_OK) {
         	consoleCtrl.printOutput("## An element is down");
-                currElement.getLaunchInfo().setLaunchState(goDiet.Defaults.LAUNCH_STATE_FAILED);
+                currElement.getLaunchInfo().setLaunchState(com.sysfera.godiet.Defaults.LAUNCH_STATE_FAILED);
                 elementsDown.add(currElement);
 
                     if (currElement instanceof Agents) {
@@ -920,13 +942,13 @@ public class DeploymentController extends java.util.Observable
                 org.omg.CORBA.Object objref = ncRef.resolve(path);
 
                 if (element instanceof ServerDaemon) {
-                    goDiet.diet.corba.SeD SeD = null;
-                    SeD = goDiet.diet.corba.SeDHelper.narrow(objref);
+                    SeD SeD = null;
+                    SeD = SeDHelper.narrow(objref);
                     SeD.bindParent(((ServerDaemon) element).getParent().getName());
                 } else {
-                    goDiet.diet.corba.LocalAgent LA;
-                    LA = goDiet.diet.corba.LocalAgentHelper.narrow(objref);
-                    LA.bindParent(((LocalAgent) element).getParent().getName());
+                    LocalAgent LA;
+                    LA = LocalAgentHelper.narrow(objref);
+                    LA.bindParent(((com.sysfera.godiet.Model.LocalAgent) element).getParent().getName());
                 }
 
                 reconnected = true;
@@ -1038,7 +1060,7 @@ public class DeploymentController extends java.util.Observable
         if (checkOmniNames().getProperty("state") != STATE_OK) {
             Vector elements = new Vector();
             this.dietPlatform.getOmniNames().getLaunchInfo().setLaunchState(
-                    goDiet.Defaults.LAUNCH_STATE_FAILED);
+                    com.sysfera.godiet.Defaults.LAUNCH_STATE_FAILED);
             this.dietPlatform.getOmniNames().setBackupRestart(true);
             elements.add(this.dietPlatform.getOmniNames());
             launchElements(elements);
@@ -1098,57 +1120,7 @@ public class DeploymentController extends java.util.Observable
         }
         return checks;
     }    
- private boolean checkElement(Elements element,
-				   ComputeResource compRes,
-				   String eltType) {
-
-	//	System.out.println("cheking element " + element.getName() + " [" + eltType + "]");
-        ComputeCollection coll = element.getComputeResource().getCollection();
-        StorageResource storeRes = coll.getStorageResource();
-	String [] cmd = {"/usr/bin/ssh",
-			 storeRes.getAccessMethod("scp").getLogin() + "@" +
-			 storeRes.getAccessMethod("scp").getServer(),
-			 "cat " +
-			 storeRes.getScratchBase() + "/" +
-			 element.getName() + ".out"};
-	//	System.out.println("======" + cmd[0] + " " + cmd[1] + " " + cmd[2]);
-	try {
-            Process p = Runtime.getRuntime().exec(cmd);
-	    BufferedReader in = new BufferedReader(new InputStreamReader(p.getInputStream()));
-            BufferedReader error = new BufferedReader(new InputStreamReader(p.getErrorStream()));
-            String line = "";
-	    String ior = "";
-	    String state = "UNKNOWN";
-            while ((line=in.readLine())!=null) {
-		//		System.out.println("@" + line);
-		if (line.startsWith("## "+ eltType)) {
-		    ior = line.split(" ")[2];
-		    state = checkIOR(ior, eltType);
-		}
-	    }
-	    consoleCtrl.printOutput("# STATEOF " +
-			       element.getName() + " " +
-			       state);
-
-            in.close();
-
-	    /*
-            while ((line=error.readLine())!=null) {
-		System.out.println("@@@" + line);
-	    }
-	    */
-
-        } catch (IOException x) {
-            consoleCtrl.printOutput("# STATEOF " +
-			       element.getName() + " " +
-			       "UNKNOWN");
-            consoleCtrl.printError("stageWithScp failed.",0);
-        }
-
-        return true;
-    }
-
-    private Properties checkElement2(Elements element,
+ private Properties checkElement2(Elements element,
             ComputeResource compRes,
             String eltType) {
         Properties checkProperties = null;
@@ -1254,8 +1226,8 @@ public class DeploymentController extends java.util.Observable
 
         String state = "UNKNOWN";
         if (eltType.equals(MA_IOR)) {
-            goDiet.diet.corba.MasterAgent ma = null;
-            ma = goDiet.diet.corba.MasterAgentHelper.narrow(orb.string_to_object(ior));
+            MasterAgent ma = null;
+            ma = MasterAgentHelper.narrow(orb.string_to_object(ior));
             try {
                 ma.ping();
                 return STATE_OK;
@@ -1264,8 +1236,8 @@ public class DeploymentController extends java.util.Observable
             }
         }
         if (eltType.equals(LA_IOR)) {
-            goDiet.diet.corba.LocalAgent la = null;
-            la = goDiet.diet.corba.LocalAgentHelper.narrow(orb.string_to_object(ior));
+            LocalAgent la = null;
+            la = LocalAgentHelper.narrow(orb.string_to_object(ior));
             try {
                 la.ping();
                 return STATE_OK;
@@ -1274,8 +1246,8 @@ public class DeploymentController extends java.util.Observable
             }
         }
         if (eltType.equals(SED_IOR)) {
-            goDiet.diet.corba.SeD sed = null;
-            sed = goDiet.diet.corba.SeDHelper.narrow(orb.string_to_object(ior));
+            SeD sed = null;
+            sed = SeDHelper.narrow(orb.string_to_object(ior));
             try {
                 sed.ping();
                 return STATE_OK;
@@ -1300,8 +1272,8 @@ public class DeploymentController extends java.util.Observable
          */
         
         if (elType.equals(MA_IOR)) {
-            goDiet.diet.corba.MasterAgent ma = null;
-            ma = goDiet.diet.corba.MasterAgentHelper.narrow(orb.string_to_object(ior));
+            MasterAgent ma = null;
+            ma = MasterAgentHelper.narrow(orb.string_to_object(ior));
             try {
                 ping = ma.ping();
                 state = STATE_OK;
@@ -1310,8 +1282,8 @@ public class DeploymentController extends java.util.Observable
             }
         }
         if (elType.equals(MADAG_IOR)) {
-            goDiet.diet.corba.MaDag madag = null;
-            madag = goDiet.diet.corba.MaDagHelper.narrow(orb.string_to_object(ior));
+            MaDag madag = null;
+            madag = MaDagHelper.narrow(orb.string_to_object(ior));
             try {
                 ping = madag.ping();
                 state = STATE_OK;
@@ -1320,8 +1292,8 @@ public class DeploymentController extends java.util.Observable
             }
         }
         if (elType.equals(LA_IOR)) {
-            goDiet.diet.corba.LocalAgent la = null;
-            la = goDiet.diet.corba.LocalAgentHelper.narrow(orb.string_to_object(ior));
+            LocalAgent la = null;
+            la = LocalAgentHelper.narrow(orb.string_to_object(ior));
             try {                
                 ping = la.ping();
                 state = STATE_OK;
@@ -1330,8 +1302,8 @@ public class DeploymentController extends java.util.Observable
             }
         }
         if (elType.equals(SED_IOR)) {
-            goDiet.diet.corba.SeD sed = null;
-            sed = goDiet.diet.corba.SeDHelper.narrow(orb.string_to_object(ior));
+            SeD sed = null;
+            sed = SeDHelper.narrow(orb.string_to_object(ior));
             try {
                 ping = sed.ping();
                 state = STATE_OK;

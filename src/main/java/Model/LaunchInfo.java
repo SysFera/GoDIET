@@ -5,15 +5,15 @@
  * Created on May 19, 2004, 11:00 AM
  */
 
-package goDiet.Model;
+package Model;
 
 /**
  *
  * @author  hdail
  */
 public class LaunchInfo {
-    private int launchState = goDiet.Defaults.LAUNCH_STATE_NONE;
-    private int logState = goDiet.Defaults.LOG_STATE_NONE;
+    private int launchState = com.sysfera.godiet.Defaults.LAUNCH_STATE_NONE;
+    private int logState = com.sysfera.godiet.Defaults.LOG_STATE_NONE;
     private int pid = -1;
     private String[] commandArray = null; // undecided if needed?
     private String stdOutOfLaunch = null;   // undecided how to use?
@@ -25,15 +25,15 @@ public class LaunchInfo {
     
     public void clearLastLaunch(){
         this.pid = -1;
-        this.launchState = goDiet.Defaults.LAUNCH_STATE_NONE;
-        this.logState = goDiet.Defaults.LOG_STATE_NONE;
+        this.launchState = com.sysfera.godiet.Defaults.LAUNCH_STATE_NONE;
+        this.logState = com.sysfera.godiet.Defaults.LOG_STATE_NONE;
         this.commandArray = null;
         this.stdOutOfLaunch = null;
         this.stdErrOfLaunch = null;
     }
     
     public void setLaunchState(int launchState){
-        if(goDiet.Defaults.launchStateExists(launchState)){
+        if(com.sysfera.godiet.Defaults.launchStateExists(launchState)){
             this.launchState = launchState;
         } else {
             System.err.println("Ignoring attempt to set unknown launchState "
@@ -45,7 +45,7 @@ public class LaunchInfo {
     }
 
     public void setLogState(int logState){
-        if(goDiet.Defaults.logStateExists(logState)){
+        if(com.sysfera.godiet.Defaults.logStateExists(logState)){
             this.logState = logState;
         } else {
             System.err.println("Ignoring attempt to set unknown logState "

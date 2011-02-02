@@ -5,29 +5,42 @@
  * Created on 13 avril 2004, 14:50
  */
 
-package goDiet.Controller;
+package Controller;
 
-import goDiet.Utils.*;
-import goDiet.Model.*;
-import goDiet.Events.*;
-import goDiet.Defaults;
+import com.sysfera.godiet.Events.AddElementsEvent;
+import com.sysfera.godiet.Events.AddServiceEvent;
+import com.sysfera.godiet.Events.StatusInfosEvent;
+import com.sysfera.godiet.Model.Agents;
+import com.sysfera.godiet.Model.ComputeCollection;
+import com.sysfera.godiet.Model.ComputeResource;
+import com.sysfera.godiet.Model.DietPlatform;
+import com.sysfera.godiet.Model.Elements;
+import com.sysfera.godiet.Model.LocalAgent;
+import com.sysfera.godiet.Model.LogCentral;
+import com.sysfera.godiet.Model.Ma_dag;
+import com.sysfera.godiet.Model.MasterAgent;
+import com.sysfera.godiet.Model.OmniNames;
+import com.sysfera.godiet.Model.ResourcePlatform;
+import com.sysfera.godiet.Model.ServerDaemon;
+import com.sysfera.godiet.Model.Services;
+import com.sysfera.godiet.Model.StorageResource;
 
 /**
  *
  * @author  hdail
  */
 public class DietPlatformController implements java.util.Observer {
-    //private goDiet.Model.RunConfig         runConfig;
+    //private RunConfig         runConfig;
     
-    private goDiet.Model.DietPlatform      dietPlatform;
-    private goDiet.Model.ResourcePlatform  resourcePlatform;
+    private com.sysfera.godiet.Model.DietPlatform      dietPlatform;
+    private ResourcePlatform  resourcePlatform;
     private ConsoleController consoleCtrl;
     
     public DietPlatformController(ConsoleController consoleController){
         this.consoleCtrl    = consoleController;
-        //runConfig           = new goDiet.Model.RunConfig();
-        dietPlatform        = new goDiet.Model.DietPlatform(consoleCtrl);
-        resourcePlatform    = new goDiet.Model.ResourcePlatform();
+        //runConfig           = new RunConfig();
+        dietPlatform        = new DietPlatform(consoleCtrl);
+        resourcePlatform    = new ResourcePlatform();
         dietPlatform.addObserver(this);
     }
     

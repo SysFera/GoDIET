@@ -3,9 +3,8 @@
  * 
  */
 
-package goDiet.Model;
+package Model;
 
-import goDiet.Model.Option;
 import java.util.Iterator;
 import java.util.Vector;
 

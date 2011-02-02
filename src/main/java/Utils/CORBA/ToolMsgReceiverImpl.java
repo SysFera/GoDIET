@@ -1,9 +1,14 @@
 /*@GODIET_LICENSE*/
-package goDiet.Utils.CORBA;
+package Utils.CORBA;
+
+import com.sysfera.godiet.Utils.LogCentralConnection;
+import com.sysfera.godiet.Utils.corba.generated.ToolMsgReceiverHelper;
+import com.sysfera.godiet.Utils.corba.generated.ToolMsgReceiverPOA;
+import com.sysfera.godiet.Utils.corba.generated.log_msg_t;
 
 public class ToolMsgReceiverImpl extends ToolMsgReceiverPOA {
-    goDiet.Utils.LogCentralConnection logCentralConnection;
-    public ToolMsgReceiverImpl(goDiet.Utils.LogCentralConnection logConnect) {
+    LogCentralConnection logCentralConnection;
+    public ToolMsgReceiverImpl(LogCentralConnection logConnect) {
         this.logCentralConnection = logConnect;
         this._initialize_inheritance_tree();
     }

@@ -5,10 +5,10 @@
  * Created on 13 avril 2004, 14:51
  */
 
-package goDiet.Model;
+package Model;
 
-import goDiet.Events.*;
-import goDiet.Controller.ConsoleController;
+import com.sysfera.godiet.Controller.ConsoleController;
+import com.sysfera.godiet.Events.AddElementsEvent;
 
 /**
  *
@@ -227,9 +227,9 @@ public class DietPlatform extends java.util.Observable {
         }
         LaunchInfo launch = element.getLaunchInfo();
 
-        status += paddedString(goDiet.Defaults.getLaunchStateString(
+        status += paddedString(com.sysfera.godiet.Defaults.getLaunchStateString(
                 launch.getLaunchState()), 13) + " ";
-        status += paddedString(goDiet.Defaults.getLogStateString(
+        status += paddedString(com.sysfera.godiet.Defaults.getLogStateString(
                 launch.getLogState()), 10) + " ";
         status += paddedString(element.getComputeResource().getName(),12) + 
                     " ";
