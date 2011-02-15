@@ -19,8 +19,8 @@ public class DietElements extends Elements {
     protected boolean useDietStats = com.sysfera.godiet.Defaults.USE_DIET_STATS;     
 
     /* Constructor for Elements. */
-    public DietElements(String name, ComputeResource compRes, String binary) {
-        super(name, compRes, binary);
+    public DietElements(String name, ComputeResource compRes, String binary,Domain domain) {
+        super(name, compRes, binary,domain);
         updateCfg();
     }
 

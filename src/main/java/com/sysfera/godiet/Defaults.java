@@ -7,7 +7,6 @@
 
 package com.sysfera.godiet;
 
-
 /**
  *
  * @author  hdail

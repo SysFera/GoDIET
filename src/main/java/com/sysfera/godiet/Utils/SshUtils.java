@@ -12,8 +12,9 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.Vector;
+import java.util.List;
 
 import com.sysfera.godiet.Controller.ConsoleController;
 import com.sysfera.godiet.Model.AccessMethod;
@@ -52,7 +53,7 @@ public class SshUtils {
         // If remote scratch not yet available, create it and stage file by
         // recursive copy.  Else, copy just the file.
         if(storeRes.getScratchReady() == false){
-            if(runConfig.useUniqueDirs){                
+            if(runConfig.isUseUniqueDirs()){                
                 try {
                     consoleCtrl.printOutput("mkdir : "+ access.getServer() +"@" +storeRes.getScratchBase()+"/" +
                             runConfig.getRunLabel(),1);
@@ -65,8 +66,8 @@ public class SshUtils {
                 }
             }
             // scp localScratchBase/* remoteScratchBase/
-            if (!filename.equals("omniORB4.cfg"))
-                command += runConfig.getLocalScratch() + "/omniORB4.cfg "; // omniORB
+//            if (!filename.equals("omniORB4.cfg"))
+//                command += runConfig.getLocalScratch() + "/omniORB4.cfg "; // omniORB
             
             command += runConfig.getLocalScratch() + "/" + filename + " "; // source
             
@@ -74,14 +75,14 @@ public class SshUtils {
             
             command += access.getLogin() + "@" + access.getServer() + ":";
             command += storeRes.getScratchBase();
-            if(runConfig.useUniqueDirs){
+            if(runConfig.isUseUniqueDirs()){
                 command +="/" +runConfig.getRunLabel();
             }
         } else {
             // format: /usr/bin/scp filename login@host:remoteFile
             command += runConfig.getLocalScratch() + "/" + filename + " ";
             command += access.getLogin() + "@" + access.getServer() + ":";
-            if(runConfig.useUniqueDirs){
+            if(runConfig.isUseUniqueDirs()){
                 command += storeRes.getScratchBase() + "/" +
                         runConfig.getRunLabel();
             } else {
@@ -113,7 +114,7 @@ public class SshUtils {
             RunConfig runConfig) {
         AccessMethod access = storeRes.getAccessMethod("scp");
         String command = new String("/usr/bin/scp ");
-        if(runConfig.useUniqueDirs){
+        if(runConfig.isUseUniqueDirs()){
             try {
                 consoleCtrl.printOutput("mkdir : "+ access.getServer() +"@" +storeRes.getScratchBase()+"/" +
                         runConfig.getRunLabel(),1);
@@ -126,7 +127,7 @@ public class SshUtils {
             }
         }
         
-        Vector files = new Vector();
+        List files = new ArrayList();
         for (Iterator itEl = storeRes.getElementList().iterator();itEl.hasNext();){
             Elements el=(Elements)itEl.next();
             files.add(el.getCfgFileName());
@@ -139,7 +140,7 @@ public class SshUtils {
             command += runConfig.getLocalScratch() + "/" + filename + " "; // source
         }
          command += access.getLogin() + "@" + access.getServer() + ":";
-        if(runConfig.useUniqueDirs){
+        if(runConfig.isUseUniqueDirs()){
             command += storeRes.getScratchBase() + "/" +
                     runConfig.getRunLabel();
         } else {
@@ -174,7 +175,7 @@ public class SshUtils {
         StorageResource storage = compRes.getCollection().getStorageResource();
         String scratch;
         int i;
-        if(runConfig.useUniqueDirs){
+        if(runConfig.isUseUniqueDirs()){
             scratch = storage.getScratchBase() + "/" +
                     storage.getRunLabel();
         } else {
@@ -195,7 +196,7 @@ public class SshUtils {
          * backup files.
          */
         if( (element instanceof OmniNames)
-             && (!runConfig.useUniqueDirs)
+             && (!runConfig.isUseUniqueDirs())
              && ! ((OmniNames)element).getBackupRestart()){
             String omniRemove = "/bin/sh -c \" /bin/rm -f " + scratch +
                     "/omninames*.log ";
@@ -235,7 +236,7 @@ public class SshUtils {
         // Set OMNIORB_CONFIG.  Needed by omniNames & all diet components.
         remoteCommand += "export OMNIORB_CONFIG=" + scratch + "/omniORB4.cfg ; ";
         // Set all user Variables;
-        Vector envVars = compRes.getCollection().getEnvVars();
+        List envVars = compRes.getCollection().getEnvVars();
         if (!envVars.isEmpty()){
             for (java.util.Iterator it = envVars.iterator();it.hasNext();){
                 EnvVar v = (EnvVar)it.next();
@@ -299,15 +300,15 @@ public class SshUtils {
         }
         // Redirect stdin/stdout/stderr so ssh can exit cleanly w/ live process
         remoteCommand += "< /dev/null ";
-        if(!(runConfig.saveStdOut) && !(runConfig.saveStdErr)){
+        if(!(runConfig.isSaveStdOut()) && !(runConfig.isSaveStdErr())){
             remoteCommand += "> /dev/null 2>&1 ";
         } else {
-            if(runConfig.saveStdOut){
+            if(runConfig.isSaveStdOut()){
                 remoteCommand += "> " + element.getName() + ".out ";
             } else {
                 remoteCommand += "> /dev/null ";
             }
-            if(runConfig.saveStdErr){
+            if(runConfig.isSaveStdErr()){
                 remoteCommand += "2> " + element.getName() + ".err ";
             } else {
                 remoteCommand += "2> /dev/null ";

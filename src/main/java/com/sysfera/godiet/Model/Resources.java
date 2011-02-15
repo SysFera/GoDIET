@@ -6,18 +6,20 @@
  */
 
 package com.sysfera.godiet.Model;
+import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.Vector;
+import java.util.List;
+import java.util.List;
 /**
  *
  * @author  hdail
  */
 public  abstract class Resources extends java.util.Observable {
     private String name = null;
-    private java.util.Vector accessMethods;
+    private List<AccessMethod> accessMethods;
     
     /*List of Elements that use this StorageResource*/
-    private Vector elementsList;
+    private List<Elements> elementsList;
     
     private boolean isUsed = false;
     
@@ -25,8 +27,8 @@ public  abstract class Resources extends java.util.Observable {
        the name can not be changed. */
     public Resources(String name) {
         this.name = name;
-        this.accessMethods = new java.util.Vector();
-        this.elementsList = new Vector();
+        this.accessMethods = new ArrayList<AccessMethod>();
+        this.elementsList = new ArrayList<Elements>();
     }
     
     public void addAccessMethod(AccessMethod accessMethod){
@@ -48,7 +50,7 @@ public  abstract class Resources extends java.util.Observable {
     public AccessMethod getAccessMethod(String type){
         AccessMethod access = null;
         for( int i = 0; i < accessMethods.size(); i++) {
-            access = (AccessMethod)accessMethods.elementAt(i);
+            access = (AccessMethod)accessMethods.get(i);
             if(type.equals(access.getType())) {
                 return access;
             }
@@ -63,9 +65,8 @@ public  abstract class Resources extends java.util.Observable {
         }
     }
     
-    public Vector getElementList(){return this.elementsList;}
+    public List<Elements> getElementList(){return this.elementsList;}
     
-    public int getElementsListCount(){return this.elementsList.size();}
     
     public Elements getElements(String name){
         Elements found = null;

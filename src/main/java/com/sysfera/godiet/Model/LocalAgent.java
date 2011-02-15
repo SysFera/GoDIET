@@ -16,8 +16,8 @@ public class LocalAgent extends Agents {
     
     /** Creates a new instance of LocalAgent */
     public LocalAgent(String name, ComputeResource compRes, 
-                      String binary, Agents parent) {
-        super(name, compRes, binary);
+                      String binary, Agents parent,Domain domain) {
+        super(name, compRes, binary,domain);
         this.parent=parent;
         this.getElementCfg().addOption(new Option("agentType", "DIET_LOCAL_AGENT"));
         this.getElementCfg().addOption(new Option("parentName", parent.getName()));

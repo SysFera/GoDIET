@@ -14,7 +14,9 @@ import com.sysfera.godiet.Model.Agents;
 import com.sysfera.godiet.Model.ComputeCollection;
 import com.sysfera.godiet.Model.ComputeResource;
 import com.sysfera.godiet.Model.DietPlatform;
+import com.sysfera.godiet.Model.Domain;
 import com.sysfera.godiet.Model.Elements;
+import com.sysfera.godiet.Model.Gateway;
 import com.sysfera.godiet.Model.LocalAgent;
 import com.sysfera.godiet.Model.LogCentral;
 import com.sysfera.godiet.Model.Ma_dag;
@@ -65,12 +67,7 @@ public class DietPlatformController implements java.util.Observer {
         }
     }
 
-    /*public void addRunConfig(RunConfig runCfg){
-        this.runConfig = runCfg;
-    }
-    public RunConfig getRunConfig(){
-        return this.runConfig;
-    }*/
+    
     
     /* Interfaces for building the diet platform model */
     public void addOmniNames(OmniNames omni){
@@ -80,6 +77,10 @@ public class DietPlatformController implements java.util.Observer {
     public void addLogCentral(LogCentral logger){
         this.dietPlatform.addLogCentral(logger);
         logger.addObserver(this);
+    }
+    public void addDomain(Domain domain)
+    {
+    	this.dietPlatform.addDomain(domain);
     }
     public void addTestTool(Services newService){
         this.dietPlatform.addTestTool(newService);
@@ -134,4 +135,9 @@ public class DietPlatformController implements java.util.Observer {
     public void printPlatformStatus(){
         this.dietPlatform.printStatus();
     }
+
+	public void addGateway(Gateway gateway) {
+		
+		
+	}
 }

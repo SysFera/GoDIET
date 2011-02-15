@@ -22,14 +22,14 @@ public class LogCentral extends Services {
     // is also true.
     private boolean logCentralConnected = false;
 
-    public LogCentral(String name, ComputeResource compRes, String binary) {
-        super(name, compRes, binary);
+    public LogCentral(String name, ComputeResource compRes, String binary,Domain domain) {
+        super(name, compRes, binary, domain);
         this.useLogToGuideLaunch = true;
     }
     
     public LogCentral(String name, ComputeResource compRes, String binary, 
-            boolean useLogToGuideLaunch) {
-        super(name, compRes, binary);
+            boolean useLogToGuideLaunch,Domain domain) {
+        super(name, compRes, binary,domain);
         this.useLogToGuideLaunch = useLogToGuideLaunch;
     }
     public void writeCfgFile(FileWriter out) throws IOException{

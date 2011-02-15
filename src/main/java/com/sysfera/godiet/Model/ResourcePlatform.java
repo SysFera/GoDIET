@@ -7,8 +7,10 @@
 
 package com.sysfera.godiet.Model;
 
+import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.Vector;
+import java.util.List;
+import java.util.List;
 
 /**
  *
@@ -17,13 +19,13 @@ import java.util.Vector;
 public class ResourcePlatform /*extends java.util.Observable*/ {
     /** config=related items
      * These should not be changed while jobs are running on the platform */
-    private java.util.Vector computeCollections;
-    private java.util.Vector storageResources;
+    private List<ComputeCollection> computeCollections;
+    private List<StorageResource> storageResources;
        
     /** Creates a new instance of DietPlatform */
     public ResourcePlatform() {
-        this.computeCollections = new java.util.Vector();
-        this.storageResources = new java.util.Vector();
+        this.computeCollections = new ArrayList<ComputeCollection>();
+        this.storageResources = new ArrayList<StorageResource>();
     }
     
     public void addComputeCollection(ComputeCollection newColl){   
@@ -80,7 +82,7 @@ public class ResourcePlatform /*extends java.util.Observable*/ {
      public StorageResource getStorageResource(String name) {
         StorageResource resource = null;
         for( int i = 0; i < storageResources.size(); i++) {
-            resource = (StorageResource)storageResources.elementAt(i);
+            resource = (StorageResource)storageResources.get(i);
             if(name.equals(resource.getName())) {
                 return resource;
             }
@@ -128,8 +130,8 @@ public class ResourcePlatform /*extends java.util.Observable*/ {
         System.out.println("ResourcePlatform unit test succeeded.");
     }
     
-    public Vector getUsedStorageResources(){        
-        Vector usedStorageResouces = new Vector();
+    public List getUsedStorageResources(){        
+        List usedStorageResouces = new ArrayList();
         for (Iterator it= storageResources.iterator();it.hasNext();){
             StorageResource stRes = (StorageResource)it.next();
             if (stRes.isUsed())
@@ -137,8 +139,8 @@ public class ResourcePlatform /*extends java.util.Observable*/ {
         }
         return usedStorageResouces;
     }
-    public Vector getUsedComputeResources(){
-        Vector usedComputeResouces = new Vector();
+    public List getUsedComputeResources(){
+        List usedComputeResouces = new ArrayList();
         for (Iterator it1= computeCollections.iterator();it1.hasNext();){
             ComputeCollection cpColl = (ComputeCollection)it1.next();            
             for (Iterator it2= cpColl.getComputeResources().iterator();it2.hasNext();){

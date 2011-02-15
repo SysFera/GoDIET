@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<diet_configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="GoDiet.xsd">
+
+    <goDiet debug="1"
+            saveStdOut="yes"
+            saveStdErr="yes"
+            useUniqueDirs="no"/>
+
+    <resources>
+        <scratch dir="/home/phi/tmp/scratch_godiet"/>
+
+        <storage label="localDisk">
+            <scratch dir="/home/phi/tmp/scratch_runtime"/>
+            <scp server="localhost"/>
+        </storage>
+
+        <compute label="localHost" disk="localDisk">
+            <ssh server="localhost"/>
+	    <env>
+		    <var name="PATH" value="/home/phi/Soft/Diet/bin:/home/phi/Soft/Diet/bin/examples/dmat_manips/:$PATH"/>
+		    <var name="LD_LIBRARY_PATH" value="/home/phi/Soft/Diet/lib"/>
+	    </env>
+        </compute>
+    </resources>
+  
+    <diet_services>
+        <omni_names contact="192.168.1.16" port="2809">
+            <config server="localHost" remote_binary="omniNames"/>
+        </omni_names>
+    </diet_services>
+  
+    <diet_hierarchy>
+        <master_agent>
+            <config server="localHost" remote_binary="dietAgent"/>
+    
+            <local_agent>
+                <config server="localHost" remote_binary="dietAgent"/>
+            
+                <SeD>
+                    <config server="localHost" remote_binary="dmat_manips_server"/>
+                    <parameters string="T"/>
+                </SeD>
+            </local_agent>
+        </master_agent>
+    </diet_hierarchy>      
+
+</diet_configuration>

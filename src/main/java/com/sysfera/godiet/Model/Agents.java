@@ -7,17 +7,20 @@
 
 package com.sysfera.godiet.Model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  *
  * @author  rbolze
  */
 public class Agents extends DietElements {   
-    private java.util.Vector children;
+    private List<Elements> children;
     
     /** Creates a new instance of Agents */
-    public Agents(String name,ComputeResource compRes,String binary){
-        super(name, compRes, binary);
-        this.children= new java.util.Vector();
+    public Agents(String name,ComputeResource compRes,String binary,Domain domain){
+        super(name, compRes, binary,domain);
+        this.children= new ArrayList<Elements>();
     }
     
     public void addChild(Elements newChild){
@@ -32,7 +35,7 @@ public class Agents extends DietElements {
     }
  */
 
-    public java.util.Vector getChildren(){
+    public List<Elements> getChildren(){
         return this.children;
     }
 }

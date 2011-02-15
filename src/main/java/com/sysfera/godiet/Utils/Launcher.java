@@ -12,14 +12,16 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 import com.sysfera.godiet.Controller.ConsoleController;
 import com.sysfera.godiet.Model.AccessMethod;
 import com.sysfera.godiet.Model.Agents;
 import com.sysfera.godiet.Model.ComputeCollection;
 import com.sysfera.godiet.Model.ComputeResource;
+import com.sysfera.godiet.Model.DietPlatform;
+import com.sysfera.godiet.Model.Domain;
 import com.sysfera.godiet.Model.Elements;
-import com.sysfera.godiet.Model.OmniNames;
 import com.sysfera.godiet.Model.RunConfig;
 import com.sysfera.godiet.Model.ServerDaemon;
 import com.sysfera.godiet.Model.StorageResource;
@@ -32,9 +34,12 @@ public class Launcher {
 	private ConsoleController consoleCtrl;
 	private File killPlatformFile;
 
+	private DietPlatform dietPlatform;
+
 	/** Creates a new instance of Launcher */
-	public Launcher(ConsoleController consoleController) {
+	public Launcher(ConsoleController consoleController, DietPlatform platform) {
 		this.consoleCtrl = consoleController;
+		this.dietPlatform = platform;
 	}
 
 	public void createLocalScratch() {
@@ -45,28 +50,37 @@ public class Launcher {
 		SimpleDateFormat formatter = new SimpleDateFormat("yyMMMdd_HHmm");
 		java.util.Date today = new Date();
 		String dateString = formatter.format(today);
+		List<Domain> domains = dietPlatform.getDomains();
+		if (runCfg.isUseUniqueDirs()) {
+			// create a contextual path for each domain
+			for (Domain domain : domains) {
 
-		if (runCfg.useUniqueDirs) {
-			runLabel = "run_" + dateString;
-			dirHdl = new File(runCfg.getLocalScratchBase(), runLabel);
-			if (runCfg.useUniqueDirs && dirHdl.exists()) {
-				int i = 0;
-				do {
-					i++;
-					dirHdl = new File(runCfg.getLocalScratchBase(), runLabel
-							+ "_r" + i);
-				} while (dirHdl.exists());
-				runLabel += "_r" + i;
+				runLabel = "run_" + dateString;
+
+				dirHdl = new File(runCfg.getLocalScratch() + "/"
+						+ domain.getName(), runLabel);
+				if (dirHdl.exists()) {
+					int i = 0;
+					do {
+						i++;
+						dirHdl = new File(runCfg.getLocalScratch() + "/"
+								+ domain.getName(), runLabel + "_r" + i);
+					} while (dirHdl.exists());
+					runLabel += "_r" + i;
+				}
+				dirHdl.mkdirs();
+				runCfg.setLocalScratch(runCfg.getLocalScratch() + "/"
+						+ domain.getName() + "/" + runLabel);
+				runCfg.setRunLabel(runLabel);
 			}
-			dirHdl.mkdirs();
-			runCfg.setLocalScratch(runCfg.getLocalScratchBase() + "/"
-					+ runLabel);
-			runCfg.setRunLabel(runLabel);
 		} else {
-			dirHdl = new File(runCfg.getLocalScratchBase());
-			dirHdl.mkdirs();
-			runCfg.setLocalScratch(runCfg.getLocalScratchBase());
-			runCfg.setRunLabel(null);
+			for (Domain domain : domains) {
+				dirHdl = new File(runCfg.getLocalScratch() + "/"
+						+ domain.getName());
+				dirHdl.mkdirs();
+
+				runCfg.setRunLabel(null);
+			}
 		}
 
 		runCfg.setLocalScratchReady(true);
@@ -159,7 +173,6 @@ public class Launcher {
 		runElement(element);
 	}
 
-	// TODO: incorporate Elagi usage
 	public void stageFile(String filename, StorageResource storeRes) {
 		consoleCtrl.printOutput(
 				"Staging file " + filename + " to " + storeRes.getName(), 1);
@@ -211,8 +224,9 @@ public class Launcher {
 			if (element.getName().compareTo("TestTool") == 0) {
 				return;
 			}
-			File cfgFile = new File(runCfg.getLocalScratch(),
-					element.getCfgFileName());
+			File cfgFile = new File(runCfg.getLocalScratch() + "/" +
+
+			element.getCfgFileName());
 			try {
 				cfgFile.createNewFile();
 				consoleCtrl.printOutput(
@@ -227,18 +241,4 @@ public class Launcher {
 		}
 	}
 
-	private void writeCfgFileLogCentral(Elements element, FileWriter out)
-			throws IOException {
-		element.writeCfgFile(out);
-	}
-
-	private void writeCfgFileOmniNames(OmniNames omni, FileWriter out)
-			throws IOException {
-		omni.writeCfgFile(out);
-	}
-
-	private void writeCfgFileDiet(Elements element, FileWriter out)
-			throws IOException {
-		element.writeCfgFile(out);
-	}
 }

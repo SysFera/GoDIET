@@ -2,7 +2,6 @@
 package com.sysfera.godiet.Utils.corba;
 
 import com.sysfera.godiet.Utils.LogCentralConnection;
-import com.sysfera.godiet.Utils.corba.generated.ToolMsgReceiverHelper;
 import com.sysfera.godiet.Utils.corba.generated.ToolMsgReceiverPOA;
 import com.sysfera.godiet.Utils.corba.generated.log_msg_t;
 

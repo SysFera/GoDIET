@@ -7,9 +7,10 @@ package com.sysfera.godiet.Utils;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.StringTokenizer;
-import java.util.Vector;
 
 /**
  *
@@ -21,7 +22,7 @@ public class OptionChecker {
      * Helper class, this is use only here
      */
     private class ValidOption{        
-        public Vector elements = new Vector();
+        public List elements = new ArrayList();
         public String option_name=null;
         public ValidOption(String n){
             this.option_name=n;
@@ -34,7 +35,7 @@ public class OptionChecker {
     }
     
    
-    public Vector valid_options = new Vector();
+    public List valid_options = new ArrayList();
     
     public OptionChecker(){
         loadCheckFile();

@@ -7,66 +7,104 @@
 
 package com.sysfera.godiet.Model;
 
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+
 /**
- *
- * @author  hdail
+ * 
+ * @author hdail
  */
 public class RunConfig {
-    public int     debugLevel = 1;
-    public boolean saveStdOut = true;
-    public boolean saveStdErr = true;
-    public boolean useUniqueDirs = true;
-    public String localScratchBase = "/tmp";
-    public String localScratch = null;
-    public boolean localScratchReady = false;
-    public String runLabel = "";
-    private int watcherPeriod = 30000;
-    
-    /** Creates a new instance of RunConfig */
-    public RunConfig() {
-        
-    }
-    
-    public void setDebugLevel(int debugLevel){
-        this.debugLevel = debugLevel;
-    }
-    public int getDebugLevel(){
-        return this.debugLevel;
-    }
-    
-    public void setLocalScratchBase(String localScratchBase){
-        this.localScratchBase = localScratchBase;
-    }
-    public String getLocalScratchBase(){
-        return this.localScratchBase;
-    }
-            
-    public void setRunLabel(String label){
-        this.runLabel = label;
-    }
-    public String getRunLabel(){
-        return this.runLabel;
-    }
-    
-    public void setLocalScratch(String scratchDir){
-        this.localScratch = scratchDir;
-    }
-    public String getLocalScratch(){
-        return this.localScratch;
-    }
+	private int debugLevel = 1;
+	private boolean saveStdOut = true;
+	private boolean saveStdErr = true;
+	private boolean useUniqueDirs = true;
+	private String localScratch = null;
+	private boolean localScratchReady = false;
+	private String runLabel = "";
+	private int watcherPeriod = 30000;
 
-    public void setLocalScratchReady(boolean flag){
-        this.localScratchReady = flag;
-    }
-    public boolean isLocalScratchReady(){
-        return this.localScratchReady;
-    }
+	/** Creates a new instance of RunConfig */
+	public RunConfig() {
 
-    public void setWatcherPeriod(int period) {
-        /* Period is given in seconds, but should be milliseconds in the code */
-        this.watcherPeriod = period * 1000;
-    }
-    public int getWatcherPeriod() {
-        return this.watcherPeriod;
-    }
+	}
+
+	public void setDebugLevel(int debugLevel) {
+		this.debugLevel = debugLevel;
+	}
+
+	public int getDebugLevel() {
+		return this.debugLevel;
+	}
+
+
+
+	public void setRunLabel(String label) {
+		this.runLabel = label;
+	}
+
+	public String getRunLabel() {
+		return this.runLabel;
+	}
+
+	public void setLocalScratch(String scratchDir) {
+		this.localScratch = scratchDir;
+	}
+
+	public String getLocalScratch() {
+		return this.localScratch;
+	}
+
+	public void setLocalScratchReady(boolean flag) {
+		this.localScratchReady = flag;
+	}
+
+	public boolean isLocalScratchReady() {
+		return this.localScratchReady;
+	}
+
+	public void setWatcherPeriod(int period) {
+		/* Period is given in seconds, but should be milliseconds in the code */
+		this.watcherPeriod = period * 1000;
+	}
+
+	public int getWatcherPeriod() {
+		return this.watcherPeriod;
+	}
+
+	public void setUseUniqueDirs(boolean useUniqueDirs) {
+		this.useUniqueDirs = useUniqueDirs;
+	}
+
+	public boolean isUseUniqueDirs() {
+		return useUniqueDirs;
+	}
+
+	public void setSaveStdErr(boolean saveStdErr) {
+		this.saveStdErr = saveStdErr;
+	}
+
+	public boolean isSaveStdErr() {
+		return saveStdErr;
+	}
+
+	public void setSaveStdOut(boolean saveStdOut) {
+		this.saveStdOut = saveStdOut;
+	}
+
+	public boolean isSaveStdOut() {
+		return saveStdOut;
+	}
+
+//	public void addLocalScratchBase(Domain domain, String scratchDir) {
+//		this.scratchDirs.put(domain, scratchDir);
+//	}
+
+//	public String getLocalScratchBase(Domain domain) {
+//		return scratchDirs.get(domain);
+//	}
+//	public Collection<String> getLocalScratchBase() {
+//		return scratchDirs.values();
+//	}
 }

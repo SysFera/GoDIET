@@ -7,8 +7,10 @@
 
 package com.sysfera.godiet.Model;
 
+import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.Vector;
+import java.util.List;
+import java.util.List;
 
 /**
  * 
@@ -18,10 +20,10 @@ public class ComputeCollection {
 	/** Config-related items. Never change if jobCount > 0 */
 	private String name;
 	private StorageResource storageResource = null;
-	private java.util.Vector computeResources;
+	private List<ComputeResource> computeResources;
 	// private String envPath = null;
 	// private String envLdLibraryPath = null;
-	private Vector envVars = new Vector();
+	private List envVars = new ArrayList();
 
 	/** Runtime-related items. */
 	private int jobCount = 0;
@@ -29,7 +31,7 @@ public class ComputeCollection {
 	/** Creates a new instance of ComputeCollection */
 	public ComputeCollection(String name) {
 		this.name = name;
-		this.computeResources = new java.util.Vector();
+		this.computeResources = new ArrayList();
 	}
 
 	/** Config-related methods. Do not use setXX() if getJobCount() > 0 */
@@ -60,7 +62,7 @@ public class ComputeCollection {
 		return this.computeResources.size();
 	}
 
-	public java.util.Vector getComputeResources() {
+	public List getComputeResources() {
 		return computeResources;
 	}
 
@@ -83,11 +85,11 @@ public class ComputeCollection {
 	 * = ldLibPath; } public String getEnvLdLibraryPath(){ return
 	 * this.envLdLibraryPath; }
 	 */
-	public Vector getEnvVars() {
+	public List getEnvVars() {
 		return envVars;
 	}
 
-	public void setEnvVars(Vector envVars) {
+	public void setEnvVars(List envVars) {
 		this.envVars = envVars;
 	}
 	// /** Run-time related methods. */

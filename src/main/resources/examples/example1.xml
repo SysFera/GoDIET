@@ -1,0 +1,49 @@
+<?xml version="1.0" standalone="no"?>
+
+<!DOCTYPE diet_configuration SYSTEM "../GoDIET.dtd">
+
+<diet_configuration>
+    <goDiet debug="1"
+            saveStdOut="no"
+            saveStdErr="no"
+            useUniqueDirs="no"/>
+
+    <resources>
+        <scratch dir="/home/hdail/tmp/scratch_godiet"/>
+
+        <storage label="localDisk">
+            <scratch dir="/home/hdail/tmp/scratch_runtime"/>
+            <scp server="localhost"/>
+        </storage>
+
+        <compute label="localHost" disk="localDisk">
+            <ssh server="localhost"/>
+	    <env>
+		    <var name="PATH" value="/home/hdail/diet/omniORB-4.0.6/bin:/home/hdail/diet/diet/build_dir/install/bin:/home/hdail/diet/diet/build_dir/src/examples/dmat_manips/:$PATH"/>
+		    <var name="LD_LIBRARY_PATH" value="/home/hdail/diet/diet/build_dir/install/lib:/home/hdail/diet/omniORB-4.0.6/lib"/>
+	    </env>
+        </compute>
+    </resources>
+  
+    <diet_services>
+        <omni_names contact="localhost" port="2810">
+            <config server="localHost" remote_binary="omniNames"/>
+        </omni_names>
+    </diet_services>
+  
+    <diet_hierarchy>
+        <master_agent>
+            <config server="localHost" remote_binary="dietAgent"/>
+    
+            <local_agent>
+                <config server="localHost" remote_binary="dietAgent"/>
+            
+                <SeD>
+                    <config server="localHost" remote_binary="server"/>
+                    <parameters string="T"/>
+                </SeD>
+            </local_agent>
+        </master_agent>
+    </diet_hierarchy>      
+
+</diet_configuration>

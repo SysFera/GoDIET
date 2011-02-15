@@ -1,0 +1,168 @@
+<?xml version="1.0" standalone="no"?>
+
+<!DOCTYPE diet_configuration SYSTEM "../GoDIET.dtd">
+
+<diet_configuration>
+    <goDiet debug="1"
+            saveStdOut="yes"
+            saveStdErr="yes"
+            useUniqueDirs="yes"/>
+
+    <resources>
+        <!-- local scratch space for GoDIET on machine local to GoDIET -->
+        <scratch dir="/home/dail/tmp/scratch_godiet"/>
+
+        <!-- Remote storage for launch-time -->
+        <storage label="lsDisk">
+            <scratch dir="/home/dail/tmp/scratch_runtime"/>
+            <scp server="ls2.ens.vthd.prd.fr" login="dail"/>
+        </storage>
+        
+        <storage label="cristalDisk">
+            <scratch dir="/home/hdail/tmp/scratch_runtime"/>
+            <scp server="192.5.59.198" login="hdail"/>
+        </storage>
+    
+        <!-- Compute hosts -->
+        <cluster label="lsCluster" disk="lsDisk" login="dail">
+		<env>
+			<var name="PATH" value="/home/dail/bSeries_exp/bin/"/>
+			<var name="LD_LIBRARY_PATH" value="/home/dail/bSeries_exp/diet/install/lib:/home/dail/local/omniORB-4.0.3-gcc3/lib"/>
+		</env>
+            <node label="ls1">
+                <ssh server="ls1.ens.vthd.prd.fr"/>
+                <end_point contact="193.253.175.223"/>
+            </node>
+            <node label="ls2">
+                <ssh server="ls2.ens.vthd.prd.fr"/>
+                <end_point contact="193.253.175.224"/>
+            </node>
+            <node label="ls3">
+                <ssh server="ls3.ens.vthd.prd.fr"/>
+                <end_point contact="193.253.175.225"/>
+            </node>
+            <node label="ls4">
+                <ssh server="ls4.ens.vthd.prd.fr"/>
+                <end_point contact="193.253.175.226"/>
+            </node>
+            <node label="ls5">
+                <ssh server="ls5.ens.vthd.prd.fr"/>
+                <end_point contact="193.253.175.227"/>
+            </node>
+            <node label="ls6">
+                <ssh server="ls6.ens.vthd.prd.fr"/>
+                <end_point contact="193.253.175.228"/>
+            </node>
+            <node label="ls7">
+                <ssh server="ls7.ens.vthd.prd.fr"/>
+                <end_point contact="193.253.175.229"/>
+            </node>
+            <node label="ls8">
+                <ssh server="ls8.ens.vthd.prd.fr"/> 
+                <end_point contact="193.253.175.230"/>
+            </node>
+            <node label="ls9">
+                <ssh server="ls9.ens.vthd.prd.fr"/>
+                <end_point contact="193.253.175.231"/>
+            </node>
+        </cluster>
+
+        <!-- compute hosts on cristal -->
+        <cluster label="cristalCluster" disk="cristalDisk" login="hdail">
+		<env>
+			<var name="PATH" value="/home/dail/bSeries_exp/bin/"/>
+			<var name="LD_LIBRARY_PATH" value="/home/dail/bSeries_exp/diet/install/lib:/home/dail/local/omniORB-4.0.3-gcc3/lib"/>
+		</env>
+            <node label="clus-103">
+                <ssh server="192.5.59.198"/>
+                <end_point contact="192.5.59.198"/>
+            </node>
+            <node label="clus-104">
+                <ssh server="192.5.59.199"/>
+                <end_point contact="192.5.59.199"/>
+            </node>
+            <node label="clus-105">
+                <ssh server="192.5.59.200"/>
+                <end_point contact="192.5.59.200"/>
+            </node>
+            <node label="clus-106">
+                <ssh server="192.5.59.201"/>
+                <end_point contact="192.5.59.201"/>
+            </node>
+            <node label="clus-107">
+                <ssh server="192.5.59.202"/>
+                <end_point contact="192.5.59.202"/>
+            </node>
+            <node label="clus-108">
+                <ssh server="192.5.59.203"/>
+                <end_point contact="192.5.59.203"/>
+            </node>
+        </cluster>
+        
+    </resources>
+  
+    <diet_services>
+        <omni_names contact="193.253.175.224" port="2810">
+            <config server="ls2" remote_binary="omniNames"/>
+        </omni_names>
+        <log_central connectDuringLaunch="yes">
+            <config server="ls2" remote_binary="LogCentral"/>
+        </log_central>
+        <log_tool>
+            <config server="ls2" remote_binary="DIETLogTool"/>
+        </log_tool>
+    </diet_services>
+  
+    <diet_hierarchy>
+      <master_agent>
+        <config server="clus-104" remote_binary="dietAgent"/>
+   
+        <!-- diet components on LS --> 
+        <local_agent>
+            <config server="ls1" remote_binary="dietAgent"/>
+            <local_agent>
+                <config server="ls6" remote_binary="dietAgent"/>
+                <SeD>
+                    <config server="ls7" remote_binary="scalar_server"/>
+                </SeD>
+                <SeD>
+                    <config server="ls8" remote_binary="dmat_server"/>
+                    <parameters string="MatPROD"/>
+                </SeD>
+                <SeD>
+                    <config server="ls9" remote_binary="dmat_server"/>
+                    <parameters string="MatSUM"/>
+                </SeD>
+            </local_agent>
+            <SeD>
+                <config server="ls3" remote_binary="scalar_server"/>
+            </SeD>
+            <SeD>
+                <config server="ls4" remote_binary="scalar_server"/>
+            </SeD>
+            <SeD>
+                <config server="ls5" remote_binary="dmat_server"/>
+                <parameters string="T"/>
+            </SeD>
+        </local_agent>
+
+        <!-- DIET components on cristal -->
+        <local_agent>
+            <config server="clus-105" remote_binary="dietAgent"/>
+            
+            <SeD>
+                <config server="clus-106" remote_binary="dmat_server"/>
+                <parameters string="MatPROD"/>
+            </SeD>
+            <SeD>
+                <config server="clus-107" remote_binary="dmat_server"/>
+                <parameters string="MatSUM"/>
+            </SeD>
+            <SeD>
+                <config server="clus-108" remote_binary="scalar_server"/>
+            </SeD>
+        </local_agent>
+      </master_agent>
+    </diet_hierarchy>
+
+</diet_configuration>

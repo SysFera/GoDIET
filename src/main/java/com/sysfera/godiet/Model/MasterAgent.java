@@ -12,10 +12,10 @@ package com.sysfera.godiet.Model;
  * @author  rbolze
  */
 public class MasterAgent extends Agents {
-    //private java.util.Vector Neighbor;    // needed only for multi-MA
+    //private List Neighbor;    // needed only for multi-MA
     /** Creates a new instance of MasterAgent */
-    public MasterAgent(String name, ComputeResource compRes, String binary){
-        super(name, compRes, binary);
+    public MasterAgent(String name, ComputeResource compRes, String binary,Domain domain){
+        super(name, compRes, binary,domain);
         this.getElementCfg().addOption(new Option("agentType", "DIET_MASTER_AGENT"));
     }      
 }

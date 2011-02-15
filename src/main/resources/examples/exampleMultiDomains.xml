@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<diet_configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="GoDietNG.xsd">
+
+	<goDiet debug="1" saveStdOut="yes" saveStdErr="yes"
+		useUniqueDirs="no" />
+
+	<resources>
+		<scratch dir="/home/phi/tmp/scratch_godiet" />
+
+		<storage label="kevinDisk">
+			<scratch dir="/tmp/scratch_runtime" />
+			<scp server="192.168.1.17" />
+		</storage>
+
+		<storage label="graalDisk">
+			<scratch dir="/tmp/scratch_runtime" />
+			<scp server="140.77.166.19" login="pmartinez" />
+		</storage>
+
+		<storage label="phiDisk">
+			<scratch dir="/home/phi/tmp/scratch_runtime" />
+			<scp server="192.168.1.20" />
+		</storage>
+
+		<infrastructure>
+			<domain label="Sysfera">
+			<gateway label="SysferaGW" address="127.0.0.1" port="22" login="phi"/>
+				<compute label="Kev" disk="kevinDisk">
+					<ssh server="kevin" />
+					<env>
+						<var name="PATH"
+							value="/home/phi/Diet/build/bin:/home/phi/Diet/build/bin/examples/dmat_manips/:$PATH" />
+						<var name="LD_LIBRARY_PATH" value="/home/phi/Diet/build/lib" />
+					</env>
+				</compute>
+				<compute label="Phi" disk="phiDisk">
+					<ssh server="192.168.1.20" />
+					<env>
+						<var name="PATH"
+							value="/home/phi/Soft/Diet/bin:/home/phi/Soft/Diet/bin/examples/dmat_manips/:$PATH" />
+						<var name="LD_LIBRARY_PATH" value="/home/phi/Soft/diet/build/lib" />
+					</env>
+				</compute>
+			</domain>
+			<domain label="ENS">
+				<gateway label="ENSGW" address="140.77.166.19" port="22" login="pmartinez"/>
+				<compute label="Graal" disk="graalDisk">
+					<ssh server="graal" login="pmartinez" />
+					<env>
+						<var name="PATH"
+							value="/home/pmartinez/Diet/build/bin:/home/pmartinez/Diet/build/bin/examples/dmat_manips/:$PATH" />
+						<var name="LD_LIBRARY_PATH" value="/home/pmartinez/Diet/build/lib:/home/bdepardo/soft/omniORB/lib" />
+					</env>
+				</compute>
+			</domain>
+			
+			<link from="SysferaGW" to="ENSGW"/>
+		</infrastructure>
+	</resources>
+
+	<diet_services>
+		<omni_names contact="192.168.1.20" port="2809" domain="Sysfera">
+			<config server="Phi" remote_binary="omniNames" />
+		</omni_names>
+		<omni_names contact="140.77.166.19" port="2809" domain="ENS">
+			<config remote_binary="omniNames" server="Graal" />
+		</omni_names>
+	</diet_services>
+
+	<diet_hierarchy>
+		<master_agent>
+			<config server="Phi" remote_binary="dietAgent" /><!-- <local_agent> 
+				<config server="Graal" remote_binary="dietAgent" /> <SeD> <config server="Graal" 
+				remote_binary="dmat_manips_server" /> <parameters string="T" /> </SeD> </local_agent> -->
+		</master_agent>
+	</diet_hierarchy>
+
+</diet_configuration>

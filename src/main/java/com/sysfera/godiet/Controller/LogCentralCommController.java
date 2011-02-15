@@ -7,6 +7,9 @@
 
 package com.sysfera.godiet.Controller;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.sysfera.godiet.Events.LogStateChange;
 import com.sysfera.godiet.Model.OmniNames;
 import com.sysfera.godiet.Utils.LogCentralConnection;
@@ -27,7 +30,7 @@ public class LogCentralCommController extends java.util.Observable
     private LogCentralConnection connection;
     private java.lang.Thread               logCommThread;
     private int lcConnState = LOG_CONNECT_NONE;
-    private java.util.Vector pendingMsgQueue;
+    private List<log_msg_t> pendingMsgQueue;
 
     public LogCentralCommController(ConsoleController consoleController, 
                                     DietPlatformController modelController){
@@ -35,7 +38,7 @@ public class LogCentralCommController extends java.util.Observable
         //this.consoleCtrl.addObserver(this); // do we want to know when launch?
         this.modelCtrl      = modelController;
         this.lcConnState    = LOG_CONNECT_NONE;
-        pendingMsgQueue     = new java.util.Vector();
+        pendingMsgQueue     = new ArrayList<log_msg_t>();
     }
     
     /** Returns true if connect was successful, false otherwise */

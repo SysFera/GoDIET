@@ -17,8 +17,8 @@ public class ServerDaemon extends DietElements {
     private String parameters = null;
     /** Creates a new instance of ServerDaemon */
     public ServerDaemon(String name, ComputeResource compRes,
-                        String binary, Agents parent){
-        super(name,compRes,binary);
+                        String binary, Agents parent,Domain domain){
+        super(name,compRes,binary,domain);
         this.parent=parent;
         this.getElementCfg().addOption(new Option("parentName", parent.getName()));
     }

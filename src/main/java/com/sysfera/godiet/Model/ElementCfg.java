@@ -5,8 +5,9 @@
 
 package com.sysfera.godiet.Model;
 
+import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.Vector;
+import java.util.List;
 
 /**
  * This Class is use in order to generate the config_file.cfg
@@ -15,11 +16,11 @@ import java.util.Vector;
  */
 public class ElementCfg {    
     private String cfgFileName;
-    private Vector options;
+    private List options;
     
     public ElementCfg(String cfgFileName){        
         this.cfgFileName=cfgFileName;
-        this.options = new Vector();        
+        this.options = new ArrayList();        
     }
     public String addOption(Option o){
         String message = "";
@@ -31,7 +32,7 @@ public class ElementCfg {
             message+="WARNING : replaced by :\n";
             message+="WARNING : "+o.getName() +" = "+o.getValue();
             options.remove(index);
-            options.insertElementAt(o,index);
+            options.add(index,o);
         }else{
             this.options.add(o);
         }
@@ -46,7 +47,7 @@ public class ElementCfg {
         return cfgFileName;
     }
     
-    public Vector getOptions() {
+    public List getOptions() {
         return options;
     }
     public Option getOption(String name){        
