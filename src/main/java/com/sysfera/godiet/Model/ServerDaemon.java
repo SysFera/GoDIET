@@ -7,6 +7,8 @@
 
 package com.sysfera.godiet.Model;
 
+import com.sysfera.godiet.Model.physicalresources.ComputeResource;
+
 /**
  *
  * @author  rbolze

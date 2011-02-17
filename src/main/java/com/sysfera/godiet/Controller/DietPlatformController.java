@@ -7,25 +7,28 @@
 
 package com.sysfera.godiet.Controller;
 
+import java.util.List;
+
 import com.sysfera.godiet.Events.AddElementsEvent;
 import com.sysfera.godiet.Events.AddServiceEvent;
 import com.sysfera.godiet.Events.StatusInfosEvent;
 import com.sysfera.godiet.Model.Agents;
 import com.sysfera.godiet.Model.ComputeCollection;
-import com.sysfera.godiet.Model.ComputeResource;
-import com.sysfera.godiet.Model.DietPlatform;
 import com.sysfera.godiet.Model.Domain;
 import com.sysfera.godiet.Model.Elements;
-import com.sysfera.godiet.Model.Gateway;
+import com.sysfera.godiet.Model.Link;
 import com.sysfera.godiet.Model.LocalAgent;
 import com.sysfera.godiet.Model.LogCentral;
 import com.sysfera.godiet.Model.Ma_dag;
 import com.sysfera.godiet.Model.MasterAgent;
 import com.sysfera.godiet.Model.OmniNames;
-import com.sysfera.godiet.Model.ResourcePlatform;
 import com.sysfera.godiet.Model.ServerDaemon;
 import com.sysfera.godiet.Model.Services;
-import com.sysfera.godiet.Model.StorageResource;
+import com.sysfera.godiet.Model.manager.DietPlatformManager;
+import com.sysfera.godiet.Model.manager.ResourcePlatformManager;
+import com.sysfera.godiet.Model.physicalresources.ComputeResource;
+import com.sysfera.godiet.Model.physicalresources.GatewayResource;
+import com.sysfera.godiet.Model.physicalresources.StorageResource;
 
 /**
  *
@@ -34,23 +37,23 @@ import com.sysfera.godiet.Model.StorageResource;
 public class DietPlatformController implements java.util.Observer {
     //private RunConfig         runConfig;
     
-    private com.sysfera.godiet.Model.DietPlatform      dietPlatform;
-    private ResourcePlatform  resourcePlatform;
+    private DietPlatformManager      dietPlatform;
+    private ResourcePlatformManager  resourcePlatform;
     private ConsoleController consoleCtrl;
     
     public DietPlatformController(ConsoleController consoleController){
         this.consoleCtrl    = consoleController;
         //runConfig           = new RunConfig();
-        dietPlatform        = new DietPlatform(consoleCtrl);
-        resourcePlatform    = new ResourcePlatform();
+        dietPlatform        = new DietPlatformManager(consoleCtrl);
+        resourcePlatform    = new ResourcePlatformManager();
         dietPlatform.addObserver(this);
     }
     
-    public DietPlatform getDietPlatform(){
+    public DietPlatformManager getDietPlatform(){
         return this.dietPlatform;
     }
-    
-    public ResourcePlatform getResourcePlatform(){
+
+    public ResourcePlatformManager getResourcePlatform(){
         return this.resourcePlatform;
     }
   
@@ -80,7 +83,7 @@ public class DietPlatformController implements java.util.Observer {
     }
     public void addDomain(Domain domain)
     {
-    	this.dietPlatform.addDomain(domain);
+    	this.resourcePlatform.addDomain(domain);
     }
     public void addTestTool(Services newService){
         this.dietPlatform.addTestTool(newService);
@@ -116,12 +119,10 @@ public class DietPlatformController implements java.util.Observer {
         this.resourcePlatform.addComputeCollection(compColl);
         //compColl.addObserver(this);
     }
-    public ComputeCollection getComputeCollection(String label){
-        return this.resourcePlatform.getComputeCollection(label);
-    }
+
     
     public ComputeResource getComputeResource(String label){
-        return this.resourcePlatform.getComputeResource(label);
+		return this.resourcePlatform.getComputeResource(label);
     }
     
     public void addStorageResource(StorageResource storRes){
@@ -136,8 +137,12 @@ public class DietPlatformController implements java.util.Observer {
         this.dietPlatform.printStatus();
     }
 
-	public void addGateway(Gateway gateway) {
-		
+	public void addLink(Link link) {
+		this.resourcePlatform.addLink(link);
 		
 	}
+
+
+	
+	
 }

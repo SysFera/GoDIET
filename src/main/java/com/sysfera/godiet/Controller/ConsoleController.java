@@ -19,7 +19,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Observable;
 
-import com.sysfera.godiet.Events.DeployStateChange;
 import com.sysfera.godiet.Events.LaunchCheckRequest;
 import com.sysfera.godiet.Events.LaunchRequest;
 import com.sysfera.godiet.Model.RunConfig;

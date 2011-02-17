@@ -13,18 +13,20 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import com.sysfera.godiet.Controller.ConsoleController;
 import com.sysfera.godiet.Model.AccessMethod;
 import com.sysfera.godiet.Model.Agents;
 import com.sysfera.godiet.Model.ComputeCollection;
-import com.sysfera.godiet.Model.ComputeResource;
-import com.sysfera.godiet.Model.DietPlatform;
 import com.sysfera.godiet.Model.Domain;
 import com.sysfera.godiet.Model.Elements;
 import com.sysfera.godiet.Model.RunConfig;
 import com.sysfera.godiet.Model.ServerDaemon;
-import com.sysfera.godiet.Model.StorageResource;
+import com.sysfera.godiet.Model.manager.DietPlatformManager;
+import com.sysfera.godiet.Model.physicalresources.ComputeResource;
+import com.sysfera.godiet.Model.physicalresources.StorageResource;
+import com.sysfera.godiet.exceptions.LaunchException;
 
 /**
  * 
@@ -33,13 +35,14 @@ import com.sysfera.godiet.Model.StorageResource;
 public class Launcher {
 	private ConsoleController consoleCtrl;
 	private File killPlatformFile;
-
-	private DietPlatform dietPlatform;
+	
+	
+	private Set<Domain> domains;
 
 	/** Creates a new instance of Launcher */
-	public Launcher(ConsoleController consoleController, DietPlatform platform) {
+	public Launcher(ConsoleController consoleController, Set<Domain> domains) {
 		this.consoleCtrl = consoleController;
-		this.dietPlatform = platform;
+		this.domains = domains ;
 	}
 
 	public void createLocalScratch() {
@@ -50,7 +53,7 @@ public class Launcher {
 		SimpleDateFormat formatter = new SimpleDateFormat("yyMMMdd_HHmm");
 		java.util.Date today = new Date();
 		String dateString = formatter.format(today);
-		List<Domain> domains = dietPlatform.getDomains();
+		
 		if (runCfg.isUseUniqueDirs()) {
 			// create a contextual path for each domain
 			for (Domain domain : domains) {
@@ -182,7 +185,7 @@ public class Launcher {
 	}
 
 	// TODO: incorporate Elagi usage
-	public void stageAllFile(StorageResource storeRes) {
+	public void stageAllFile(StorageResource storeRes) throws LaunchException {
 		consoleCtrl.printOutput("Staging file to " + storeRes.getName(), 1);
 
 		SshUtils sshUtil = new SshUtils(consoleCtrl);
@@ -192,7 +195,6 @@ public class Launcher {
 	// TODO: incorporate Elagi usage
 	private void runElement(Elements element) {
 		ComputeResource compRes = element.getComputeResource();
-		StorageResource storage = compRes.getCollection().getStorageResource();
 		consoleCtrl.printOutput("Executing element " + element.getName()
 				+ " on resource " + compRes.getName(), 1);
 		AccessMethod access = compRes.getAccessMethod("ssh");

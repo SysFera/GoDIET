@@ -11,6 +11,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Iterator;
 
+import com.sysfera.godiet.Model.physicalresources.ComputeResource;
+
 /**
  * 
  * @author hdail

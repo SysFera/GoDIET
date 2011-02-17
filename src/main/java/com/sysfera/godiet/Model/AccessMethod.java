@@ -52,10 +52,5 @@ public class AccessMethod {
                 loginTmp = System.getenv("USER");
         return loginTmp;
     }
-    
-    public static void main(String args[]) {
-        AccessMethod newAccess = new AccessMethod("ssh", "localhost");
-        String myLogin = newAccess.getLogin();
-        System.out.println("ComputeAccess unit test found user " + myLogin + ".");
-    }
+
 }

@@ -10,6 +10,8 @@ package com.sysfera.godiet.Model;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.sysfera.godiet.Model.physicalresources.ComputeResource;
+
 /**
  *
  * @author  rbolze
@@ -25,15 +27,8 @@ public class Agents extends DietElements {
     
     public void addChild(Elements newChild){
         this.children.add(newChild);
-        //setChanged();
-        //notifyObservers(new Events.AddElementsEvent(newChild));
-        //clearChanged();
     }
-/*    public void setName(String name){
-        super.setName(name);
-        this.elConfig.addOption(new Option("name", name));
-    }
- */
+
 
     public List<Elements> getChildren(){
         return this.children;

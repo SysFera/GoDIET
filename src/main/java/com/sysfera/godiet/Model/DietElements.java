@@ -10,6 +10,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Iterator;
 
+import com.sysfera.godiet.Model.physicalresources.ComputeResource;
+
 /**
  * This class is use for all DIET elements (SeD, MA, LA, MA_DAG)
  * @author  rbolze

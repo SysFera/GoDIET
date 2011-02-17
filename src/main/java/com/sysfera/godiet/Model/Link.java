@@ -1,5 +1,7 @@
 package com.sysfera.godiet.Model;
 
+import com.sysfera.godiet.Model.physicalresources.GatewayResource;
+
 
 /**
  * Directional Link between two Gateways
@@ -11,38 +13,38 @@ public class Link {
 	/**
 	 * Source link
 	 */
-	private Gateway from;
+	private GatewayResource from;
 	
 	/**
 	 * Destination link
 	 */
-	private Gateway to;
+	private GatewayResource to;
 
 	/**
 	 * @return the from
 	 */
-	public Gateway getFrom() {
+	public GatewayResource getFrom() {
 		return from;
 	}
 
 	/**
 	 * @param from the from to set
 	 */
-	public void setFrom(Gateway from) {
+	public void setFrom(GatewayResource from) {
 		this.from = from;
 	}
 
 	/**
 	 * @return the to
 	 */
-	public Gateway getTo() {
+	public GatewayResource getTo() {
 		return to;
 	}
 
 	/**
 	 * @param to the to to set
 	 */
-	public void setTo(Gateway to) {
+	public void setTo(GatewayResource to) {
 		this.to = to;
 	}
 	

@@ -6,14 +6,12 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.xml.crypto.NodeSetData;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.NamedNodeMap;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
 
@@ -22,11 +20,9 @@ import com.sysfera.godiet.Controller.DietPlatformController;
 import com.sysfera.godiet.Model.AccessMethod;
 import com.sysfera.godiet.Model.Agents;
 import com.sysfera.godiet.Model.ComputeCollection;
-import com.sysfera.godiet.Model.ComputeResource;
 import com.sysfera.godiet.Model.Domain;
 import com.sysfera.godiet.Model.Elements;
 import com.sysfera.godiet.Model.EnvVar;
-import com.sysfera.godiet.Model.Gateway;
 import com.sysfera.godiet.Model.Link;
 import com.sysfera.godiet.Model.LocalAgent;
 import com.sysfera.godiet.Model.LogCentral;
@@ -37,7 +33,9 @@ import com.sysfera.godiet.Model.Option;
 import com.sysfera.godiet.Model.RunConfig;
 import com.sysfera.godiet.Model.ServerDaemon;
 import com.sysfera.godiet.Model.Services;
-import com.sysfera.godiet.Model.StorageResource;
+import com.sysfera.godiet.Model.physicalresources.ComputeResource;
+import com.sysfera.godiet.Model.physicalresources.GatewayResource;
+import com.sysfera.godiet.Model.physicalresources.StorageResource;
 import com.sysfera.godiet.exceptions.XMLReadException;
 
 /*
@@ -245,7 +243,8 @@ public class XmlScanner implements ErrorHandler {
 		}
 	}
 
-	public void visitElement_resources(org.w3c.dom.Element element) {
+	public void visitElement_resources(org.w3c.dom.Element element)
+			throws XMLReadException {
 		String scratchDir = null;
 		org.w3c.dom.NodeList nodes = element.getChildNodes();
 		for (int i = 0; i < nodes.getLength(); i++) {
@@ -257,9 +256,7 @@ public class XmlScanner implements ErrorHandler {
 					// mainController.addLocalScratchBase(scratchDir);
 					consoleCtrl.getRunConfig().setLocalScratch(scratchDir);
 				}
-				if (nodeElement.getTagName().equals("storage")) {
-					visitElement_storage(nodeElement);
-				}
+
 				if (nodeElement.getTagName().equals("infrastructure")) {
 					visitElement_infrastructure(nodeElement);
 				}
@@ -268,7 +265,8 @@ public class XmlScanner implements ErrorHandler {
 		}
 	}
 
-	public void visitElement_infrastructure(org.w3c.dom.Element element) {
+	public void visitElement_infrastructure(org.w3c.dom.Element element)
+			throws XMLReadException {
 		String scratchDir = null;
 		org.w3c.dom.NodeList nodes = element.getChildNodes();
 		for (int i = 0; i < nodes.getLength(); i++) {
@@ -276,30 +274,43 @@ public class XmlScanner implements ErrorHandler {
 			if (node.getNodeType() == org.w3c.dom.Node.ELEMENT_NODE) {
 				org.w3c.dom.Element nodeElement = (org.w3c.dom.Element) node;
 
-				
 				if (nodeElement.getTagName().equals("domain")) {
 					visitElement_domain(nodeElement);
+				}
+				if (nodeElement.getTagName().equals("link")) {
+					visitElement_link(nodeElement);
 				}
 			}
 		}
 	}
 
 	private void visitElement_gateway(org.w3c.dom.Element element, Domain domain) {
-		Gateway gateway = new Gateway();
-		gateway.setAddress(element.getAttribute("address"));
-		// TODO : gestion des exceptions de cast
-		gateway.setPort(Integer.valueOf(element.getAttribute("port")));
-		gateway.setId(element.getAttribute("label"));
-		domain.addGateway(gateway);
+		String resourceLabel = element.getAttribute("id");
+		GatewayResource gateway = null;
+		ComputeResource computeResource = mainController
+				.getComputeResource(element.getAttribute("ref"));
+		ComputeCollection compColl = computeResource.getCollection();
+
+		gateway = new GatewayResource(resourceLabel, compColl, currentDomain);
+		gateway.addAccessMethod(computeResource.getAccessMethod("ssh"));
+
+		currentDomain.addGateway(gateway);
 	}
 
-	public void visitElement_link(org.w3c.dom.Element element) throws XMLReadException {
+	public void visitElement_link(org.w3c.dom.Element element)
+			throws XMLReadException {
 		Link link = new Link();
-		Gateway from = mainController.getDietPlatform().getGateway(element.getAttribute("from"));
-		Gateway to = mainController.getDietPlatform().getGateway(element.getAttribute("to"));
-		if(from == null || to == null) throw new XMLReadException("Unable to find the gateway" + element.getAttribute("from") + " or " +element.getAttribute("to"));
+		GatewayResource from = mainController.getResourcePlatform().getGateway(
+				element.getAttribute("from"));
+		GatewayResource to = mainController.getResourcePlatform().getGateway(
+				element.getAttribute("to"));
+		if (from == null || to == null)
+			throw new XMLReadException("Unable to find the gateway"
+					+ element.getAttribute("from") + " or "
+					+ element.getAttribute("to"));
 		link.setFrom(from);
 		link.setTo(to);
+		this.mainController.addLink(link);
 	}
 
 	public void visitElement_domain(org.w3c.dom.Element element) {
@@ -307,6 +318,7 @@ public class XmlScanner implements ErrorHandler {
 		Domain domain = new Domain();
 		domain.setId(element.getAttribute("label"));
 		this.mainController.addDomain(domain);
+		currentDomain = domain;
 		org.w3c.dom.NodeList nodes = element.getChildNodes();
 		for (int i = 0; i < nodes.getLength(); i++) {
 			org.w3c.dom.Node node = nodes.item(i);
@@ -325,9 +337,12 @@ public class XmlScanner implements ErrorHandler {
 					visitElement_cluster(nodeElement);
 				}
 				if (nodeElement.getTagName().equals("gateway")) {
-					visitElement_gateway(nodeElement,domain);
+					visitElement_gateway(nodeElement, domain);
 				}
-				
+				if (nodeElement.getTagName().equals("storage")) {
+					visitElement_storage(nodeElement);
+				}
+
 			}
 		}
 	}
@@ -371,7 +386,8 @@ public class XmlScanner implements ErrorHandler {
 			System.exit(1);
 		}
 
-		StorageResource storRes = new StorageResource(resourceLabel);
+		StorageResource storRes = new StorageResource(resourceLabel,
+				currentDomain);
 		storRes.setScratchBase(scratchDir);
 		storRes.addAccessMethod(scpAccess);
 		mainController.addStorageResource(storRes);
@@ -402,7 +418,7 @@ public class XmlScanner implements ErrorHandler {
 		org.w3c.dom.NamedNodeMap attrs = element.getAttributes();
 		for (int i = 0; i < attrs.getLength(); i++) {
 			org.w3c.dom.Attr attr = (org.w3c.dom.Attr) attrs.item(i);
-			if (attr.getName().equals("label")) { // <compute label="???">
+			if (attr.getName().equals("id")) { // <compute label="???">
 				resourceLabel = attr.getValue();
 			}
 			if (attr.getName().equals("disk")) { // <compute disk="???">
@@ -435,7 +451,7 @@ public class XmlScanner implements ErrorHandler {
 			}
 		}
 		compColl = new ComputeCollection(resourceLabel);
-		compRes = new ComputeResource(resourceLabel, compColl);
+		compRes = new ComputeResource(resourceLabel, compColl, currentDomain);
 		if (sshAccess != null) {
 			compRes.addAccessMethod(sshAccess);
 		}
@@ -533,7 +549,7 @@ public class XmlScanner implements ErrorHandler {
 				resourceLabel = attr.getValue();
 			}
 		}
-		compRes = new ComputeResource(resourceLabel, collection);
+		compRes = new ComputeResource(resourceLabel, collection, currentDomain);
 
 		org.w3c.dom.NodeList nodes = element.getChildNodes();
 		for (int i = 0; i < nodes.getLength(); i++) {
@@ -715,11 +731,11 @@ public class XmlScanner implements ErrorHandler {
 			port = (new Integer(element.getAttribute("port"))).intValue();
 		}
 		if (element.getAttribute("domain").equals("")
-				|| mainController.getDietPlatform().getDomain(
+				|| mainController.getResourcePlatform().getDomain(
 						element.getAttribute("domain")) == null) {
 			throw new XMLReadException();
 		}
-		Domain dom = mainController.getDietPlatform().getDomain(
+		Domain dom = mainController.getResourcePlatform().getDomain(
 				element.getAttribute("domain"));
 		org.w3c.dom.NodeList nodes = element.getChildNodes();
 		for (int i = 0; i < nodes.getLength(); i++) {
@@ -860,10 +876,9 @@ public class XmlScanner implements ErrorHandler {
 		}
 	}
 
-	void visitElement_master_agent(org.w3c.dom.Element element) { // <master_agent>
+	private void visitElement_master_agent(org.w3c.dom.Element element) { // <master_agent>
 		MasterAgent newMA = null;
 		String maName = "";
-		int port = -1;
 		Config config = new Config();
 		int useDietStats = -1;
 		// long initRequestID = -1;

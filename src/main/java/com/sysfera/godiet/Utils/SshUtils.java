@@ -18,9 +18,9 @@ import java.util.List;
 
 import com.sysfera.godiet.Controller.ConsoleController;
 import com.sysfera.godiet.Model.AccessMethod;
-import com.sysfera.godiet.Model.ComputeResource;
 import com.sysfera.godiet.Model.Elements;
 import com.sysfera.godiet.Model.EnvVar;
+import com.sysfera.godiet.Model.Forwarder;
 import com.sysfera.godiet.Model.LaunchInfo;
 import com.sysfera.godiet.Model.LocalAgent;
 import com.sysfera.godiet.Model.Ma_dag;
@@ -28,7 +28,9 @@ import com.sysfera.godiet.Model.MasterAgent;
 import com.sysfera.godiet.Model.OmniNames;
 import com.sysfera.godiet.Model.RunConfig;
 import com.sysfera.godiet.Model.ServerDaemon;
-import com.sysfera.godiet.Model.StorageResource;
+import com.sysfera.godiet.Model.physicalresources.ComputeResource;
+import com.sysfera.godiet.Model.physicalresources.StorageResource;
+import com.sysfera.godiet.exceptions.LaunchException;
 
 /**
  *
@@ -111,7 +113,7 @@ public class SshUtils {
     
     
     public void stageFilesWithScp(StorageResource storeRes,
-            RunConfig runConfig) {
+            RunConfig runConfig) throws LaunchException {
         AccessMethod access = storeRes.getAccessMethod("scp");
         String command = new String("/usr/bin/scp ");
         if(runConfig.isUseUniqueDirs()){
@@ -120,13 +122,21 @@ public class SshUtils {
                         runConfig.getRunLabel(),1);
                 java.lang.Runtime rt = java.lang.Runtime.getRuntime();
                 rt.exec("/usr/bin/ssh "+access.getLogin() + "@" + access.getServer() +
-                        " /bin/mkdir -p "+storeRes.getScratchBase()+"/" +
+                        " /bin/mkdir -p "+storeRes.getScratchBase() +"/" +
                         runConfig.getRunLabel());
             } catch (IOException x) {
-                
+                throw new  LaunchException("Unable to create direcory",x);
             }
         }
-        
+        java.lang.Runtime rt = java.lang.Runtime.getRuntime();
+        try {
+			rt.exec("/usr/bin/ssh "+access.getLogin() + "@" + access.getServer() +
+			        " /bin/mkdir -p "+storeRes.getScratchBase() +"/" +
+			        storeRes.getDomain().getName()+"/");
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+            throw new  LaunchException("Unable to create direcory",e);
+		}
         List files = new ArrayList();
         for (Iterator itEl = storeRes.getElementList().iterator();itEl.hasNext();){
             Elements el=(Elements)itEl.next();
@@ -144,7 +154,7 @@ public class SshUtils {
             command += storeRes.getScratchBase() + "/" +
                     runConfig.getRunLabel();
         } else {
-            command += storeRes.getScratchBase();
+            command += storeRes.getScratchBase()+"/"+storeRes.getDomain().getName();
         }
         java.lang.Runtime runtime = java.lang.Runtime.getRuntime();
         //consoleCtrl.printOutput("##############",2);
@@ -247,11 +257,16 @@ public class SshUtils {
         remoteCommand += "cd " + scratch + " ; ";
         // Provide resiliency to the return from ssh with nohup.  Give binary.
         remoteCommand += "nohup " + element.getBinaryName() + " ";
+        if(element instanceof Forwarder)
+        {
+        	remoteCommand += "--net-config ";
+        }
         // Provide config file name with full path.  Needed by agents and seds.
         if( (element instanceof MasterAgent) ||
                 (element instanceof Ma_dag) ||
                 (element instanceof LocalAgent) ||
-                (element instanceof ServerDaemon)){
+                (element instanceof ServerDaemon)||
+                (element instanceof Forwarder)){
             remoteCommand += scratch + "/" + element.getCfgFileName() + " ";
         }
         // Provide command line parameters. Needed by SeDs and Ma_dag only.

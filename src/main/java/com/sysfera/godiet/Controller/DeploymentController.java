@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
+import java.util.Set;
 
 import org.omg.CosNaming.NameComponent;
 import org.omg.CosNaming.NamingContextExt;
@@ -28,18 +29,23 @@ import com.sysfera.godiet.Events.LaunchRequest;
 import com.sysfera.godiet.Events.LogStateChange;
 import com.sysfera.godiet.Model.Agents;
 import com.sysfera.godiet.Model.ComputeCollection;
-import com.sysfera.godiet.Model.ComputeResource;
-import com.sysfera.godiet.Model.DietPlatform;
+import com.sysfera.godiet.Model.Domain;
 import com.sysfera.godiet.Model.Elements;
+import com.sysfera.godiet.Model.Forwarder;
 import com.sysfera.godiet.Model.LaunchInfo;
+import com.sysfera.godiet.Model.Link;
 import com.sysfera.godiet.Model.LogCentral;
 import com.sysfera.godiet.Model.Ma_dag;
 import com.sysfera.godiet.Model.OmniNames;
-import com.sysfera.godiet.Model.ResourcePlatform;
+import com.sysfera.godiet.Model.Option;
 import com.sysfera.godiet.Model.RunConfig;
 import com.sysfera.godiet.Model.ServerDaemon;
 import com.sysfera.godiet.Model.Services;
-import com.sysfera.godiet.Model.StorageResource;
+import com.sysfera.godiet.Model.manager.DietPlatformManager;
+import com.sysfera.godiet.Model.manager.ResourcePlatformManager;
+import com.sysfera.godiet.Model.physicalresources.ComputeResource;
+import com.sysfera.godiet.Model.physicalresources.GatewayResource;
+import com.sysfera.godiet.Model.physicalresources.StorageResource;
 import com.sysfera.godiet.Utils.Launcher;
 import com.sysfera.godiet.diet.corba.generated.LocalAgent;
 import com.sysfera.godiet.diet.corba.generated.LocalAgentHelper;
@@ -50,6 +56,7 @@ import com.sysfera.godiet.diet.corba.generated.MasterAgentHelper;
 import com.sysfera.godiet.diet.corba.generated.SeD;
 import com.sysfera.godiet.diet.corba.generated.SeDHelper;
 import com.sysfera.godiet.exceptions.LaunchException;
+import com.sysfera.godiet.factories.ForwarderFactory;
 
 /**
  * 
@@ -58,12 +65,13 @@ import com.sysfera.godiet.exceptions.LaunchException;
 public class DeploymentController extends java.util.Observable implements
 		Runnable, java.util.Observer {
 
+	private Launcher launcher;
 	private ConsoleController consoleCtrl;
 	private DietPlatformController modelCtrl;
 	private LogCentralCommController logCommCtrl;
-	private DietPlatform dietPlatform;
-	private ResourcePlatform resourcePlatform;
-	private Launcher launcher;
+	private DietPlatformManager dietPlatform;
+	private ResourcePlatformManager resourcePlatform;
+	// private Launcher launcher;
 	private java.lang.Thread dcThread;
 	private List requestQueue;
 	private Elements waitingOn = null;
@@ -96,7 +104,6 @@ public class DeploymentController extends java.util.Observable implements
 
 		dietPlatform = modelCtrl.getDietPlatform();
 		resourcePlatform = modelCtrl.getResourcePlatform();
-		launcher = new Launcher(consoleController, dietPlatform);
 		this.requestQueue = new ArrayList();
 		dcThread = new java.lang.Thread(this);
 		dcThread.start();
@@ -265,7 +272,7 @@ public class DeploymentController extends java.util.Observable implements
 			return false;
 		}
 		try {
-			launchDietForwarders();
+			initForwarders();
 
 			launchLogForwarders();
 
@@ -288,8 +295,7 @@ public class DeploymentController extends java.util.Observable implements
 					+ endTime.toString() + " [time= " + timeDiff + " sec]");
 			consoleCtrl.printOutput("* StorageResource used ="
 					+ resourcePlatform.getUsedStorageResources().size());
-			consoleCtrl.printOutput("* ComputeResource used ="
-					+ resourcePlatform.getUsedComputeResources().size());
+
 		} catch (LaunchException e) {
 			consoleCtrl.printOutput("Error when launching:" + e.getMessage());
 			e.printStackTrace();
@@ -309,6 +315,7 @@ public class DeploymentController extends java.util.Observable implements
 		consoleCtrl.printOutput("* Launching DIET platform at "
 				+ startTime.toString());
 
+		initForwarders();
 		prepareScratch();
 		createAllCfgFiles();
 		stageAllCfgFiles();
@@ -316,11 +323,12 @@ public class DeploymentController extends java.util.Observable implements
 			return false;
 		}
 		try {
+
 			launchDietForwarders();
 
-			launchLogForwarders();
-
 			if (this.dietPlatform.useLogCentral()) {
+				launchLogForwarders();
+
 				launchLogCentral();
 				if (this.dietPlatform.getLogCentral().useLogToGuideLaunch()) {
 					connectLogCentral();
@@ -340,8 +348,6 @@ public class DeploymentController extends java.util.Observable implements
 					+ endTime.toString() + " [time= " + timeDiff + " sec]");
 			consoleCtrl.printOutput("* StorageResource used ="
 					+ resourcePlatform.getUsedStorageResources().size());
-			consoleCtrl.printOutput("* ComputeResource used ="
-					+ resourcePlatform.getUsedComputeResources().size());
 			if (this.dietPlatform.useLogCentral()) {
 				if (this.dietPlatform.getLogCentral().useLogToGuideLaunch()
 						&& this.dietPlatform.getLogCentral()
@@ -372,6 +378,7 @@ public class DeploymentController extends java.util.Observable implements
 
 		// Create physical scratch space and set runCfg variables
 		// runLabel, localScratch, and scratchReady
+		launcher = new Launcher(consoleCtrl, resourcePlatform.getDomains());
 		launcher.createLocalScratch();
 	}
 
@@ -435,7 +442,58 @@ public class DeploymentController extends java.util.Observable implements
 		}
 	}
 
+	private ForwarderFactory forwarderFactory = new ForwarderFactory();
+
+	/**
+	 * Create forwarders. 1 link = 1 forwarder
+	 */
+	private void initForwarders() {
+		List<Elements> forwarders = new ArrayList<Elements>();
+		Set<Link> links = this.resourcePlatform.getLinks();
+		
+
+		for (Link link : links) {
+
+			{
+				GatewayResource gatewayFrom = link.getFrom();
+				Forwarder forwarderFrom = forwarderFactory.create(gatewayFrom,
+						Forwarder.ForwarderType.CLIENT);
+				forwarders.add(forwarderFrom);
+				dietPlatform.addForwarder(forwarderFrom);
+			}
+			{
+				GatewayResource gatewayTo = link.getTo();
+				Forwarder forwarderTo = forwarderFactory.create(gatewayTo,
+						Forwarder.ForwarderType.SERVER);
+				forwarders.add(forwarderTo);
+				dietPlatform.addForwarder(forwarderTo);
+
+			}
+
+		}
+
+	}
+
 	private void launchDietForwarders() throws LaunchException {
+
+		List<Forwarder> forwarders = this.dietPlatform.getForwarders();
+		Forwarder lastLaunched = null;
+		for (Forwarder forwarder : forwarders) {
+			// Launch all Server Forwarder
+			if (forwarder.getType().equals(Forwarder.ForwarderType.SERVER)) {
+				launchElement(forwarder);
+				lastLaunched = forwarder;
+			}
+		}
+		
+		waitAfterLaunch(lastLaunched);
+		for (Forwarder forwarder : forwarders) {
+			// Launch all Server Forwarder
+			if (forwarder.getType().equals(Forwarder.ForwarderType.CLIENT)) {
+				launchElement(forwarder);
+
+			}
+		}
 
 	}
 
@@ -467,15 +525,15 @@ public class DeploymentController extends java.util.Observable implements
 
 		if (elements != null) {
 			for (Elements element : elements) {
+
 				launchElement(element);
 			}
-		}//else todo logger.Warning empty Elements
+		}// else todo logger.Warning empty Elements
 
 	}
 
 	private boolean launchElement(Elements element) {
 		// boolean userCont = true;
-
 		if (checkLaunchReady(element) == false) {
 			return false;
 		}
@@ -502,8 +560,8 @@ public class DeploymentController extends java.util.Observable implements
 			consoleCtrl.printError("Can not launch null element.");
 			return false;
 		}
-		//TODO : What's the fuck ?
-		if (element.getComputeResource()== null) {
+		// TODO : What's the fuck ?
+		if (element.getComputeResource() == null) {
 			consoleCtrl.printError("Can not launch on null resource.");
 			return false;
 		}
@@ -758,6 +816,7 @@ public class DeploymentController extends java.util.Observable implements
 		List ma_dags = this.dietPlatform.getMa_dags();
 		List lAgents = this.dietPlatform.getLocalAgents();
 		List seds = this.dietPlatform.getServerDaemons();
+		List<Forwarder> forwarders = this.dietPlatform.getForwarders();
 
 		for (Elements omniName : omni) {
 			createCfgFile(omniName);
@@ -778,6 +837,10 @@ public class DeploymentController extends java.util.Observable implements
 		}
 		for (it = seds.iterator(); it.hasNext();) {
 			createCfgFile((Elements) it.next());
+		}
+
+		for (Forwarder forwarder : forwarders) {
+			createCfgFile(forwarder);
 		}
 
 		createClientCfgFile(mAgents, ma_dags);
@@ -849,7 +912,11 @@ public class DeploymentController extends java.util.Observable implements
 			StorageResource stRes = (StorageResource) itStRes.next();
 			consoleCtrl.printOutput("Used storageResource =" + stRes.getName(),
 					3);
-			launcher.stageAllFile(stRes);
+			try {
+				launcher.stageAllFile(stRes);
+			} catch (LaunchException e) {
+				consoleCtrl.printError(e.getCause().toString());
+			}
 		}
 	}
 

@@ -27,7 +27,7 @@
 		<xs:complexType>
 			<xs:sequence>
 				<xs:element ref='scratch' />
-				<xs:element ref='storage' maxOccurs='unbounded' />
+
 				<xs:element ref="infrastructure" />
 			</xs:sequence>
 		</xs:complexType>
@@ -47,12 +47,13 @@
 		</xs:complexType>
 	</xs:element>
 	<xs:element name='domain'>
-
 		<xs:complexType>
 			<xs:sequence>
-				<xs:element ref='gateway' minOccurs='1' maxOccurs='unbounded' />
+				<xs:element ref='storage' minOccurs='0' maxOccurs='unbounded' />
 				<xs:element ref='compute' minOccurs='0' maxOccurs='unbounded' />
 				<xs:element ref='cluster' minOccurs='0' maxOccurs='unbounded' />
+				<xs:element ref='gateway' minOccurs='1' maxOccurs='unbounded' />
+			
 			</xs:sequence>
 			<xs:attribute name="label" />
 		</xs:complexType>
@@ -61,10 +62,8 @@
 
 	<xs:element name="gateway">
 		<xs:complexType>
-			<xs:attribute name="label" use="required" />
-			<xs:attribute name="address" use="required" />
-			<xs:attribute name="port" type="xs:integer" use="required" />
-			<xs:attribute name="login" type="xs:string" use="required" />
+			<xs:attribute name='id' type='xs:ID' use='required' />
+			<xs:attribute name='ref' type="xs:IDREF" use='required' />
 		</xs:complexType>
 	</xs:element>
 
@@ -99,7 +98,7 @@
 				<xs:element ref='end_point' minOccurs='0' maxOccurs='1' />
 			</xs:sequence>
 			<xs:attribute name='disk' type='xs:string' use='required' />
-			<xs:attribute name='label' type='xs:string' use='required' />
+			<xs:attribute name='id' type="xs:ID" use='required' />
 			<xs:attribute name='login' type='xs:string' use='optional' />
 		</xs:complexType>
 	</xs:element>

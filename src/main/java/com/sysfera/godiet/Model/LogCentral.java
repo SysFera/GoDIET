@@ -10,6 +10,8 @@ package com.sysfera.godiet.Model;
 import java.io.FileWriter;
 import java.io.IOException;
 
+import com.sysfera.godiet.Model.physicalresources.ComputeResource;
+
 /**
  *
  * @author  hdail

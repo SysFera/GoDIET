@@ -3,6 +3,8 @@ package com.sysfera.godiet.Model;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.sysfera.godiet.Model.physicalresources.GatewayResource;
+
 /**
  * A Domain represent a subnet. In Diet design, a domain is composed by one OmniName and
  * several Gateways 
@@ -14,11 +16,11 @@ public class Domain {
 
 	private OmniNames omniNames;
 	private String id;
-	private Set<Gateway> gateways;
+	private Set<GatewayResource> gateways;
 
 	
 	public Domain() {
-		gateways = new HashSet<Gateway>();
+		gateways = new HashSet<GatewayResource>();
 	}
 	public OmniNames getOmniNames() {
 		return omniNames;
@@ -60,10 +62,10 @@ public class Domain {
 	/**
 	 * @return the gateways
 	 */
-	public Set<Gateway> getGateways() {
+	public Set<GatewayResource> getGateways() {
 		return gateways;
 	}
-	public void addGateway(Gateway gateway) {
+	public void addGateway(GatewayResource gateway) {
 		this.gateways.add(gateway);
 	}
 
