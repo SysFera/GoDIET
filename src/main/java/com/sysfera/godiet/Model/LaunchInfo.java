@@ -7,6 +7,8 @@
 
 package com.sysfera.godiet.Model;
 
+import java.util.List;
+
 /**
  *
  * @author  hdail
@@ -15,7 +17,6 @@ public class LaunchInfo {
     private int launchState = com.sysfera.godiet.Defaults.LAUNCH_STATE_NONE;
     private int logState = com.sysfera.godiet.Defaults.LOG_STATE_NONE;
     private int pid = -1;
-    private String[] commandArray = null; // undecided if needed?
     private String stdOutOfLaunch = null;   // undecided how to use?
     private String stdErrOfLaunch = null;     // undecided how to use?
 
@@ -27,7 +28,6 @@ public class LaunchInfo {
         this.pid = -1;
         this.launchState = com.sysfera.godiet.Defaults.LAUNCH_STATE_NONE;
         this.logState = com.sysfera.godiet.Defaults.LOG_STATE_NONE;
-        this.commandArray = null;
         this.stdOutOfLaunch = null;
         this.stdErrOfLaunch = null;
     }
@@ -63,12 +63,7 @@ public class LaunchInfo {
         return this.pid;
     }    
     
-    public void setLastLaunchCommand(String [] commands){
-        this.commandArray = commands;
-    }
-    public String[] getLastLaunchCommand(){
-        return this.commandArray;
-    }
+   
     
     public void setLastLaunchStdOut(String stdOut){
         this.stdOutOfLaunch = stdOut;

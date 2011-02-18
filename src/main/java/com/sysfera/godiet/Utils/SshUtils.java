@@ -351,7 +351,6 @@ public class SshUtils {
         newCommand += "| /bin/sh - \"";
         
         String[] commandArray = {"/bin/sh", "-c", newCommand};
-        launchInfo.setLastLaunchCommand(commandArray);
         
         for(int i = 0; (i < commandArray.length); i++){
             consoleCtrl.printOutput("Command element " + i + " is " +

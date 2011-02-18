@@ -16,11 +16,11 @@ import java.util.List;
  */
 public class ElementCfg {    
     private String cfgFileName;
-    private List options;
+    private List<Option> options;
     
     public ElementCfg(String cfgFileName){        
         this.cfgFileName=cfgFileName;
-        this.options = new ArrayList();        
+        this.options = new ArrayList<Option>();        
     }
     public String addOption(Option o){
         String message = "";
@@ -47,7 +47,7 @@ public class ElementCfg {
         return cfgFileName;
     }
     
-    public List getOptions() {
+    public List<Option> getOptions() {
         return options;
     }
     public Option getOption(String name){        
@@ -61,7 +61,7 @@ public class ElementCfg {
     }
     public String toString(){
         String out = this.cfgFileName+"\n";
-        for (Iterator it = this.options.iterator();it.hasNext();){
+        for (Iterator<Option> it = this.options.iterator();it.hasNext();){
             out+=(Option)it.next()+"\n";
         }
         return out;
