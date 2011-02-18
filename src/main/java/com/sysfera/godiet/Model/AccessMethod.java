@@ -15,7 +15,8 @@ public class AccessMethod {
     private String type = null;
     private String server = null;
     private String login = null;
-    
+   
+    private Integer port = 22;
     /** Creates a new instance of ComputeAccess */
     public AccessMethod(String type, String server) {
         this.type = type;
@@ -52,5 +53,19 @@ public class AccessMethod {
                 loginTmp = System.getenv("USER");
         return loginTmp;
     }
+
+	/**
+	 * @param port the port to set
+	 */
+	public void setPort(Integer port) {
+		this.port = port;
+	}
+
+	/**
+	 * @return the port
+	 */
+	public Integer getPort() {
+		return port;
+	}
 
 }

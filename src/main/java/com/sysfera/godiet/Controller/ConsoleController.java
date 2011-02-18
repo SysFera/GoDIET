@@ -23,6 +23,7 @@ import com.sysfera.godiet.Events.LaunchCheckRequest;
 import com.sysfera.godiet.Events.LaunchRequest;
 import com.sysfera.godiet.Model.RunConfig;
 import com.sysfera.godiet.Utils.XmlScanner;
+import com.sysfera.godiet.exceptions.LaunchException;
 import com.sysfera.godiet.exceptions.XMLReadException;
 
 /**
@@ -264,7 +265,12 @@ public class ConsoleController extends java.util.Observable implements
 	private void relaunchFailed() {
 		if (fileLoaded) {
 			setChanged();
-			deployCtrl.checkRelaunchPlatform(true);
+			try {
+				deployCtrl.checkRelaunchPlatform(true);
+			} catch (LaunchException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			clearChanged();
 		} else {
 			printOutput("[Relaunch-Failed]: You must load the XML file before checking the platform status !");

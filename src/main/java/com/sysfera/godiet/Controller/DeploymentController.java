@@ -121,14 +121,22 @@ public class DeploymentController extends java.util.Observable implements
 				x.printStackTrace();
 			}
 			while ((request = deQueueRequest()) != null) {
-				if (request.compareTo("launch all") == 0) {
-					consoleCtrl.printOutput("got launch all request", 2);
-					requestLaunch("all");
-				}
-				if (request.compareTo("launch_check all") == 0) {
-					consoleCtrl.printOutput("got launch_check all request", 2);
-					requestLaunchCheck("all");
-				}
+				try {
+					if (request.compareTo("launch all") == 0) {
+						consoleCtrl.printOutput("got launch all request", 2);
+
+						requestLaunch("all");
+
+					}
+					if (request.compareTo("launch_check all") == 0) {
+						consoleCtrl.printOutput("got launch_check all request",
+								2);
+						requestLaunchCheck("all");
+					}
+				} catch (LaunchException e) {
+					consoleCtrl.printError("Fatal error when launching:"+ e.getMessage());
+					e.printStackTrace();
+					}
 			}
 		}
 	}
@@ -196,7 +204,7 @@ public class DeploymentController extends java.util.Observable implements
 	}
 
 	/* Interfaces for launching the diet platform, or parts thereof */
-	public void requestLaunch(String request) {
+	public void requestLaunch(String request) throws LaunchException {
 		boolean deploySuccess = false;
 		setChanged();
 		consoleCtrl.printOutput("Deployer: Sending deploy state LAUNCHING.", 3);
@@ -228,7 +236,7 @@ public class DeploymentController extends java.util.Observable implements
 	}
 
 	/* Interfaces for launching the diet platform, or parts thereof */
-	public void requestLaunchCheck(String request) {
+	public void requestLaunchCheck(String request) throws LaunchException {
 		boolean deploySuccess = false;
 		setChanged();
 		consoleCtrl.printOutput("Deployer: Sending deploy state LAUNCHING.", 3);
@@ -260,7 +268,7 @@ public class DeploymentController extends java.util.Observable implements
 		clearChanged();
 	}
 
-	public boolean launchPlatform() {
+	public boolean launchPlatform() throws LaunchException {
 		java.util.Date startTime, endTime;
 		double timeDiff;
 		startTime = new java.util.Date();
@@ -307,7 +315,7 @@ public class DeploymentController extends java.util.Observable implements
 		return true;
 	}
 
-	public boolean launchPlatform2() {
+	public boolean launchPlatform2() throws LaunchException {
 		java.util.Date startTime, endTime;
 		double timeDiff;
 		startTime = new java.util.Date();
@@ -382,7 +390,7 @@ public class DeploymentController extends java.util.Observable implements
 		launcher.createLocalScratch();
 	}
 
-	private boolean launchOmniNames() {
+	private boolean launchOmniNames() throws LaunchException {
 		List<OmniNames> omni = this.dietPlatform.getOmniNames();
 		if (omni != null) {
 			for (OmniNames omniNames : omni) {
@@ -398,7 +406,7 @@ public class DeploymentController extends java.util.Observable implements
 		return true;
 	}
 
-	private void launchLogCentral() {
+	private void launchLogCentral() throws LaunchException {
 		Elements logger = this.dietPlatform.getLogCentral();
 		launchService(logger);
 	}
@@ -430,12 +438,12 @@ public class DeploymentController extends java.util.Observable implements
 		}
 	}
 
-	private void launchTestTool() {
+	private void launchTestTool() throws LaunchException {
 		Elements testTool = this.dietPlatform.getTestTool();
 		launchService(testTool);
 	}
 
-	private void launchService(Elements service) {
+	private void launchService(Elements service) throws LaunchException {
 
 		if (service != null) {
 			launchElement(service);
@@ -450,7 +458,6 @@ public class DeploymentController extends java.util.Observable implements
 	private void initForwarders() {
 		List<Elements> forwarders = new ArrayList<Elements>();
 		Set<Link> links = this.resourcePlatform.getLinks();
-		
 
 		for (Link link : links) {
 
@@ -485,7 +492,7 @@ public class DeploymentController extends java.util.Observable implements
 				lastLaunched = forwarder;
 			}
 		}
-		
+
 		waitAfterLaunch(lastLaunched);
 		for (Forwarder forwarder : forwarders) {
 			// Launch all Server Forwarder
@@ -501,27 +508,27 @@ public class DeploymentController extends java.util.Observable implements
 
 	}
 
-	private void launchMasterAgents() {
+	private void launchMasterAgents() throws LaunchException {
 		List mAgents = this.dietPlatform.getMasterAgents();
 		launchElements(mAgents);
 	}
 
-	private void launchMa_dags() {
+	private void launchMa_dags() throws LaunchException {
 		List mAgents = this.dietPlatform.getMa_dags();
 		launchElements(mAgents);
 	}
 
-	private void launchLocalAgents() {
+	private void launchLocalAgents() throws LaunchException {
 		List lAgents = this.dietPlatform.getLocalAgents();
 		launchElements(lAgents);
 	}
 
-	private void launchServerDaemons() {
+	private void launchServerDaemons() throws LaunchException {
 		List seds = this.dietPlatform.getServerDaemons();
 		launchElements(seds);
 	}
 
-	private void launchElements(List<Elements> elements) {
+	private void launchElements(List<Elements> elements) throws LaunchException {
 
 		if (elements != null) {
 			for (Elements element : elements) {
@@ -532,7 +539,7 @@ public class DeploymentController extends java.util.Observable implements
 
 	}
 
-	private boolean launchElement(Elements element) {
+	private boolean launchElement(Elements element) throws LaunchException {
 		// boolean userCont = true;
 		if (checkLaunchReady(element) == false) {
 			return false;
@@ -959,7 +966,7 @@ public class DeploymentController extends java.util.Observable implements
 	}
 
 	private List<Elements> checkRelaunchElements(List<Elements> elements,
-			String eltType) {
+			String eltType) throws LaunchException {
 		List<Properties> checks = new ArrayList<Properties>();
 		List<Elements> elementsDown = new ArrayList<Elements>();
 		List<Elements> elementsReconnect = new ArrayList<Elements>();
@@ -1097,7 +1104,7 @@ public class DeploymentController extends java.util.Observable implements
 
 	}
 
-	public void checkRelaunchPlatform(boolean force) {
+	public void checkRelaunchPlatform(boolean force) throws LaunchException {
 		if (!force && checkingPlatform) {
 			return;
 		}
@@ -1182,7 +1189,7 @@ public class DeploymentController extends java.util.Observable implements
 
 	}
 
-	private void checkRelaunchOmniNames() {
+	private void checkRelaunchOmniNames() throws LaunchException {
 		List<OmniNames> omniNames = this.dietPlatform.getOmniNames();
 		if (omniNames != null) {
 
@@ -1206,7 +1213,7 @@ public class DeploymentController extends java.util.Observable implements
 		checkElements(mAgents, MA_IOR);
 	}
 
-	private List checkRelaunchMasterAgents() {
+	private List checkRelaunchMasterAgents() throws LaunchException {
 		List mAgents = this.dietPlatform.getMasterAgents();
 		return checkRelaunchElements(mAgents, MA_IOR);
 	}
@@ -1216,7 +1223,7 @@ public class DeploymentController extends java.util.Observable implements
 		checkElements(madgas, MADAG_IOR);
 	}
 
-	private List checkRelaunchMa_dags() {
+	private List checkRelaunchMa_dags() throws LaunchException {
 		List madgas = this.dietPlatform.getMa_dags();
 		return checkRelaunchElements(madgas, MADAG_IOR);
 	}
@@ -1227,7 +1234,7 @@ public class DeploymentController extends java.util.Observable implements
 		checkElements(lAgents, LA_IOR);
 	}
 
-	private List checkRelaunchLocalAgents() {
+	private List checkRelaunchLocalAgents() throws LaunchException {
 		List lAgents = this.dietPlatform.getLocalAgents();
 		return checkRelaunchElements(lAgents, LA_IOR);
 	}
@@ -1237,7 +1244,7 @@ public class DeploymentController extends java.util.Observable implements
 		return checkElements(seds, SED_IOR);
 	}
 
-	private List checkRelaunchServerDaemons() {
+	private List checkRelaunchServerDaemons() throws LaunchException {
 		List seds = this.dietPlatform.getServerDaemons();
 		return checkRelaunchElements(seds, SED_IOR);
 	}
@@ -1469,7 +1476,12 @@ public class DeploymentController extends java.util.Observable implements
 	private class Watcher extends java.util.TimerTask {
 		public void run() {
 			consoleCtrl.printError("# Watcher checking on the Platform", 1);
-			checkRelaunchPlatform(false);
+			try {
+				checkRelaunchPlatform(false);
+			} catch (LaunchException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 	}
 }

@@ -112,7 +112,7 @@ public class Launcher {
 	 * locally - stage the config file to remote host - run the element on the
 	 * remote host
 	 */
-	public void launchElement(Elements element, boolean useLogService) {
+	public void launchElement(Elements element, boolean useLogService) throws LaunchException {
 		RunConfig runCfg = consoleCtrl.getRunConfig();
 		if (element == null) {
 			consoleCtrl.printError("launchElement called with null element. "
@@ -176,11 +176,11 @@ public class Launcher {
 		runElement(element);
 	}
 
-	public void stageFile(String filename, StorageResource storeRes) {
+	public void stageFile(String filename, StorageResource storeRes) throws LaunchException {
 		consoleCtrl.printOutput(
 				"Staging file " + filename + " to " + storeRes.getName(), 1);
 
-		SshUtils sshUtil = new SshUtils(consoleCtrl);
+		SshUtils sshUtil = new SshUtilsImpl(consoleCtrl);
 		sshUtil.stageWithScp(filename, storeRes, consoleCtrl.getRunConfig());
 	}
 
@@ -188,7 +188,7 @@ public class Launcher {
 	public void stageAllFile(StorageResource storeRes) throws LaunchException {
 		consoleCtrl.printOutput("Staging file to " + storeRes.getName(), 1);
 
-		SshUtils sshUtil = new SshUtils(consoleCtrl);
+		SshUtils sshUtil = new SshUtilsImpl(consoleCtrl);
 		sshUtil.stageFilesWithScp(storeRes, consoleCtrl.getRunConfig());
 	}
 
@@ -204,7 +204,7 @@ public class Launcher {
 			return;
 		}
 
-		SshUtils sshUtil = new SshUtils(consoleCtrl);
+		SshUtils sshUtil = new SshUtilsImpl(consoleCtrl);
 		sshUtil.runWithSsh(element, consoleCtrl.getRunConfig(),
 				killPlatformFile);
 	}
@@ -212,7 +212,7 @@ public class Launcher {
 	public void stopElement(Elements element) {
 		consoleCtrl.printOutput("Trying to stop element " + element.getName(),
 				1);
-		SshUtils sshUtil = new SshUtils(consoleCtrl);
+		SshUtils sshUtil = new SshUtilsImpl(consoleCtrl);
 		if (element instanceof Agents || element instanceof ServerDaemon)
 			sshUtil.stopWithSsh(element, consoleCtrl.getRunConfig(), true);
 		else

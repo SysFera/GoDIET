@@ -313,7 +313,7 @@ public class XmlScanner implements ErrorHandler {
 		this.mainController.addLink(link);
 	}
 
-	public void visitElement_domain(org.w3c.dom.Element element) {
+	public void visitElement_domain(org.w3c.dom.Element element) throws XMLReadException {
 
 		Domain domain = new Domain();
 		domain.setId(element.getAttribute("label"));
@@ -347,7 +347,7 @@ public class XmlScanner implements ErrorHandler {
 		}
 	}
 
-	public void visitElement_storage(org.w3c.dom.Element element) { // <storage>
+	public void visitElement_storage(org.w3c.dom.Element element) throws XMLReadException { // <storage>
 		String resourceLabel = null;
 		String scratchDir = null;
 		AccessMethod scpAccess = null;
@@ -405,7 +405,7 @@ public class XmlScanner implements ErrorHandler {
 		return directory;
 	}
 
-	public void visitElement_compute(org.w3c.dom.Element element) { // <compute>
+	public void visitElement_compute(org.w3c.dom.Element element) throws XMLReadException { // <compute>
 		String resourceLabel = null;
 		String diskLabel = null;
 		String login = null;
@@ -475,7 +475,7 @@ public class XmlScanner implements ErrorHandler {
 		mainController.addComputeCollection(compColl);
 	}
 
-	public void visitElement_cluster(org.w3c.dom.Element element) {
+	public void visitElement_cluster(org.w3c.dom.Element element) throws XMLReadException {
 		String clusLabel = null;
 		String diskLabel = null;
 		String login = null;
@@ -536,7 +536,7 @@ public class XmlScanner implements ErrorHandler {
 	}
 
 	public void visitElement_node(org.w3c.dom.Element element,
-			ComputeCollection collection, String clusLogin) {
+			ComputeCollection collection, String clusLogin) throws XMLReadException {
 		String resourceLabel = null;
 		AccessMethod sshAccess = null;
 		EndPoint endPoint = null;
@@ -588,7 +588,7 @@ public class XmlScanner implements ErrorHandler {
 		return;
 	}
 
-	public AccessMethod visitElement_scp(org.w3c.dom.Element element) { // <scp>
+	public AccessMethod visitElement_scp(org.w3c.dom.Element element) throws XMLReadException { // <scp>
 		AccessMethod scpAccess = null;
 		String login = null, server = null;
 		org.w3c.dom.NamedNodeMap attrs = element.getAttributes();
@@ -604,13 +604,13 @@ public class XmlScanner implements ErrorHandler {
 		if (login != null) {
 			scpAccess = new AccessMethod("scp", server, login);
 		} else {
-			scpAccess = new AccessMethod("scp", server);
+			throw new XMLReadException("scp field need login");
 		}
 		return scpAccess;
 	}
 
 	public AccessMethod visitElement_ssh(org.w3c.dom.Element element,
-			String clusLogin) {
+			String clusLogin) throws XMLReadException {
 		AccessMethod sshAccess = null;
 		String login = null, server = null;
 		org.w3c.dom.NamedNodeMap attrs = element.getAttributes();
@@ -628,7 +628,7 @@ public class XmlScanner implements ErrorHandler {
 		} else if (clusLogin != null) {
 			sshAccess = new AccessMethod("ssh", server, clusLogin);
 		} else {
-			sshAccess = new AccessMethod("ssh", server);
+			throw new XMLReadException("Accessmethod need login");
 		}
 		return sshAccess;
 	}

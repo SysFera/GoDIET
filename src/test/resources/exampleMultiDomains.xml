@@ -14,15 +14,15 @@
 			<domain label="Sysfera">
 				<storage label="kevinDisk">
 					<scratch dir="/tmp/scratch_runtime" />
-					<scp server="192.168.1.17" />
+					<scp server="192.168.1.17" login="phi" />
 				</storage>
 				<storage label="phiDisk">
 					<scratch dir="/home/phi/tmp/scratch_runtime" />
-					<scp server="192.168.1.20" />
+					<scp server="192.168.1.20" login="phi" />
 				</storage>
 
 				<compute id="Kev" disk="kevinDisk">
-					<ssh server="192.168.1.17" />
+					<ssh server="192.168.1.17" login="phi"/>
 					<env>
 						<var name="PATH"
 							value="/home/phi/Diet/build/bin:/home/phi/Diet/build/bin/examples/dmat_manips/:$PATH" />
@@ -30,7 +30,7 @@
 					</env>
 				</compute>
 				<compute id="Phi" disk="phiDisk">
-					<ssh server="192.168.1.20" />
+					<ssh server="192.168.1.20" login="phi"/>
 					<env>
 						<var name="PATH"
 							value="/home/phi/Soft/Diet/bin:/home/phi/Soft/Diet/bin/examples/dmat_manips/:$PATH" />

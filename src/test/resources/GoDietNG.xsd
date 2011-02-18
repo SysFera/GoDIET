@@ -85,7 +85,7 @@
 
 	<xs:element name='scp'>
 		<xs:complexType>
-			<xs:attribute name='login' type='xs:string' use='optional' />
+			<xs:attribute name='login' type='xs:string' use='required' />
 			<xs:attribute name='server' type='xs:string' use='required' />
 		</xs:complexType>
 	</xs:element>
@@ -128,7 +128,7 @@
 	<xs:element name='ssh'>
 		<xs:complexType>
 			<xs:attribute name='server' type='xs:string' use='required' />
-			<xs:attribute name='login' type='xs:string' use='optional' />
+			<xs:attribute name='login' type='xs:string' use='required' />
 		</xs:complexType>
 	</xs:element>
 
