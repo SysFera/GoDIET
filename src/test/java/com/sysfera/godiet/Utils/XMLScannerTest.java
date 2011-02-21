@@ -8,7 +8,11 @@ import org.junit.Test;
 
 import com.sysfera.godiet.Controller.ConsoleController;
 import com.sysfera.godiet.exceptions.XMLReadException;
-
+/**
+ * Test of Old style parsing
+ * @author phi
+ *
+ */
 public class XMLScannerTest {
 
 	@Test

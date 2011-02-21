@@ -23,10 +23,10 @@ import com.sysfera.godiet.Model.Domain;
 import com.sysfera.godiet.Model.Elements;
 import com.sysfera.godiet.Model.RunConfig;
 import com.sysfera.godiet.Model.ServerDaemon;
-import com.sysfera.godiet.Model.manager.DietPlatformManager;
 import com.sysfera.godiet.Model.physicalresources.ComputeResource;
 import com.sysfera.godiet.Model.physicalresources.StorageResource;
 import com.sysfera.godiet.exceptions.LaunchException;
+import com.sysfera.godiet.managers.DietPlatformImpl;
 
 /**
  * 
@@ -35,14 +35,13 @@ import com.sysfera.godiet.exceptions.LaunchException;
 public class Launcher {
 	private ConsoleController consoleCtrl;
 	private File killPlatformFile;
-	
-	
+
 	private Set<Domain> domains;
 
 	/** Creates a new instance of Launcher */
 	public Launcher(ConsoleController consoleController, Set<Domain> domains) {
 		this.consoleCtrl = consoleController;
-		this.domains = domains ;
+		this.domains = domains;
 	}
 
 	public void createLocalScratch() {
@@ -53,37 +52,13 @@ public class Launcher {
 		SimpleDateFormat formatter = new SimpleDateFormat("yyMMMdd_HHmm");
 		java.util.Date today = new Date();
 		String dateString = formatter.format(today);
-		
-		if (runCfg.isUseUniqueDirs()) {
-			// create a contextual path for each domain
-			for (Domain domain : domains) {
 
-				runLabel = "run_" + dateString;
+		for (Domain domain : domains) {
+			dirHdl = new File(runCfg.getLocalScratch() + "/" + domain.getName());
+			dirHdl.mkdirs();
 
-				dirHdl = new File(runCfg.getLocalScratch() + "/"
-						+ domain.getName(), runLabel);
-				if (dirHdl.exists()) {
-					int i = 0;
-					do {
-						i++;
-						dirHdl = new File(runCfg.getLocalScratch() + "/"
-								+ domain.getName(), runLabel + "_r" + i);
-					} while (dirHdl.exists());
-					runLabel += "_r" + i;
-				}
-				dirHdl.mkdirs();
-				runCfg.setLocalScratch(runCfg.getLocalScratch() + "/"
-						+ domain.getName() + "/" + runLabel);
-				runCfg.setRunLabel(runLabel);
-			}
-		} else {
-			for (Domain domain : domains) {
-				dirHdl = new File(runCfg.getLocalScratch() + "/"
-						+ domain.getName());
-				dirHdl.mkdirs();
+			runCfg.setRunLabel(null);
 
-				runCfg.setRunLabel(null);
-			}
 		}
 
 		runCfg.setLocalScratchReady(true);
@@ -112,7 +87,8 @@ public class Launcher {
 	 * locally - stage the config file to remote host - run the element on the
 	 * remote host
 	 */
-	public void launchElement(Elements element, boolean useLogService) throws LaunchException {
+	public void launchElement(Elements element, boolean useLogService)
+			throws LaunchException {
 		RunConfig runCfg = consoleCtrl.getRunConfig();
 		if (element == null) {
 			consoleCtrl.printError("launchElement called with null element. "
@@ -176,7 +152,8 @@ public class Launcher {
 		runElement(element);
 	}
 
-	public void stageFile(String filename, StorageResource storeRes) throws LaunchException {
+	public void stageFile(String filename, StorageResource storeRes)
+			throws LaunchException {
 		consoleCtrl.printOutput(
 				"Staging file " + filename + " to " + storeRes.getName(), 1);
 

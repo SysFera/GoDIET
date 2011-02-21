@@ -7,8 +7,6 @@
 
 package com.sysfera.godiet.Controller;
 
-import java.util.List;
-
 import com.sysfera.godiet.Events.AddElementsEvent;
 import com.sysfera.godiet.Events.AddServiceEvent;
 import com.sysfera.godiet.Events.StatusInfosEvent;
@@ -24,11 +22,12 @@ import com.sysfera.godiet.Model.MasterAgent;
 import com.sysfera.godiet.Model.OmniNames;
 import com.sysfera.godiet.Model.ServerDaemon;
 import com.sysfera.godiet.Model.Services;
-import com.sysfera.godiet.Model.manager.DietPlatformManager;
-import com.sysfera.godiet.Model.manager.ResourcePlatformManager;
 import com.sysfera.godiet.Model.physicalresources.ComputeResource;
-import com.sysfera.godiet.Model.physicalresources.GatewayResource;
 import com.sysfera.godiet.Model.physicalresources.StorageResource;
+import com.sysfera.godiet.managers.DietPlatform;
+import com.sysfera.godiet.managers.DietPlatformImpl;
+import com.sysfera.godiet.managers.ResourcePlatform;
+import com.sysfera.godiet.managers.ResourcePlatformImpl;
 
 /**
  *
@@ -37,23 +36,23 @@ import com.sysfera.godiet.Model.physicalresources.StorageResource;
 public class DietPlatformController implements java.util.Observer {
     //private RunConfig         runConfig;
     
-    private DietPlatformManager      dietPlatform;
-    private ResourcePlatformManager  resourcePlatform;
+    private DietPlatformImpl      dietPlatform;
+    private ResourcePlatformImpl  resourcePlatform;
     private ConsoleController consoleCtrl;
     
     public DietPlatformController(ConsoleController consoleController){
         this.consoleCtrl    = consoleController;
         //runConfig           = new RunConfig();
-        dietPlatform        = new DietPlatformManager(consoleCtrl);
-        resourcePlatform    = new ResourcePlatformManager();
+        dietPlatform        = new DietPlatformImpl(consoleCtrl);
+        resourcePlatform    = new ResourcePlatformImpl();
         dietPlatform.addObserver(this);
     }
     
-    public DietPlatformManager getDietPlatform(){
+    public DietPlatform getDietPlatform(){
         return this.dietPlatform;
     }
 
-    public ResourcePlatformManager getResourcePlatform(){
+    public ResourcePlatform getResourcePlatform(){
         return this.resourcePlatform;
     }
   

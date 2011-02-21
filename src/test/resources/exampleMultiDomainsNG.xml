@@ -1,28 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <diet_configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:noNamespaceSchemaLocation="../GoDietNG.xsd">
+	xsi:noNamespaceSchemaLocation="GoDietNG.xsd">
 
-	<goDiet debug="1" saveStdOut="yes" saveStdErr="yes"
-		useUniqueDirs="no" />
-
-	<resources>
+	<goDiet debug="1" saveStdOut="true" saveStdErr="true"
+		log="true">
 		<scratch dir="/home/phi/tmp/scratch_godiet" />
-
-
+	</goDiet>
 
 		<infrastructure>
 			<domain label="Sysfera">
 				<storage label="kevinDisk">
 					<scratch dir="/tmp/scratch_runtime" />
-					<scp server="192.168.1.17" />
+					<scp server="192.168.1.17" login="phi" />
 				</storage>
 				<storage label="phiDisk">
 					<scratch dir="/home/phi/tmp/scratch_runtime" />
-					<scp server="192.168.1.20" />
+					<scp server="192.168.1.20" login="phi" />
 				</storage>
 
 				<compute id="Kev" disk="kevinDisk">
-					<ssh server="192.168.1.17" />
+					<ssh server="192.168.1.17" login="phi" />
 					<env>
 						<var name="PATH"
 							value="/home/phi/Diet/build/bin:/home/phi/Diet/build/bin/examples/dmat_manips/:$PATH" />
@@ -30,7 +27,7 @@
 					</env>
 				</compute>
 				<compute id="Phi" disk="phiDisk">
-					<ssh server="192.168.1.20" />
+					<ssh server="192.168.1.20" login="phi" />
 					<env>
 						<var name="PATH"
 							value="/home/phi/Soft/Diet/bin:/home/phi/Soft/Diet/bin/examples/dmat_manips/:$PATH" />
@@ -57,11 +54,10 @@
 				</compute>
 				<gateway id="ENSGW" ref="Graal" />
 
-			</domain>
+			</domain><!--
 
 			<link from="SysferaGW" to="ENSGW" />
-		</infrastructure>
-	</resources>
+		--></infrastructure>
 
 	<diet_services>
 		<omni_names contact="192.168.1.17" port="2809" domain="Sysfera">
@@ -77,10 +73,10 @@
 			<config server="Kev" remote_binary="dietAgent" />
 			<local_agent>
 				<config server="Graal" remote_binary="dietAgent" />
-				<SeD>
+				<sed>
 					<config server="Graal" remote_binary="dmat_manips_server" />
 					<parameters string="T" />
-				</SeD>
+				</sed>
 			</local_agent>
 		</master_agent>
 	</diet_hierarchy>

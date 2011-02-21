@@ -70,13 +70,7 @@ public class RunConfig {
 		return this.watcherPeriod;
 	}
 
-	public void setUseUniqueDirs(boolean useUniqueDirs) {
-		this.useUniqueDirs = useUniqueDirs;
-	}
 
-	public boolean isUseUniqueDirs() {
-		return useUniqueDirs;
-	}
 
 	public void setSaveStdErr(boolean saveStdErr) {
 		this.saveStdErr = saveStdErr;

@@ -29,7 +29,6 @@ import com.sysfera.godiet.Events.LaunchRequest;
 import com.sysfera.godiet.Events.LogStateChange;
 import com.sysfera.godiet.Model.Agents;
 import com.sysfera.godiet.Model.ComputeCollection;
-import com.sysfera.godiet.Model.Domain;
 import com.sysfera.godiet.Model.Elements;
 import com.sysfera.godiet.Model.Forwarder;
 import com.sysfera.godiet.Model.LaunchInfo;
@@ -37,12 +36,9 @@ import com.sysfera.godiet.Model.Link;
 import com.sysfera.godiet.Model.LogCentral;
 import com.sysfera.godiet.Model.Ma_dag;
 import com.sysfera.godiet.Model.OmniNames;
-import com.sysfera.godiet.Model.Option;
 import com.sysfera.godiet.Model.RunConfig;
 import com.sysfera.godiet.Model.ServerDaemon;
 import com.sysfera.godiet.Model.Services;
-import com.sysfera.godiet.Model.manager.DietPlatformManager;
-import com.sysfera.godiet.Model.manager.ResourcePlatformManager;
 import com.sysfera.godiet.Model.physicalresources.ComputeResource;
 import com.sysfera.godiet.Model.physicalresources.GatewayResource;
 import com.sysfera.godiet.Model.physicalresources.StorageResource;
@@ -57,6 +53,8 @@ import com.sysfera.godiet.diet.corba.generated.SeD;
 import com.sysfera.godiet.diet.corba.generated.SeDHelper;
 import com.sysfera.godiet.exceptions.LaunchException;
 import com.sysfera.godiet.factories.ForwarderFactory;
+import com.sysfera.godiet.managers.DietPlatform;
+import com.sysfera.godiet.managers.ResourcePlatform;
 
 /**
  * 
@@ -69,8 +67,8 @@ public class DeploymentController extends java.util.Observable implements
 	private ConsoleController consoleCtrl;
 	private DietPlatformController modelCtrl;
 	private LogCentralCommController logCommCtrl;
-	private DietPlatformManager dietPlatform;
-	private ResourcePlatformManager resourcePlatform;
+	private DietPlatform dietPlatform;
+	private ResourcePlatform resourcePlatform;
 	// private Launcher launcher;
 	private java.lang.Thread dcThread;
 	private List requestQueue;
