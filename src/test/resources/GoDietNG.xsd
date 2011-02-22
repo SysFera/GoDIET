@@ -2,47 +2,42 @@
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
 	xmlns:jaxb="http://java.sun.com/xml/ns/jaxb" jaxb:version="2.0">
 
-	<xs:element name='diet_configuration'>
+	<xs:element name="diet_configuration">
 		<xs:complexType>
 			<xs:sequence>
-				<xs:element name="goDiet" type='goDiet' minOccurs='0'
-					maxOccurs='1' />
+				<xs:element name="goDiet" type="goDiet" minOccurs="0"
+					maxOccurs="1" />
 				<xs:element name="infrastructure" type="infrastructure" />
-				<xs:element name='diet_services' type="diet_services" />
-				<xs:element name='diet_hierarchy' type='diet_hierarchy' />
+				<xs:element name="diet_services" type="diet_services" />
+				<xs:element name="diet_hierarchy" type="diet_hierarchy" />
 			</xs:sequence>
 		</xs:complexType>
 	</xs:element>
 
-
-
-
-
-
-	<xs:complexType name='goDiet'>
+	<xs:complexType name="goDiet">
 		<xs:sequence>
-			<xs:element name='scratch' type="scratch" />
+			<xs:element name="scratch" type="scratch" />
 		</xs:sequence>
-		<xs:attribute name='debug' type="xs:int" default="1" />
-		<xs:attribute name='saveStdOut' type="xs:boolean"
+		<xs:attribute name="debug" type="xs:int" default="1" />
+		<xs:attribute name="saveStdOut" type="xs:boolean"
 			default="true" />
-		<xs:attribute name='saveStdErr' type='xs:boolean'
+		<xs:attribute name="saveStdErr" type="xs:boolean"
 			default="true" />
-		<xs:attribute name='log' type='xs:boolean' />
-		<xs:attribute name='watcherPeriod' type='xs:int' default="30000" />
+		<xs:attribute name="log" type="xs:boolean" />
+		<xs:attribute name="watcherPeriod" type="xs:int" default="30000" />
 	</xs:complexType>
 
 
-	<xs:complexType name='infrastructure'>
+	<xs:complexType name="infrastructure">
 		<xs:sequence>
-			<xs:element name="domain" type='domain' maxOccurs="unbounded" />
-			<!--<xs:element name="link" type='link' maxOccurs="unbounded" />
-		--></xs:sequence>
-	</xs:complexType><!--
+			<xs:element name="domain" type="domain" maxOccurs="unbounded" />
+			<xs:element name="link" type="link" maxOccurs="unbounded" />
+		</xs:sequence>
+	</xs:complexType>
 
 
-	<xs:complexType name='link'>
-		<xs:attribute name="from" use="required">
+	<xs:complexType name="link">
+		<xs:attribute name="from" type="xs:IDREF" use="required">
 			<xs:annotation>
 				<xs:appinfo>
 					<jaxb:property>
@@ -51,11 +46,11 @@
 				</xs:appinfo>
 			</xs:annotation>
 		</xs:attribute>
-		<xs:attribute name="to" use="required">
+		<xs:attribute name="to" type="xs:IDREF" use="required">
 			<xs:annotation>
 				<xs:appinfo>
 					<jaxb:property>
-						<jaxb:baseType name="Gateway"  />
+						<jaxb:baseType name="Gateway" />
 					</jaxb:property>
 				</xs:appinfo>
 			</xs:annotation>
@@ -63,34 +58,40 @@
 	</xs:complexType>
 
 
-	--><xs:complexType name='domain'>
+	<xs:complexType name="domain">
 		<xs:sequence>
-			<xs:element name="storage" type='storage' minOccurs='0'
-				maxOccurs='unbounded' />
-			<xs:element name="compute" type='compute' minOccurs='0'
-				maxOccurs='unbounded' />
-			<xs:element name="cluster" type='cluster' minOccurs='0'
-				maxOccurs='unbounded' />
-			<xs:element name='gateway' type="gateway" minOccurs='0'
-				maxOccurs='unbounded' />
+			<xs:element name="storage" type="storage" minOccurs="0"
+				maxOccurs="unbounded" />
+			<xs:element name="node" type="node" minOccurs="0"
+				maxOccurs="unbounded" />
+			<xs:element name="cluster" type="cluster" minOccurs="0"
+				maxOccurs="unbounded" />
+			<xs:element name="gateway" type="gateway" minOccurs="0"
+				maxOccurs="unbounded" />
 		</xs:sequence>
 		<xs:attribute name="label" />
 	</xs:complexType>
 
-
+	<xs:complexType name="resource" abstract="true">
+		<xs:attribute name="id" type="xs:ID" use="required" />
+	</xs:complexType>
 
 
 	<xs:complexType name="gateway">
-		<xs:attribute name='id' type='xs:ID' use='required' />
-		<xs:attribute name='ref' type="xs:IDREF" use='required'>
-			<xs:annotation>
-				<xs:appinfo>
-					<jaxb:property>
-						<jaxb:baseType name="Compute" />
-					</jaxb:property>
-				</xs:appinfo>
-			</xs:annotation>
-		</xs:attribute>
+		<xs:complexContent>
+			<xs:extension base="resource">
+				<xs:attribute name="ref" type="xs:IDREF" use="required">
+					<xs:annotation>
+						<xs:appinfo>
+							<jaxb:property>
+								<jaxb:baseType name="Node" />
+							</jaxb:property>
+						</xs:appinfo>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+
 	</xs:complexType>
 
 
@@ -101,194 +102,187 @@
 		</xs:complexContent>
 	</xs:complexType>
 
-	<xs:complexType name='storage'>
+	<xs:complexType name="storage">
 
 		<xs:sequence>
-			<xs:element name="scratch" type='scratch' />
-			<xs:element name="scp" type='scp' />
+			<xs:element name="scratch" type="scratch" />
+			<xs:element name="scp" type="scp" />
 		</xs:sequence>
-		<xs:attribute name='label' type='xs:ID' use='required' />
+		<xs:attribute name="label" type="xs:ID" use="required" />
 	</xs:complexType>
 
-	<xs:complexType name='scratch'>
-		<xs:attribute name='dir' type='xs:string' use='required' />
+	<xs:complexType name="scratch">
+		<xs:attribute name="dir" type="xs:string" use="required" />
 	</xs:complexType>
 
-	<xs:complexType name='scp'>
-		<xs:attribute name='login' type='xs:string' use='required' />
-		<xs:attribute name='server' type='xs:string' use='required' />
+	<xs:complexType name="scp">
+		<xs:attribute name="login" type="xs:string" use="required" />
+		<xs:attribute name="server" type="xs:string" use="required" />
 	</xs:complexType>
 
-	<xs:complexType name='compute'>
+	<xs:complexType name="node">
+		<xs:complexContent>
+			<xs:extension base="resource">
+				<xs:sequence>
+					<xs:element name="ssh" type="ssh" />
+					<xs:element name="env" type="env" minOccurs="0"
+						maxOccurs="1" />
+					<xs:element name="end_point" type="end_point" minOccurs="0"
+						maxOccurs="1" />
+				</xs:sequence>
+				<xs:attribute name="disk" type="xs:IDREF" use="required">
+					<xs:annotation>
+						<xs:appinfo>
+							<jaxb:property>
+								<jaxb:baseType name="Storage" />
+							</jaxb:property>
+						</xs:appinfo>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="login" type="xs:string" use="optional" />
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:complexType name="cluster">
 		<xs:sequence>
-			<xs:element name="ssh" type='ssh' />
-			<xs:element name="env" type='env' minOccurs='0' maxOccurs='1' />
-			<xs:element name="end_point" type='end_point' minOccurs='0'
-				maxOccurs='1' />
-		</xs:sequence>
-		<xs:attribute name='disk' type="xs:IDREF" use='required' >
-				<xs:annotation>
-				<xs:appinfo>
-					<jaxb:property>
-						<jaxb:baseType name="Storage" />
-					</jaxb:property>
-				</xs:appinfo>
-			</xs:annotation>
-		</xs:attribute>
-		<xs:attribute name='id' type="xs:ID" use='required' />
-		<xs:attribute name='login' type='xs:string' use='optional' />
-	</xs:complexType>
-
-	<xs:complexType name='cluster'>
-		<xs:sequence>
-			<xs:element name="node" type='node' maxOccurs="unbounded" />
+			<xs:element name="computingnode" type="node" maxOccurs="unbounded" />
 			<xs:element name="frontend" type="frontend" />
 		</xs:sequence>
 		<xs:attribute name="cardinality" type="xs:int" use="required" />
-		<xs:attribute name='label' type='xs:string' use='required' />
-		<xs:attribute name='login' type='xs:string' use='optional' />
+		<xs:attribute name="label" type="xs:string" use="required" />
+		<xs:attribute name="login" type="xs:string" use="optional" />
 	</xs:complexType>
 
-	<xs:complexType name='node'>
+
+
+	<xs:complexType name="ssh">
+		<xs:attribute name="server" type="xs:string" use="required" />
+		<xs:attribute name="login" type="xs:string" use="required" />
+	</xs:complexType>
+
+	<xs:complexType name="env">
 		<xs:sequence>
-			<xs:element name="ssh" type='ssh' />
-			<xs:element name="end_point" type='end_point' minOccurs='0'
-				maxOccurs='1' />
-		</xs:sequence>
-		<xs:attribute name='label' type='xs:string' use='required' />
-	</xs:complexType>
-
-	<xs:complexType name='ssh'>
-		<xs:attribute name='server' type='xs:string' use='required' />
-		<xs:attribute name='login' type='xs:string' use='required' />
-	</xs:complexType>
-
-	<xs:complexType name='env'>
-		<xs:sequence>
-			<xs:element name="var" type='var' minOccurs='0' maxOccurs='unbounded' />
+			<xs:element name="var" type="var" minOccurs="0" maxOccurs="unbounded" />
 		</xs:sequence>
 	</xs:complexType>
 
-	<xs:complexType name='end_point'>
-		<xs:attribute name='contact' type='xs:string' use='optional' />
-		<xs:attribute name='startPort' type='xs:string' use='optional' />
-		<xs:attribute name='endPort' type='xs:string' use='optional' />
+	<xs:complexType name="end_point">
+		<xs:attribute name="contact" type="xs:string" use="optional" />
+		<xs:attribute name="startPort" type="xs:string" use="optional" />
+		<xs:attribute name="endPort" type="xs:string" use="optional" />
 	</xs:complexType>
 
-	<xs:complexType name='var'>
-		<xs:attribute name='name' type='xs:string' use='required' />
-		<xs:attribute name='value' type='xs:string' use='required' />
+	<xs:complexType name="var">
+		<xs:attribute name="name" type="xs:string" use="required" />
+		<xs:attribute name="value" type="xs:string" use="required" />
 	</xs:complexType>
 
 
-	<xs:complexType name='diet_services'>
+	<xs:complexType name="diet_services">
 		<xs:sequence>
-			<xs:element name="omni_names" type='omni_names' minOccurs='1'
+			<xs:element name="omni_names" type="omni_names" minOccurs="1"
 				maxOccurs="unbounded" />
-			<xs:element name="log_central" type='log_central'
-				minOccurs='0' maxOccurs='1' />
-			<xs:element name="log_tool" type='log_tool' minOccurs='0'
-				maxOccurs='1' />
+			<xs:element name="log_central" type="log_central"
+				minOccurs="0" maxOccurs="1" />
+			<xs:element name="log_tool" type="log_tool" minOccurs="0"
+				maxOccurs="1" />
 
 		</xs:sequence>
 		<xs:attribute name="statistics" type="xs:boolean"
 			default="false"></xs:attribute>
 	</xs:complexType>
 
-	<xs:complexType name='omni_names'>
+	<xs:complexType name="omni_names">
 		<xs:sequence>
-			<xs:element name='config' type="config" />
-			<xs:element name='cfg_options' type="cfg_options"
-				minOccurs='0' maxOccurs='1' />
+			<xs:element name="config" type="config" />
+			<xs:element name="cfg_options" type="cfg_options"
+				minOccurs="0" maxOccurs="1" />
 		</xs:sequence>
-		<xs:attribute name='contact' type='xs:string' use='required' />
-		<xs:attribute name='port' type='xs:string' use='optional' />
+		<xs:attribute name="contact" type="xs:string" use="required" />
+		<xs:attribute name="port" type="portType" use="optional"
+			default="2809" />
 		<xs:attribute name="domain" />
 	</xs:complexType>
 
 
-	<xs:complexType name='log_central'>
+	<xs:complexType name="log_central">
 		<xs:sequence>
-			<xs:element name='config' type="config" />
+			<xs:element name="config" type="config" />
 		</xs:sequence>
-		<xs:attribute name='connectDuringLaunch' type='xs:string'
-			use='optional' />
+		<xs:attribute name="connectDuringLaunch" type="xs:string"
+			use="optional" />
 	</xs:complexType>
 
-	<xs:complexType name='log_tool'>
+	<xs:complexType name="log_tool">
 		<xs:sequence>
-			<xs:element name='config' type="config" />
-		</xs:sequence>
-	</xs:complexType>
-
-
-	<xs:complexType name='diet_hierarchy'>
-		<xs:sequence>
-			<xs:element name='master_agent' type="master_agent"
-				maxOccurs='unbounded' />
+			<xs:element name="config" type="config" />
 		</xs:sequence>
 	</xs:complexType>
 
 
-	<xs:complexType name='agent' abstract="true">
+	<xs:complexType name="diet_hierarchy">
 		<xs:sequence>
-			<xs:element name='config' type="config" />
-			<xs:element name='cfg_options' type="cfg_options"
-				minOccurs='0' maxOccurs='1' />
+			<xs:element name="master_agent" type="master_agent"
+				maxOccurs="unbounded" />
 		</xs:sequence>
-		<xs:attribute name='label' type='xs:string' use='optional' />
-		<xs:attribute name='stats' type="xs:boolean" default="false" />
 	</xs:complexType>
 
 
-	<xs:complexType name='master_agent'>
+	<xs:complexType name="agent" abstract="true">
+		<xs:sequence>
+			<xs:element name="config" type="config" />
+			<xs:element name="cfg_options" type="cfg_options"
+				minOccurs="0" maxOccurs="1" />
+		</xs:sequence>
+		<xs:attribute name="label" type="xs:string" use="optional" />
+		<xs:attribute name="stats" type="xs:boolean" default="false" />
+	</xs:complexType>
+
+
+	<xs:complexType name="master_agent">
 		<xs:complexContent>
-			<xs:extension base='agent'>
+			<xs:extension base="agent">
 				<xs:sequence>
-					<xs:element name='ma_dag' type="ma_dag" minOccurs='0'
-						maxOccurs='unbounded' />
-					<xs:element name='local_agent' type="local_agent"
-						minOccurs='0' maxOccurs='unbounded' />
-					<xs:element name='sed' type="sed" minOccurs='0'
-						maxOccurs='unbounded' />
+					<xs:element name="ma_dag" type="ma_dag" minOccurs="0"
+						maxOccurs="unbounded" />
+					<xs:element name="local_agent" type="local_agent"
+						minOccurs="0" maxOccurs="unbounded" />
+					<xs:element name="sed" type="sed" minOccurs="0"
+						maxOccurs="unbounded" />
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
-
-
 	</xs:complexType>
 
-
-
-
-	<xs:complexType name='ma_dag'>
+	<xs:complexType name="ma_dag">
 		<xs:complexContent>
-			<xs:extension base='agent'>
+			<xs:extension base="agent">
 				<xs:sequence>
 					<xs:element name="parameters" type="parameters"
-	maxOccurs="1" minOccurs="0" />
+						maxOccurs="1" minOccurs="0" />
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
 
-	<xs:complexType name='local_agent'>
+	<xs:complexType name="local_agent">
 		<xs:complexContent>
-			<xs:extension base='agent'>
+			<xs:extension base="agent">
 				<xs:sequence>
 
-					<xs:element name='local_agent' type="local_agent"
-						minOccurs='0' maxOccurs='unbounded' />
-					<xs:element name='sed' type="sed" minOccurs='0'
-						maxOccurs='unbounded' />
+					<xs:element name="local_agent" type="local_agent"
+						minOccurs="0" maxOccurs="unbounded" />
+					<xs:element name="sed" type="sed" minOccurs="0"
+						maxOccurs="unbounded" />
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
 
-	<xs:complexType name='sed'>
+	<xs:complexType name="sed">
 		<xs:complexContent>
-			<xs:extension base='agent'>
+			<xs:extension base="agent">
 				<xs:sequence>
 					<xs:element name="parameters" type="parameters"
 						maxOccurs="unbounded" minOccurs="0" />
@@ -297,25 +291,31 @@
 		</xs:complexContent>
 	</xs:complexType>
 
-	<xs:complexType name='config'>
-		<xs:attribute name='remote_binary' type='xs:string' use='required' />
-		<xs:attribute name='server' type='xs:string' use='required' />
+	<xs:complexType name="config">
+		<xs:attribute name="remote_binary" type="xs:string" use="required" />
+		<xs:attribute name="server" type="xs:string" use="required" />
 	</xs:complexType>
 
-	<xs:complexType name='parameters'>
-		<xs:attribute name='string' type='xs:string' use='required' />
+	<xs:complexType name="parameters">
+		<xs:attribute name="string" type="xs:string" use="required" />
 	</xs:complexType>
 
 
-	<xs:complexType name='cfg_options'>
+	<xs:complexType name="cfg_options">
 		<xs:sequence>
-			<xs:element name='option' type="option" maxOccurs="unbounded" />
+			<xs:element name="option" type="option" maxOccurs="unbounded" />
 		</xs:sequence>
 	</xs:complexType>
 
-	<xs:complexType name='option'>
-		<xs:attribute name='name' type='xs:string' use="required" />
-		<xs:attribute name='value' type='xs:string' use='required' />
+	<xs:complexType name="option">
+		<xs:attribute name="name" type="xs:string" use="required" />
+		<xs:attribute name="value" type="xs:string" use="required" />
 	</xs:complexType>
 
+	<xs:simpleType name="portType">
+		<xs:restriction base="xs:int">
+			<xs:minInclusive value="0" />
+			<xs:maxInclusive value="65535" />
+		</xs:restriction>
+	</xs:simpleType>
 </xs:schema>

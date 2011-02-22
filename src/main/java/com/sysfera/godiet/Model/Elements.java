@@ -88,9 +88,6 @@ public abstract class Elements extends java.util.Observable {
 		return this.elConfig.setCfgFileName(cfgFileName);
 	}
 
-	public void setLaunchInfo(LaunchInfo launchInfo) {
-		this.launchInfo = launchInfo;
-	}
 
 	public LaunchInfo getLaunchInfo() {
 		return this.launchInfo;

@@ -11,23 +11,22 @@ package com.sysfera.godiet.Model.xml.generated;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlIDREF;
+import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for log_central complex type.
+ * <p>Java class for link complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="log_central">
+ * &lt;complexType name="link">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- *       &lt;sequence>
- *         &lt;element name="config" type="{}config"/>
- *       &lt;/sequence>
- *       &lt;attribute name="connectDuringLaunch" type="{http://www.w3.org/2001/XMLSchema}string" />
+ *       &lt;attribute name="from" use="required" type="{http://www.w3.org/2001/XMLSchema}IDREF" />
+ *       &lt;attribute name="to" use="required" type="{http://www.w3.org/2001/XMLSchema}IDREF" />
  *     &lt;/restriction>
  *   &lt;/complexContent>
  * &lt;/complexType>
@@ -36,62 +35,64 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "log_central", propOrder = {
-    "config"
-})
-public class LogCentral {
+@XmlType(name = "link")
+public class Link {
 
-    @XmlElement(required = true)
-    protected Config config;
-    @XmlAttribute
-    protected String connectDuringLaunch;
+    @XmlAttribute(required = true)
+    @XmlIDREF
+    @XmlSchemaType(name = "IDREF")
+    protected Gateway from;
+    @XmlAttribute(required = true)
+    @XmlIDREF
+    @XmlSchemaType(name = "IDREF")
+    protected Gateway to;
 
     /**
-     * Gets the value of the config property.
+     * Gets the value of the from property.
      * 
      * @return
      *     possible object is
-     *     {@link Config }
+     *     {@link Object }
      *     
      */
-    public Config getConfig() {
-        return config;
+    public Gateway getFrom() {
+        return from;
     }
 
     /**
-     * Sets the value of the config property.
+     * Sets the value of the from property.
      * 
      * @param value
      *     allowed object is
-     *     {@link Config }
+     *     {@link Object }
      *     
      */
-    public void setConfig(Config value) {
-        this.config = value;
+    public void setFrom(Gateway value) {
+        this.from = value;
     }
 
     /**
-     * Gets the value of the connectDuringLaunch property.
+     * Gets the value of the to property.
      * 
      * @return
      *     possible object is
-     *     {@link String }
+     *     {@link Object }
      *     
      */
-    public String getConnectDuringLaunch() {
-        return connectDuringLaunch;
+    public Gateway getTo() {
+        return to;
     }
 
     /**
-     * Sets the value of the connectDuringLaunch property.
+     * Sets the value of the to property.
      * 
      * @param value
      *     allowed object is
-     *     {@link String }
+     *     {@link Object }
      *     
      */
-    public void setConnectDuringLaunch(String value) {
-        this.connectDuringLaunch = value;
+    public void setTo(Gateway value) {
+        this.to = value;
     }
 
 }

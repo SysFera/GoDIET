@@ -26,7 +26,7 @@ public class DietElements extends Elements {
         updateCfg();
     }
 
-    protected void updateCfg() {
+    private void updateCfg() {
         if (compHost.getEndPointContact() != null) {
             elConfig.addOption(new Option("dietHostname",compHost.getEndPointContact()));
         }

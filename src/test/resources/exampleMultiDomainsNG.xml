@@ -18,22 +18,22 @@
 					<scp server="192.168.1.20" login="phi" />
 				</storage>
 
-				<compute id="Kev" disk="kevinDisk">
+				<node id="Kev" disk="kevinDisk">
 					<ssh server="192.168.1.17" login="phi" />
 					<env>
 						<var name="PATH"
 							value="/home/phi/Diet/build/bin:/home/phi/Diet/build/bin/examples/dmat_manips/:$PATH" />
 						<var name="LD_LIBRARY_PATH" value="/home/phi/Diet/build/lib" />
 					</env>
-				</compute>
-				<compute id="Phi" disk="phiDisk">
+				</node>
+				<node id="Phi" disk="phiDisk">
 					<ssh server="192.168.1.20" login="phi" />
 					<env>
 						<var name="PATH"
 							value="/home/phi/Soft/Diet/bin:/home/phi/Soft/Diet/bin/examples/dmat_manips/:$PATH" />
 						<var name="LD_LIBRARY_PATH" value="/home/phi/Soft/diet/build/lib" />
 					</env>
-				</compute>
+				</node>
 				<gateway id="SysferaGW" ref="Kev" />
 			</domain>
 			<domain label="ENS">
@@ -43,7 +43,7 @@
 				</storage>
 
 
-				<compute id="Graal" disk="graalDisk">
+				<node id="Graal" disk="graalDisk">
 					<ssh server="140.77.166.19" login="pmartinez" />
 					<env>
 						<var name="PATH"
@@ -51,13 +51,13 @@
 						<var name="LD_LIBRARY_PATH"
 							value="/home/pmartinez/Diet/build/lib:/home/bdepardo/soft/omniORB/lib" />
 					</env>
-				</compute>
+				</node>
 				<gateway id="ENSGW" ref="Graal" />
 
-			</domain><!--
+			</domain>
 
 			<link from="SysferaGW" to="ENSGW" />
-		--></infrastructure>
+		</infrastructure>
 
 	<diet_services>
 		<omni_names contact="192.168.1.17" port="2809" domain="Sysfera">

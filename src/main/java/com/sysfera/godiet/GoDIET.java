@@ -27,6 +27,8 @@ import com.sysfera.godiet.exceptions.XMLReadException;
  * @author hdail
  */
 public class GoDIET implements java.util.Observer {
+	
+	
 	protected static final String USAGE = "USAGE: GoDiet [--launch|--launch_check] <file.xml>\n"
 			+ "              (launch the command line interface, using <file.xml> file)\n"
 			+ "       GoDiet --interface (launch GUI)\n"

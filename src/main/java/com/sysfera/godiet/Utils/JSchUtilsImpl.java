@@ -120,8 +120,7 @@ public class JSchUtilsImpl implements SshUtils {
 	}
 
 	@Override
-	public void stopWithSsh(Elements element, RunConfig runConfig,
-			boolean SIGINT) {
+	public void stopWithSsh(Elements element, RunConfig runConfig) {
 		// TODO Auto-generated method stub
 
 	}

@@ -24,7 +24,6 @@ public interface SshUtils {
 	public abstract void runWithSsh(Elements element, RunConfig runConfig,
 			File killBackup);
 
-	public abstract void stopWithSsh(Elements element, RunConfig runConfig,
-			boolean SIGINT);
+	public abstract void stopWithSsh(Elements element, RunConfig runConfig);
 
 }

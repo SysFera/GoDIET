@@ -73,7 +73,6 @@ public class DeploymentController extends java.util.Observable implements
 	private java.lang.Thread dcThread;
 	private List requestQueue;
 	private Elements waitingOn = null;
-	private boolean stageFileBefore = true;
 	private boolean checkingPlatform = false;
 	private java.util.Timer watchdog = null;
 	private Watcher watcher = null;
@@ -132,9 +131,10 @@ public class DeploymentController extends java.util.Observable implements
 						requestLaunchCheck("all");
 					}
 				} catch (LaunchException e) {
-					consoleCtrl.printError("Fatal error when launching:"+ e.getMessage());
+					consoleCtrl.printError("Fatal error when launching:"
+							+ e.getMessage());
 					e.printStackTrace();
-					}
+				}
 			}
 		}
 	}
@@ -211,11 +211,9 @@ public class DeploymentController extends java.util.Observable implements
 		clearChanged();
 
 		if (request.compareTo("all") == 0) {
-			if (stageFileBefore) {
-				deploySuccess = launchPlatform2();
-			} else {
-				deploySuccess = launchPlatform();
-			}
+
+			deploySuccess = launchPlatform2();
+
 		}
 
 		setChanged();
@@ -234,7 +232,7 @@ public class DeploymentController extends java.util.Observable implements
 	}
 
 	/* Interfaces for launching the diet platform, or parts thereof */
-	public void requestLaunchCheck(String request) throws LaunchException {
+	private void requestLaunchCheck(String request) throws LaunchException {
 		boolean deploySuccess = false;
 		setChanged();
 		consoleCtrl.printOutput("Deployer: Sending deploy state LAUNCHING.", 3);
@@ -243,11 +241,9 @@ public class DeploymentController extends java.util.Observable implements
 		clearChanged();
 
 		if (request.compareTo("all") == 0) {
-			if (stageFileBefore) {
-				deploySuccess = launchPlatform2();
-			} else {
-				deploySuccess = launchPlatform();
-			}
+
+			deploySuccess = launchPlatform2();
+
 		}
 		checkPlatform();
 		setChanged();
@@ -266,53 +262,7 @@ public class DeploymentController extends java.util.Observable implements
 		clearChanged();
 	}
 
-	public boolean launchPlatform() throws LaunchException {
-		java.util.Date startTime, endTime;
-		double timeDiff;
-		startTime = new java.util.Date();
-		consoleCtrl.printOutput("* Launching DIET platform at "
-				+ startTime.toString());
-
-		prepareScratch();
-		if (launchOmniNames() == false) {
-			return false;
-		}
-		try {
-			initForwarders();
-
-			launchLogForwarders();
-
-			if (this.dietPlatform.useLogCentral()) {
-				launchLogCentral();
-				if (this.dietPlatform.getLogCentral().useLogToGuideLaunch()) {
-					connectLogCentral();
-				}
-				if (this.dietPlatform.useTestTool()) {
-					launchTestTool();
-				}
-			}
-			launchMasterAgents();
-			launchMa_dags();
-			launchLocalAgents();
-			launchServerDaemons();
-			endTime = new java.util.Date();
-			timeDiff = (endTime.getTime() - startTime.getTime()) / 1000;
-			consoleCtrl.printOutput("* DIET launch done at "
-					+ endTime.toString() + " [time= " + timeDiff + " sec]");
-			consoleCtrl.printOutput("* StorageResource used ="
-					+ resourcePlatform.getUsedStorageResources().size());
-
-		} catch (LaunchException e) {
-			consoleCtrl.printOutput("Error when launching:" + e.getMessage());
-			e.printStackTrace();
-			return false;
-		} finally {
-			// TODO kill everything
-
-		}
-		return true;
-	}
-
+	
 	public boolean launchPlatform2() throws LaunchException {
 		java.util.Date startTime, endTime;
 		double timeDiff;
@@ -548,11 +498,8 @@ public class DeploymentController extends java.util.Observable implements
 		 */
 
 		/*** LAUNCH */
-		if (stageFileBefore) {
-			launcher.launchElement2(element, dietPlatform.useLogCentral());
-		} else {
-			launcher.launchElement(element, dietPlatform.useLogCentral());
-		}
+
+		launcher.launchElement(element, dietPlatform.useLogCentral());
 
 		waitAfterLaunch(element);
 

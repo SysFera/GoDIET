@@ -24,8 +24,10 @@ import com.sysfera.godiet.Events.LaunchRequest;
 import com.sysfera.godiet.Model.RunConfig;
 import com.sysfera.godiet.Utils.XmlScanner;
 import com.sysfera.godiet.Utils.XmlScannerImpl;
+import com.sysfera.godiet.Utils.XmlScannerJaxbImpl;
 import com.sysfera.godiet.exceptions.LaunchException;
 import com.sysfera.godiet.exceptions.XMLReadException;
+import com.sysfera.godiet.managers.ResourcesManager;
 
 /**
  * 
@@ -38,7 +40,8 @@ public class ConsoleController extends java.util.Observable implements
 	private DeploymentController deployCtrl;
 
 	private XmlScanner xmlScanner;
-
+	
+	
 	private List<String> history;
 	private boolean fileLoaded = false;
 
@@ -47,6 +50,7 @@ public class ConsoleController extends java.util.Observable implements
 	private String logFileName = null;
 	private FileWriter logError = null;
 	private FileWriter logOutput = null;
+	private ResourcesManager rm;
 
 	protected static final String HELP = "The following commands are available:\n"
 			+ "   launch:          launch entire DIET platform\n"
@@ -105,6 +109,7 @@ public class ConsoleController extends java.util.Observable implements
 		this.modelController = new DietPlatformController(this);
 		this.deployCtrl = new DeploymentController(this, modelController);
 		this.deployCtrl.addObserver(this);
+
 		this.xmlScanner = new XmlScannerImpl(modelController, this);
 	}
 

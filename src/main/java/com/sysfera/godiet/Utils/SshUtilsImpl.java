@@ -62,26 +62,17 @@ public class SshUtilsImpl implements SshUtils {
 		// to create remote storage without recursion
 		// If remote scratch not yet available, create it and stage file by
 		// recursive copy. Else, copy just the file.
-		if (storeRes.getScratchReady() == false) {
 
-			// scp localScratchBase/* remoteScratchBase/
-			// if (!filename.equals("omniORB4.cfg"))
-			// command += runConfig.getLocalScratch() + "/omniORB4.cfg "; //
-			// omniORB
+		// scp localScratchBase/* remoteScratchBase/
+		// if (!filename.equals("omniORB4.cfg"))
+		// command += runConfig.getLocalScratch() + "/omniORB4.cfg "; //
+		// omniORB
 
-			command += runConfig.getLocalScratch() + "/" + filename + " "; // source
+		command += runConfig.getLocalScratch() + "/" + filename + " "; // source
 
-			command += access.getLogin() + "@" + access.getServer() + ":";
-			command += storeRes.getScratchBase();
+		command += access.getLogin() + "@" + access.getServer() + ":";
+		command += storeRes.getScratchBase();
 
-		} else {
-			// format: /usr/bin/scp filename login@host:remoteFile
-			command += runConfig.getLocalScratch() + "/" + filename + " ";
-			command += access.getLogin() + "@" + access.getServer() + ":";
-
-			command += storeRes.getScratchBase();
-
-		}
 		java.lang.Runtime runtime = java.lang.Runtime.getRuntime();
 		consoleCtrl.printOutput("Running: " + command, 2);
 		try {
@@ -116,19 +107,6 @@ public class SshUtilsImpl implements SshUtils {
 		AccessMethod access = storeRes.getAccessMethod("scp");
 		String command = new String("/usr/bin/scp ");
 
-		try {
-			consoleCtrl.printOutput(
-					"mkdir : " + access.getServer() + "@"
-							+ storeRes.getScratchBase() + "/"
-							+ runConfig.getRunLabel(), 1);
-			java.lang.Runtime rt = java.lang.Runtime.getRuntime();
-			rt.exec("/usr/bin/ssh " + access.getLogin() + "@"
-					+ access.getServer() + " /bin/mkdir -p "
-					+ storeRes.getScratchBase() + "/" + runConfig.getRunLabel());
-		} catch (IOException x) {
-			throw new LaunchException("Unable to create direcory", x);
-		}
-
 		java.lang.Runtime rt = java.lang.Runtime.getRuntime();
 		try {
 			rt.exec("/usr/bin/ssh " + access.getLogin() + "@"
@@ -139,15 +117,15 @@ public class SshUtilsImpl implements SshUtils {
 			// TODO Auto-generated catch block
 			throw new LaunchException("Unable to create direcory", e);
 		}
-		List files = new ArrayList();
-		for (Iterator itEl = storeRes.getElementList().iterator(); itEl
+		List<String> files = new ArrayList<String>();
+		for (Iterator<Elements> itEl = storeRes.getElementList().iterator(); itEl
 				.hasNext();) {
 			Elements el = (Elements) itEl.next();
 			files.add(el.getCfgFileName());
 		}
 		if (!files.contains("omniORB4.cfg"))
 			files.add("omniORB4.cfg");
-		for (Iterator itFile = files.iterator(); itFile.hasNext();) {
+		for (Iterator<String> itFile = files.iterator(); itFile.hasNext();) {
 			String filename = itFile.next().toString();
 			consoleCtrl.printOutput("file : " + filename, 1);
 			command += runConfig.getLocalScratch() + "/" + filename + " "; // source
@@ -422,8 +400,7 @@ public class SshUtilsImpl implements SshUtils {
 	 * .Elements, com.sysfera.godiet.Model.RunConfig, boolean)
 	 */
 	@Override
-	public void stopWithSsh(Elements element, RunConfig runConfig,
-			boolean SIGINT) {
+	public void stopWithSsh(Elements element, RunConfig runConfig) {
 		ComputeResource compRes = element.getComputeResource();
 		AccessMethod access = compRes.getAccessMethod("ssh");
 		LaunchInfo launch = element.getLaunchInfo();
@@ -438,11 +415,8 @@ public class SshUtilsImpl implements SshUtils {
 		}
 
 		String stopJob;
-		if (SIGINT)
-			// stopJob = "kill -s SIGINT " + element.getLaunchInfo().getPID();
-			stopJob = "kill -9 " + element.getLaunchInfo().getPID();
-		else
-			stopJob = "kill -9 " + element.getLaunchInfo().getPID();
+
+		stopJob = "kill -9 " + element.getLaunchInfo().getPID();
 
 		String[] commandStop = { "/usr/bin/ssh",
 				access.getLogin() + "@" + access.getServer(), stopJob };

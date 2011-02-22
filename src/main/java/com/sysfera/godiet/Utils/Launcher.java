@@ -80,62 +80,15 @@ public class Launcher {
 		}
 	}
 
-	/*
-	 * launchElement is the primary method for launching components of the DIET
-	 * hierarchy. This method performs the following actions: - check that
-	 * element, compRes, & scratch base are non-null - create the config file
-	 * locally - stage the config file to remote host - run the element on the
-	 * remote host
-	 */
-	public void launchElement(Elements element, boolean useLogService)
-			throws LaunchException {
-		RunConfig runCfg = consoleCtrl.getRunConfig();
-		if (element == null) {
-			consoleCtrl.printError("launchElement called with null element. "
-					+ "Launch request ignored.", 1);
-			return;
-		}
-		if (element.getComputeResource() == null) {
-			consoleCtrl.printError("LaunchElement called with null resource. "
-					+ "Launch request ignored.");
-			return;
-		}
-		if (runCfg.isLocalScratchReady() == false) {
-			consoleCtrl
-					.printError("launchElement: Scratch space is not ready. "
-							+ "Need to run createLocalScratch.");
-			return;
-		}
-
-		consoleCtrl.printOutput("\n** Launching element " + element.getName()
-				+ " on " + element.getComputeResource().getName(), 1);
-		try {
-			// LAUNCH STAGE 1: Write config file
-			createCfgFile(element, useLogService);
-		} catch (IOException x) {
-			consoleCtrl.printError(
-					"Exception writing cfg file for " + element.getName(), 0);
-			consoleCtrl.printError("Exception: " + x + "\nExiting.", 1);
-			element.getLaunchInfo().setLaunchState(
-					com.sysfera.godiet.Defaults.LAUNCH_STATE_CONFUSED);
-			System.exit(1); // / TODO: Add error handling and don't exit
-		}
-		ComputeCollection coll = element.getComputeResource().getCollection();
-		StorageResource storeRes = coll.getStorageResource();
-		// LAUNCH STAGE 2: Stage config file
-		stageFile(element.getCfgFileName(), storeRes);
-		// LAUNCH STAGE 3: Launch element
-		runElement(element);
-	}
 
 	/*
-	 * launchElement2 is the second method for launching components of the DIET
+	 * launchElement is the second method for launching components of the DIET
 	 * hierarchy. This method performs the following actions: - check that
 	 * element, compRes, & scratch base are non-null - run the element on the
 	 * remote host - don't need to create and stage cfg file, it suppose to be
 	 * already done.
 	 */
-	public void launchElement2(Elements element, boolean useLogService) {
+	public void launchElement(Elements element, boolean useLogService) {
 		if (element == null) {
 			consoleCtrl.printError("launchElement called with null element. "
 					+ "Launch request ignored.", 1);
@@ -190,10 +143,9 @@ public class Launcher {
 		consoleCtrl.printOutput("Trying to stop element " + element.getName(),
 				1);
 		SshUtils sshUtil = new SshUtilsImpl(consoleCtrl);
-		if (element instanceof Agents || element instanceof ServerDaemon)
-			sshUtil.stopWithSsh(element, consoleCtrl.getRunConfig(), true);
-		else
-			sshUtil.stopWithSsh(element, consoleCtrl.getRunConfig(), false);
+
+		sshUtil.stopWithSsh(element, consoleCtrl.getRunConfig());
+
 	}
 
 	public void createCfgFile(Elements element, boolean useLogService)

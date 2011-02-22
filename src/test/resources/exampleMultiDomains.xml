@@ -51,6 +51,7 @@
 						value="/home/pmartinez/Diet/build/lib:/home/bdepardo/soft/omniORB/lib" />
 				</env>
 			</compute>
+			<gateway id="ENSGW" ref="Graal" />
 
 		</domain>
 

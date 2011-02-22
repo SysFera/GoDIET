@@ -1,4 +1,4 @@
-package com.sysfera.godiet.Utils;
+package com.sysfera.godiet.managers;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -7,30 +7,29 @@ import junit.framework.Assert;
 
 import org.junit.Test;
 
+import com.sysfera.godiet.Utils.XmlScannerJaxbImpl;
 import com.sysfera.godiet.exceptions.XMLReadException;
-import com.sysfera.godiet.managers.ResourcesManager;
 
-public class XMLScannerJaxbImplTest {
+public class ResourcesManagerTest {
 
 	@Test
-	public void testParse() {
+	public void testRMMultiDomain() {
 		String testCaseFile = "exampleMultiDomainsNG.xml";
 		InputStream inputStream = getClass().getClassLoader()
 				.getResourceAsStream(testCaseFile);
 		ResourcesManager rm = new ResourcesManager();
 		XmlScannerJaxbImpl scanner = new XmlScannerJaxbImpl();
 
-			try {
-				rm.setDietConfiguration(scanner.buildDietModel(inputStream));
-			} catch (IOException e) {
-				Assert.fail();
-				e.printStackTrace();
-			} catch (XMLReadException e) {
-				Assert.fail();
-				e.printStackTrace();
-			}
-				
-	
+		try {
+			rm.setDietConfiguration(scanner.buildDietModel(inputStream));
+
+		} catch (IOException e) {
+			Assert.fail();
+			e.printStackTrace();
+		} catch (XMLReadException e) {
+			Assert.fail();
+			e.printStackTrace();
+		}
 
 	}
 }

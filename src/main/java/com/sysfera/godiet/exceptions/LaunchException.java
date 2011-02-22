@@ -1,5 +1,11 @@
 package com.sysfera.godiet.exceptions;
 
+
+/**
+ * Throw when a remote execution could not be done
+ * @author phi
+ *
+ */
 public class LaunchException extends Exception{
 
 	/**
