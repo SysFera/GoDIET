@@ -25,10 +25,10 @@ import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
 import com.jcraft.jsch.UIKeyboardInteractive;
 import com.jcraft.jsch.UserInfo;
-import com.sysfera.godiet.Model.AccessMethod;
-import com.sysfera.godiet.Model.Elements;
-import com.sysfera.godiet.Model.RunConfig;
-import com.sysfera.godiet.Model.physicalresources.StorageResource;
+import com.sysfera.godiet.Model.deprecated.AccessMethod;
+import com.sysfera.godiet.Model.deprecated.Elements;
+import com.sysfera.godiet.Model.deprecated.RunConfig;
+import com.sysfera.godiet.Model.physicalresources.deprecated.StorageResource;
 import com.sysfera.godiet.exceptions.LaunchException;
 
 /**

@@ -7,7 +7,7 @@
 
 package com.sysfera.godiet.Events;
 
-import com.sysfera.godiet.Model.Elements;
+import com.sysfera.godiet.Model.deprecated.Elements;
 
 /**
  *

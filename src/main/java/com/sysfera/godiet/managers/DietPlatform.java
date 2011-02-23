@@ -2,14 +2,14 @@ package com.sysfera.godiet.managers;
 
 import java.util.List;
 
-import com.sysfera.godiet.Model.Forwarder;
-import com.sysfera.godiet.Model.LocalAgent;
-import com.sysfera.godiet.Model.LogCentral;
-import com.sysfera.godiet.Model.Ma_dag;
-import com.sysfera.godiet.Model.MasterAgent;
-import com.sysfera.godiet.Model.OmniNames;
-import com.sysfera.godiet.Model.ServerDaemon;
-import com.sysfera.godiet.Model.Services;
+import com.sysfera.godiet.Model.deprecated.Forwarder;
+import com.sysfera.godiet.Model.deprecated.LocalAgent;
+import com.sysfera.godiet.Model.deprecated.LogCentral;
+import com.sysfera.godiet.Model.deprecated.Ma_dag;
+import com.sysfera.godiet.Model.deprecated.MasterAgent;
+import com.sysfera.godiet.Model.deprecated.OmniNames;
+import com.sysfera.godiet.Model.deprecated.ServerDaemon;
+import com.sysfera.godiet.Model.deprecated.Services;
 
 public interface DietPlatform {
 

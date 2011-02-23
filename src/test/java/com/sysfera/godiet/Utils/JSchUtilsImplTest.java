@@ -6,10 +6,10 @@ import junit.framework.Assert;
 
 import org.junit.Test;
 
-import com.sysfera.godiet.Model.AccessMethod;
-import com.sysfera.godiet.Model.Domain;
-import com.sysfera.godiet.Model.RunConfig;
-import com.sysfera.godiet.Model.physicalresources.StorageResource;
+import com.sysfera.godiet.Model.deprecated.AccessMethod;
+import com.sysfera.godiet.Model.deprecated.Domain;
+import com.sysfera.godiet.Model.deprecated.RunConfig;
+import com.sysfera.godiet.Model.physicalresources.deprecated.StorageResource;
 import com.sysfera.godiet.exceptions.LaunchException;
 
 public class JSchUtilsImplTest {

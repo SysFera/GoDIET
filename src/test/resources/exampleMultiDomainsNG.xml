@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<diet_configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<dietDescription xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:noNamespaceSchemaLocation="GoDietNG.xsd">
 
-	<goDiet debug="1" saveStdOut="true" saveStdErr="true"
+	<goDietConfiguration debug="1" saveStdOut="true" saveStdErr="true"
 		log="true">
-		<scratch dir="/home/phi/tmp/scratch_godiet" />
-	</goDiet>
+		<localscratch dir="/home/phi/tmp/scratch_godiet" />
+	</goDietConfiguration>
 
 		<infrastructure>
 			<domain label="Sysfera">
@@ -59,26 +59,26 @@
 			<link from="SysferaGW" to="ENSGW" />
 		</infrastructure>
 
-	<diet_services>
-		<omni_names contact="192.168.1.17" port="2809" domain="Sysfera">
-			<config server="Kev" remote_binary="omniNames" />
-		</omni_names>
-		<omni_names contact="140.77.166.19" port="2809" domain="ENS">
-			<config remote_binary="omniNames" server="Graal" />
-		</omni_names>
-	</diet_services>
+	<dietServices>
+		<omniNames contact="192.168.1.17" domain="Sysfera">
+			<config server="Kev" remoteBinary="omniNames" />
+		</omniNames>
+		<omniNames contact="140.77.166.19" domain="ENS">
+			<config server="Graal" remoteBinary="omniNames" />
+		</omniNames>
+	</dietServices>
 
-	<diet_hierarchy>
-		<master_agent>
-			<config server="Kev" remote_binary="dietAgent" />
-			<local_agent>
-				<config server="Graal" remote_binary="dietAgent" />
+	<dietInfrastructure>
+		<masterAgent>
+			<config server="Kev" remoteBinary="dietAgent"/>
+			<localAgent>
+				<config server="Graal" remoteBinary="dietAgent" />
 				<sed>
-					<config server="Graal" remote_binary="dmat_manips_server" />
+					<config server="Graal" remoteBinary="dmat_manips_server" />
 					<parameters string="T" />
 				</sed>
-			</local_agent>
-		</master_agent>
-	</diet_hierarchy>
+			</localAgent>
+		</masterAgent>
+	</dietInfrastructure>
 
-</diet_configuration>
+</dietDescription>

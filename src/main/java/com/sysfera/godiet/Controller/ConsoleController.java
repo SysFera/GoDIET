@@ -21,7 +21,7 @@ import java.util.Observable;
 
 import com.sysfera.godiet.Events.LaunchCheckRequest;
 import com.sysfera.godiet.Events.LaunchRequest;
-import com.sysfera.godiet.Model.RunConfig;
+import com.sysfera.godiet.Model.deprecated.RunConfig;
 import com.sysfera.godiet.Utils.XmlScanner;
 import com.sysfera.godiet.Utils.XmlScannerImpl;
 import com.sysfera.godiet.Utils.XmlScannerJaxbImpl;

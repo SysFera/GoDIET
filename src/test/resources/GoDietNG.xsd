@@ -2,21 +2,26 @@
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
 	xmlns:jaxb="http://java.sun.com/xml/ns/jaxb" jaxb:version="2.0">
 
-	<xs:element name="diet_configuration">
+	<xs:element name="dietDescription">
 		<xs:complexType>
 			<xs:sequence>
-				<xs:element name="goDiet" type="goDiet" minOccurs="0"
+				<xs:element name="goDietConfiguration" type="goDietConfiguration" minOccurs="0"
 					maxOccurs="1" />
 				<xs:element name="infrastructure" type="infrastructure" />
-				<xs:element name="diet_services" type="diet_services" />
-				<xs:element name="diet_hierarchy" type="diet_hierarchy" />
+				<xs:element name="dietServices" type="dietServices" />
+				<xs:element name="dietInfrastructure" type="dietInfrastructure" />
 			</xs:sequence>
 		</xs:complexType>
 	</xs:element>
 
-	<xs:complexType name="goDiet">
+	<xs:complexType name="goDietConfiguration">
 		<xs:sequence>
-			<xs:element name="scratch" type="scratch" />
+			<xs:element name="localscratch" type="scratch">
+				<xs:annotation>
+					<xs:documentation>Local goDiet directory on which it will save all
+						configuration files</xs:documentation>
+				</xs:annotation>
+			</xs:element>
 		</xs:sequence>
 		<xs:attribute name="debug" type="xs:int" default="1" />
 		<xs:attribute name="saveStdOut" type="xs:boolean"
@@ -29,8 +34,13 @@
 
 
 	<xs:complexType name="infrastructure">
+		<xs:annotation>
+			<xs:documentation>Physical infrastructure description
+			</xs:documentation>
+		</xs:annotation>
 		<xs:sequence>
-			<xs:element name="domain" type="domain" maxOccurs="unbounded" />
+			<xs:element name="domain" type="domain" maxOccurs="unbounded">
+			</xs:element>
 			<xs:element name="link" type="link" maxOccurs="unbounded" />
 		</xs:sequence>
 	</xs:complexType>
@@ -59,6 +69,11 @@
 
 
 	<xs:complexType name="domain">
+		<xs:annotation>
+			<xs:documentation>Domain contains resources which could communicate
+				each others (complete TCP/IP visibility). It could contain storage,
+				node, cluster and gateway</xs:documentation>
+		</xs:annotation>
 		<xs:sequence>
 			<xs:element name="storage" type="storage" minOccurs="0"
 				maxOccurs="unbounded" />
@@ -73,6 +88,10 @@
 	</xs:complexType>
 
 	<xs:complexType name="resource" abstract="true">
+		<xs:annotation>
+			<xs:documentation>Represent a physical resource on which you can run
+				DietAgent</xs:documentation>
+		</xs:annotation>
 		<xs:attribute name="id" type="xs:ID" use="required" />
 	</xs:complexType>
 
@@ -103,7 +122,10 @@
 	</xs:complexType>
 
 	<xs:complexType name="storage">
-
+		<xs:annotation>
+			<xs:documentation>Remote storage access. Typically to upload agent's
+				configuration files.</xs:documentation>
+		</xs:annotation>
 		<xs:sequence>
 			<xs:element name="scratch" type="scratch" />
 			<xs:element name="scp" type="scp" />
@@ -147,7 +169,14 @@
 	<xs:complexType name="cluster">
 		<xs:sequence>
 			<xs:element name="computingnode" type="node" maxOccurs="unbounded" />
-			<xs:element name="frontend" type="frontend" />
+			<xs:element name="frontend" type="frontend" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Required. Node access to a cluster.
+						could have
+						more than 1 frontend. @see Gateway
+					</xs:documentation>
+				</xs:annotation>
+			</xs:element>
 		</xs:sequence>
 		<xs:attribute name="cardinality" type="xs:int" use="required" />
 		<xs:attribute name="label" type="xs:string" use="required" />
@@ -179,9 +208,9 @@
 	</xs:complexType>
 
 
-	<xs:complexType name="diet_services">
+	<xs:complexType name="dietServices">
 		<xs:sequence>
-			<xs:element name="omni_names" type="omni_names" minOccurs="1"
+			<xs:element name="omniNames" type="omniNames" minOccurs="1"
 				maxOccurs="unbounded" />
 			<xs:element name="log_central" type="log_central"
 				minOccurs="0" maxOccurs="1" />
@@ -193,7 +222,13 @@
 			default="false"></xs:attribute>
 	</xs:complexType>
 
-	<xs:complexType name="omni_names">
+	<xs:complexType name="omniNames">
+		<xs:annotation>
+			<xs:documentation>
+				The Omninames description. You need to have one
+				OmniNames per domain 
+			</xs:documentation>
+		</xs:annotation>
 		<xs:sequence>
 			<xs:element name="config" type="config" />
 			<xs:element name="cfg_options" type="cfg_options"
@@ -201,7 +236,12 @@
 		</xs:sequence>
 		<xs:attribute name="contact" type="xs:string" use="required" />
 		<xs:attribute name="port" type="portType" use="optional"
-			default="2809" />
+			default="2809">
+			<xs:annotation>
+				<xs:documentation>Optional attribute. The omniNames listen port. By
+					default 2809. </xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
 		<xs:attribute name="domain" />
 	</xs:complexType>
 
@@ -221,15 +261,23 @@
 	</xs:complexType>
 
 
-	<xs:complexType name="diet_hierarchy">
+	<xs:complexType name="dietInfrastructure">
+		<xs:annotation>
+			<xs:documentation>The root level of diet infrastructure description.
+			</xs:documentation>
+		</xs:annotation>
 		<xs:sequence>
-			<xs:element name="master_agent" type="master_agent"
+			<xs:element name="masterAgent" type="masterAgent"
 				maxOccurs="unbounded" />
 		</xs:sequence>
 	</xs:complexType>
 
 
 	<xs:complexType name="agent" abstract="true">
+		<xs:annotation>
+			<xs:documentation>Abstract representation of Diet agent.
+			</xs:documentation>
+		</xs:annotation>
 		<xs:sequence>
 			<xs:element name="config" type="config" />
 			<xs:element name="cfg_options" type="cfg_options"
@@ -240,13 +288,17 @@
 	</xs:complexType>
 
 
-	<xs:complexType name="master_agent">
+	<xs:complexType name="masterAgent">
+		<xs:annotation>
+			<xs:documentation>An MA receives computation requests from
+				clients.</xs:documentation>
+		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="agent">
 				<xs:sequence>
-					<xs:element name="ma_dag" type="ma_dag" minOccurs="0"
+					<xs:element name="madag" type="maDag" minOccurs="0"
 						maxOccurs="unbounded" />
-					<xs:element name="local_agent" type="local_agent"
+					<xs:element name="localAgent" type="localAgent"
 						minOccurs="0" maxOccurs="unbounded" />
 					<xs:element name="sed" type="sed" minOccurs="0"
 						maxOccurs="unbounded" />
@@ -255,7 +307,7 @@
 		</xs:complexContent>
 	</xs:complexType>
 
-	<xs:complexType name="ma_dag">
+	<xs:complexType name="maDag">
 		<xs:complexContent>
 			<xs:extension base="agent">
 				<xs:sequence>
@@ -266,12 +318,13 @@
 		</xs:complexContent>
 	</xs:complexType>
 
-	<xs:complexType name="local_agent">
+	<xs:complexType name="localAgent">
+	<xs:annotation><xs:documentation>An LA transmits requests and information
+  between MAs and servers (sed).</xs:documentation></xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="agent">
 				<xs:sequence>
-
-					<xs:element name="local_agent" type="local_agent"
+					<xs:element name="localagent" type="localAgent"
 						minOccurs="0" maxOccurs="unbounded" />
 					<xs:element name="sed" type="sed" minOccurs="0"
 						maxOccurs="unbounded" />
@@ -281,6 +334,8 @@
 	</xs:complexType>
 
 	<xs:complexType name="sed">
+	<xs:annotation><xs:documentation> A sed encapsulates a computational
+  server. For instance it can be located on the entry point of a cluster (Frontend)</xs:documentation></xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="agent">
 				<xs:sequence>
@@ -291,8 +346,42 @@
 		</xs:complexContent>
 	</xs:complexType>
 
+	<xs:complexType name="forwarder">
+		<xs:annotation>
+			<xs:documentation>A Diet Forwarder is a way to encapsulate all
+				communication between two domains. You need to specify on which node
+				(could be a gateway, fronted) you want to instantiate.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="agent">
+				<xs:attribute name="client" type="xs:IDREF">
+					<xs:annotation>
+						<xs:appinfo>
+							<jaxb:property>
+								<jaxb:baseType name="Node" />
+							</jaxb:property>
+						</xs:appinfo>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="server" type="xs:IDREF">
+					<xs:annotation>
+						<xs:appinfo>
+							<jaxb:property>
+								<jaxb:baseType name="Node" />
+							</jaxb:property>
+						</xs:appinfo>
+					</xs:annotation>
+				</xs:attribute>
+
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!--<xs:attribute> <xs:simpleType> <xs:restriction base="xs:string"> </xs:restriction> 
+		</xs:simpleType> </xs:attribute> -->
+
 	<xs:complexType name="config">
-		<xs:attribute name="remote_binary" type="xs:string" use="required" />
+		<xs:attribute name="remoteBinary" type="xs:string" use="required" />
 		<xs:attribute name="server" type="xs:string" use="required" />
 	</xs:complexType>
 

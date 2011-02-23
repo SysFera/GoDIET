@@ -27,21 +27,21 @@ import com.sysfera.godiet.Events.DeployStateChange;
 import com.sysfera.godiet.Events.LaunchCheckRequest;
 import com.sysfera.godiet.Events.LaunchRequest;
 import com.sysfera.godiet.Events.LogStateChange;
-import com.sysfera.godiet.Model.Agents;
-import com.sysfera.godiet.Model.ComputeCollection;
-import com.sysfera.godiet.Model.Elements;
-import com.sysfera.godiet.Model.Forwarder;
-import com.sysfera.godiet.Model.LaunchInfo;
-import com.sysfera.godiet.Model.Link;
-import com.sysfera.godiet.Model.LogCentral;
-import com.sysfera.godiet.Model.Ma_dag;
-import com.sysfera.godiet.Model.OmniNames;
-import com.sysfera.godiet.Model.RunConfig;
-import com.sysfera.godiet.Model.ServerDaemon;
-import com.sysfera.godiet.Model.Services;
-import com.sysfera.godiet.Model.physicalresources.ComputeResource;
-import com.sysfera.godiet.Model.physicalresources.GatewayResource;
-import com.sysfera.godiet.Model.physicalresources.StorageResource;
+import com.sysfera.godiet.Model.deprecated.Agents;
+import com.sysfera.godiet.Model.deprecated.ComputeCollection;
+import com.sysfera.godiet.Model.deprecated.Elements;
+import com.sysfera.godiet.Model.deprecated.Forwarder;
+import com.sysfera.godiet.Model.deprecated.LaunchInfo;
+import com.sysfera.godiet.Model.deprecated.Link;
+import com.sysfera.godiet.Model.deprecated.LogCentral;
+import com.sysfera.godiet.Model.deprecated.Ma_dag;
+import com.sysfera.godiet.Model.deprecated.OmniNames;
+import com.sysfera.godiet.Model.deprecated.RunConfig;
+import com.sysfera.godiet.Model.deprecated.ServerDaemon;
+import com.sysfera.godiet.Model.deprecated.Services;
+import com.sysfera.godiet.Model.physicalresources.deprecated.ComputeResource;
+import com.sysfera.godiet.Model.physicalresources.deprecated.GatewayResource;
+import com.sysfera.godiet.Model.physicalresources.deprecated.StorageResource;
 import com.sysfera.godiet.Utils.Launcher;
 import com.sysfera.godiet.diet.corba.generated.LocalAgent;
 import com.sysfera.godiet.diet.corba.generated.LocalAgentHelper;
@@ -556,8 +556,8 @@ public class DeploymentController extends java.util.Observable implements
 		// For elements with parent in hierarchy, check on run status of parent
 		LaunchInfo parentLI = null;
 		Agents parent = null;
-		if (element instanceof com.sysfera.godiet.Model.LocalAgent) {
-			parent = ((com.sysfera.godiet.Model.LocalAgent) element)
+		if (element instanceof com.sysfera.godiet.Model.deprecated.LocalAgent) {
+			parent = ((com.sysfera.godiet.Model.deprecated.LocalAgent) element)
 					.getParent();
 			parentLI = parent.getLaunchInfo();
 		} else if (element instanceof ServerDaemon) {
@@ -811,7 +811,7 @@ public class DeploymentController extends java.util.Observable implements
 			boolean first = true;
 			String MAc = "";
 			for (Iterator it = mAgents.iterator(); it.hasNext();) {
-				com.sysfera.godiet.Model.MasterAgent MA = (com.sysfera.godiet.Model.MasterAgent) it
+				com.sysfera.godiet.Model.deprecated.MasterAgent MA = (com.sysfera.godiet.Model.deprecated.MasterAgent) it
 						.next();
 				out.write(MA.getName() + " ");
 				if (first) {
@@ -1016,7 +1016,7 @@ public class DeploymentController extends java.util.Observable implements
 				} else {
 					LocalAgent LA;
 					LA = LocalAgentHelper.narrow(objref);
-					LA.bindParent(((com.sysfera.godiet.Model.LocalAgent) element)
+					LA.bindParent(((com.sysfera.godiet.Model.deprecated.LocalAgent) element)
 							.getParent().getName());
 				}
 
@@ -1174,7 +1174,7 @@ public class DeploymentController extends java.util.Observable implements
 	}
 
 	private void checkLocalAgents() {
-		List<com.sysfera.godiet.Model.LocalAgent> lAgents = this.dietPlatform
+		List<com.sysfera.godiet.Model.deprecated.LocalAgent> lAgents = this.dietPlatform
 				.getLocalAgents();
 		checkElements(lAgents, LA_IOR);
 	}

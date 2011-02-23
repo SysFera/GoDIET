@@ -4,11 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import com.sysfera.godiet.Model.Elements;
-import com.sysfera.godiet.Model.Forwarder;
 import com.sysfera.godiet.Model.xml.generated.*;
-import com.sysfera.godiet.Model.physicalresources.GatewayResource;
-import com.sysfera.godiet.Model.xml.generated.DietConfiguration;
+import com.sysfera.godiet.Model.deprecated.Elements;
+import com.sysfera.godiet.Model.deprecated.Forwarder;
+import com.sysfera.godiet.Model.physicalresources.deprecated.GatewayResource;
 import com.sysfera.godiet.factories.ForwarderFactory;
 
 /**
@@ -19,36 +18,21 @@ import com.sysfera.godiet.factories.ForwarderFactory;
  */
 public class ResourcesManager {
 
-	//Root 
-	private  DietConfiguration dietConfiguration;
+	// Root level of goDiet configuration
+	private DietConfiguration goDiet;
 
-	//Create the forwarder
-	private ForwarderFactory forwarderFactory = new ForwarderFactory();
-
-	public ResourcesManager() {
-
-	}
-	
-	public DietConfiguration getDietConfiguration() {
-		return dietConfiguration;
-	}
-	
-	public void setDietConfiguration(DietConfiguration dietConfiguration) {
-		this.dietConfiguration = dietConfiguration;
-	}
+	// Other model representation to help and improve resources access. All
+	// objects are reference of goDiet field
 	
 	/**
-	 * Reset and set the datamodel with the DietConfigurtion instance
+	 * Set the datamodel with the DietConfigurtion instance
 	 */
-	public void init()
-	{
-		if(dietConfiguration !=null)
-		{
-			
+	public void init(DietConfiguration dietConfiguration) {
+		this.goDiet = dietConfiguration;
+		if (goDiet != null) {
+
 		}
 	}
-	
-	
 
 	/**
 	 * Create forwarders. 1 link = 1 forwarder
@@ -81,11 +65,11 @@ public class ResourcesManager {
 
 	private void addForwarder(Forwarder forwarderFrom) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	private List<Link> getAllLinks() {
-		return dietConfiguration.getInfrastructure().getLink();
+		return goDiet.getInfrastructure().getLink();
 	}
 
 }

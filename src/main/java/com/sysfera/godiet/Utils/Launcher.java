@@ -16,15 +16,15 @@ import java.util.List;
 import java.util.Set;
 
 import com.sysfera.godiet.Controller.ConsoleController;
-import com.sysfera.godiet.Model.AccessMethod;
-import com.sysfera.godiet.Model.Agents;
-import com.sysfera.godiet.Model.ComputeCollection;
-import com.sysfera.godiet.Model.Domain;
-import com.sysfera.godiet.Model.Elements;
-import com.sysfera.godiet.Model.RunConfig;
-import com.sysfera.godiet.Model.ServerDaemon;
-import com.sysfera.godiet.Model.physicalresources.ComputeResource;
-import com.sysfera.godiet.Model.physicalresources.StorageResource;
+import com.sysfera.godiet.Model.deprecated.AccessMethod;
+import com.sysfera.godiet.Model.deprecated.Agents;
+import com.sysfera.godiet.Model.deprecated.ComputeCollection;
+import com.sysfera.godiet.Model.deprecated.Domain;
+import com.sysfera.godiet.Model.deprecated.Elements;
+import com.sysfera.godiet.Model.deprecated.RunConfig;
+import com.sysfera.godiet.Model.deprecated.ServerDaemon;
+import com.sysfera.godiet.Model.physicalresources.deprecated.ComputeResource;
+import com.sysfera.godiet.Model.physicalresources.deprecated.StorageResource;
 import com.sysfera.godiet.exceptions.LaunchException;
 import com.sysfera.godiet.managers.DietPlatformImpl;
 

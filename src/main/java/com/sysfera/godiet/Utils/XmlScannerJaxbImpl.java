@@ -12,7 +12,7 @@ import javax.xml.validation.SchemaFactory;
 
 import org.xml.sax.SAXException;
 
-import com.sysfera.godiet.Model.xml.generated.DietConfiguration;
+import com.sysfera.godiet.Model.deprecated.xml.generated.DietConfiguration;
 import com.sysfera.godiet.exceptions.XMLReadException;
 /**
  * 

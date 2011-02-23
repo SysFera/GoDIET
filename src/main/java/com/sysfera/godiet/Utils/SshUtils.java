@@ -2,9 +2,9 @@ package com.sysfera.godiet.Utils;
 
 import java.io.File;
 
-import com.sysfera.godiet.Model.Elements;
-import com.sysfera.godiet.Model.RunConfig;
-import com.sysfera.godiet.Model.physicalresources.StorageResource;
+import com.sysfera.godiet.Model.deprecated.Elements;
+import com.sysfera.godiet.Model.deprecated.RunConfig;
+import com.sysfera.godiet.Model.physicalresources.deprecated.StorageResource;
 import com.sysfera.godiet.exceptions.LaunchException;
 /**
  * Utils class provide commodity with SSH

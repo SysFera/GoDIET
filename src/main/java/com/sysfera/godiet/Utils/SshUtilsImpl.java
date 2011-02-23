@@ -17,19 +17,19 @@ import java.util.Iterator;
 import java.util.List;
 
 import com.sysfera.godiet.Controller.ConsoleController;
-import com.sysfera.godiet.Model.AccessMethod;
-import com.sysfera.godiet.Model.Elements;
-import com.sysfera.godiet.Model.EnvVar;
-import com.sysfera.godiet.Model.Forwarder;
-import com.sysfera.godiet.Model.LaunchInfo;
-import com.sysfera.godiet.Model.LocalAgent;
-import com.sysfera.godiet.Model.Ma_dag;
-import com.sysfera.godiet.Model.MasterAgent;
-import com.sysfera.godiet.Model.OmniNames;
-import com.sysfera.godiet.Model.RunConfig;
-import com.sysfera.godiet.Model.ServerDaemon;
-import com.sysfera.godiet.Model.physicalresources.ComputeResource;
-import com.sysfera.godiet.Model.physicalresources.StorageResource;
+import com.sysfera.godiet.Model.deprecated.AccessMethod;
+import com.sysfera.godiet.Model.deprecated.Elements;
+import com.sysfera.godiet.Model.deprecated.EnvVar;
+import com.sysfera.godiet.Model.deprecated.Forwarder;
+import com.sysfera.godiet.Model.deprecated.LaunchInfo;
+import com.sysfera.godiet.Model.deprecated.LocalAgent;
+import com.sysfera.godiet.Model.deprecated.Ma_dag;
+import com.sysfera.godiet.Model.deprecated.MasterAgent;
+import com.sysfera.godiet.Model.deprecated.OmniNames;
+import com.sysfera.godiet.Model.deprecated.RunConfig;
+import com.sysfera.godiet.Model.deprecated.ServerDaemon;
+import com.sysfera.godiet.Model.physicalresources.deprecated.ComputeResource;
+import com.sysfera.godiet.Model.physicalresources.deprecated.StorageResource;
 import com.sysfera.godiet.exceptions.LaunchException;
 
 /**

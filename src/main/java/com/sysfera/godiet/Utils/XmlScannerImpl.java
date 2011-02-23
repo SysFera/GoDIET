@@ -17,25 +17,25 @@ import org.xml.sax.SAXException;
 
 import com.sysfera.godiet.Controller.ConsoleController;
 import com.sysfera.godiet.Controller.DietPlatformController;
-import com.sysfera.godiet.Model.AccessMethod;
-import com.sysfera.godiet.Model.Agents;
-import com.sysfera.godiet.Model.ComputeCollection;
-import com.sysfera.godiet.Model.Domain;
-import com.sysfera.godiet.Model.Elements;
-import com.sysfera.godiet.Model.EnvVar;
-import com.sysfera.godiet.Model.Link;
-import com.sysfera.godiet.Model.LocalAgent;
-import com.sysfera.godiet.Model.LogCentral;
-import com.sysfera.godiet.Model.Ma_dag;
-import com.sysfera.godiet.Model.MasterAgent;
-import com.sysfera.godiet.Model.OmniNames;
-import com.sysfera.godiet.Model.Option;
-import com.sysfera.godiet.Model.RunConfig;
-import com.sysfera.godiet.Model.ServerDaemon;
-import com.sysfera.godiet.Model.Services;
-import com.sysfera.godiet.Model.physicalresources.ComputeResource;
-import com.sysfera.godiet.Model.physicalresources.GatewayResource;
-import com.sysfera.godiet.Model.physicalresources.StorageResource;
+import com.sysfera.godiet.Model.deprecated.AccessMethod;
+import com.sysfera.godiet.Model.deprecated.Agents;
+import com.sysfera.godiet.Model.deprecated.ComputeCollection;
+import com.sysfera.godiet.Model.deprecated.Domain;
+import com.sysfera.godiet.Model.deprecated.Elements;
+import com.sysfera.godiet.Model.deprecated.EnvVar;
+import com.sysfera.godiet.Model.deprecated.Link;
+import com.sysfera.godiet.Model.deprecated.LocalAgent;
+import com.sysfera.godiet.Model.deprecated.LogCentral;
+import com.sysfera.godiet.Model.deprecated.Ma_dag;
+import com.sysfera.godiet.Model.deprecated.MasterAgent;
+import com.sysfera.godiet.Model.deprecated.OmniNames;
+import com.sysfera.godiet.Model.deprecated.Option;
+import com.sysfera.godiet.Model.deprecated.RunConfig;
+import com.sysfera.godiet.Model.deprecated.ServerDaemon;
+import com.sysfera.godiet.Model.deprecated.Services;
+import com.sysfera.godiet.Model.physicalresources.deprecated.ComputeResource;
+import com.sysfera.godiet.Model.physicalresources.deprecated.GatewayResource;
+import com.sysfera.godiet.Model.physicalresources.deprecated.StorageResource;
 import com.sysfera.godiet.exceptions.XMLReadException;
 
 /*
@@ -872,7 +872,7 @@ public class XmlScannerImpl implements ErrorHandler, XmlScanner {
 			if (node.getNodeType() == org.w3c.dom.Node.ELEMENT_NODE) {
 				org.w3c.dom.Element nodeElement = (org.w3c.dom.Element) node;
 				if (nodeElement.getTagName().equals("option")) {
-					com.sysfera.godiet.Model.Option o = visitElement_option(nodeElement);
+					com.sysfera.godiet.Model.deprecated.Option o = visitElement_option(nodeElement);
 					String message = el.getElementCfg().addOption(o);
 					String message2 = opt_checker.check(OptionChecker
 							.getObjectClass(el.getClass().getName()), o

@@ -1,8 +1,8 @@
 package com.sysfera.godiet.factories;
 
-import com.sysfera.godiet.Model.Forwarder;
-import com.sysfera.godiet.Model.Option;
-import com.sysfera.godiet.Model.physicalresources.GatewayResource;
+import com.sysfera.godiet.Model.deprecated.Forwarder;
+import com.sysfera.godiet.Model.deprecated.Option;
+import com.sysfera.godiet.Model.physicalresources.deprecated.GatewayResource;
 import com.sysfera.godiet.Model.xml.generated.Gateway;
 /**
  *  A concrete forwarder factory
@@ -40,7 +40,7 @@ public class ForwarderFactory {
 	 * @param type The Type of forwarder
 	 * @return A new Forwarder
 	 */
-	public Forwarder create(Gateway gateway,
+	public com.sysfera.godiet.Model.xml.generated.Forwarder create(Gateway gateway,
 			Forwarder.ForwarderType type) {
 //		com.sysfera.godiet.Model.xml.Forwarder forwarder = new com.sysfera.godiet.Model.xml.Forwarder(gateway.getName()
 //				+ "-DietForwarder", gateway, Forwarder.DIET_FORWARDERBINARY,

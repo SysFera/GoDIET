@@ -13,19 +13,19 @@ import java.util.Set;
 
 import com.sysfera.godiet.Controller.ConsoleController;
 import com.sysfera.godiet.Events.AddElementsEvent;
-import com.sysfera.godiet.Model.DietElements;
-import com.sysfera.godiet.Model.Elements;
-import com.sysfera.godiet.Model.Forwarder;
-import com.sysfera.godiet.Model.LaunchInfo;
-import com.sysfera.godiet.Model.LocalAgent;
-import com.sysfera.godiet.Model.LogCentral;
-import com.sysfera.godiet.Model.Ma_dag;
-import com.sysfera.godiet.Model.MasterAgent;
-import com.sysfera.godiet.Model.OmniNames;
-import com.sysfera.godiet.Model.Option;
-import com.sysfera.godiet.Model.ServerDaemon;
-import com.sysfera.godiet.Model.Services;
-import com.sysfera.godiet.Model.physicalresources.GatewayResource;
+import com.sysfera.godiet.Model.deprecated.DietElements;
+import com.sysfera.godiet.Model.deprecated.Elements;
+import com.sysfera.godiet.Model.deprecated.Forwarder;
+import com.sysfera.godiet.Model.deprecated.LaunchInfo;
+import com.sysfera.godiet.Model.deprecated.LocalAgent;
+import com.sysfera.godiet.Model.deprecated.LogCentral;
+import com.sysfera.godiet.Model.deprecated.Ma_dag;
+import com.sysfera.godiet.Model.deprecated.MasterAgent;
+import com.sysfera.godiet.Model.deprecated.OmniNames;
+import com.sysfera.godiet.Model.deprecated.Option;
+import com.sysfera.godiet.Model.deprecated.ServerDaemon;
+import com.sysfera.godiet.Model.deprecated.Services;
+import com.sysfera.godiet.Model.physicalresources.deprecated.GatewayResource;
 
 /**
  * 

@@ -13,12 +13,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import com.sysfera.godiet.Model.ComputeCollection;
-import com.sysfera.godiet.Model.Domain;
-import com.sysfera.godiet.Model.Link;
-import com.sysfera.godiet.Model.physicalresources.ComputeResource;
-import com.sysfera.godiet.Model.physicalresources.GatewayResource;
-import com.sysfera.godiet.Model.physicalresources.StorageResource;
+import com.sysfera.godiet.Model.deprecated.ComputeCollection;
+import com.sysfera.godiet.Model.deprecated.Domain;
+import com.sysfera.godiet.Model.deprecated.Link;
+import com.sysfera.godiet.Model.physicalresources.deprecated.ComputeResource;
+import com.sysfera.godiet.Model.physicalresources.deprecated.GatewayResource;
+import com.sysfera.godiet.Model.physicalresources.deprecated.StorageResource;
 
 /**
  *
