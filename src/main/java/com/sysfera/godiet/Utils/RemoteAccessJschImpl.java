@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import com.jcraft.jsch.Channel;
 import com.jcraft.jsch.ChannelExec;
 import com.jcraft.jsch.JSch;
+import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
 import com.jcraft.jsch.UserInfo;
 import com.sysfera.godiet.exceptions.RemoteAccessException;
@@ -237,6 +238,11 @@ public class RemoteAccessJschImpl implements RemoteAccess {
 	 */
 	public void setUserInfo(UserInfo userInfo) {
 		this.userInfo = userInfo;
+	}
+	
+	public void setPrivateKey(String keyfile) throws JSchException
+	{
+		jsch.addIdentity(keyfile);
 	}
 
 }
