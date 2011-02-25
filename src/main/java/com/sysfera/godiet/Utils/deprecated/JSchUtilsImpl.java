@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.sysfera.godiet.Utils;
+package com.sysfera.godiet.Utils.deprecated;
 
 import java.awt.Container;
 import java.awt.GridBagConstraints;

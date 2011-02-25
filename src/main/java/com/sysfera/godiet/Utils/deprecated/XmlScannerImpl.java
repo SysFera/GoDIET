@@ -1,5 +1,5 @@
 /*@GODIET_LICENSE*/
-package com.sysfera.godiet.Utils;
+package com.sysfera.godiet.Utils.deprecated;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -36,6 +36,7 @@ import com.sysfera.godiet.Model.deprecated.Services;
 import com.sysfera.godiet.Model.physicalresources.deprecated.ComputeResource;
 import com.sysfera.godiet.Model.physicalresources.deprecated.GatewayResource;
 import com.sysfera.godiet.Model.physicalresources.deprecated.StorageResource;
+import com.sysfera.godiet.Utils.XmlScanner;
 import com.sysfera.godiet.exceptions.XMLReadException;
 
 /*

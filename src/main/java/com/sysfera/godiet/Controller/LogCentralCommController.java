@@ -12,8 +12,8 @@ import java.util.List;
 
 import com.sysfera.godiet.Events.LogStateChange;
 import com.sysfera.godiet.Model.deprecated.OmniNames;
-import com.sysfera.godiet.Utils.LogCentralConnection;
 import com.sysfera.godiet.Utils.corba.generated.log_msg_t;
+import com.sysfera.godiet.Utils.deprecated.LogCentralConnection;
 
 /**
  *

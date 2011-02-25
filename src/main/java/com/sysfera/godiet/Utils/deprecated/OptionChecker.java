@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.sysfera.godiet.Utils;
+package com.sysfera.godiet.Utils.deprecated;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;

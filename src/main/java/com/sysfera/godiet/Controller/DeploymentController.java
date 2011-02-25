@@ -42,7 +42,7 @@ import com.sysfera.godiet.Model.deprecated.Services;
 import com.sysfera.godiet.Model.physicalresources.deprecated.ComputeResource;
 import com.sysfera.godiet.Model.physicalresources.deprecated.GatewayResource;
 import com.sysfera.godiet.Model.physicalresources.deprecated.StorageResource;
-import com.sysfera.godiet.Utils.Launcher;
+import com.sysfera.godiet.Utils.deprecated.Launcher;
 import com.sysfera.godiet.diet.corba.generated.LocalAgent;
 import com.sysfera.godiet.diet.corba.generated.LocalAgentHelper;
 import com.sysfera.godiet.diet.corba.generated.MaDag;

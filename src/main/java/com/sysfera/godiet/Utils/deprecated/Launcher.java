@@ -5,28 +5,23 @@
  * Created on April 19, 2004, 1:59 PM
  */
 
-package com.sysfera.godiet.Utils;
+package com.sysfera.godiet.Utils.deprecated;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
 import java.util.Set;
 
 import com.sysfera.godiet.Controller.ConsoleController;
 import com.sysfera.godiet.Model.deprecated.AccessMethod;
-import com.sysfera.godiet.Model.deprecated.Agents;
-import com.sysfera.godiet.Model.deprecated.ComputeCollection;
 import com.sysfera.godiet.Model.deprecated.Domain;
 import com.sysfera.godiet.Model.deprecated.Elements;
 import com.sysfera.godiet.Model.deprecated.RunConfig;
-import com.sysfera.godiet.Model.deprecated.ServerDaemon;
 import com.sysfera.godiet.Model.physicalresources.deprecated.ComputeResource;
 import com.sysfera.godiet.Model.physicalresources.deprecated.StorageResource;
 import com.sysfera.godiet.exceptions.LaunchException;
-import com.sysfera.godiet.managers.deprecated.DietPlatformImpl;
 
 /**
  * 

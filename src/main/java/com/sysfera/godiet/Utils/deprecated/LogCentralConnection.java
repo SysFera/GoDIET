@@ -5,7 +5,7 @@
  * Created on 8 juin 2004, 08:19
  */
 
-package com.sysfera.godiet.Utils;
+package com.sysfera.godiet.Utils.deprecated;
 
 
 import org.omg.CORBA.StringHolder;

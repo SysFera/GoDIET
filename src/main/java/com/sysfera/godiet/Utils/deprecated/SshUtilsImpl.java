@@ -5,7 +5,7 @@
  * Created on May 10, 2004, 1:59 PM
  */
 
-package com.sysfera.godiet.Utils;
+package com.sysfera.godiet.Utils.deprecated;
 
 import java.io.BufferedReader;
 import java.io.File;
