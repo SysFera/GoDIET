@@ -5,7 +5,7 @@
  * Created on 13 avril 2004, 14:51
  */
 
-package com.sysfera.godiet.managers;
+package com.sysfera.godiet.managers.deprecated;
 
 import java.util.ArrayList;
 import java.util.List;

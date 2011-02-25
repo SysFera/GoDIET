@@ -72,7 +72,7 @@ public class LocalAgent
      * 
      * 
      */
-    public List<LocalAgent> getLocalagent() {
+    public List<LocalAgent> getLocalAgent() {
         if (localagent == null) {
             localagent = new ArrayList<LocalAgent>();
         }

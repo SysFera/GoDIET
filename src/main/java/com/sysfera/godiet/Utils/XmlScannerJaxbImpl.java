@@ -12,7 +12,7 @@ import javax.xml.validation.SchemaFactory;
 
 import org.xml.sax.SAXException;
 
-import com.sysfera.godiet.Model.deprecated.xml.generated.DietConfiguration;
+import com.sysfera.godiet.Model.xml.generated.DietConfiguration;
 import com.sysfera.godiet.exceptions.XMLReadException;
 /**
  * 
@@ -63,33 +63,33 @@ public class XmlScannerJaxbImpl {
 	 * Hack.  Remove when have time
 	 * @throws XMLReadException 
 	 */
-	private void initDataModel(DietConfiguration dietConfiguration) throws XMLReadException
-	{
-		
-//		//GoDietConfig
-//		GoDiet goDiet = dietConfiguration.getGoDiet();
-//		RunConfig runCfg = consoleCtrl.getRunConfig();
-//		runCfg.setDebugLevel(goDiet.getDebug());
-//		runCfg.setSaveStdOut(goDiet.isSaveStdOut());
-//		runCfg.setSaveStdErr(goDiet.isSaveStdErr());
-//		runCfg.setWatcherPeriod(goDiet.getWatcherPeriod());
-//		runCfg.setLocalScratch(goDiet.getScratch().getDir());
-//		//Control isLog is set cause setLogFile have business code.
-//		if(goDiet.isLog())consoleCtrl.setLogFile("GoDIET.log");
+//	private void initDataModel(DietConfiguration dietConfiguration) throws XMLReadException
+//	{
+//		
+////		//GoDietConfig
+////		GoDiet goDiet = dietConfiguration.getGoDiet();
+////		RunConfig runCfg = consoleCtrl.getRunConfig();
+////		runCfg.setDebugLevel(goDiet.getDebug());
+////		runCfg.setSaveStdOut(goDiet.isSaveStdOut());
+////		runCfg.setSaveStdErr(goDiet.isSaveStdErr());
+////		runCfg.setWatcherPeriod(goDiet.getWatcherPeriod());
+////		runCfg.setLocalScratch(goDiet.getScratch().getDir());
+////		//Control isLog is set cause setLogFile have business code.
+////		if(goDiet.isLog())consoleCtrl.setLogFile("GoDIET.log");
+////		
+////		
+////		List<Domain> domains = dietConfiguration.getInfrastructure().getDomain();
+////		processDomains(domains);
+////		for (Domain domain : domains) {
+////			procesStorages(domain.getStorage(),domain);
+////			processComputes(domain.getNode(),domain);
+////			processGateways(domain.getGateway(),domain);
+////			processClusters(domain.getCluster(),domain);
+////		}
 //		
 //		
-//		List<Domain> domains = dietConfiguration.getInfrastructure().getDomain();
-//		processDomains(domains);
-//		for (Domain domain : domains) {
-//			procesStorages(domain.getStorage(),domain);
-//			processComputes(domain.getNode(),domain);
-//			processGateways(domain.getGateway(),domain);
-//			processClusters(domain.getCluster(),domain);
-//		}
-		
-		
-		
-	}
+//		
+//	}
 	
 	
 //	private void processClusters(List<Cluster> clusters, Domain domain) throws XMLReadException {

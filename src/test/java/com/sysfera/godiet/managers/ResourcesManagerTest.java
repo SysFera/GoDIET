@@ -13,16 +13,16 @@ import com.sysfera.godiet.exceptions.XMLReadException;
 public class ResourcesManagerTest {
 
 	@Test
-	public void testRMMultiDomain() {
-		String testCaseFile = "exampleMultiDomainsNG.xml";
+	public void test() {
+		String testCaseFile = "1D-3N-1MA-2LA-10SED.xml";
 		InputStream inputStream = getClass().getClassLoader()
 				.getResourceAsStream(testCaseFile);
 		ResourcesManager rm = new ResourcesManager();
 		XmlScannerJaxbImpl scanner = new XmlScannerJaxbImpl();
 
 		try {
-			rm.setDietConfiguration(scanner.buildDietModel(inputStream));
-
+			rm.load(scanner.buildDietModel(inputStream));
+			
 		} catch (IOException e) {
 			Assert.fail();
 			e.printStackTrace();

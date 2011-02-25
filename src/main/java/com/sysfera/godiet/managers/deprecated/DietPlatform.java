@@ -1,4 +1,4 @@
-package com.sysfera.godiet.managers;
+package com.sysfera.godiet.managers.deprecated;
 
 import java.util.List;
 

@@ -21,7 +21,7 @@ public class XMLScannerJaxbImplTest {
 		XmlScannerJaxbImpl scanner = new XmlScannerJaxbImpl();
 
 			try {
-				rm.setDietConfiguration(scanner.buildDietModel(inputStream));
+				rm.load(scanner.buildDietModel(inputStream));
 			} catch (IOException e) {
 				Assert.fail();
 				e.printStackTrace();

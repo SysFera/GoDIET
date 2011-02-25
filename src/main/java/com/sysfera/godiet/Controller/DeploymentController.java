@@ -53,8 +53,8 @@ import com.sysfera.godiet.diet.corba.generated.SeD;
 import com.sysfera.godiet.diet.corba.generated.SeDHelper;
 import com.sysfera.godiet.exceptions.LaunchException;
 import com.sysfera.godiet.factories.ForwarderFactory;
-import com.sysfera.godiet.managers.DietPlatform;
-import com.sysfera.godiet.managers.ResourcePlatform;
+import com.sysfera.godiet.managers.deprecated.DietPlatform;
+import com.sysfera.godiet.managers.deprecated.ResourcePlatform;
 
 /**
  * 

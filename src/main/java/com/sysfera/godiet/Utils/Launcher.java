@@ -26,7 +26,7 @@ import com.sysfera.godiet.Model.deprecated.ServerDaemon;
 import com.sysfera.godiet.Model.physicalresources.deprecated.ComputeResource;
 import com.sysfera.godiet.Model.physicalresources.deprecated.StorageResource;
 import com.sysfera.godiet.exceptions.LaunchException;
-import com.sysfera.godiet.managers.DietPlatformImpl;
+import com.sysfera.godiet.managers.deprecated.DietPlatformImpl;
 
 /**
  * 

@@ -24,10 +24,10 @@ import com.sysfera.godiet.Model.deprecated.ServerDaemon;
 import com.sysfera.godiet.Model.deprecated.Services;
 import com.sysfera.godiet.Model.physicalresources.deprecated.ComputeResource;
 import com.sysfera.godiet.Model.physicalresources.deprecated.StorageResource;
-import com.sysfera.godiet.managers.DietPlatform;
-import com.sysfera.godiet.managers.DietPlatformImpl;
-import com.sysfera.godiet.managers.ResourcePlatform;
-import com.sysfera.godiet.managers.ResourcePlatformImpl;
+import com.sysfera.godiet.managers.deprecated.DietPlatform;
+import com.sysfera.godiet.managers.deprecated.DietPlatformImpl;
+import com.sysfera.godiet.managers.deprecated.ResourcePlatform;
+import com.sysfera.godiet.managers.deprecated.ResourcePlatformImpl;
 
 /**
  *

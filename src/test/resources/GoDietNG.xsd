@@ -41,7 +41,7 @@
 		<xs:sequence>
 			<xs:element name="domain" type="domain" maxOccurs="unbounded">
 			</xs:element>
-			<xs:element name="link" type="link" maxOccurs="unbounded" />
+			<xs:element name="link" type="link" minOccurs="0" maxOccurs="unbounded" />
 		</xs:sequence>
 	</xs:complexType>
 
@@ -149,7 +149,7 @@
 					<xs:element name="ssh" type="ssh" />
 					<xs:element name="env" type="env" minOccurs="0"
 						maxOccurs="1" />
-					<xs:element name="end_point" type="end_point" minOccurs="0"
+					<xs:element name="endPoint" type="endPoint" minOccurs="0"
 						maxOccurs="1" />
 				</xs:sequence>
 				<xs:attribute name="disk" type="xs:IDREF" use="required">
@@ -168,7 +168,7 @@
 
 	<xs:complexType name="cluster">
 		<xs:sequence>
-			<xs:element name="computingnode" type="node" maxOccurs="unbounded" />
+			<xs:element name="computingNode" type="node" maxOccurs="unbounded" />
 			<xs:element name="frontend" type="frontend" maxOccurs="unbounded">
 				<xs:annotation>
 					<xs:documentation>Required. Node access to a cluster.
@@ -196,7 +196,7 @@
 		</xs:sequence>
 	</xs:complexType>
 
-	<xs:complexType name="end_point">
+	<xs:complexType name="endPoint">
 		<xs:attribute name="contact" type="xs:string" use="optional" />
 		<xs:attribute name="startPort" type="xs:string" use="optional" />
 		<xs:attribute name="endPort" type="xs:string" use="optional" />
@@ -212,9 +212,9 @@
 		<xs:sequence>
 			<xs:element name="omniNames" type="omniNames" minOccurs="1"
 				maxOccurs="unbounded" />
-			<xs:element name="log_central" type="log_central"
+			<xs:element name="logCentral" type="logCentral"
 				minOccurs="0" maxOccurs="1" />
-			<xs:element name="log_tool" type="log_tool" minOccurs="0"
+			<xs:element name="logTool" type="logTool" minOccurs="0"
 				maxOccurs="1" />
 
 		</xs:sequence>
@@ -231,7 +231,7 @@
 		</xs:annotation>
 		<xs:sequence>
 			<xs:element name="config" type="config" />
-			<xs:element name="cfg_options" type="cfg_options"
+			<xs:element name="cfgOptions" type="cfgOptions"
 				minOccurs="0" maxOccurs="1" />
 		</xs:sequence>
 		<xs:attribute name="contact" type="xs:string" use="required" />
@@ -246,7 +246,7 @@
 	</xs:complexType>
 
 
-	<xs:complexType name="log_central">
+	<xs:complexType name="logCentral">
 		<xs:sequence>
 			<xs:element name="config" type="config" />
 		</xs:sequence>
@@ -254,7 +254,7 @@
 			use="optional" />
 	</xs:complexType>
 
-	<xs:complexType name="log_tool">
+	<xs:complexType name="logTool">
 		<xs:sequence>
 			<xs:element name="config" type="config" />
 		</xs:sequence>
@@ -280,7 +280,7 @@
 		</xs:annotation>
 		<xs:sequence>
 			<xs:element name="config" type="config" />
-			<xs:element name="cfg_options" type="cfg_options"
+			<xs:element name="cfgOptions" type="cfgOptions"
 				minOccurs="0" maxOccurs="1" />
 		</xs:sequence>
 		<xs:attribute name="label" type="xs:string" use="optional" />
@@ -324,7 +324,7 @@
 		<xs:complexContent>
 			<xs:extension base="agent">
 				<xs:sequence>
-					<xs:element name="localagent" type="localAgent"
+					<xs:element name="localAgent" type="localAgent"
 						minOccurs="0" maxOccurs="unbounded" />
 					<xs:element name="sed" type="sed" minOccurs="0"
 						maxOccurs="unbounded" />
@@ -390,7 +390,7 @@
 	</xs:complexType>
 
 
-	<xs:complexType name="cfg_options">
+	<xs:complexType name="cfgOptions">
 		<xs:sequence>
 			<xs:element name="option" type="option" maxOccurs="unbounded" />
 		</xs:sequence>
