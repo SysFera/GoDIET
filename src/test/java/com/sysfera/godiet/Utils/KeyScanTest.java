@@ -49,7 +49,7 @@ public class KeyScanTest {
 
 	public static class MyUserInfo implements UserInfo {
 		public String getPassword() {
-			return "rii0k47n";
+			return "";
 		}
 
 		public boolean promptYesNo(String str) {
@@ -57,7 +57,7 @@ public class KeyScanTest {
 		}
 
 		public String getPassphrase() {
-			return "mondedemerde0";
+			return "";
 		}
 
 		public boolean promptPassphrase(String message) {
