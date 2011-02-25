@@ -12,7 +12,7 @@ import javax.xml.validation.SchemaFactory;
 
 import org.xml.sax.SAXException;
 
-import com.sysfera.godiet.Model.xml.generated.DietConfiguration;
+import com.sysfera.godiet.Model.xml.generated.DietDescription;
 import com.sysfera.godiet.exceptions.XMLReadException;
 /**
  * 
@@ -28,13 +28,7 @@ public class XmlScannerJaxbImpl {
 
 
 	
-	
-	public XmlScannerJaxbImpl() {
-
-	}
-
-	
-	public DietConfiguration buildDietModel(InputStream xmlFile)
+	public DietDescription buildDietModel(InputStream xmlFile)
 			throws IOException, XMLReadException {
 
 		try {
@@ -46,7 +40,7 @@ public class XmlScannerJaxbImpl {
 					GODIET_SCHEMA_PATH));
 			u.setSchema(schema);
 
-			DietConfiguration dietConfiguration = (DietConfiguration) u
+			DietDescription dietConfiguration = (DietDescription) u
 					.unmarshal(xmlFile);
 			 return dietConfiguration;
 		} catch (JAXBException e) {
@@ -56,6 +50,8 @@ public class XmlScannerJaxbImpl {
 					"Error when marshalling diet model (unable to read schema)",
 					e);
 
+		}catch(IllegalArgumentException e){
+			throw new XMLReadException("File not found",e);
 		}
 	}
 

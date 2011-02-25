@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.sysfera.godiet.Model.xml.DietResource;
-import com.sysfera.godiet.Model.xml.generated.DietHierarchy;
+import com.sysfera.godiet.Model.xml.generated.DietInfrastructure;
 import com.sysfera.godiet.Model.xml.generated.DietServices;
 import com.sysfera.godiet.Model.xml.generated.LocalAgent;
 import com.sysfera.godiet.Model.xml.generated.MasterAgent;
@@ -31,7 +31,7 @@ public class Diet {
 		this.omninames = new ArrayList<OmniNames>();
 	}
 
-	void init(DietHierarchy dietHierarchy, DietServices dietServices) {
+	void init(DietInfrastructure dietHierarchy, DietServices dietServices) {
 
 		initMasterAgent(dietHierarchy.getMasterAgent());
 
@@ -48,6 +48,7 @@ public class Diet {
 		if (masterAgents != null) {
 			for (MasterAgent masterAgent : masterAgents) {
 				DietResource dietResource = new DietResource();
+				dietResource.setDietAgent(masterAgent);
 				this.masterAgents.add(dietResource);
 				initSeds(masterAgent.getSed());
 				initLocalAgents(masterAgent.getLocalAgent());
@@ -58,17 +59,19 @@ public class Diet {
 
 	/**
 	 * Recursive call on LocalAgents.
+	 * 
 	 * @param localAgent
 	 */
 	private void initLocalAgents(List<LocalAgent> localAgents) {
 		if (localAgents != null) {
 			for (LocalAgent localAgent : localAgents) {
 				DietResource dietResource = new DietResource();
+				dietResource.setDietAgent(localAgent);
 				this.localAgents.add(dietResource);
 				initSeds(localAgent.getSed());
 				initLocalAgents(localAgent.getLocalAgent());
 			}
-			
+
 		}
 	}
 
@@ -86,5 +89,33 @@ public class Diet {
 
 		}
 
+	}
+
+	/**
+	 * @return the masterAgents
+	 */
+	public List<DietResource> getMasterAgents() {
+		return masterAgents;
+	}
+
+	/**
+	 * @return the localAgents
+	 */
+	public List<DietResource> getLocalAgents() {
+		return localAgents;
+	}
+
+	/**
+	 * @return the seds
+	 */
+	public List<DietResource> getSeds() {
+		return seds;
+	}
+
+	/**
+	 * @return the omninames
+	 */
+	public List<OmniNames> getOmninames() {
+		return omninames;
 	}
 }

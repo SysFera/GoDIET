@@ -1,6 +1,6 @@
 package com.sysfera.godiet.Model.states;
 
-import com.sysfera.godiet.Utils.LaunchHelper;
+import com.sysfera.godiet.Utils.RemoteConfigurationHelper;
 import com.sysfera.godiet.exceptions.InconsistentStateException;
 import com.sysfera.godiet.exceptions.PrepareException;
 
@@ -14,12 +14,12 @@ import com.sysfera.godiet.exceptions.PrepareException;
  */
 public class DownStateImpl implements ResourceState{
 	
-	private final LaunchHelper launcher;
+	private final RemoteConfigurationHelper launcher;
 	private final StateController stateController;
 	
 	public DownStateImpl(StateController stateController) {
 		this.stateController = stateController;
-		launcher = LaunchHelper.getInstance();		
+		launcher = RemoteConfigurationHelper.getInstance();		
 	}
 
 	/**

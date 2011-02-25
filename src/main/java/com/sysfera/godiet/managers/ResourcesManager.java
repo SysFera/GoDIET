@@ -1,12 +1,6 @@
 package com.sysfera.godiet.managers;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import com.sysfera.godiet.Model.deprecated.Elements;
-import com.sysfera.godiet.Model.deprecated.Forwarder;
-import com.sysfera.godiet.Model.xml.generated.DietConfiguration;
-import com.sysfera.godiet.Model.xml.generated.Link;
+import com.sysfera.godiet.Model.xml.generated.DietDescription;
 
 /**
  * NG Diet + Infrastructure manager.
@@ -17,26 +11,39 @@ import com.sysfera.godiet.Model.xml.generated.Link;
 public class ResourcesManager {
 
 	// Root level of goDiet configuration
-	private DietConfiguration goDiet;
+	private DietDescription goDiet;
 
 	// Other model representation to help and improve resources access. All
 	// objects are reference of goDiet field
-	private Diet dietModel;
-	private Platform platformModel;
-	//TODO move this field in configuration manager
+	private final Diet dietModel;
+	private final Platform platformModel;
+	// TODO move this field in configuration manager
 	private GoDietConfiguration godietConfiguration;
+
+	public ResourcesManager() {
+		this.dietModel = new Diet();
+		this.platformModel =  new Platform();
+	}
+	
+	
 	/**
-	 * Reset all model and load DietConfigurtion 
+	 * Reset all model and load DietConfigurtion
 	 */
-	public void load(DietConfiguration dietConfiguration) {
+	public void load(DietDescription dietConfiguration) {
 		this.goDiet = dietConfiguration;
 		if (goDiet != null) {
 			platformModel.init(dietConfiguration.getInfrastructure());
-			dietModel.init(dietConfiguration.getDietHierarchy(),dietConfiguration.getDietServices());
-			
+			dietModel.init(dietConfiguration.getDietInfrastructure(),
+					dietConfiguration.getDietServices());
+
 		}
 	}
 
+	public Diet getDietModel() {
+		return dietModel;
+	}
 
-
+	public Platform getPlatformModel() {
+		return platformModel;
+	}
 }

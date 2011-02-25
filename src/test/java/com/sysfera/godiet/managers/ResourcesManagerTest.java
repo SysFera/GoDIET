@@ -12,9 +12,10 @@ import com.sysfera.godiet.exceptions.XMLReadException;
 
 public class ResourcesManagerTest {
 
+	
 	@Test
 	public void test() {
-		String testCaseFile = "1D-3N-1MA-2LA-10SED.xml";
+		String testCaseFile = "1D-3N-1MA-3LA-10SED.xml";
 		InputStream inputStream = getClass().getClassLoader()
 				.getResourceAsStream(testCaseFile);
 		ResourcesManager rm = new ResourcesManager();
@@ -22,6 +23,20 @@ public class ResourcesManagerTest {
 
 		try {
 			rm.load(scanner.buildDietModel(inputStream));
+			Platform platform = rm.getPlatformModel();
+			if(platform.getClusters().size()  != 0) Assert.fail();
+			if(platform.getDomains().size()  != 1) Assert.fail();
+			if(platform.getFrontends().size()  != 0) Assert.fail();
+			if(platform.getGateways().size()  != 0) Assert.fail();
+			if(platform. getLinks().size() != 0) Assert.fail();
+			if(platform.getNodes().size()  != 3) Assert.fail(platform.getNodes().size()  +" != 3");
+			
+			
+			Diet diet = rm.getDietModel();
+			if(diet.getMasterAgents().size() != 1 ) Assert.fail();
+			if(diet.getLocalAgents().size() != 3 ) Assert.fail();
+			if(diet.getSeds().size() != 10 ) Assert.fail();
+			
 			
 		} catch (IOException e) {
 			Assert.fail();

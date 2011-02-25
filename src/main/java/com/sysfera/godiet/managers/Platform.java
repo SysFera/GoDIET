@@ -43,12 +43,12 @@ public class Platform {
 		if (domains != null) {
 			for (Domain domain : domains) {
 				this.gateways.addAll(domain.getGateway());
-				this.nodes.addAll(nodes);
+				this.nodes.addAll(domain.getNode());
 				List<Cluster> clusters = domain.getCluster();
 				this.clusters.addAll(clusters);
 				if (clusters != null) {
 					for (Cluster cluster : clusters) {
-						nodes.addAll(cluster.getComputingnode());
+						nodes.addAll(cluster.getComputingNode());
 						frontends.addAll(cluster.getFrontend());
 					}
 				}
