@@ -5,8 +5,8 @@
 	<xs:element name="dietDescription">
 		<xs:complexType>
 			<xs:sequence>
-				<xs:element name="goDietConfiguration" type="goDietConfiguration" minOccurs="0"
-					maxOccurs="1" />
+				<xs:element name="goDietConfiguration" type="goDietConfiguration"
+					minOccurs="0" maxOccurs="1" />
 				<xs:element name="infrastructure" type="infrastructure" />
 				<xs:element name="dietServices" type="dietServices" />
 				<xs:element name="dietInfrastructure" type="dietInfrastructure" />
@@ -41,7 +41,8 @@
 		<xs:sequence>
 			<xs:element name="domain" type="domain" maxOccurs="unbounded">
 			</xs:element>
-			<xs:element name="link" type="link" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="link" type="link" minOccurs="0"
+				maxOccurs="unbounded" />
 		</xs:sequence>
 	</xs:complexType>
 
@@ -212,14 +213,20 @@
 		<xs:sequence>
 			<xs:element name="omniNames" type="omniNames" minOccurs="1"
 				maxOccurs="unbounded" />
-			<xs:element name="logCentral" type="logCentral"
-				minOccurs="0" maxOccurs="1" />
+			<xs:element name="logCentral" type="logCentral" minOccurs="0"
+				maxOccurs="1" />
 			<xs:element name="logTool" type="logTool" minOccurs="0"
 				maxOccurs="1" />
 
 		</xs:sequence>
 		<xs:attribute name="statistics" type="xs:boolean"
 			default="false"></xs:attribute>
+	</xs:complexType>
+
+	<xs:complexType name="dietService">
+		<xs:sequence>
+			<xs:element name="config" type="config" />
+		</xs:sequence>
 	</xs:complexType>
 
 	<xs:complexType name="omniNames">
@@ -229,20 +236,23 @@
 				OmniNames per domain 
 			</xs:documentation>
 		</xs:annotation>
-		<xs:sequence>
-			<xs:element name="config" type="config" />
-			<xs:element name="cfgOptions" type="cfgOptions"
-				minOccurs="0" maxOccurs="1" />
-		</xs:sequence>
-		<xs:attribute name="contact" type="xs:string" use="required" />
-		<xs:attribute name="port" type="portType" use="optional"
-			default="2809">
-			<xs:annotation>
-				<xs:documentation>Optional attribute. The omniNames listen port. By
-					default 2809. </xs:documentation>
-			</xs:annotation>
-		</xs:attribute>
-		<xs:attribute name="domain" />
+		<xs:complexContent>
+			<xs:extension base="dietService">
+				<xs:sequence>
+					<xs:element name="cfgOptions" type="cfgOptions"
+						minOccurs="0" maxOccurs="1" />
+				</xs:sequence>
+				<xs:attribute name="contact" type="xs:string" use="required" />
+				<xs:attribute name="port" type="portType" use="optional"
+					default="2809">
+					<xs:annotation>
+						<xs:documentation>Optional attribute. The omniNames listen port.
+							By
+							default 2809. </xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
 	</xs:complexType>
 
 
@@ -280,8 +290,8 @@
 		</xs:annotation>
 		<xs:sequence>
 			<xs:element name="config" type="config" />
-			<xs:element name="cfgOptions" type="cfgOptions"
-				minOccurs="0" maxOccurs="1" />
+			<xs:element name="cfgOptions" type="cfgOptions" minOccurs="0"
+				maxOccurs="1" />
 		</xs:sequence>
 		<xs:attribute name="label" type="xs:string" use="optional" />
 		<xs:attribute name="stats" type="xs:boolean" default="false" />
@@ -291,7 +301,8 @@
 	<xs:complexType name="masterAgent">
 		<xs:annotation>
 			<xs:documentation>An MA receives computation requests from
-				clients.</xs:documentation>
+				clients.
+			</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="agent">
@@ -319,8 +330,11 @@
 	</xs:complexType>
 
 	<xs:complexType name="localAgent">
-	<xs:annotation><xs:documentation>An LA transmits requests and information
-  between MAs and servers (sed).</xs:documentation></xs:annotation>
+		<xs:annotation>
+			<xs:documentation>An LA transmits requests and information
+				between MAs
+				and servers (sed).</xs:documentation>
+		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="agent">
 				<xs:sequence>
@@ -334,8 +348,12 @@
 	</xs:complexType>
 
 	<xs:complexType name="sed">
-	<xs:annotation><xs:documentation> A sed encapsulates a computational
-  server. For instance it can be located on the entry point of a cluster (Frontend)</xs:documentation></xs:annotation>
+		<xs:annotation>
+			<xs:documentation> A sed encapsulates a computational
+				server. For
+				instance it can be located on the entry point of a cluster
+				(Frontend)</xs:documentation>
+		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="agent">
 				<xs:sequence>
@@ -355,23 +373,14 @@
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="agent">
-				<xs:attribute name="client" type="xs:IDREF">
-					<xs:annotation>
-						<xs:appinfo>
-							<jaxb:property>
-								<jaxb:baseType name="Node" />
-							</jaxb:property>
-						</xs:appinfo>
-					</xs:annotation>
-				</xs:attribute>
-				<xs:attribute name="server" type="xs:IDREF">
-					<xs:annotation>
-						<xs:appinfo>
-							<jaxb:property>
-								<jaxb:baseType name="Node" />
-							</jaxb:property>
-						</xs:appinfo>
-					</xs:annotation>
+
+				<xs:attribute name="type">
+					<xs:simpleType>
+						<xs:restriction base="xs:string">
+							<xs:enumeration value="CLIENT" />
+							<xs:enumeration value="SERVER" />
+						</xs:restriction>
+					</xs:simpleType>
 				</xs:attribute>
 
 			</xs:extension>
@@ -382,7 +391,15 @@
 
 	<xs:complexType name="config">
 		<xs:attribute name="remoteBinary" type="xs:string" use="required" />
-		<xs:attribute name="server" type="xs:string" use="required" />
+		<xs:attribute name="server" type="xs:IDREF" use="required">
+			<xs:annotation>
+				<xs:appinfo>
+					<jaxb:property>
+						<jaxb:baseType name="Node" />
+					</jaxb:property>
+				</xs:appinfo>
+			</xs:annotation>
+		</xs:attribute>
 	</xs:complexType>
 
 	<xs:complexType name="parameters">

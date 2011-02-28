@@ -3,13 +3,10 @@ package com.sysfera.godiet.managers;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.sysfera.godiet.Model.xml.DietResource;
-import com.sysfera.godiet.Model.xml.generated.DietInfrastructure;
-import com.sysfera.godiet.Model.xml.generated.DietServices;
-import com.sysfera.godiet.Model.xml.generated.LocalAgent;
-import com.sysfera.godiet.Model.xml.generated.MasterAgent;
+import com.sysfera.godiet.Model.xml.DietResourceManager;
+import com.sysfera.godiet.Model.xml.DietServiceManager;
+import com.sysfera.godiet.Model.xml.generated.DietService;
 import com.sysfera.godiet.Model.xml.generated.OmniNames;
-import com.sysfera.godiet.Model.xml.generated.Sed;
 
 /**
  * Diet platform description
@@ -19,103 +16,100 @@ import com.sysfera.godiet.Model.xml.generated.Sed;
  */
 public class Diet {
 
-	private final List<DietResource> masterAgents;
-	private final List<DietResource> localAgents;
-	private final List<DietResource> seds;
-	private final List<OmniNames> omninames;
+	private final List<DietResourceManager> masterAgents;
+	private final List<DietResourceManager> localAgents;
+	private final List<DietResourceManager> seds;
+	private final List<DietServiceManager> omninames;
+	private final List<DietResourceManager> forwaders;
 
 	public Diet() {
-		this.masterAgents = new ArrayList<DietResource>();
-		this.localAgents = new ArrayList<DietResource>();
-		this.seds = new ArrayList<DietResource>();
-		this.omninames = new ArrayList<OmniNames>();
-	}
-
-	void init(DietInfrastructure dietHierarchy, DietServices dietServices) {
-
-		initMasterAgent(dietHierarchy.getMasterAgent());
-
-		this.omninames.addAll(dietServices.getOmniNames());
-	}
-
-	/**
-	 * Init masterAgents. Deep tree search
-	 * 
-	 * @param List
-	 *            of masterAgent
-	 */
-	private void initMasterAgent(List<MasterAgent> masterAgents) {
-		if (masterAgents != null) {
-			for (MasterAgent masterAgent : masterAgents) {
-				DietResource dietResource = new DietResource();
-				dietResource.setDietAgent(masterAgent);
-				this.masterAgents.add(dietResource);
-				initSeds(masterAgent.getSed());
-				initLocalAgents(masterAgent.getLocalAgent());
-			}
-
-		}
-	}
-
-	/**
-	 * Recursive call on LocalAgents.
-	 * 
-	 * @param localAgent
-	 */
-	private void initLocalAgents(List<LocalAgent> localAgents) {
-		if (localAgents != null) {
-			for (LocalAgent localAgent : localAgents) {
-				DietResource dietResource = new DietResource();
-				dietResource.setDietAgent(localAgent);
-				this.localAgents.add(dietResource);
-				initSeds(localAgent.getSed());
-				initLocalAgents(localAgent.getLocalAgent());
-			}
-
-		}
-	}
-
-	/**
-	 * 
-	 * @param sed
-	 */
-	private void initSeds(List<Sed> seds) {
-		if (seds != null) {
-			for (Sed sed : seds) {
-				DietResource sedDiet = new DietResource();
-				sedDiet.setDietAgent(sed);
-				this.seds.add(sedDiet);
-			}
-
-		}
-
+		this.masterAgents = new ArrayList<DietResourceManager>();
+		this.localAgents = new ArrayList<DietResourceManager>();
+		this.seds = new ArrayList<DietResourceManager>();
+		this.omninames = new ArrayList<DietServiceManager>();
+		this.forwaders = new ArrayList<DietResourceManager>();
 	}
 
 	/**
 	 * @return the masterAgents
 	 */
-	public List<DietResource> getMasterAgents() {
+	public List<DietResourceManager> getMasterAgents() {
 		return masterAgents;
 	}
 
 	/**
 	 * @return the localAgents
 	 */
-	public List<DietResource> getLocalAgents() {
+	public List<DietResourceManager> getLocalAgents() {
 		return localAgents;
 	}
 
 	/**
 	 * @return the seds
 	 */
-	public List<DietResource> getSeds() {
+	public List<DietResourceManager> getSeds() {
 		return seds;
+	}
+
+	/**
+	 * 
+	 * @return list of forwarders
+	 */
+	public List<DietResourceManager> getForwarders() {
+		return forwaders;
 	}
 
 	/**
 	 * @return the omninames
 	 */
-	public List<OmniNames> getOmninames() {
+	public List<DietServiceManager> getOmninames() {
 		return omninames;
 	}
+
+	/**
+	 * TODO: check validity of parameter
+	 * 
+	 * @param sedDiet
+	 */
+	public void addSed(DietResourceManager sedDiet) {
+		this.seds.add(sedDiet);
+	}
+
+	/**
+	 * TODO: check validity of parameter
+	 * 
+	 * @param dietResource
+	 */
+	public void addLocalAgent(DietResourceManager dietResource) {
+		this.localAgents.add(dietResource);
+	}
+
+	/**
+	 * TODO: check validity of parameter
+	 * 
+	 * @param dietResource
+	 */
+	public void addMasterAgent(DietResourceManager dietResource) {
+		this.masterAgents.add(dietResource);
+
+	}
+
+	/**
+	 * TODO: check validity of parameter
+	 * 
+	 * @param forwarder
+	 */
+	public void addForwarder(DietResourceManager forwarder) {
+		this.forwaders.add(forwarder);
+	}
+
+	/**
+	 * TODO: check validity of parameter
+	 * 
+	 * @param omniNames
+	 */
+	public void addOmniName(DietServiceManager omniName) {
+		this.omninames.add(omniName);
+	}
+
 }

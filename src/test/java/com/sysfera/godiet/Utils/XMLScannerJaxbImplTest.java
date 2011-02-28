@@ -10,23 +10,21 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.sysfera.godiet.exceptions.XMLReadException;
-import com.sysfera.godiet.managers.ResourcesManager;
 
 public class XMLScannerJaxbImplTest {
 	private Logger log = LoggerFactory.getLogger(getClass());
 
 	@Test
 	public void testFileNotFound() {
-		String testCaseFile = "filefrommars.xml";
+		String testCaseFile = "filefromMars.xml";
 		InputStream inputStream = getClass().getClassLoader()
 				.getResourceAsStream(testCaseFile);
-		ResourcesManager rm = new ResourcesManager();
 		XmlScannerJaxbImpl scanner = new XmlScannerJaxbImpl();
 
 		try {
-			rm.load(scanner.buildDietModel(inputStream));
+			scanner.buildDietModel(inputStream);
 		} catch (IOException e) {
-			log.error("",e);
+			log.error("", e);
 			Assert.fail();
 		} catch (XMLReadException e) {
 			// Cool
@@ -39,11 +37,10 @@ public class XMLScannerJaxbImplTest {
 		String testCaseFile = "exampleMultiDomainsNG.xml";
 		InputStream inputStream = getClass().getClassLoader()
 				.getResourceAsStream(testCaseFile);
-		ResourcesManager rm = new ResourcesManager();
 		XmlScannerJaxbImpl scanner = new XmlScannerJaxbImpl();
 
 		try {
-			rm.load(scanner.buildDietModel(inputStream));
+			scanner.buildDietModel(inputStream);
 		} catch (IOException e) {
 			log.error("", e);
 			Assert.fail();

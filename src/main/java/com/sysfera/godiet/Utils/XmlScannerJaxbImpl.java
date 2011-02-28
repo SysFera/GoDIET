@@ -22,12 +22,15 @@ import com.sysfera.godiet.exceptions.XMLReadException;
  * @author phi
  */
 
-public class XmlScannerJaxbImpl {
+public class XmlScannerJaxbImpl implements XMLParser{ 
 
 	private String GODIET_SCHEMA_PATH = "/GoDietNG.xsd";
 	private String MODEL_PACKAGE_NAME = "com.sysfera.godiet.Model.xml.generated";
 
-	public DietDescription buildDietModel(InputStream xmlFile)
+	/**
+	 */
+	@Override
+	final public DietDescription buildDietModel(InputStream xmlFile)
 			throws IOException, XMLReadException {
 
 		try {

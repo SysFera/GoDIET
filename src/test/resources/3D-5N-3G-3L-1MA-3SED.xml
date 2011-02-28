@@ -23,6 +23,14 @@
 					<var name="LD_LIBRARY_PATH" value="/usr/local/Diet/build/lib" />
 				</env>
 			</node>
+			<gateway ref="Node1" id="G1" />
+		</domain>
+		<domain label="Domain2">
+			<storage label="Disk2">
+				<scratch dir="/tmp/scratch_runtime" />
+				<scp server="IPNFS2" login="phi" />
+			</storage>
+
 			<node id="Node2" disk="Disk1">
 				<ssh server="IP2" login="phi" />
 				<env>
@@ -39,57 +47,54 @@
 					<var name="LD_LIBRARY_PATH" value="/usr/local/Soft/diet/build/lib" />
 				</env>
 			</node>
+			<gateway ref="Node3" id="G2" />
 		</domain>
+		<domain label="Domain3">
+			<storage label="Disk3">
+				<scratch dir="/tmp/scratch_runtime" />
+				<scp server="IPNFS3" login="phi" />
+			</storage>
+			<node id="Node4" disk="Disk1">
+				<ssh server="IP4" login="phi" />
+				<env>
+					<var name="PATH"
+						value="/usr/local/Soft/Diet/bin:/usr/local/Soft/Diet/bin/examples/dmat_manips/:$PATH" />
+					<var name="LD_LIBRARY_PATH" value="/usr/local/Soft/diet/build/lib" />
+				</env>
+			</node>
+			<node id="Node5" disk="Disk1">
+				<ssh server="IP5" login="phi" />
+				<env>
+					<var name="PATH"
+						value="/usr/local/Soft/Diet/bin:/usr/local/Soft/Diet/bin/examples/dmat_manips/:$PATH" />
+					<var name="LD_LIBRARY_PATH" value="/usr/local/Soft/diet/build/lib" />
+				</env>
+			</node>
+			<gateway ref="Node4" id="G3" />
+		</domain>
+		<link from="G1" to="G2" />
+		<link from="G2" to="G3" />
+		<link from="G3" to="G1" />
 	</infrastructure>
 
 	<dietServices>
 		<omniNames contact="192.168.1.17">
 			<config server="Node1" remoteBinary="omniNames" />
 		</omniNames>
+		<omniNames contact="192.168.2.17">
+			<config server="Node2" remoteBinary="omniNames" />
+		</omniNames>
+		<omniNames contact="192.168.3.17">
+			<config server="Node4" remoteBinary="omniNames" />
+		</omniNames>
 	</dietServices>
 
 	<dietInfrastructure>
 		<masterAgent label="MA1">
 			<config server="Node1" remoteBinary="dietAgent" />
-			<localAgent label="LA1">
-				<config server="Node2" remoteBinary="dietAgent" />
-				<localAgent label="LA2">
-					<config server="Node3" remoteBinary="dietAgent" />
-					<localAgent label="LA3">
-						<config server="Node3" remoteBinary="dietAgent" />
-						<sed>
-							<config server="Node3" remoteBinary="dmat_manips_server" />
-							<parameters string="T" />
-						</sed>
-						<sed>
-							<config server="Node3" remoteBinary="dmat_manips_server" />
-							<parameters string="T" />
-						</sed>
-					</localAgent>
-					<sed>
-						<config server="Node3" remoteBinary="dmat_manips_server" />
-						<parameters string="T" />
-					</sed>
-					<sed>
-						<config server="Node3" remoteBinary="dmat_manips_server" />
-						<parameters string="T" />
-					</sed>
-					<sed>
-						<config server="Node3" remoteBinary="dmat_manips_server" />
-						<parameters string="T" />
-					</sed>
-				</localAgent>
-				<sed>
-					<config server="Node3" remoteBinary="dmat_manips_server" />
-					<parameters string="T" />
-				</sed>
-				<sed>
-					<config server="Node3" remoteBinary="dmat_manips_server" />
-					<parameters string="T" />
-				</sed>
-			</localAgent>
+
 			<sed>
-				<config server="Node3" remoteBinary="dmat_manips_server" />
+				<config server="Node2" remoteBinary="dmat_manips_server" />
 				<parameters string="T" />
 			</sed>
 			<sed>
@@ -97,7 +102,7 @@
 				<parameters string="T" />
 			</sed>
 			<sed>
-				<config server="Node3" remoteBinary="dmat_manips_server" />
+				<config server="Node4" remoteBinary="dmat_manips_server" />
 				<parameters string="T" />
 			</sed>
 		</masterAgent>

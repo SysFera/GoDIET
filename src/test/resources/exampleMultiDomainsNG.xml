@@ -60,10 +60,10 @@
 		</infrastructure>
 
 	<dietServices>
-		<omniNames contact="192.168.1.17" domain="Sysfera">
+		<omniNames contact="192.168.1.17">
 			<config server="Kev" remoteBinary="omniNames" />
 		</omniNames>
-		<omniNames contact="140.77.166.19" domain="ENS">
+		<omniNames contact="140.77.166.19">
 			<config server="Graal" remoteBinary="omniNames" />
 		</omniNames>
 	</dietServices>

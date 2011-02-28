@@ -1,4 +1,4 @@
-package com.sysfera.godiet.Utils;
+package com.sysfera.godiet.Utils.deprecated;
 
 import java.io.IOException;
 import java.io.InputStream;

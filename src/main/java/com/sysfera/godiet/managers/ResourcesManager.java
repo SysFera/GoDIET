@@ -1,6 +1,7 @@
 package com.sysfera.godiet.managers;
 
-import com.sysfera.godiet.Model.xml.generated.DietDescription;
+import com.sysfera.godiet.Model.xml.generated.GoDietConfiguration;
+
 
 /**
  * NG Diet + Infrastructure manager.
@@ -10,34 +11,20 @@ import com.sysfera.godiet.Model.xml.generated.DietDescription;
  */
 public class ResourcesManager {
 
-	// Root level of goDiet configuration
-	private DietDescription goDiet;
 
 	// Other model representation to help and improve resources access. All
 	// objects are reference of goDiet field
 	private final Diet dietModel;
 	private final Platform platformModel;
 	// TODO move this field in configuration manager
-	private GoDietConfiguration godietConfiguration;
+	private final GoDiet godietConfiguration;
 
 	public ResourcesManager() {
 		this.dietModel = new Diet();
 		this.platformModel =  new Platform();
+		this.godietConfiguration = new GoDiet();
 	}
 	
-	
-	/**
-	 * Reset all model and load DietConfigurtion
-	 */
-	public void load(DietDescription dietConfiguration) {
-		this.goDiet = dietConfiguration;
-		if (goDiet != null) {
-			platformModel.init(dietConfiguration.getInfrastructure());
-			dietModel.init(dietConfiguration.getDietInfrastructure(),
-					dietConfiguration.getDietServices());
-
-		}
-	}
 
 	public Diet getDietModel() {
 		return dietModel;
@@ -45,5 +32,11 @@ public class ResourcesManager {
 
 	public Platform getPlatformModel() {
 		return platformModel;
+	}
+
+
+	public void setGoDietConfiguration(GoDietConfiguration goDietConfiguration) {
+		this.godietConfiguration.setConfiguration(goDietConfiguration);
+		
 	}
 }

@@ -10,20 +10,23 @@ package com.sysfera.godiet.Model.xml.generated;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for scratch complex type.
+ * <p>Java class for dietService complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="scratch">
+ * &lt;complexType name="dietService">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- *       &lt;attribute name="dir" use="required" type="{http://www.w3.org/2001/XMLSchema}string" />
+ *       &lt;sequence>
+ *         &lt;element name="config" type="{}config"/>
+ *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
  * &lt;/complexType>
@@ -32,34 +35,39 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "scratch")
-public class Scratch {
+@XmlType(name = "dietService", propOrder = {
+    "config"
+})
+@XmlSeeAlso({
+    OmniNames.class
+})
+public class DietService {
 
-    @XmlAttribute(required = true)
-    protected String dir;
+    @XmlElement(required = true)
+    protected Config config;
 
     /**
-     * Gets the value of the dir property.
+     * Gets the value of the config property.
      * 
      * @return
      *     possible object is
-     *     {@link String }
+     *     {@link Config }
      *     
      */
-    public String getDir() {
-        return dir;
+    public Config getConfig() {
+        return config;
     }
 
     /**
-     * Sets the value of the dir property.
+     * Sets the value of the config property.
      * 
      * @param value
      *     allowed object is
-     *     {@link String }
+     *     {@link Config }
      *     
      */
-    public void setDir(String value) {
-        this.dir = value;
+    public void setConfig(Config value) {
+        this.config = value;
     }
 
 }

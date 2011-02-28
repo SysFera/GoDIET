@@ -7,7 +7,6 @@ import com.sysfera.godiet.Model.xml.generated.Cluster;
 import com.sysfera.godiet.Model.xml.generated.Domain;
 import com.sysfera.godiet.Model.xml.generated.Frontend;
 import com.sysfera.godiet.Model.xml.generated.Gateway;
-import com.sysfera.godiet.Model.xml.generated.Infrastructure;
 import com.sysfera.godiet.Model.xml.generated.Link;
 import com.sysfera.godiet.Model.xml.generated.Node;
 
@@ -37,30 +36,9 @@ public class Platform {
 		this.links = new ArrayList<Link>();
 	}
 
-	void init(Infrastructure infrastructure) {
-		List<Domain> domains = infrastructure.getDomain();
-		this.domains.addAll(domains);
-		if (domains != null) {
-			for (Domain domain : domains) {
-				this.gateways.addAll(domain.getGateway());
-				this.nodes.addAll(domain.getNode());
-				List<Cluster> clusters = domain.getCluster();
-				this.clusters.addAll(clusters);
-				if (clusters != null) {
-					for (Cluster cluster : clusters) {
-						nodes.addAll(cluster.getComputingNode());
-						frontends.addAll(cluster.getFrontend());
-					}
-				}
-			}
-		}
-
-		List<Link> links = infrastructure.getLink();
-		this.links.addAll(links);
-	}
-
 	/**
-	 * @return the nodes
+	 * 
+	 * @return the list nodes
 	 */
 	public List<Node> getNodes() {
 		return nodes;
@@ -99,5 +77,34 @@ public class Platform {
 	 */
 	public List<Domain> getDomains() {
 		return domains;
+	}
+
+	public void addLinks(List<Link> links) {
+		this.links.addAll(links);
+	}
+
+	public void addFrontends(List<Frontend> frontend) {
+		this.frontends.addAll(frontend);
+
+	}
+
+	public void addNodes(List<Node> computingNodes) {
+		this.nodes.addAll(computingNodes);
+
+	}
+
+	public void addClusters(List<Cluster> clusters2) {
+		this.clusters.addAll(clusters);
+
+	}
+
+	public void addGateways(List<Gateway> gateways) {
+		this.gateways.addAll(gateways);
+
+	}
+
+	public void addDomains(List<Domain> domains) {
+		this.domains.addAll(domains);
+
 	}
 }

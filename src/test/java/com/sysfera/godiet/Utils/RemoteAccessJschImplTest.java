@@ -58,7 +58,7 @@ public class RemoteAccessJschImplTest {
 			//Assert.fail("Unable to load ssh key" +urlFile);
 		}
 		try {
-			remoteJsch.execute("ls", "godiet", "testbed1", 22);
+			remoteJsch.run("ls", "godiet", "testbed1", 22);
 		} catch (RemoteAccessException e) {
 			e.printStackTrace();
 		//	Assert.fail("Unable access to TestBed1 machine");

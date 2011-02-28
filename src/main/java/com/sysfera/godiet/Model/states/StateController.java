@@ -1,6 +1,6 @@
 package com.sysfera.godiet.Model.states;
 
-import com.sysfera.godiet.Model.xml.DietResource;
+import com.sysfera.godiet.Model.xml.DietResourceManager;
 import com.sysfera.godiet.exceptions.InconsistentStateException;
 /**
  * Master class of State Design Pattern
@@ -11,7 +11,7 @@ import com.sysfera.godiet.exceptions.InconsistentStateException;
  */
 public class StateController {
 
-	final DietResource agent;
+	final DietResourceManager agent;
 	final ReadyStateImpl ready;
 	final DownStateImpl down;
 	final UpStateImpl up;
@@ -19,7 +19,7 @@ public class StateController {
 	// Down by default
 	ResourceState state;
 
-	public StateController(DietResource agent) {
+	public StateController(DietResourceManager agent) {
 		this.agent = agent;
 		this.down = new DownStateImpl(this);
 		this.up = new UpStateImpl(this);

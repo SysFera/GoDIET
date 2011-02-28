@@ -1,6 +1,6 @@
 package com.sysfera.godiet.Utils;
 
-import com.sysfera.godiet.Model.xml.DietResource;
+import com.sysfera.godiet.Model.xml.DietResourceManager;
 import com.sysfera.godiet.exceptions.LaunchException;
 import com.sysfera.godiet.exceptions.PrepareException;
 
@@ -44,7 +44,7 @@ public class RemoteConfigurationHelper {
 	 * @param resource.
 	 * @throws PrepareException if create local files or can't copy files on remote host. 
 	 */
-	public void configure(DietResource resource) throws PrepareException
+	public void configure(DietResourceManager resource) throws PrepareException
 	{
 		
 	}
@@ -56,7 +56,7 @@ public class RemoteConfigurationHelper {
 	 * @param resource
 	 * @throws LaunchException if can't connect to the remote host or can't launch binary
 	 */
-	public void launch(DietResource resource) throws LaunchException{
+	public void launch(DietResourceManager resource) throws LaunchException{
 		
 	}
 	
@@ -67,7 +67,7 @@ public class RemoteConfigurationHelper {
 	 * @param resource
 	 * @throws LaunchException if can't connect to the remote host or can't launch binary
 	 */
-	public void stop(DietResource resource) throws LaunchException{
+	public void stop(DietResourceManager resource) throws LaunchException{
 		
 	}
 	

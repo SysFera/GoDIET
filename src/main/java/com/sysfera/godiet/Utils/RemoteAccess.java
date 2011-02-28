@@ -17,7 +17,7 @@ public interface RemoteAccess {
 	 * @param host The destination host
 	 * @param port The destination port
 	 */
-	public abstract void execute(String command, String user,String host,int port) throws RemoteAccessException;
+	public abstract void run(String command, String user,String host,int port) throws RemoteAccessException;
 
 	/**
 	 * Copy a file on remote host 

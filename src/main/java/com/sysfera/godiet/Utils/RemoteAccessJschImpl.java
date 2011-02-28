@@ -35,7 +35,7 @@ public class RemoteAccessJschImpl implements RemoteAccess {
 	 * java.lang.String, int)
 	 */
 	@Override
-	public void execute(String command, String user, String host, int port)
+	public void run(String command, String user, String host, int port)
 			throws RemoteAccessException {
 
 		if (userInfo == null) {

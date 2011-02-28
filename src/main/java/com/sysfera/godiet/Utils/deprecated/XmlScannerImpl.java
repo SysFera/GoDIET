@@ -36,7 +36,6 @@ import com.sysfera.godiet.Model.deprecated.Services;
 import com.sysfera.godiet.Model.physicalresources.deprecated.ComputeResource;
 import com.sysfera.godiet.Model.physicalresources.deprecated.GatewayResource;
 import com.sysfera.godiet.Model.physicalresources.deprecated.StorageResource;
-import com.sysfera.godiet.Utils.XmlScanner;
 import com.sysfera.godiet.exceptions.XMLReadException;
 
 /*
