@@ -36,7 +36,7 @@ public class CommandLaunchServices implements Command{
 		}
 		List<DietServiceManager> omniNames = rm.getDietModel().getOmninames();
 		for (DietServiceManager omniName : omniNames) {
-			omniName.start();
+			//omniName.getStateController().start();
 		}
 	}
 

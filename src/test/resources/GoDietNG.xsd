@@ -162,7 +162,6 @@
 						</xs:appinfo>
 					</xs:annotation>
 				</xs:attribute>
-				<xs:attribute name="login" type="xs:string" use="optional" />
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
@@ -189,6 +188,9 @@
 	<xs:complexType name="ssh">
 		<xs:attribute name="server" type="xs:string" use="required" />
 		<xs:attribute name="login" type="xs:string" use="required" />
+		<xs:attribute name="port" type="portType" default="22">
+		
+		</xs:attribute>
 	</xs:complexType>
 
 	<xs:complexType name="env">
@@ -293,7 +295,7 @@
 			<xs:element name="cfgOptions" type="cfgOptions" minOccurs="0"
 				maxOccurs="1" />
 		</xs:sequence>
-		<xs:attribute name="label" type="xs:string" use="optional" />
+		<xs:attribute name="id" type="xs:ID" use="required" />
 		<xs:attribute name="stats" type="xs:boolean" default="false" />
 	</xs:complexType>
 

@@ -69,11 +69,11 @@
 	</dietServices>
 
 	<dietInfrastructure>
-		<masterAgent>
+		<masterAgent id="ma1">
 			<config server="Kev" remoteBinary="dietAgent"/>
-			<localAgent>
+			<localAgent id="la1">
 				<config server="Graal" remoteBinary="dietAgent" />
-				<sed>
+				<sed id="sed1">
 					<config server="Graal" remoteBinary="dmat_manips_server" />
 					<parameters string="T" />
 				</sed>

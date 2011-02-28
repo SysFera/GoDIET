@@ -1,9 +1,5 @@
 package com.sysfera.godiet.Utils;
 
-import java.net.URL;
-
-import junit.framework.Assert;
-
 import org.junit.Test;
 
 import com.jcraft.jsch.JSchException;

@@ -17,7 +17,7 @@ public class ForwarderFactory {
 		config.setServer(gateway.getRef());
 		config.setRemoteBinary(FORWARDERBINARY);
 		forwarder.setConfig(config);
-		forwarder.setLabel("DietForwarder-" + gateway.getId() + "-" + type);
+		forwarder.setId("DietForwarder-" + gateway.getId() + "-" + type);
 		switch (type) {
 		case CLIENT:
 			forwarder.setType("CLIENT");

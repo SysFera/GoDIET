@@ -49,54 +49,54 @@
 	</dietServices>
 
 	<dietInfrastructure>
-		<masterAgent label="MA1">
+		<masterAgent id="MA1">
 			<config server="Node1" remoteBinary="dietAgent" />
-			<localAgent label="LA1">
+			<localAgent id="LA1">
 				<config server="Node2" remoteBinary="dietAgent" />
-				<localAgent label="LA2">
+				<localAgent id="LA2">
 					<config server="Node3" remoteBinary="dietAgent" />
-					<localAgent label="LA3">
+					<localAgent id="LA3">
 						<config server="Node3" remoteBinary="dietAgent" />
-						<sed>
+						<sed id="sed1">
 							<config server="Node3" remoteBinary="dmat_manips_server" />
 							<parameters string="T" />
 						</sed>
-						<sed>
+						<sed id="sed2">
 							<config server="Node3" remoteBinary="dmat_manips_server" />
 							<parameters string="T" />
 						</sed>
 					</localAgent>
-					<sed>
+					<sed id="sed3">
 						<config server="Node3" remoteBinary="dmat_manips_server" />
 						<parameters string="T" />
 					</sed>
-					<sed>
+					<sed id="sed4">
 						<config server="Node3" remoteBinary="dmat_manips_server" />
 						<parameters string="T" />
 					</sed>
-					<sed>
+					<sed id="sed5">
 						<config server="Node3" remoteBinary="dmat_manips_server" />
 						<parameters string="T" />
 					</sed>
 				</localAgent>
-				<sed>
+				<sed id="sed6">
 					<config server="Node3" remoteBinary="dmat_manips_server" />
 					<parameters string="T" />
 				</sed>
-				<sed>
+				<sed id="sed7">
 					<config server="Node3" remoteBinary="dmat_manips_server" />
 					<parameters string="T" />
 				</sed>
 			</localAgent>
-			<sed>
+			<sed id="sed8">
 				<config server="Node3" remoteBinary="dmat_manips_server" />
 				<parameters string="T" />
 			</sed>
-			<sed>
+			<sed id="sed9">
 				<config server="Node3" remoteBinary="dmat_manips_server" />
 				<parameters string="T" />
 			</sed>
-			<sed>
+			<sed id="sed10">
 				<config server="Node3" remoteBinary="dmat_manips_server" />
 				<parameters string="T" />
 			</sed>

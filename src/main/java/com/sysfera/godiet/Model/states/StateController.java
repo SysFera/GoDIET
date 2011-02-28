@@ -1,7 +1,6 @@
 package com.sysfera.godiet.Model.states;
 
 import com.sysfera.godiet.Model.xml.DietResourceManager;
-import com.sysfera.godiet.exceptions.InconsistentStateException;
 /**
  * Master class of State Design Pattern
  * Currently five State
@@ -27,54 +26,17 @@ public class StateController {
 		this.ready = new ReadyStateImpl(this);
 		
 		//Down by default
-		this.state= down;
+		this.state = down;
 	}
 
-	public void start() {
-		try {
-			this.state.start();
-		} catch (InconsistentStateException e) {
-			// TODO Logger
-			e.printStackTrace();
-		}
 
-	}
-
-	public void stop() {
-		try {
-			this.state.stop();
-		} catch (InconsistentStateException e) {
-			// TODO Logger
-			e.printStackTrace();
-		}
-		
-	}
-	
-	/**
-	 * Launch a thread and check the up resource
-	 */
-	public void check()
-	{
-		try {
-			this.state.check();
-		} catch (InconsistentStateException e) {
-			// TODO Logger
-			e.printStackTrace();
-		}
-	}
-
-	public void prepare() {
-		try {
-			this.state.prepare();
-		} catch (InconsistentStateException e) {
-			// TODO Logger
-			e.printStackTrace();
-		}
-		
-	}
 
 	public boolean isRunning()
 	{
 		return (state instanceof UpStateImpl);
+	}
+	
+	public ResourceState getState() {
+		return state;
 	}
 }

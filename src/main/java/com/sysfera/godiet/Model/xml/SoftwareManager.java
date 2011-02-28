@@ -6,29 +6,17 @@ import com.sysfera.godiet.Model.xml.generated.Node;
 /**
  * 
  * Use to manage software lifecycle.
+ * 
  * @author phi
- *
+ * 
  */
 public abstract class SoftwareManager {
 
-	private StateController stateController;
+	private   StateController stateController;
 
 	public SoftwareManager() {
+//		stateController = new StateController(this);
 	}
-
-	public void prepare() {
-		stateController.prepare();
-	}
-
-	public void start() {
-		stateController.start();
-	}
-
-	public void stop() {
-		stateController.stop();
-	}
-	
-
 
 	/**
 	 * Return the physical resource on which agent is plugged on
@@ -36,5 +24,14 @@ public abstract class SoftwareManager {
 	 * @return the pluggedOn or null otherwise
 	 */
 	public abstract Node getPluggedOn();
+
+	/**
+	 * 
+	 * @return stateController
+	 */
+	public StateController getStateController() {
+		return stateController;
+	}
+	
 
 }

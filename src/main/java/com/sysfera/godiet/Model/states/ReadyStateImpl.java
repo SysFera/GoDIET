@@ -31,15 +31,16 @@ public class ReadyStateImpl implements ResourceState{
 
 	/**
 	 * Start agent
+	 * @throws LaunchException 
 	 */
 	@Override
-	public void start() {
+	public void start() throws LaunchException {
 		try {
 			launcher.launch(this.stateController.agent);
 			this.stateController.state = this.stateController.up;
 		} catch (LaunchException e) {
-			//TODO Logger
 			this.stateController.state = this.stateController.error;
+			throw e;
 		}
 		
 	}

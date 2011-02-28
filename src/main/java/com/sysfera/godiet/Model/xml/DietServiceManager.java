@@ -3,7 +3,6 @@
  */
 package com.sysfera.godiet.Model.xml;
 
-import com.sysfera.godiet.Model.xml.generated.Agent;
 import com.sysfera.godiet.Model.xml.generated.DietService;
 import com.sysfera.godiet.Model.xml.generated.Node;
 
