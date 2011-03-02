@@ -5,6 +5,11 @@
 	<goDietConfiguration debug="1" saveStdOut="true"
 		saveStdErr="true" log="true">
 		<localscratch dir="/usr/local/tmp/scratch_godiet" />
+		<user>
+			<ssh>
+				<key path="fakeuser/id_rsa" />
+			</ssh>
+		</user>
 	</goDietConfiguration>
 
 	<infrastructure>
@@ -43,7 +48,7 @@
 	</infrastructure>
 
 	<dietServices>
-		<omniNames contact="192.168.1.17">
+		<omniNames>
 			<config server="Node1" remoteBinary="omniNames" />
 		</omniNames>
 	</dietServices>

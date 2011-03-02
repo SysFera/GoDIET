@@ -12,12 +12,9 @@ import com.sysfera.godiet.Model.xml.generated.Node;
  */
 public abstract class SoftwareManager {
 
-	private   StateController stateController;
+	protected StateController stateController;
 
-	public SoftwareManager() {
-//		stateController = new StateController(this);
-	}
-
+	
 	/**
 	 * Return the physical resource on which agent is plugged on
 	 * 
@@ -32,6 +29,5 @@ public abstract class SoftwareManager {
 	public StateController getStateController() {
 		return stateController;
 	}
-	
 
 }

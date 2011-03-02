@@ -38,8 +38,8 @@ public class CommandInitForwardersTest {
 			xmlLoadingCommand.execute();
 
 		} catch (CommandExecutionException e) {
-			Assert.fail();
 			log.error("Test Fail", e);
+			Assert.fail();
 		}
 
 	}

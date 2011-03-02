@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Properties;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,12 +21,14 @@ import com.sysfera.godiet.exceptions.RemoteAccessException;
 public class RemoteAccessJschImpl implements RemoteAccess {
 	private Logger log = LoggerFactory.getLogger(getClass());
 
-	private UserInfo userInfo;
-
 	private final JSch jsch;
 
 	public RemoteAccessJschImpl() {
 		this.jsch = new JSch();
+		Properties config = new java.util.Properties();
+		config.put("StrictHostKeyChecking", "no");
+		JSch.setConfig(config);
+
 	}
 
 	/*
@@ -37,12 +40,12 @@ public class RemoteAccessJschImpl implements RemoteAccess {
 	@Override
 	public void run(String command, String user, String host, int port)
 			throws RemoteAccessException {
-
-		if (userInfo == null) {
-			log.error("Unable to execute " + command + " on " + host
-					+ ". Initialize JSCH user info first");
-			return;
-		}
+		//
+		// if (userInfo == null) {
+		// log.error("Unable to execute " + command + " on " + host
+		// + ". Initialize JSCH user info first");
+		// return;
+		// }
 		Channel channel = null;
 		Session session = null;
 		try {
@@ -80,7 +83,7 @@ public class RemoteAccessJschImpl implements RemoteAccess {
 					Thread.sleep(1000);
 				} catch (Exception e) {
 					log.error("Runtime error. Thread Interupted.", e);
-					throw new RemoteAccessException("Thread interupted",e);
+					throw new RemoteAccessException("Thread interupted", e);
 				}
 			}
 			if (channel.getExitStatus() < 0)
@@ -88,7 +91,7 @@ public class RemoteAccessJschImpl implements RemoteAccess {
 
 		} catch (Exception e) {
 			throw new RemoteAccessException("Unable to SSh connect. Command: "
-					+ command,e);
+					+ command, e);
 		} finally {
 			try {
 				if (channel != null)
@@ -124,7 +127,7 @@ public class RemoteAccessJschImpl implements RemoteAccess {
 			session.connect();
 
 			// exec 'scp -t rfile' remotely
-			String command = "scp ";
+			String command = "scp -p -t " + localFile.getAbsolutePath();
 			channel = session.openChannel("exec");
 			((ChannelExec) channel).setCommand(command);
 
@@ -185,7 +188,7 @@ public class RemoteAccessJschImpl implements RemoteAccess {
 
 		} catch (Exception e) {
 			throw new RemoteAccessException("Unable to scp on : " + user + "@"
-					+ host + ":" + port,e);
+					+ host + ":" + port, e);
 		} finally {
 			try {
 				if (channel != null)
@@ -204,7 +207,7 @@ public class RemoteAccessJschImpl implements RemoteAccess {
 
 	}
 
-	private  int checkAck(InputStream in) throws IOException {
+	private int checkAck(InputStream in) throws IOException {
 		int b = in.read();
 		// b may be 0 for success,
 		// 1 for error,
@@ -223,26 +226,99 @@ public class RemoteAccessJschImpl implements RemoteAccess {
 				sb.append((char) c);
 			} while (c != '\n');
 			if (b == 1) { // error
-				log.error("Error when copy file. Remote output: " +sb.toString());
+				log.error("Error when copy file. Remote output: "
+						+ sb.toString());
 			}
 			if (b == 2) { // fatal error
-				log.error("Error when copy file. Remote output: " +sb.toString());
+				log.error("Error when copy file. Remote output: "
+						+ sb.toString());
 			}
 		}
 		return b;
 	}
 
-	/**
-	 * @param userInfo
-	 *            the userInfo to set
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.sysfera.godiet.Utils.RemoteAccess#addKey(java.lang.String,
+	 * java.lang.String, java.lang.String)
 	 */
-	public void setUserInfo(UserInfo userInfo) {
-		this.userInfo = userInfo;
-	}
-	
-	public void setPrivateKey(String keyfile) throws JSchException
-	{
-		jsch.addIdentity(keyfile);
+	@Override
+	public void addKey(String privateKey, String publicKey, String passphrase) {
+		try {
+			jsch.addIdentity(privateKey, publicKey, passphrase.getBytes());
+		} catch (JSchException e) {
+			log.error("Unable to add key");
+		} finally {
+			// Give to GC
+			passphrase = null;
+		}
+
 	}
 
+	// TODO: to improve
+	private UserInfo userInfo = new UserInfo() {
+
+		public String getPassword() {
+			return "";
+		}
+
+		public boolean promptYesNo(String str) {
+			return true;
+		}
+
+		public String getPassphrase() {
+			return "";
+		}
+
+		public boolean promptPassphrase(String message) {
+			return false;
+		}
+
+		public boolean promptPassword(String message) {
+			return false;
+		}
+
+		public void showMessage(String message) {
+		}
+	};
+
+	public void jschDebug(boolean activate) {
+		if (activate) {
+			com.jcraft.jsch.Logger jschLog = new com.jcraft.jsch.Logger() {
+
+				@Override
+				public void log(int level, String message) {
+					switch (level) {
+					case 0:
+						log.debug(message);
+						break;
+					case 1:
+						log.info(message);
+						break;
+					case 2:
+						log.warn(message);
+						break;
+					case 3:
+						log.error(message);
+						break;
+					case 4:
+						log.error("FATAL" + message);
+						break;
+
+					default:
+						break;
+					}
+
+				}
+
+				@Override
+				public boolean isEnabled(int level) {
+					return true;
+				}
+			};
+			JSch.setLogger(jschLog);
+		}else JSch.setLogger(null);
+
+	}
 }

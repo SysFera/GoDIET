@@ -6,7 +6,6 @@ import com.sysfera.godiet.Model.xml.DietResourceManager;
  * Currently five State
  * 
  * @author phi
- *
  */
 public class StateController {
 

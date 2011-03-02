@@ -22,6 +22,7 @@
 						configuration files</xs:documentation>
 				</xs:annotation>
 			</xs:element>
+			<xs:element name="user" type="user" />
 		</xs:sequence>
 		<xs:attribute name="debug" type="xs:int" default="1" />
 		<xs:attribute name="saveStdOut" type="xs:boolean"
@@ -32,6 +33,31 @@
 		<xs:attribute name="watcherPeriod" type="xs:int" default="30000" />
 	</xs:complexType>
 
+	<xs:complexType name="user">
+		<xs:annotation>
+			<xs:documentation>GoDiet user description</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:sequence>
+				<xs:element name="ssh" minOccurs="0">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="key">
+								<xs:annotation>
+									<xs:documentation>Give key to load in goDiet
+									</xs:documentation>
+								</xs:annotation>
+								<xs:complexType>
+									<xs:attribute name="path" type="xs:string" use="required" />
+									<xs:attribute name="pathPub" type="xs:string" use="optional"/>
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+		</xs:sequence>
+	</xs:complexType>
 
 	<xs:complexType name="infrastructure">
 		<xs:annotation>
@@ -116,7 +142,7 @@
 
 
 
-	<xs:complexType name="frontend">
+	<xs:complexType name="fronted">
 		<xs:complexContent>
 			<xs:extension base="gateway"></xs:extension>
 		</xs:complexContent>
@@ -169,11 +195,11 @@
 	<xs:complexType name="cluster">
 		<xs:sequence>
 			<xs:element name="computingNode" type="node" maxOccurs="unbounded" />
-			<xs:element name="frontend" type="frontend" maxOccurs="unbounded">
+			<xs:element name="fronted" type="fronted" maxOccurs="unbounded">
 				<xs:annotation>
 					<xs:documentation>Required. Node access to a cluster.
 						could have
-						more than 1 frontend. @see Gateway
+						more than 1 fronted. @see Gateway
 					</xs:documentation>
 				</xs:annotation>
 			</xs:element>
@@ -189,7 +215,7 @@
 		<xs:attribute name="server" type="xs:string" use="required" />
 		<xs:attribute name="login" type="xs:string" use="required" />
 		<xs:attribute name="port" type="portType" default="22">
-		
+
 		</xs:attribute>
 	</xs:complexType>
 
@@ -241,10 +267,9 @@
 		<xs:complexContent>
 			<xs:extension base="dietService">
 				<xs:sequence>
-					<xs:element name="cfgOptions" type="cfgOptions"
-						minOccurs="0" maxOccurs="1" />
+					<xs:element name="cfgOptions" type="options" minOccurs="0"
+						maxOccurs="1" />
 				</xs:sequence>
-				<xs:attribute name="contact" type="xs:string" use="required" />
 				<xs:attribute name="port" type="portType" use="optional"
 					default="2809">
 					<xs:annotation>
@@ -292,7 +317,7 @@
 		</xs:annotation>
 		<xs:sequence>
 			<xs:element name="config" type="config" />
-			<xs:element name="cfgOptions" type="cfgOptions" minOccurs="0"
+			<xs:element name="cfgOptions" type="options" minOccurs="0"
 				maxOccurs="1" />
 		</xs:sequence>
 		<xs:attribute name="id" type="xs:ID" use="required" />
@@ -354,7 +379,8 @@
 			<xs:documentation> A sed encapsulates a computational
 				server. For
 				instance it can be located on the entry point of a cluster
-				(Frontend)</xs:documentation>
+				(Fronted)
+			</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="agent">
@@ -409,16 +435,26 @@
 	</xs:complexType>
 
 
-	<xs:complexType name="cfgOptions">
+	<xs:complexType name="options">
+		<xs:annotation>
+			<xs:documentation>Ordered options used to configure agents
+			</xs:documentation>
+		</xs:annotation>
 		<xs:sequence>
-			<xs:element name="option" type="option" maxOccurs="unbounded" />
+			<xs:element name="option" maxOccurs="unbounded">
+				<xs:complexType>
+					<xs:annotation>
+						<xs:documentation>Decribe a key value option</xs:documentation>
+					</xs:annotation>
+					<xs:attribute name="key" type="xs:string" use="required" />
+					<xs:attribute name="value" type="xs:string" use="required" />
+				</xs:complexType>
+			</xs:element>
 		</xs:sequence>
 	</xs:complexType>
 
-	<xs:complexType name="option">
-		<xs:attribute name="name" type="xs:string" use="required" />
-		<xs:attribute name="value" type="xs:string" use="required" />
-	</xs:complexType>
+
+
 
 	<xs:simpleType name="portType">
 		<xs:restriction base="xs:int">

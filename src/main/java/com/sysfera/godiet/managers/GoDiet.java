@@ -1,6 +1,7 @@
 package com.sysfera.godiet.managers;
 
 import com.sysfera.godiet.Model.xml.generated.GoDietConfiguration;
+import com.sysfera.godiet.users.UserManager;
 
 /**
  * GoDiet configuration description
@@ -10,7 +11,8 @@ import com.sysfera.godiet.Model.xml.generated.GoDietConfiguration;
 public class GoDiet {
 
 	private GoDietConfiguration goDietConfiguration;
-
+	private UserManager userManager;
+	
 	public void setConfiguration(GoDietConfiguration goDietConfiguration) {
 		this.goDietConfiguration = goDietConfiguration;		
 	}
@@ -18,5 +20,6 @@ public class GoDiet {
 	public GoDietConfiguration getGoDietConfiguration() {
 		return goDietConfiguration;
 	}
+	
 	
 }

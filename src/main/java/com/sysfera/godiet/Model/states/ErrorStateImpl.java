@@ -1,37 +1,40 @@
 package com.sysfera.godiet.Model.states;
 
-import com.sysfera.godiet.exceptions.InconsistentStateException;
+import com.sysfera.godiet.exceptions.LaunchException;
+import com.sysfera.godiet.exceptions.PrepareException;
+
 
 /**
  * Error State. Currently no way to leave.
  * 
  * @author phi
- *
+ * 
  */
 public class ErrorStateImpl implements ResourceState {
 
-	
 	public ErrorStateImpl(StateController stateController) {
-		
-		//Nothing to do
-	}
-	@Override
-	public void start() throws InconsistentStateException {
-		throw new InconsistentStateException();
+
+		// Nothing to do
 	}
 
 	@Override
-	public void stop() throws InconsistentStateException {
-		throw new InconsistentStateException();
+	public void start() throws LaunchException {
+		throw new LaunchException("Erro State");
 	}
 
 	@Override
-	public void check() throws InconsistentStateException {
-		throw new InconsistentStateException();
+	public void stop() {
+
 	}
+
 	@Override
-	public void prepare() throws InconsistentStateException {
-		throw new InconsistentStateException();
+	public void check() {
+
+	}
+
+	@Override
+	public void prepare() throws PrepareException {
+		throw new PrepareException("In error states");
 	}
 
 }

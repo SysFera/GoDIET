@@ -2,7 +2,7 @@ package com.sysfera.godiet.exceptions;
 
 
 /**
- * Throw when a preparation execution could not be done
+ * Throw when a preparation could not be done
  * @author phi
  *
  */

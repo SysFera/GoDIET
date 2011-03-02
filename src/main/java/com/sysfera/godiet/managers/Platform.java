@@ -5,7 +5,7 @@ import java.util.List;
 
 import com.sysfera.godiet.Model.xml.generated.Cluster;
 import com.sysfera.godiet.Model.xml.generated.Domain;
-import com.sysfera.godiet.Model.xml.generated.Frontend;
+import com.sysfera.godiet.Model.xml.generated.Fronted;
 import com.sysfera.godiet.Model.xml.generated.Gateway;
 import com.sysfera.godiet.Model.xml.generated.Link;
 import com.sysfera.godiet.Model.xml.generated.Node;
@@ -22,7 +22,7 @@ public class Platform {
 	private final List<Node> nodes;
 	private final List<Cluster> clusters;
 	private final List<Gateway> gateways;
-	private final List<Frontend> frontends;
+	private final List<Fronted> frontends;
 	private final List<Link> links;
 	private final List<Domain> domains;
 
@@ -32,7 +32,7 @@ public class Platform {
 		this.nodes = new ArrayList<Node>();
 		this.clusters = new ArrayList<Cluster>();
 		this.gateways = new ArrayList<Gateway>();
-		this.frontends = new ArrayList<Frontend>();
+		this.frontends = new ArrayList<Fronted>();
 		this.links = new ArrayList<Link>();
 	}
 
@@ -61,7 +61,7 @@ public class Platform {
 	/**
 	 * @return the frontends
 	 */
-	public List<Frontend> getFrontends() {
+	public List<Fronted> getFrontends() {
 		return frontends;
 	}
 
@@ -83,7 +83,7 @@ public class Platform {
 		this.links.addAll(links);
 	}
 
-	public void addFrontends(List<Frontend> frontend) {
+	public void addFrontends(List<Fronted> frontend) {
 		this.frontends.addAll(frontend);
 
 	}

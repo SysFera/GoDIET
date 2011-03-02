@@ -5,11 +5,11 @@ import java.io.InputStream;
 
 import com.sysfera.godiet.Controller.ConsoleController;
 import com.sysfera.godiet.Controller.DietPlatformController;
-import com.sysfera.godiet.exceptions.XMLReadException;
+import com.sysfera.godiet.exceptions.XMLParseException;
 
 public interface XmlScanner {
 
 	public abstract void buildDietModel(InputStream xmlFile)
-			throws IOException, XMLReadException;
+			throws IOException, XMLParseException;
 
 }

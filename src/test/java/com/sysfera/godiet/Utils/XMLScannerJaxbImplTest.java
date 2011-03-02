@@ -9,7 +9,7 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.sysfera.godiet.exceptions.XMLReadException;
+import com.sysfera.godiet.exceptions.XMLParseException;
 
 public class XMLScannerJaxbImplTest {
 	private Logger log = LoggerFactory.getLogger(getClass());
@@ -26,7 +26,7 @@ public class XMLScannerJaxbImplTest {
 		} catch (IOException e) {
 			log.error("", e);
 			Assert.fail();
-		} catch (XMLReadException e) {
+		} catch (XMLParseException e) {
 			// Cool
 		}
 
@@ -44,7 +44,7 @@ public class XMLScannerJaxbImplTest {
 		} catch (IOException e) {
 			log.error("", e);
 			Assert.fail();
-		} catch (XMLReadException e) {
+		} catch (XMLParseException e) {
 			log.error("", e);
 			Assert.fail();
 		}

@@ -36,7 +36,7 @@ import com.sysfera.godiet.Model.deprecated.Services;
 import com.sysfera.godiet.Model.physicalresources.deprecated.ComputeResource;
 import com.sysfera.godiet.Model.physicalresources.deprecated.GatewayResource;
 import com.sysfera.godiet.Model.physicalresources.deprecated.StorageResource;
-import com.sysfera.godiet.exceptions.XMLReadException;
+import com.sysfera.godiet.exceptions.XMLParseException;
 
 /*
  * 
@@ -112,7 +112,7 @@ public class XmlScannerImpl implements ErrorHandler, XmlScanner {
 	 */
 	@Override
 	public void buildDietModel(InputStream xmlFile) throws IOException,
-			XMLReadException {
+			XMLParseException {
 
 		Document doc1;
 
@@ -162,7 +162,7 @@ public class XmlScannerImpl implements ErrorHandler, XmlScanner {
 		return doc;
 	}
 
-	private void visitDocument(Document document) throws XMLReadException {
+	private void visitDocument(Document document) throws XMLParseException {
 		// Initialize counters for unique labels on components seen in document
 
 		org.w3c.dom.Element element = document.getDocumentElement();
@@ -173,7 +173,7 @@ public class XmlScannerImpl implements ErrorHandler, XmlScanner {
 	}
 
 	private void visitElement_diet_configuration(org.w3c.dom.Element element)
-			throws XMLReadException { // <diet_configuration>
+			throws XMLParseException { // <diet_configuration>
 		org.w3c.dom.NodeList nodes = element.getChildNodes();
 		for (int i = 0; i < nodes.getLength(); i++) {
 			org.w3c.dom.Node node = nodes.item(i);
@@ -272,7 +272,7 @@ public class XmlScannerImpl implements ErrorHandler, XmlScanner {
 	// }
 
 	private void visitElement_infrastructure(org.w3c.dom.Element element)
-			throws XMLReadException {
+			throws XMLParseException {
 		String scratchDir = null;
 		org.w3c.dom.NodeList nodes = element.getChildNodes();
 		for (int i = 0; i < nodes.getLength(); i++) {
@@ -304,14 +304,14 @@ public class XmlScannerImpl implements ErrorHandler, XmlScanner {
 	}
 
 	private void visitElement_link(org.w3c.dom.Element element)
-			throws XMLReadException {
+			throws XMLParseException {
 		Link link = new Link();
 		GatewayResource from = mainController.getResourcePlatform().getGateway(
 				element.getAttribute("from"));
 		GatewayResource to = mainController.getResourcePlatform().getGateway(
 				element.getAttribute("to"));
 		if (from == null || to == null)
-			throw new XMLReadException("Unable to find the gateway"
+			throw new XMLParseException("Unable to find the gateway"
 					+ element.getAttribute("from") + " or "
 					+ element.getAttribute("to"));
 		link.setFrom(from);
@@ -320,7 +320,7 @@ public class XmlScannerImpl implements ErrorHandler, XmlScanner {
 	}
 
 	private void visitElement_domain(org.w3c.dom.Element element)
-			throws XMLReadException {
+			throws XMLParseException {
 
 		Domain domain = new Domain();
 		domain.setId(element.getAttribute("label"));
@@ -355,7 +355,7 @@ public class XmlScannerImpl implements ErrorHandler, XmlScanner {
 	}
 
 	private void visitElement_storage(org.w3c.dom.Element element)
-			throws XMLReadException { // <storage>
+			throws XMLParseException { // <storage>
 		String resourceLabel = null;
 		String scratchDir = null;
 		AccessMethod scpAccess = null;
@@ -414,7 +414,7 @@ public class XmlScannerImpl implements ErrorHandler, XmlScanner {
 	}
 
 	private void visitElement_compute(org.w3c.dom.Element element)
-			throws XMLReadException { // <compute>
+			throws XMLParseException { // <compute>
 		String resourceLabel = null;
 		String diskLabel = null;
 		String login = null;
@@ -485,7 +485,7 @@ public class XmlScannerImpl implements ErrorHandler, XmlScanner {
 	}
 
 	private void visitElement_cluster(org.w3c.dom.Element element)
-			throws XMLReadException {
+			throws XMLParseException {
 		String clusLabel = null;
 		String diskLabel = null;
 		String login = null;
@@ -547,7 +547,7 @@ public class XmlScannerImpl implements ErrorHandler, XmlScanner {
 
 	private void visitElement_node(org.w3c.dom.Element element,
 			ComputeCollection collection, String clusLogin)
-			throws XMLReadException {
+			throws XMLParseException {
 		String resourceLabel = null;
 		AccessMethod sshAccess = null;
 		EndPoint endPoint = null;
@@ -600,7 +600,7 @@ public class XmlScannerImpl implements ErrorHandler, XmlScanner {
 	}
 
 	private AccessMethod visitElement_scp(org.w3c.dom.Element element)
-			throws XMLReadException { // <scp>
+			throws XMLParseException { // <scp>
 		AccessMethod scpAccess = null;
 		String login = null, server = null;
 		org.w3c.dom.NamedNodeMap attrs = element.getAttributes();
@@ -616,13 +616,13 @@ public class XmlScannerImpl implements ErrorHandler, XmlScanner {
 		if (login != null) {
 			scpAccess = new AccessMethod("scp", server, login);
 		} else {
-			throw new XMLReadException("scp field need login");
+			throw new XMLParseException("scp field need login");
 		}
 		return scpAccess;
 	}
 
 	private AccessMethod visitElement_ssh(org.w3c.dom.Element element,
-			String clusLogin) throws XMLReadException {
+			String clusLogin) throws XMLParseException {
 		AccessMethod sshAccess = null;
 		String login = null, server = null;
 		org.w3c.dom.NamedNodeMap attrs = element.getAttributes();
@@ -640,7 +640,7 @@ public class XmlScannerImpl implements ErrorHandler, XmlScanner {
 		} else if (clusLogin != null) {
 			sshAccess = new AccessMethod("ssh", server, clusLogin);
 		} else {
-			throw new XMLReadException("Accessmethod need login");
+			throw new XMLParseException("Accessmethod need login");
 		}
 		return sshAccess;
 	}
@@ -708,7 +708,7 @@ public class XmlScannerImpl implements ErrorHandler, XmlScanner {
 	}
 
 	private void visitElement_diet_services(org.w3c.dom.Element element)
-			throws XMLReadException { // <diet_services>
+			throws XMLParseException { // <diet_services>
 		org.w3c.dom.NodeList nodes = element.getChildNodes();
 		for (int i = 0; i < nodes.getLength(); i++) {
 			org.w3c.dom.Node node = nodes.item(i);
@@ -728,7 +728,7 @@ public class XmlScannerImpl implements ErrorHandler, XmlScanner {
 	}
 
 	private void visitElement_omni_names(org.w3c.dom.Element element)
-			throws XMLReadException { // <omni_names>
+			throws XMLParseException { // <omni_names>
 		OmniNames omniNames = null;
 		Config config = new Config();
 		int port = -1;
@@ -745,7 +745,7 @@ public class XmlScannerImpl implements ErrorHandler, XmlScanner {
 		if (element.getAttribute("domain").equals("")
 				|| mainController.getResourcePlatform().getDomain(
 						element.getAttribute("domain")) == null) {
-			throw new XMLReadException();
+			throw new XMLParseException();
 		}
 		Domain dom = mainController.getResourcePlatform().getDomain(
 				element.getAttribute("domain"));
@@ -758,7 +758,7 @@ public class XmlScannerImpl implements ErrorHandler, XmlScanner {
 					config = visitElement_config(nodeElement);
 					compRes = mainController.getComputeResource(config.server);
 					if (compRes == null) {
-						throw new XMLReadException("Definition of omni_names "
+						throw new XMLParseException("Definition of omni_names "
 								+ "incorrect.  Host label " + config.server
 								+ " does not refer"
 								+ "to valid compute resource.");

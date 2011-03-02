@@ -78,13 +78,13 @@
 	</infrastructure>
 
 	<dietServices>
-		<omniNames contact="192.168.1.17">
+		<omniNames>
 			<config server="Node1" remoteBinary="omniNames" />
 		</omniNames>
-		<omniNames contact="192.168.2.17">
+		<omniNames>
 			<config server="Node2" remoteBinary="omniNames" />
 		</omniNames>
-		<omniNames contact="192.168.3.17">
+		<omniNames>
 			<config server="Node4" remoteBinary="omniNames" />
 		</omniNames>
 	</dietServices>

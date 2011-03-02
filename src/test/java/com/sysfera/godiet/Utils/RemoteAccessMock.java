@@ -60,4 +60,10 @@ public class RemoteAccessMock implements RemoteAccess {
 	public void setRemoteAccessDown(boolean remoteAccessDown) {
 		this.remoteAccessDown = remoteAccessDown;
 	}
+
+	@Override
+	public void addKey(String key,String pubkey,String pass) {
+		log.debug("Add key: " + key);
+		
+	}
 }

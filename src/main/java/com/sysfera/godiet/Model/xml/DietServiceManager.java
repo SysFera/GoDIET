@@ -5,6 +5,7 @@ package com.sysfera.godiet.Model.xml;
 
 import com.sysfera.godiet.Model.xml.generated.DietService;
 import com.sysfera.godiet.Model.xml.generated.Node;
+import com.sysfera.godiet.exceptions.LaunchException;
 
 /**
  * Use to manage and control all DIET services (OmniNames ...)
@@ -12,7 +13,7 @@ import com.sysfera.godiet.Model.xml.generated.Node;
  * @author phi
  * 
  */
-public class DietServiceManager extends SoftwareManager {
+public class DietServiceManager {//extends SoftwareManager {
 
 	private DietService dietServiceManaged;
 
@@ -35,11 +36,15 @@ public class DietServiceManager extends SoftwareManager {
 	}
 
 	
-	@Override
+//	@Override
 	public Node getPluggedOn() {
 		if (dietServiceManaged != null)
 			return dietServiceManaged.getConfig().getServer();
 		return null;
+	}
+
+	public void start()  throws LaunchException {
+		//stateController.getState().start();
 	}
 
 }

@@ -60,10 +60,10 @@
 		</infrastructure>
 
 	<dietServices>
-		<omniNames contact="192.168.1.17">
+		<omniNames>
 			<config server="Kev" remoteBinary="omniNames" />
 		</omniNames>
-		<omniNames contact="140.77.166.19">
+		<omniNames>
 			<config server="Graal" remoteBinary="omniNames" />
 		</omniNames>
 	</dietServices>

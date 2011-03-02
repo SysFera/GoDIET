@@ -1,6 +1,11 @@
 package com.sysfera.godiet.Utils;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -8,6 +13,8 @@ import org.slf4j.LoggerFactory;
 import com.sysfera.godiet.Model.xml.DietResourceManager;
 import com.sysfera.godiet.Model.xml.generated.GoDietConfiguration;
 import com.sysfera.godiet.Model.xml.generated.Node;
+import com.sysfera.godiet.Model.xml.generated.Options;
+import com.sysfera.godiet.Model.xml.generated.Options.Option;
 import com.sysfera.godiet.Model.xml.generated.Scratch;
 import com.sysfera.godiet.Model.xml.generated.Ssh;
 import com.sysfera.godiet.exceptions.LaunchException;
@@ -27,7 +34,7 @@ public class RemoteConfigurationHelper {
 
 	private RemoteAccess remoteAccess;
 	private GoDietConfiguration configuration;
-	
+
 	private RemoteConfigurationHelper() {
 	}
 
@@ -54,35 +61,43 @@ public class RemoteConfigurationHelper {
 	 * on remote physical resource
 	 * 
 	 * @param resource
-	 *            
+	 * 
 	 * @throws PrepareException
 	 *             if create local files or can't copy files on remote host.
 	 */
 	public void configure(DietResourceManager resource) throws PrepareException {
 		if (remoteAccess == null || configuration == null) {
 			log.error("Unable to configure remote resource. Remote configurator isn't corectly initialized");
-			throw new PrepareException("Initialize the remote access and configuration first");
+			throw new PrepareException(
+					"Initialize the remote access and configuration first");
 		}
+
 		Node node = resource.getPluggedOn();
+		if (node == null) {
+			log.error("Unable to configure remote resource. Resource not plugged on physial resource");
+			throw new PrepareException(
+					"Resource not plugged on physial resource");
+		}
 		Ssh sshConfig = node.getSsh();
-
-		// Create Remote Directory
-
-		String command = "mkdir -p " + node.getDisk().getScratch();
+		String command = "";
 		try {
+			// Create Remote Directory
+			command = "mkdir -p " + node.getDisk().getScratch().getDir();
 			remoteAccess.run(command, sshConfig.getLogin(),
 					sshConfig.getServer(), sshConfig.getPort());
-			createConfigFile(resource);
-			
+
+			// Create local config file
+			File file = createConfigFile(resource);
+
+			// Copy file on remote host
+			remoteAccess.copy(file, sshConfig.getLogin(),
+					sshConfig.getServer(), sshConfig.getPort());
 		} catch (RemoteAccessException e) {
-			log.error(
-					"Unable to configure "
-							+ resource.getDietAgent().getId() + " on "
-							+ node.getId()+" commmand "+ command, e);
+			log.error("Unable to configure " + resource.getDietAgent().getId()
+					+ " on " + node.getId() + " commmand " + command, e);
 			throw new PrepareException("Unable to run configure "
-					+ resource.getDietAgent().getId() + " on "
-					+ node.getId()
-					+" .Commmand: "+ command);
+					+ resource.getDietAgent().getId() + " on " + node.getId()
+					+ " .Commmand: " + command,e);
 		}
 
 	}
@@ -90,20 +105,58 @@ public class RemoteConfigurationHelper {
 	/**
 	 * 
 	 * Create the resource configuration file on local scratch directory
-	 * Configuration must not be null
+	 * 
+	 * 
 	 * @param resource
-	 * @throws PrepareException if unable write on local scratch directory
+	 * @throws PrepareException
+	 *             if unable write on local scratch directory
 	 */
-	private void createConfigFile(DietResourceManager resource)throws PrepareException {
+	private File createConfigFile(DietResourceManager resource)
+			throws PrepareException {
 		Scratch scratch = configuration.getLocalscratch();
-		
-		if(!new File(scratch.getDir()).mkdirs())
-		{
-			throw new PrepareException("Unable to create local directories " + scratch.getDir());
+		File file = new File(scratch.getDir());
+		if (!file.exists()) {
+
+			if (!file.mkdirs()) {
+				throw new PrepareException(
+						"Unable to create local directories "
+								+ scratch.getDir());
+			}
 		}
-		
-		//resource.getDietAgent().;
-		
+		String filename = getConfigFileName(resource);
+		File retFile = new File(scratch.getDir() + "/" + filename);
+
+		BufferedWriter writerFile = null;
+		try {
+
+			writerFile = new BufferedWriter(new OutputStreamWriter(
+					new FileOutputStream(retFile)));
+			Options options = resource.getDietAgent().getCfgOptions();
+
+			if (options != null) {
+				for (Option option : options.getOption()) {
+					writerFile.write(option.getKey() + " = "
+							+ option.getValue());
+					writerFile.newLine();
+				}
+			}
+			writerFile.flush();
+			writerFile.close();
+		} catch (FileNotFoundException e) {
+			throw new PrepareException("Unable to create file "
+					+ scratch.getDir() + filename, e);
+		} catch (IOException e) {
+			throw new PrepareException("Unable to write on file "
+					+ scratch.getDir() + filename, e);
+		} finally {
+			if (writerFile != null)
+				try {
+					writerFile.close();
+				} catch (IOException e) {
+				}
+
+		}
+		return retFile;
 	}
 
 	/**
@@ -134,8 +187,16 @@ public class RemoteConfigurationHelper {
 	public void setRemoteAccess(RemoteAccess remoteAccess) {
 		this.remoteAccess = remoteAccess;
 	}
-	
+
 	public void setConfiguration(GoDietConfiguration configuration) {
 		this.configuration = configuration;
+	}
+
+	private String getFileName(DietResourceManager resource) {
+		return resource.getDietAgent().getId();
+	}
+
+	private String getConfigFileName(DietResourceManager resource) {
+		return getFileName(resource) + ".cfg";
 	}
 }

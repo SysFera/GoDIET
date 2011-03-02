@@ -20,7 +20,7 @@ import jline.SimpleCompletor;
 
 import com.sysfera.godiet.Controller.ConsoleController;
 import com.sysfera.godiet.Events.DeployStateChange;
-import com.sysfera.godiet.exceptions.XMLReadException;
+import com.sysfera.godiet.exceptions.XMLParseException;
 
 /**
  * 
@@ -153,7 +153,7 @@ public class GoDIET implements java.util.Observer {
 					System.out.println(ioe.getMessage());
 				}
 			} // End Shell mode context
-		} catch (XMLReadException e) {
+		} catch (XMLParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

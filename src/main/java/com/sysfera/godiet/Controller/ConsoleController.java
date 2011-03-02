@@ -26,7 +26,7 @@ import com.sysfera.godiet.Utils.XmlScannerJaxbImpl;
 import com.sysfera.godiet.Utils.deprecated.XmlScanner;
 import com.sysfera.godiet.Utils.deprecated.XmlScannerImpl;
 import com.sysfera.godiet.exceptions.LaunchException;
-import com.sysfera.godiet.exceptions.XMLReadException;
+import com.sysfera.godiet.exceptions.XMLParseException;
 import com.sysfera.godiet.managers.ResourcesManager;
 
 /**
@@ -181,7 +181,7 @@ public class ConsoleController extends java.util.Observable implements
 		return giveUserCtrl;
 	}
 
-	public void loadXmlFile(String xmlFileName) throws XMLReadException {
+	public void loadXmlFile(String xmlFileName) throws XMLParseException {
 
 		this.printOutput("Parsing xml file: " + xmlFileName, 0);
 
@@ -196,7 +196,7 @@ public class ConsoleController extends java.util.Observable implements
 		setFileloaded();
 	}
 
-	public void loadXmlFile(InputStream xmlInputStream) throws XMLReadException {
+	public void loadXmlFile(InputStream xmlInputStream) throws XMLParseException {
 
 		try {
 			xmlScanner.buildDietModel(xmlInputStream);

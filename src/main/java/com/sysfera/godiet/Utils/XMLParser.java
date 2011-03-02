@@ -4,11 +4,11 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import com.sysfera.godiet.Model.xml.generated.DietDescription;
-import com.sysfera.godiet.exceptions.XMLReadException;
+import com.sysfera.godiet.exceptions.XMLParseException;
 
 public interface XMLParser {
 	
 	
 	public DietDescription buildDietModel(InputStream xmlFile)
-			throws IOException, XMLReadException;
+			throws IOException, XMLParseException;
 }

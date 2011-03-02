@@ -1,20 +1,22 @@
 package com.sysfera.godiet.Model.states;
 
-import com.sysfera.godiet.Utils.RemoteConfigurationHelper;
-import com.sysfera.godiet.exceptions.InconsistentStateException;
-import com.sysfera.godiet.exceptions.LaunchException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import com.sysfera.godiet.Utils.RemoteConfigurationHelper;
+import com.sysfera.godiet.exceptions.LaunchException;
+import com.sysfera.godiet.exceptions.PrepareException;
 
 /**
- * The remote agent is running.
- * Call Stop to stop remote agent and down state
+ * The remote agent is running. Call Stop to stop remote agent and down state
  * Call check to check if the remote agent is already active
  * 
  * 
  * @author phi
- *
+ * 
  */
 public class UpStateImpl implements ResourceState {
+	private Logger log = LoggerFactory.getLogger(getClass());
 
 	private final RemoteConfigurationHelper launcher;
 	private final StateController stateController;
@@ -25,42 +27,40 @@ public class UpStateImpl implements ResourceState {
 	}
 
 	@Override
-	public void prepare() throws InconsistentStateException {
-		throw new InconsistentStateException();
+	public void prepare() throws PrepareException {
+		log.warn("Already run !");
 	}
 
 	@Override
-	public void start() throws InconsistentStateException {
-		throw new InconsistentStateException();
-		
+	public void start() {
+		log.warn("Try to run an up resource !");
 	}
 
 	/**
-	 * Stop agent
-	 * Could set the state on Down if ok or error if remote execution error.
+	 * Stop agent Could set the state on Down if ok or error if remote execution
+	 * error.
 	 */
 	@Override
-	public void stop()  {
+	public void stop() {
 		try {
 			launcher.stop(this.stateController.agent);
 			this.stateController.state = this.stateController.down;
 		} catch (LaunchException e) {
-			//TODO Logger
+			// TODO Logger
 			this.stateController.state = this.stateController.error;
-		
-		}		
+
+		}
 	}
 
 	/**
-	 * Check if the agent is currently up
-	 * if not goto error state
-	 * @throws InconsistentStateException 
+	 * Check if the agent is currently up if not goto error state
+	 * 
+	 * @throws InconsistentStateException
 	 */
 	@Override
-	public void check() throws InconsistentStateException  {
-		//TODO : implement check
-		throw new InconsistentStateException("Not yet implemented");		
+	public void check() {
+		// TODO : implement check
+		log.error("Check Not yet implemented");
 	}
-
 
 }

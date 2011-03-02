@@ -7,18 +7,19 @@ import org.slf4j.LoggerFactory;
 
 import com.sysfera.godiet.Model.xml.DietServiceManager;
 import com.sysfera.godiet.exceptions.CommandExecutionException;
+import com.sysfera.godiet.exceptions.LaunchException;
 import com.sysfera.godiet.managers.ResourcesManager;
 
 /**
  * Launch diet services.
+ * 
  * @author phi
- *
+ * 
  */
-public class CommandLaunchServices implements Command{
+public class CommandLaunchServices implements Command {
 	private Logger log = LoggerFactory.getLogger(getClass());
 
 	private ResourcesManager rm;
-
 
 	@Override
 	public String getDescription() {
@@ -36,14 +37,18 @@ public class CommandLaunchServices implements Command{
 		}
 		List<DietServiceManager> omniNames = rm.getDietModel().getOmninames();
 		for (DietServiceManager omniName : omniNames) {
-			//omniName.getStateController().start();
+			try {
+				omniName.start();
+
+			} catch (LaunchException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 	}
 
-	
-	public void setRm(ResourcesManager rm)
-	{
+	public void setRm(ResourcesManager rm) {
 		this.rm = rm;
 	}
-	
+
 }

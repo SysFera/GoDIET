@@ -5,16 +5,31 @@ import java.util.List;
 
 import com.sysfera.godiet.Model.xml.DietResourceManager;
 import com.sysfera.godiet.Model.xml.DietServiceManager;
-import com.sysfera.godiet.Model.xml.generated.DietService;
+import com.sysfera.godiet.Model.xml.generated.Forwarder;
+import com.sysfera.godiet.Model.xml.generated.LocalAgent;
+import com.sysfera.godiet.Model.xml.generated.MasterAgent;
 import com.sysfera.godiet.Model.xml.generated.OmniNames;
+import com.sysfera.godiet.Model.xml.generated.Sed;
+import com.sysfera.godiet.exceptions.DietResourceCreationException;
+import com.sysfera.godiet.factories.ForwarderFactory;
+import com.sysfera.godiet.factories.LocalAgentFactory;
+import com.sysfera.godiet.factories.MasterAgentFactory;
+import com.sysfera.godiet.factories.OmniNamesFactory;
+import com.sysfera.godiet.factories.SedFactory;
 
 /**
- * Diet platform description
+ * Diet platform description.
  * 
  * @author phi
  * 
  */
 public class Diet {
+
+	private final MasterAgentFactory maFactory;
+	private final LocalAgentFactory laFactory;
+	private final SedFactory sedFactory;
+	private final OmniNamesFactory omFactory;
+	private final ForwarderFactory forwFactory;
 
 	private final List<DietResourceManager> masterAgents;
 	private final List<DietResourceManager> localAgents;
@@ -28,6 +43,12 @@ public class Diet {
 		this.seds = new ArrayList<DietResourceManager>();
 		this.omninames = new ArrayList<DietServiceManager>();
 		this.forwaders = new ArrayList<DietResourceManager>();
+
+		this.maFactory = new MasterAgentFactory();
+		this.laFactory = new LocalAgentFactory();
+		this.sedFactory = new SedFactory();
+		this.omFactory = new OmniNamesFactory();
+		this.forwFactory = new ForwarderFactory();
 	}
 
 	/**
@@ -67,49 +88,53 @@ public class Diet {
 	}
 
 	/**
-	 * TODO: check validity of parameter
 	 * 
 	 * @param sedDiet
+	 * @throws DietResourceCreationException
 	 */
-	public void addSed(DietResourceManager sedDiet) {
-		this.seds.add(sedDiet);
+	public void addSed(Sed sedDiet) throws DietResourceCreationException {
+		sedFactory.create(sedDiet);
+		this.seds.add(sedFactory.create(sedDiet));
+
 	}
 
 	/**
-	 * TODO: check validity of parameter
-	 * 
 	 * @param dietResource
+	 * @throws DietResourceCreationException
 	 */
-	public void addLocalAgent(DietResourceManager dietResource) {
-		this.localAgents.add(dietResource);
+	public void addLocalAgent(LocalAgent dietResource)
+			throws DietResourceCreationException {
+		this.localAgents.add(laFactory.create(dietResource));
 	}
 
 	/**
-	 * TODO: check validity of parameter
-	 * 
 	 * @param dietResource
+	 * @throws DietResourceCreationException
 	 */
-	public void addMasterAgent(DietResourceManager dietResource) {
-		this.masterAgents.add(dietResource);
+	public void addMasterAgent(MasterAgent dietResource)
+			throws DietResourceCreationException {
+		this.masterAgents.add(maFactory.create(dietResource));
 
 	}
 
 	/**
-	 * TODO: check validity of parameter
 	 * 
 	 * @param forwarder
+	 * @throws DietResourceCreationException
 	 */
-	public void addForwarder(DietResourceManager forwarder) {
-		this.forwaders.add(forwarder);
+	public void addForwarder(Forwarder forwarder)
+			throws DietResourceCreationException {
+
+		this.forwaders.add(forwFactory.create(forwarder));
 	}
 
 	/**
-	 * TODO: check validity of parameter
-	 * 
 	 * @param omniNames
+	 * @throws DietResourceCreationException
 	 */
-	public void addOmniName(DietServiceManager omniName) {
-		this.omninames.add(omniName);
+	public void addOmniName(OmniNames omniName)
+			throws DietResourceCreationException {
+		this.omninames.add(omFactory.create(omniName));
 	}
 
 }

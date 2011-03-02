@@ -1,8 +1,11 @@
 package com.sysfera.godiet.Model.states;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.sysfera.godiet.Utils.RemoteConfigurationHelper;
-import com.sysfera.godiet.exceptions.InconsistentStateException;
 import com.sysfera.godiet.exceptions.LaunchException;
+import com.sysfera.godiet.exceptions.PrepareException;
 
 /**
  * 
@@ -14,7 +17,8 @@ import com.sysfera.godiet.exceptions.LaunchException;
  *
  */
 public class ReadyStateImpl implements ResourceState{
-	
+	private Logger log = LoggerFactory.getLogger(getClass());
+
 	private final RemoteConfigurationHelper launcher;
 	private final StateController stateController;
 	
@@ -24,9 +28,8 @@ public class ReadyStateImpl implements ResourceState{
 	}
 
 	@Override
-	public void prepare() throws InconsistentStateException {
-		throw new InconsistentStateException();
-		
+	public void prepare() throws PrepareException {
+		log.warn("Already prepared !");
 	}
 
 	/**
@@ -55,8 +58,7 @@ public class ReadyStateImpl implements ResourceState{
 	}
 
 	@Override
-	public void check() throws InconsistentStateException {
-		throw new InconsistentStateException();		
+	public void check() {
 	}
 
 }
