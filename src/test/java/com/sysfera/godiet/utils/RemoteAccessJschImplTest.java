@@ -1,4 +1,4 @@
-package com.sysfera.godiet.Utils;
+package com.sysfera.godiet.utils;
 
 import org.junit.Assert;
 import org.junit.Test;

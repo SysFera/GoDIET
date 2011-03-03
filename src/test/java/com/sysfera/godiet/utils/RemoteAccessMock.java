@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.sysfera.godiet.Utils;
+package com.sysfera.godiet.utils;
 
 import java.io.File;
 

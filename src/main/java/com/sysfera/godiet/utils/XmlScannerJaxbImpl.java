@@ -25,7 +25,7 @@ import com.sysfera.godiet.model.xml.generated.DietDescription;
 public class XmlScannerJaxbImpl implements XMLParser{ 
 
 	private String GODIET_SCHEMA_PATH = "/GoDietNG.xsd";
-	private String MODEL_PACKAGE_NAME = "com.sysfera.godiet.Model.xml.generated";
+	private String MODEL_PACKAGE_NAME = "com.sysfera.godiet.model.xml.generated";
 
 	/**
 	 */

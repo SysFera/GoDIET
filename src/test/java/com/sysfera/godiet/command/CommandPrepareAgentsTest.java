@@ -9,11 +9,11 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.sysfera.godiet.Utils.RemoteAccessMock;
 import com.sysfera.godiet.exceptions.CommandExecutionException;
 import com.sysfera.godiet.managers.ResourcesManager;
 import com.sysfera.godiet.utils.RemoteAccess;
 import com.sysfera.godiet.utils.RemoteAccessJschImpl;
+import com.sysfera.godiet.utils.RemoteAccessMock;
 import com.sysfera.godiet.utils.RemoteConfigurationHelper;
 import com.sysfera.godiet.utils.XmlScannerJaxbImpl;
 
