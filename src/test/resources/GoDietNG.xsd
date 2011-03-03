@@ -22,7 +22,7 @@
 						configuration files</xs:documentation>
 				</xs:annotation>
 			</xs:element>
-			<xs:element name="user" type="user" />
+			<xs:element name="user" type="user" minOccurs="0" />
 		</xs:sequence>
 		<xs:attribute name="debug" type="xs:int" default="1" />
 		<xs:attribute name="saveStdOut" type="xs:boolean"
