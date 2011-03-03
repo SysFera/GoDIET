@@ -10,12 +10,12 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.sysfera.godiet.Model.xml.DietResourceManager;
-import com.sysfera.godiet.Utils.XmlScannerJaxbImpl;
 import com.sysfera.godiet.command.CommandInitForwarders;
 import com.sysfera.godiet.command.CommandLoadXMLImpl;
 import com.sysfera.godiet.exceptions.CommandExecutionException;
 import com.sysfera.godiet.managers.ResourcesManager;
+import com.sysfera.godiet.model.xml.DietResourceManager;
+import com.sysfera.godiet.utils.XmlScannerJaxbImpl;
 
 public class CommandInitForwardersTest {
 

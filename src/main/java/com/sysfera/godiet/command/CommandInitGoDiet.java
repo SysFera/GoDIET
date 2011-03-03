@@ -1,7 +1,7 @@
 package com.sysfera.godiet.command;
 
-import com.sysfera.godiet.Model.xml.generated.GoDietConfiguration;
 import com.sysfera.godiet.exceptions.CommandExecutionException;
+import com.sysfera.godiet.model.xml.generated.GoDietConfiguration;
 
 /**
  * Command to initialize GoDiet

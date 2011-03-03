@@ -1,11 +1,11 @@
 package com.sysfera.godiet.factories;
 
-import com.sysfera.godiet.Model.xml.DietResourceManager;
-import com.sysfera.godiet.Model.xml.generated.LocalAgent;
-import com.sysfera.godiet.Model.xml.generated.ObjectFactory;
-import com.sysfera.godiet.Model.xml.generated.Options;
-import com.sysfera.godiet.Model.xml.generated.Options.Option;
 import com.sysfera.godiet.exceptions.DietResourceCreationException;
+import com.sysfera.godiet.model.xml.DietResourceManager;
+import com.sysfera.godiet.model.xml.generated.LocalAgent;
+import com.sysfera.godiet.model.xml.generated.ObjectFactory;
+import com.sysfera.godiet.model.xml.generated.Options;
+import com.sysfera.godiet.model.xml.generated.Options.Option;
 
 
 /**

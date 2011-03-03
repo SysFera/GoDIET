@@ -3,8 +3,8 @@ package com.sysfera.godiet.command;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.sysfera.godiet.Model.xml.generated.GoDietConfiguration;
 import com.sysfera.godiet.exceptions.CommandExecutionException;
+import com.sysfera.godiet.model.xml.generated.GoDietConfiguration;
 
 public class CommandInitUser implements Command {
 	private Logger log = LoggerFactory.getLogger(getClass());

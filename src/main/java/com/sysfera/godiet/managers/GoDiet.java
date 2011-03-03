@@ -1,6 +1,6 @@
 package com.sysfera.godiet.managers;
 
-import com.sysfera.godiet.Model.xml.generated.GoDietConfiguration;
+import com.sysfera.godiet.model.xml.generated.GoDietConfiguration;
 import com.sysfera.godiet.users.UserManager;
 
 /**

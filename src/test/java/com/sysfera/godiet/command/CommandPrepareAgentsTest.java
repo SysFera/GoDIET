@@ -9,12 +9,13 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.sysfera.godiet.Utils.RemoteAccess;
-import com.sysfera.godiet.Utils.RemoteAccessJschImpl;
-import com.sysfera.godiet.Utils.RemoteConfigurationHelper;
-import com.sysfera.godiet.Utils.XmlScannerJaxbImpl;
+import com.sysfera.godiet.Utils.RemoteAccessMock;
 import com.sysfera.godiet.exceptions.CommandExecutionException;
 import com.sysfera.godiet.managers.ResourcesManager;
+import com.sysfera.godiet.utils.RemoteAccess;
+import com.sysfera.godiet.utils.RemoteAccessJschImpl;
+import com.sysfera.godiet.utils.RemoteConfigurationHelper;
+import com.sysfera.godiet.utils.XmlScannerJaxbImpl;
 
 public class CommandPrepareAgentsTest {
 
@@ -45,8 +46,8 @@ public class CommandPrepareAgentsTest {
 		//Init Remote Access
 		RemoteConfigurationHelper remoteHelper = RemoteConfigurationHelper.getInstance();
 		remoteHelper.setConfiguration(rm.getGodietConfiguration().getGoDietConfiguration());
-		RemoteAccess remoteAccess = new RemoteAccessJschImpl();
-		remoteAccess.addKey("/home/phi/.ssh/id_rsa", "/home/phi/.ssh/id_rsa.pub", "mondedemerde0");
+		RemoteAccess remoteAccess = new RemoteAccessMock();
+		
 		remoteHelper.setRemoteAccess(remoteAccess);
 
 	}

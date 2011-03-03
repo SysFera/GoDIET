@@ -1,7 +1,7 @@
 package com.sysfera.godiet.factories;
 
-import com.sysfera.godiet.Model.xml.DietResourceManager;
-import com.sysfera.godiet.Model.xml.generated.Sed;
+import com.sysfera.godiet.model.xml.DietResourceManager;
+import com.sysfera.godiet.model.xml.generated.Sed;
 
 
 /**

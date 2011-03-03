@@ -3,12 +3,12 @@ package com.sysfera.godiet.managers;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.sysfera.godiet.Model.xml.generated.Cluster;
-import com.sysfera.godiet.Model.xml.generated.Domain;
-import com.sysfera.godiet.Model.xml.generated.Fronted;
-import com.sysfera.godiet.Model.xml.generated.Gateway;
-import com.sysfera.godiet.Model.xml.generated.Link;
-import com.sysfera.godiet.Model.xml.generated.Node;
+import com.sysfera.godiet.model.xml.generated.Cluster;
+import com.sysfera.godiet.model.xml.generated.Domain;
+import com.sysfera.godiet.model.xml.generated.Fronted;
+import com.sysfera.godiet.model.xml.generated.Gateway;
+import com.sysfera.godiet.model.xml.generated.Link;
+import com.sysfera.godiet.model.xml.generated.Node;
 
 /**
  * Physical infrastructure description

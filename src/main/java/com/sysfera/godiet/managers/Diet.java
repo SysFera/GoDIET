@@ -3,19 +3,19 @@ package com.sysfera.godiet.managers;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.sysfera.godiet.Model.xml.DietResourceManager;
-import com.sysfera.godiet.Model.xml.DietServiceManager;
-import com.sysfera.godiet.Model.xml.generated.Forwarder;
-import com.sysfera.godiet.Model.xml.generated.LocalAgent;
-import com.sysfera.godiet.Model.xml.generated.MasterAgent;
-import com.sysfera.godiet.Model.xml.generated.OmniNames;
-import com.sysfera.godiet.Model.xml.generated.Sed;
 import com.sysfera.godiet.exceptions.DietResourceCreationException;
 import com.sysfera.godiet.factories.ForwarderFactory;
 import com.sysfera.godiet.factories.LocalAgentFactory;
 import com.sysfera.godiet.factories.MasterAgentFactory;
 import com.sysfera.godiet.factories.OmniNamesFactory;
 import com.sysfera.godiet.factories.SedFactory;
+import com.sysfera.godiet.model.xml.DietResourceManager;
+import com.sysfera.godiet.model.xml.DietServiceManager;
+import com.sysfera.godiet.model.xml.generated.Forwarder;
+import com.sysfera.godiet.model.xml.generated.LocalAgent;
+import com.sysfera.godiet.model.xml.generated.MasterAgent;
+import com.sysfera.godiet.model.xml.generated.OmniNames;
+import com.sysfera.godiet.model.xml.generated.Sed;
 
 /**
  * Diet platform description.

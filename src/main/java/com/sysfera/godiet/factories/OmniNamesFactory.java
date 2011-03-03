@@ -1,7 +1,7 @@
 package com.sysfera.godiet.factories;
 
-import com.sysfera.godiet.Model.xml.DietServiceManager;
-import com.sysfera.godiet.Model.xml.generated.OmniNames;
+import com.sysfera.godiet.model.xml.DietServiceManager;
+import com.sysfera.godiet.model.xml.generated.OmniNames;
 
 
 /**

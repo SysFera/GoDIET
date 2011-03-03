@@ -5,13 +5,13 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.sysfera.godiet.Model.xml.DietResourceManager;
-import com.sysfera.godiet.Model.xml.generated.Forwarder;
 import com.sysfera.godiet.exceptions.CommandExecutionException;
 import com.sysfera.godiet.exceptions.LaunchException;
 import com.sysfera.godiet.exceptions.PrepareException;
 import com.sysfera.godiet.factories.ForwarderFactory;
 import com.sysfera.godiet.managers.ResourcesManager;
+import com.sysfera.godiet.model.xml.DietResourceManager;
+import com.sysfera.godiet.model.xml.generated.Forwarder;
 
 /**
  * Launch diet services.

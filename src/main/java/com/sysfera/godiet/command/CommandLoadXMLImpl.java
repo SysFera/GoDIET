@@ -7,22 +7,22 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.sysfera.godiet.Model.xml.generated.Cluster;
-import com.sysfera.godiet.Model.xml.generated.DietDescription;
-import com.sysfera.godiet.Model.xml.generated.DietInfrastructure;
-import com.sysfera.godiet.Model.xml.generated.DietServices;
-import com.sysfera.godiet.Model.xml.generated.Domain;
-import com.sysfera.godiet.Model.xml.generated.Infrastructure;
-import com.sysfera.godiet.Model.xml.generated.Link;
-import com.sysfera.godiet.Model.xml.generated.LocalAgent;
-import com.sysfera.godiet.Model.xml.generated.MasterAgent;
-import com.sysfera.godiet.Model.xml.generated.OmniNames;
-import com.sysfera.godiet.Model.xml.generated.Sed;
-import com.sysfera.godiet.Utils.XMLParser;
 import com.sysfera.godiet.exceptions.CommandExecutionException;
 import com.sysfera.godiet.exceptions.DietResourceCreationException;
 import com.sysfera.godiet.exceptions.XMLParseException;
 import com.sysfera.godiet.managers.ResourcesManager;
+import com.sysfera.godiet.model.xml.generated.Cluster;
+import com.sysfera.godiet.model.xml.generated.DietDescription;
+import com.sysfera.godiet.model.xml.generated.DietInfrastructure;
+import com.sysfera.godiet.model.xml.generated.DietServices;
+import com.sysfera.godiet.model.xml.generated.Domain;
+import com.sysfera.godiet.model.xml.generated.Infrastructure;
+import com.sysfera.godiet.model.xml.generated.Link;
+import com.sysfera.godiet.model.xml.generated.LocalAgent;
+import com.sysfera.godiet.model.xml.generated.MasterAgent;
+import com.sysfera.godiet.model.xml.generated.OmniNames;
+import com.sysfera.godiet.model.xml.generated.Sed;
+import com.sysfera.godiet.utils.XMLParser;
 
 /**
  * Initialize resource manager with the given XML description file. Load
