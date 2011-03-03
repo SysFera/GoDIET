@@ -1,13 +1,13 @@
 package com.sysfera.godiet.factories;
 
 import com.sysfera.godiet.exceptions.DietResourceCreationException;
-import com.sysfera.godiet.model.xml.DietResourceManager;
-import com.sysfera.godiet.model.xml.generated.Config;
-import com.sysfera.godiet.model.xml.generated.Forwarder;
-import com.sysfera.godiet.model.xml.generated.Gateway;
-import com.sysfera.godiet.model.xml.generated.ObjectFactory;
-import com.sysfera.godiet.model.xml.generated.Options;
-import com.sysfera.godiet.model.xml.generated.Options.Option;
+import com.sysfera.godiet.model.DietResourceManager;
+import com.sysfera.godiet.model.generated.Config;
+import com.sysfera.godiet.model.generated.Forwarder;
+import com.sysfera.godiet.model.generated.Gateway;
+import com.sysfera.godiet.model.generated.ObjectFactory;
+import com.sysfera.godiet.model.generated.Options;
+import com.sysfera.godiet.model.generated.Options.Option;
 
 /**
  * Managed Forwarder factory

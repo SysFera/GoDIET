@@ -9,13 +9,13 @@ import com.sysfera.godiet.factories.LocalAgentFactory;
 import com.sysfera.godiet.factories.MasterAgentFactory;
 import com.sysfera.godiet.factories.OmniNamesFactory;
 import com.sysfera.godiet.factories.SedFactory;
-import com.sysfera.godiet.model.xml.DietResourceManager;
-import com.sysfera.godiet.model.xml.DietServiceManager;
-import com.sysfera.godiet.model.xml.generated.Forwarder;
-import com.sysfera.godiet.model.xml.generated.LocalAgent;
-import com.sysfera.godiet.model.xml.generated.MasterAgent;
-import com.sysfera.godiet.model.xml.generated.OmniNames;
-import com.sysfera.godiet.model.xml.generated.Sed;
+import com.sysfera.godiet.model.DietResourceManager;
+import com.sysfera.godiet.model.DietServiceManager;
+import com.sysfera.godiet.model.generated.Forwarder;
+import com.sysfera.godiet.model.generated.LocalAgent;
+import com.sysfera.godiet.model.generated.MasterAgent;
+import com.sysfera.godiet.model.generated.OmniNames;
+import com.sysfera.godiet.model.generated.Sed;
 
 /**
  * Diet platform description.

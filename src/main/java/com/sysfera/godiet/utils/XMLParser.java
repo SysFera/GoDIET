@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import com.sysfera.godiet.exceptions.XMLParseException;
-import com.sysfera.godiet.model.xml.generated.DietDescription;
+import com.sysfera.godiet.model.generated.DietDescription;
 
 public interface XMLParser {
 	

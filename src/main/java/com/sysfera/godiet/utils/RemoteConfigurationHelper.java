@@ -13,13 +13,13 @@ import org.slf4j.LoggerFactory;
 import com.sysfera.godiet.exceptions.LaunchException;
 import com.sysfera.godiet.exceptions.PrepareException;
 import com.sysfera.godiet.exceptions.RemoteAccessException;
-import com.sysfera.godiet.model.xml.DietResourceManager;
-import com.sysfera.godiet.model.xml.generated.GoDietConfiguration;
-import com.sysfera.godiet.model.xml.generated.Node;
-import com.sysfera.godiet.model.xml.generated.Options;
-import com.sysfera.godiet.model.xml.generated.Scratch;
-import com.sysfera.godiet.model.xml.generated.Ssh;
-import com.sysfera.godiet.model.xml.generated.Options.Option;
+import com.sysfera.godiet.model.DietResourceManager;
+import com.sysfera.godiet.model.generated.GoDietConfiguration;
+import com.sysfera.godiet.model.generated.Node;
+import com.sysfera.godiet.model.generated.Options;
+import com.sysfera.godiet.model.generated.Scratch;
+import com.sysfera.godiet.model.generated.Ssh;
+import com.sysfera.godiet.model.generated.Options.Option;
 
 /**
  * Agent configuration and remote access helper.

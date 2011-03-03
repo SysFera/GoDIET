@@ -10,8 +10,8 @@ import com.sysfera.godiet.exceptions.LaunchException;
 import com.sysfera.godiet.exceptions.PrepareException;
 import com.sysfera.godiet.factories.ForwarderFactory;
 import com.sysfera.godiet.managers.ResourcesManager;
-import com.sysfera.godiet.model.xml.DietResourceManager;
-import com.sysfera.godiet.model.xml.generated.Forwarder;
+import com.sysfera.godiet.model.DietResourceManager;
+import com.sysfera.godiet.model.generated.Forwarder;
 
 /**
  * Launch diet services.

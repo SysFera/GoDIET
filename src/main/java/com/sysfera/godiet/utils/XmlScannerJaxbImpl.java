@@ -13,7 +13,7 @@ import javax.xml.validation.SchemaFactory;
 import org.xml.sax.SAXException;
 
 import com.sysfera.godiet.exceptions.XMLParseException;
-import com.sysfera.godiet.model.xml.generated.DietDescription;
+import com.sysfera.godiet.model.generated.DietDescription;
 
 /**
  * 
@@ -24,8 +24,8 @@ import com.sysfera.godiet.model.xml.generated.DietDescription;
 
 public class XmlScannerJaxbImpl implements XMLParser{ 
 
-	private String GODIET_SCHEMA_PATH = "/GoDietNG.xsd";
-	private String MODEL_PACKAGE_NAME = "com.sysfera.godiet.model.xml.generated";
+	private final static String GODIET_SCHEMA_PATH = "/GoDietNG.xsd";
+	private final static String MODEL_PACKAGE_NAME = "com.sysfera.godiet.model.generated";
 
 	/**
 	 */

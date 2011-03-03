@@ -12,7 +12,7 @@ import com.sysfera.godiet.exceptions.CommandExecutionException;
 import com.sysfera.godiet.managers.Diet;
 import com.sysfera.godiet.managers.Platform;
 import com.sysfera.godiet.managers.ResourcesManager;
-import com.sysfera.godiet.model.xml.DietResourceManager;
+import com.sysfera.godiet.model.DietResourceManager;
 import com.sysfera.godiet.utils.XMLParser;
 import com.sysfera.godiet.utils.XmlScannerJaxbImpl;
 

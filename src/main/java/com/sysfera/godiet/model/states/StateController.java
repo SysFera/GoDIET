@@ -1,6 +1,6 @@
 package com.sysfera.godiet.model.states;
 
-import com.sysfera.godiet.model.xml.DietResourceManager;
+import com.sysfera.godiet.model.DietResourceManager;
 /**
  * Master class of State Design Pattern
  * Currently five State
