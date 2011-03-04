@@ -4,6 +4,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import com.sysfera.godiet.exceptions.RemoteAccessException;
+import com.sysfera.godiet.remote.ssh.RemoteAccessJschImpl;
 
 public class RemoteAccessJschImplIntegrationTest {
 
@@ -42,10 +43,10 @@ public class RemoteAccessJschImplIntegrationTest {
 
 		remoteJsch.addKey(urlFile, null, "godiet");
 		try {
-			remoteJsch.run("ls", "godiet", "localhost", 22);
+			remoteJsch.run("ls", "godiet", "testBed1", 22);
 		} catch (RemoteAccessException e) {
 			e.printStackTrace();
-			Assert.fail("Unable access to TestBed1 machine. Reason"
+			Assert.fail("Unable access to TestBed1 machine. Cause:"
 					+ e.getMessage());
 		}
 	}

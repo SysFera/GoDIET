@@ -1,4 +1,4 @@
-package com.sysfera.godiet.utils;
+package com.sysfera.godiet.remote;
 
 import java.io.File;
 

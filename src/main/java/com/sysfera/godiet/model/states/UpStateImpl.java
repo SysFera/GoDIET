@@ -5,7 +5,7 @@ import org.slf4j.LoggerFactory;
 
 import com.sysfera.godiet.exceptions.LaunchException;
 import com.sysfera.godiet.exceptions.PrepareException;
-import com.sysfera.godiet.utils.RemoteConfigurationHelper;
+import com.sysfera.godiet.remote.RemoteConfigurationHelper;
 
 /**
  * The remote agent is running. Call Stop to stop remote agent and down state

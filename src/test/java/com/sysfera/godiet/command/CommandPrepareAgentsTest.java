@@ -11,9 +11,9 @@ import org.slf4j.LoggerFactory;
 
 import com.sysfera.godiet.exceptions.CommandExecutionException;
 import com.sysfera.godiet.managers.ResourcesManager;
-import com.sysfera.godiet.utils.RemoteAccess;
+import com.sysfera.godiet.remote.RemoteAccess;
+import com.sysfera.godiet.remote.RemoteConfigurationHelper;
 import com.sysfera.godiet.utils.RemoteAccessMock;
-import com.sysfera.godiet.utils.RemoteConfigurationHelper;
 import com.sysfera.godiet.utils.XmlScannerJaxbImpl;
 
 public class CommandPrepareAgentsTest {

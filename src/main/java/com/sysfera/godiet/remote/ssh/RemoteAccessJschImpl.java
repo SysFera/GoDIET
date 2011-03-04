@@ -1,4 +1,4 @@
-package com.sysfera.godiet.utils;
+package com.sysfera.godiet.remote.ssh;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -17,17 +17,19 @@ import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
 import com.jcraft.jsch.UserInfo;
 import com.sysfera.godiet.exceptions.RemoteAccessException;
+import com.sysfera.godiet.remote.RemoteAccess;
 
 public class RemoteAccessJschImpl implements RemoteAccess {
 	private Logger log = LoggerFactory.getLogger(getClass());
 
 	private final JSch jsch;
-
+	private final UserInfo trustedUI;
 	public RemoteAccessJschImpl() {
 		this.jsch = new JSch();
 		Properties config = new java.util.Properties();
 		config.put("StrictHostKeyChecking", "no");
 		JSch.setConfig(config);
+		this.trustedUI = new TrustedUserInfo();
 
 	}
 
@@ -54,7 +56,7 @@ public class RemoteAccessJschImpl implements RemoteAccess {
 
 			// username and password will be given via UserInfo interface.
 
-			session.setUserInfo(userInfo);
+			session.setUserInfo(trustedUI);
 			session.connect();
 
 			channel = session.openChannel("exec");
@@ -123,7 +125,7 @@ public class RemoteAccessJschImpl implements RemoteAccess {
 
 			// username and password will be given via UserInfo interface.
 
-			session.setUserInfo(userInfo);
+			session.setUserInfo(trustedUI);
 			session.connect();
 
 			// exec 'scp -t rfile' remotely
@@ -257,31 +259,6 @@ public class RemoteAccessJschImpl implements RemoteAccess {
 	}
 
 	// TODO: to improve
-	private UserInfo userInfo = new UserInfo() {
-
-		public String getPassword() {
-			return "";
-		}
-
-		public boolean promptYesNo(String str) {
-			return true;
-		}
-
-		public String getPassphrase() {
-			return "";
-		}
-
-		public boolean promptPassphrase(String message) {
-			return false;
-		}
-
-		public boolean promptPassword(String message) {
-			return false;
-		}
-
-		public void showMessage(String message) {
-		}
-	};
 
 	public void jschDebug(boolean activate) {
 		if (activate) {
@@ -318,7 +295,10 @@ public class RemoteAccessJschImpl implements RemoteAccess {
 				}
 			};
 			JSch.setLogger(jschLog);
-		}else JSch.setLogger(null);
+		} else
+			JSch.setLogger(null);
 
 	}
+
+	
 }
