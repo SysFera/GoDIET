@@ -19,7 +19,7 @@ public class LocalAgentFactory {
 	
 	/**
 	 * Create a managed LocalAgent given his description. Check validity. Set
-	 * the default option if needed (like command launch).
+	 * the default option if needed.
 	 * 
 	 * @param localAgentDescription
 	 * @return The managed LocalAgent
