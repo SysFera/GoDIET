@@ -17,8 +17,8 @@ import com.sysfera.godiet.managers.Diet;
 import com.sysfera.godiet.managers.Platform;
 import com.sysfera.godiet.managers.ResourcesManager;
 import com.sysfera.godiet.model.DietResourceManager;
-import com.sysfera.godiet.utils.XMLParser;
-import com.sysfera.godiet.utils.XmlScannerJaxbImpl;
+import com.sysfera.godiet.utils.xml.XMLParser;
+import com.sysfera.godiet.utils.xml.XmlScannerJaxbImpl;
 
 public class CommandLoadXMLImplTest {
 	private Logger log = LoggerFactory.getLogger(getClass());

@@ -1,4 +1,4 @@
-package com.sysfera.godiet.utils;
+package com.sysfera.godiet.utils.xml;
 
 import java.io.IOException;
 import java.io.InputStream;

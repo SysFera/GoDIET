@@ -12,7 +12,7 @@ import org.slf4j.LoggerFactory;
 import com.sysfera.godiet.command.CommandLoadXMLImpl;
 import com.sysfera.godiet.exceptions.CommandExecutionException;
 import com.sysfera.godiet.managers.ResourcesManager;
-import com.sysfera.godiet.utils.XmlScannerJaxbImpl;
+import com.sysfera.godiet.utils.xml.XmlScannerJaxbImpl;
 
 public class DietResourceManagerTest {
 	private Logger log = LoggerFactory.getLogger(getClass());

@@ -15,7 +15,7 @@ import com.sysfera.godiet.command.CommandLoadXMLImpl;
 import com.sysfera.godiet.exceptions.CommandExecutionException;
 import com.sysfera.godiet.managers.ResourcesManager;
 import com.sysfera.godiet.model.DietResourceManager;
-import com.sysfera.godiet.utils.XmlScannerJaxbImpl;
+import com.sysfera.godiet.utils.xml.XmlScannerJaxbImpl;
 
 public class CommandInitForwardersTest {
 
