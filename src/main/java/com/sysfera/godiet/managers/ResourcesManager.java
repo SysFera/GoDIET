@@ -39,4 +39,6 @@ public class ResourcesManager {
 		this.godietConfiguration.setConfiguration(goDietConfiguration);
 
 	}
+
+	
 }

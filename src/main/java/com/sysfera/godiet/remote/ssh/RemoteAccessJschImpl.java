@@ -24,13 +24,19 @@ public class RemoteAccessJschImpl implements RemoteAccess {
 
 	private final JSch jsch;
 	private final UserInfo trustedUI;
+
 	public RemoteAccessJschImpl() {
 		this.jsch = new JSch();
 		Properties config = new java.util.Properties();
 		config.put("StrictHostKeyChecking", "no");
 		JSch.setConfig(config);
+		
 		this.trustedUI = new TrustedUserInfo();
 
+	}
+
+	public JSch getJsch() {
+		return jsch;
 	}
 
 	/*
@@ -42,24 +48,19 @@ public class RemoteAccessJschImpl implements RemoteAccess {
 	@Override
 	public void run(String command, String user, String host, int port)
 			throws RemoteAccessException {
-		//
-		// if (userInfo == null) {
-		// log.error("Unable to execute " + command + " on " + host
-		// + ". Initialize JSCH user info first");
-		// return;
-		// }
+
 		Channel channel = null;
 		Session session = null;
 		try {
 
 			session = jsch.getSession(user, host, port);
-
-			// username and password will be given via UserInfo interface.
-
+			
 			session.setUserInfo(trustedUI);
 			session.connect();
 
 			channel = session.openChannel("exec");
+			// TODO: Decor with tee to write on standard err and out stream and
+			// alse remote scratch file
 			((ChannelExec) channel).setCommand(command);
 
 			channel.setInputStream(null);
@@ -92,7 +93,7 @@ public class RemoteAccessJschImpl implements RemoteAccess {
 				throw new RemoteAccessException("SSH connection close abruptly");
 
 		} catch (Exception e) {
-			throw new RemoteAccessException("Unable to SSh connect. Command: "
+			throw new RemoteAccessException("Unable to SSH connect. Command: "
 					+ command, e);
 		} finally {
 			try {
@@ -300,5 +301,4 @@ public class RemoteAccessJschImpl implements RemoteAccess {
 
 	}
 
-	
 }

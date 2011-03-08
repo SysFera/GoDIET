@@ -111,7 +111,7 @@
 			<xs:element name="gateway" type="gateway" minOccurs="0"
 				maxOccurs="unbounded" />
 		</xs:sequence>
-		<xs:attribute name="label" />
+		<xs:attribute name="label" type="xs:ID"/>
 	</xs:complexType>
 
 	<xs:complexType name="resource" abstract="true">

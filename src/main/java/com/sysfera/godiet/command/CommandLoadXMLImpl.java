@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import com.sysfera.godiet.exceptions.CommandExecutionException;
 import com.sysfera.godiet.exceptions.DietResourceCreationException;
 import com.sysfera.godiet.exceptions.XMLParseException;
+import com.sysfera.godiet.exceptions.graph.GraphDataException;
 import com.sysfera.godiet.managers.ResourcesManager;
 import com.sysfera.godiet.model.generated.Cluster;
 import com.sysfera.godiet.model.generated.DietDescription;
@@ -22,7 +23,7 @@ import com.sysfera.godiet.model.generated.LocalAgent;
 import com.sysfera.godiet.model.generated.MasterAgent;
 import com.sysfera.godiet.model.generated.OmniNames;
 import com.sysfera.godiet.model.generated.Sed;
-import com.sysfera.godiet.utils.XMLParser;
+import com.sysfera.godiet.utils.xml.XMLParser;
 
 /**
  * Initialize resource manager with the given XML description file. Load
@@ -103,9 +104,10 @@ public class CommandLoadXMLImpl implements Command {
 	 * model and load DietConfigurtion
 	 * 
 	 * @throws DietResourceCreationException
+	 * @throws CommandExecutionException 
 	 */
 	private void load(DietDescription dietConfiguration)
-			throws DietResourceCreationException {
+			throws DietResourceCreationException, CommandExecutionException {
 		if (dietConfiguration != null) {
 			this.rm.setGoDietConfiguration(dietConfiguration
 					.getGoDietConfiguration());
@@ -116,7 +118,12 @@ public class CommandLoadXMLImpl implements Command {
 
 	}
 
-	private void initPlatform(Infrastructure infrastructure) {
+	/**
+	 * 
+	 * @param infrastructure
+	 * @throws CommandExecutionException 
+	 */
+	private void initPlatform(Infrastructure infrastructure) throws CommandExecutionException {
 		List<Domain> domains = infrastructure.getDomain();
 		this.rm.getPlatformModel().addDomains(domains);
 		if (domains != null) {
@@ -137,7 +144,12 @@ public class CommandLoadXMLImpl implements Command {
 		}
 
 		List<Link> links = infrastructure.getLink();
-		this.rm.getPlatformModel().addLinks(links);
+		try {
+			this.rm.getPlatformModel().addLinks(links);
+		} catch (GraphDataException e) {
+			
+			throw new CommandExecutionException("Unable to add links. Error in the model description",e);
+		}
 	}
 
 	/**

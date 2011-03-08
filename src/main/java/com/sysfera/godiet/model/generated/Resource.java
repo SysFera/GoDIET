@@ -5,27 +5,29 @@
 // Generated on: 2011.03.02 at 11:52:36 AM CET 
 //
 
-
 package com.sysfera.godiet.model.generated;
 
+import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlID;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlSeeAlso;
+import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-
 /**
- * Represent a physical resource on which you can run
- * 				DietAgent
+ * Represent a physical resource on which you can run DietAgent
  * 
- * <p>Java class for resource complex type.
+ * <p>
+ * Java class for resource complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within
+ * this class.
  * 
  * <pre>
  * &lt;complexType name="resource">
@@ -41,40 +43,50 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "resource")
-@XmlSeeAlso({
-    Gateway.class,
-    Node.class
-})
+@XmlSeeAlso({ Gateway.class, Node.class })
 public abstract class Resource {
 
-    @XmlAttribute(required = true)
-    @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
-    @XmlID
-    @XmlSchemaType(name = "ID")
-    protected String id;
+	@XmlAttribute(required = true)
+	@XmlJavaTypeAdapter(CollapsedStringAdapter.class)
+	@XmlID
+	@XmlSchemaType(name = "ID")
+	protected String id;
 
-    /**
-     * Gets the value of the id property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getId() {
-        return id;
-    }
+	/**
+	 * Gets the value of the id property.
+	 * 
+	 * @return possible object is {@link String }
+	 * 
+	 */
+	public String getId() {
+		return id;
+	}
 
-    /**
-     * Sets the value of the id property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setId(String value) {
-        this.id = value;
-    }
+	/**
+	 * Sets the value of the id property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link String }
+	 * 
+	 */
+	public void setId(String value) {
+		this.id = value;
+	}
+
+	public Domain getDomain() {
+		// TODO Auto-generated method stub
+		return domain;
+	}
+
+	@XmlTransient
+	protected Domain domain;
+
+	public void afterUnmarshal(Unmarshaller u, Object parent) {
+		if(parent instanceof Resource)this.domain = ((Resource) parent).getDomain(); 
+		else if (parent instanceof Domain)
+			this.domain = (Domain) parent;
+	}
+
+	
 
 }
