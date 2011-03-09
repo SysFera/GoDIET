@@ -44,16 +44,7 @@ public class RemoteAccessJschImplIntegrationTest {
 		}
 	}
 
-	@Test
-	public void testLocalhostScp() {
-		try {
-			remoteJsch.run("ls", "godiet", "localhost", 22);
-		} catch (RemoteAccessException e) {
-			e.printStackTrace();
-			Assert.fail("Unable access to TestBed1 machine. Reason"
-					+ e.getMessage());
-		}
-	}
+
 
 	@Test
 	public void testProxy() {
@@ -63,17 +54,18 @@ public class RemoteAccessJschImplIntegrationTest {
 
 		NCProxy testbed1 = null;
 		try {
-			// kevin.connect(null, "140.77.166.19", 22, 0);
 			Session session = jsch.getSession("godiet", "localhost", 40022);
-			testbed1 = new NCProxy("pmartinez", "140.77.166.19", 22, jsch, tui);
-			NCProxy proxylocalhost = new NCProxy("phi", "localhost", 22, jsch,
-					tui);
-			NCProxy proxylocalhost2 = new NCProxy("phi", "localhost", 22, jsch,
-					tui);
-			proxylocalhost.setProxy(proxylocalhost2);
-			testbed1.setProxy(proxylocalhost);
+			//Add the proxy to access to graal
+//			testbed1 = new NCProxy("pmartinez", "140.77.166.19", 22, jsch, tui);
+//			NCProxy proxylocalhost = new NCProxy("phi", "localhost", 22, jsch,
+//					tui);
+//			NCProxy proxylocalhost2 = new NCProxy("phi", "localhost", 22, jsch,
+//					tui);
+//			proxylocalhost.setProxy(proxylocalhost2);
+//			testbed1.setProxy(proxylocalhost);
+//			session.setProxy(testbed1);
+//			
 			session.setUserInfo(tui);
-			session.setProxy(testbed1);
 			session.connect();
 
 			run(session, "ls");
