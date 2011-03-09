@@ -5,7 +5,7 @@ package com.sysfera.godiet.exceptions.remote;
  * @author phi
  *
  */
-public class AddKeyException extends Exception{
+public class AddKeyException extends Exception {
 	/*
 	 * 
 	 */
