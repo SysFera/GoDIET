@@ -1,0 +1,10 @@
+target/*
+GoDIET.log.err
+GoDIET.log.out
+
+
+
+neo4j-shortest-path/
+.settings
+.classpath
+/.project
