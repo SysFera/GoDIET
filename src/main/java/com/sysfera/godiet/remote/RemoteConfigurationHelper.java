@@ -10,9 +10,9 @@ import java.io.OutputStreamWriter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.sysfera.godiet.exceptions.LaunchException;
-import com.sysfera.godiet.exceptions.PrepareException;
-import com.sysfera.godiet.exceptions.RemoteAccessException;
+import com.sysfera.godiet.exceptions.remote.LaunchException;
+import com.sysfera.godiet.exceptions.remote.PrepareException;
+import com.sysfera.godiet.exceptions.remote.RemoteAccessException;
 import com.sysfera.godiet.model.DietResourceManager;
 import com.sysfera.godiet.model.generated.GoDietConfiguration;
 import com.sysfera.godiet.model.generated.Node;

@@ -6,8 +6,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.sysfera.godiet.exceptions.CommandExecutionException;
-import com.sysfera.godiet.exceptions.LaunchException;
-import com.sysfera.godiet.exceptions.PrepareException;
+import com.sysfera.godiet.exceptions.remote.LaunchException;
+import com.sysfera.godiet.exceptions.remote.PrepareException;
 import com.sysfera.godiet.factories.ForwarderFactory;
 import com.sysfera.godiet.managers.ResourcesManager;
 import com.sysfera.godiet.model.DietResourceManager;

@@ -1,4 +1,4 @@
-package com.sysfera.godiet.exceptions;
+package com.sysfera.godiet.exceptions.remote;
 
 
 /**

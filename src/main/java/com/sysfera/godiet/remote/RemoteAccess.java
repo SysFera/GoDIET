@@ -2,7 +2,8 @@ package com.sysfera.godiet.remote;
 
 import java.io.File;
 
-import com.sysfera.godiet.exceptions.RemoteAccessException;
+import com.sysfera.godiet.exceptions.remote.AddKeyException;
+import com.sysfera.godiet.exceptions.remote.RemoteAccessException;
 /**
  * Interface to execute and copy file on a host remote 
  * @author phi
@@ -35,6 +36,8 @@ public interface RemoteAccess {
 	 * @param privKey Private key to add
 	 * @param pubKey Public key associated to private key. Could be null if 
 	 * @param passphrase
+	 * @throws AddKeyException if error when key insertion. Unable to find private key, public key or bad password
+	 * TODO Check
 	 */
-	public abstract void addKey(String privKey,String pubKey,String passphrase);
+	public abstract void addKey(String privKey,String pubKey,String passphrase) throws AddKeyException;
 }

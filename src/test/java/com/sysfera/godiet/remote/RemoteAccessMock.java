@@ -8,7 +8,7 @@ import java.io.File;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.sysfera.godiet.exceptions.RemoteAccessException;
+import com.sysfera.godiet.exceptions.remote.RemoteAccessException;
 import com.sysfera.godiet.remote.RemoteAccess;
 
 /**

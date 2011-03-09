@@ -16,7 +16,8 @@ import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
 import com.jcraft.jsch.UserInfo;
-import com.sysfera.godiet.exceptions.RemoteAccessException;
+import com.sysfera.godiet.exceptions.remote.AddKeyException;
+import com.sysfera.godiet.exceptions.remote.RemoteAccessException;
 import com.sysfera.godiet.remote.RemoteAccess;
 
 public class RemoteAccessJschImpl implements RemoteAccess {
@@ -247,11 +248,12 @@ public class RemoteAccessJschImpl implements RemoteAccess {
 	 * java.lang.String, java.lang.String)
 	 */
 	@Override
-	public void addKey(String privateKey, String publicKey, String passphrase) {
+	public void addKey(String privateKey, String publicKey, String passphrase) throws AddKeyException{
 		try {
 			jsch.addIdentity(privateKey, publicKey, passphrase.getBytes());
 		} catch (JSchException e) {
-			log.error("Unable to add key");
+			
+			throw new AddKeyException("Unable to add key",e);
 		} finally {
 			// Give to GC
 			passphrase = null;

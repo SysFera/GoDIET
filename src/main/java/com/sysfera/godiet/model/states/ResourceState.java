@@ -1,7 +1,7 @@
 package com.sysfera.godiet.model.states;
 
-import com.sysfera.godiet.exceptions.LaunchException;
-import com.sysfera.godiet.exceptions.PrepareException;
+import com.sysfera.godiet.exceptions.remote.LaunchException;
+import com.sysfera.godiet.exceptions.remote.PrepareException;
 
 public interface ResourceState {
 

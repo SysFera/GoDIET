@@ -3,7 +3,7 @@
  */
 package com.sysfera.godiet.model;
 
-import com.sysfera.godiet.exceptions.LaunchException;
+import com.sysfera.godiet.exceptions.remote.LaunchException;
 import com.sysfera.godiet.model.generated.DietService;
 import com.sysfera.godiet.model.generated.Node;
 

@@ -8,7 +8,7 @@ import com.jcraft.jsch.UserInfo;
 /**
  * Helper class to trust a new host
  */
-public class TrustedUserInfo implements UserInfo {
+public class TrustedUserInfo implements UserInfo  {
 	private Log log = LogFactory.getLog(getClass());
 
 	public String getPassphrase() {

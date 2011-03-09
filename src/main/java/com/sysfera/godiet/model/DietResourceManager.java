@@ -3,8 +3,8 @@ package com.sysfera.godiet.model;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.sysfera.godiet.exceptions.LaunchException;
-import com.sysfera.godiet.exceptions.PrepareException;
+import com.sysfera.godiet.exceptions.remote.LaunchException;
+import com.sysfera.godiet.exceptions.remote.PrepareException;
 import com.sysfera.godiet.model.generated.Agent;
 import com.sysfera.godiet.model.generated.Node;
 import com.sysfera.godiet.model.states.DownStateImpl;
