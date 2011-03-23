@@ -51,10 +51,12 @@ public class TopologyManagerTest {
 	public void topologyTest() {
 		// Correct complex path
 		Platform physPlatform = rm.getPlatformModel();
-		Resource sourceNode = physPlatform.getResource("Node1");
-		Resource destinationNode = physPlatform.getResource("Node5");
+		Node sourceNode = (Node) physPlatform.getResource("Node1");
+		Node destinationNode = (Node) physPlatform.getResource("Node5");
+		
+
 		try {
-			Path p = physPlatform.findPath(sourceNode, destinationNode);
+			Path p = physPlatform.findPath((Node)sourceNode, (Node)destinationNode);
 			LinkedHashSet<? extends Resource> res = p.getPath();
 			String info = "Find path: ";
 			for (Resource resource : res) {
@@ -76,8 +78,8 @@ public class TopologyManagerTest {
 		}
 
 		// Thrown PathException cause incorrect node name
-		sourceNode = physPlatform.getResource("Node1");
-		destinationNode = physPlatform.getResource("IncorrectNodeName");
+		sourceNode = (Node) physPlatform.getResource("Node1");
+		destinationNode = (Node) physPlatform.getResource("IncorrectNodeName");
 		boolean thrown = false;
 		try {
 			physPlatform.findPath(sourceNode, destinationNode);
@@ -88,8 +90,8 @@ public class TopologyManagerTest {
 		thrown = false;
 
 		// Null path cause unreachable node (Node7 (Domain5) to Node2 (Domain2)
-		sourceNode = physPlatform.getResource("Node7");
-		destinationNode = physPlatform.getResource("Node2");
+		sourceNode = (Node) physPlatform.getResource("Node7");
+		destinationNode = (Node) physPlatform.getResource("Node2");
 
 		try {
 			Path p = physPlatform.findPath(sourceNode, destinationNode);
@@ -100,8 +102,8 @@ public class TopologyManagerTest {
 
 
 		//Complex path (from D4 to D1. Find ClientNodeDomain4<-->G4<-->(G6<-->G7)<-->G2<-->G3<-->G1<-->Node1 )
-		sourceNode = physPlatform.getResource("ClientNodeDomain4");
-		destinationNode = physPlatform.getResource("Node1");
+		sourceNode = (Node) physPlatform.getResource("ClientNodeDomain4");
+		destinationNode = (Node) physPlatform.getResource("Node1");
 		try {
 			Path p = physPlatform.findPath(sourceNode, destinationNode);
 			Object[] pathResources = p.getPath().toArray();
@@ -122,8 +124,8 @@ public class TopologyManagerTest {
 		}
 		
 		//Path.length = 2 cause nodes are in the same domain
-		sourceNode = physPlatform.getResource("Node4");
-		destinationNode = physPlatform.getResource("Node5");
+		sourceNode = (Node) physPlatform.getResource("Node4");
+		destinationNode = (Node) physPlatform.getResource("Node5");
 		try {
 			Path p = physPlatform.findPath(sourceNode, destinationNode);
 			Object[] pathResources = p.getPath().toArray();

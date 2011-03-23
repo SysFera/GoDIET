@@ -3,6 +3,7 @@ package com.sysfera.godiet.managers.topology;
 import com.sysfera.godiet.exceptions.graph.GraphDataException;
 import com.sysfera.godiet.exceptions.graph.PathException;
 import com.sysfera.godiet.model.Path;
+import com.sysfera.godiet.model.generated.Node;
 import com.sysfera.godiet.model.generated.Resource;
 /**
  * 
@@ -27,5 +28,5 @@ public interface TopologyManager {
 	 * @return The Path or null if no path exist
 	 * TODO CHECK ALL PATHEXCEPTION THROWN REASON
 	 */
-	public abstract Path findPath(Resource from, Resource to) throws PathException;
+	public abstract Path findPath(Node from, Node to) throws PathException;
 }

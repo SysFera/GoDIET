@@ -153,15 +153,23 @@ public class Platform {
 	/**
 	 * Find a path between from resource and to resource.
 	 * 
-	 * @param from Start node
-	 * @param to End node
+	 * @param from
+	 *            Start node
+	 * @param to
+	 *            End node
 	 * @return The Path or null if no path exist
-	 * @throws PathException If one of argument are null.
+	 * @throws PathException
+	 *             If one of argument are null.
 	 */
-	public Path findPath(Resource from, Resource to) throws PathException {
-		if(from == null || to ==  null) throw new PathException("Try to find path between null argument");
+	public Path findPath(Node from, Node to) throws PathException {
+		if (from == null || to == null)
+			throw new PathException("Try to find path between null argument");
 		return topologyManager.findPath(from, to);
 	}
+
+	// TODO : Path findpath(FromDomain, ToNode); Le lancement de la config se
+	// fait depuis un domain. Pas nécessairement depuis un noeud existant dans
+	// la description
 
 	/**
 	 * 
@@ -169,6 +177,6 @@ public class Platform {
 	 * @return Resource given is id
 	 */
 	public Resource getResource(String resourceId) {
-			return resources.get(resourceId);
+		return resources.get(resourceId);
 	}
 }

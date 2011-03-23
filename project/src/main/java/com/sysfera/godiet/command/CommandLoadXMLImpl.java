@@ -27,8 +27,8 @@ import com.sysfera.godiet.utils.xml.XMLParser;
 
 /**
  * Initialize resource manager with the given XML description file. Load
- * configuration. Load physical platform. Load diet agents. Instantiate diet
- * forwarder if needed
+ * configuration. Load physical platform. Load diet agents. Dummy diet
+ * forwarder loading ( 2 diet forwarder for each declared link )
  * 
  * @author phi
  * 

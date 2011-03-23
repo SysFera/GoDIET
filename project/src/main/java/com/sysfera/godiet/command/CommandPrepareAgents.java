@@ -10,7 +10,7 @@ import com.sysfera.godiet.exceptions.remote.LaunchException;
 import com.sysfera.godiet.exceptions.remote.PrepareException;
 import com.sysfera.godiet.factories.ForwarderFactory;
 import com.sysfera.godiet.managers.ResourcesManager;
-import com.sysfera.godiet.model.DietResourceManager;
+import com.sysfera.godiet.model.DietResourceManaged;
 import com.sysfera.godiet.model.generated.Forwarder;
 
 /**
@@ -42,24 +42,24 @@ public class CommandPrepareAgents implements Command {
 			throw new CommandExecutionException(getClass().getName()
 					+ " not initialized correctly");
 		}
-		List<DietResourceManager> forw = rm.getDietModel()
+		List<DietResourceManaged> forw = rm.getDietModel()
 				.getForwarders();
 		prepareAgents(forw);
-		List<DietResourceManager> mas= rm.getDietModel()
+		List<DietResourceManaged> mas= rm.getDietModel()
 		.getMasterAgents();
 		prepareAgents(mas);
-		List<DietResourceManager> las= rm.getDietModel()
+		List<DietResourceManaged> las= rm.getDietModel()
 		.getLocalAgents();
 		prepareAgents(las);
-		List<DietResourceManager> seds= rm.getDietModel()
+		List<DietResourceManaged> seds= rm.getDietModel()
 		.getSeds();
 		prepareAgents(seds);
 		
 	}
 
-	private void prepareAgents(List<DietResourceManager>  agents) throws CommandExecutionException {
+	private void prepareAgents(List<DietResourceManaged>  agents) throws CommandExecutionException {
 		try {
-			for (DietResourceManager resourceManaged : agents) {
+			for (DietResourceManaged resourceManaged : agents) {
 				resourceManaged.prepare();
 			}
 

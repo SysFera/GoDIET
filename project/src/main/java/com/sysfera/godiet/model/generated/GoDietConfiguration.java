@@ -246,4 +246,9 @@ public class GoDietConfiguration {
         this.watcherPeriod = value;
     }
 
+	public String getLocalNode() {
+		// TODO Auto-generated method stub
+		return "Node1";
+	}
+
 }

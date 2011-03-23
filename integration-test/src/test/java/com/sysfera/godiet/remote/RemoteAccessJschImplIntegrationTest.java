@@ -38,7 +38,7 @@ public class RemoteAccessJschImplIntegrationTest {
 		try {
 			remoteJsch.addKey(urlFile.getFile(), null, "godiet");
 			// Here add a key to access on testbed
-//			remoteJsch.addKey("/home/phi/tmp/testbed", null, "passkeytestbed");
+			remoteJsch.addKey("/home/phi/tmp/testbed", null, "passkeytestbed");
 		} catch (AddKeyException e) {
 			Assert.fail(e.getMessage());
 		}
@@ -56,15 +56,15 @@ public class RemoteAccessJschImplIntegrationTest {
 		try {
 			Session session = jsch.getSession("godiet", "localhost", 40022);
 			//Add the proxy to access to graal
-//			testbed1 = new NCProxy("pmartinez", "140.77.166.19", 22, jsch, tui);
-//			NCProxy proxylocalhost = new NCProxy("phi", "localhost", 22, jsch,
-//					tui);
-//			NCProxy proxylocalhost2 = new NCProxy("phi", "localhost", 22, jsch,
-//					tui);
-//			proxylocalhost.setProxy(proxylocalhost2);
-//			testbed1.setProxy(proxylocalhost);
-//			session.setProxy(testbed1);
-//			
+			testbed1 = new NCProxy("pmartinez", "140.77.166.19", 22, jsch, tui);
+			NCProxy proxylocalhost = new NCProxy("phi", "localhost", 22, jsch,
+					tui);
+			NCProxy proxylocalhost2 = new NCProxy("phi", "localhost", 22, jsch,
+					tui);
+			proxylocalhost.setProxy(proxylocalhost2);
+			testbed1.setProxy(proxylocalhost);
+			session.setProxy(testbed1);
+			
 			session.setUserInfo(tui);
 			session.connect();
 

@@ -31,7 +31,7 @@
 				<scp server="IPNFS2" login="phi" />
 			</storage>
 
-			<node id="Node2" disk="Disk1">
+			<node id="Node2" disk="Disk2">
 				<ssh server="IP2" login="phi" />
 				<env>
 					<var name="PATH"

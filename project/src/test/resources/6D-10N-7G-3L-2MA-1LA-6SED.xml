@@ -4,7 +4,7 @@
 	<!-- Six domains. The sixth have two gateways. See links field to have more details  -->
 	<goDietConfiguration debug="1" saveStdOut="true"
 		saveStdErr="true" log="true">
-		<localscratch dir="/usr/local/tmp/scratch_godiet" />
+		<localscratch dir="/tmp/scratch_godiet" />
 	</goDietConfiguration>
 
 	<infrastructure>

@@ -25,7 +25,7 @@ public class CommandPrepareAgentsTest {
 	public void init() {
 		
 		//Init RM
-		String testCaseFile = "exampleLocalhost.xml";
+		String testCaseFile = "6D-10N-7G-3L-2MA-1LA-6SED.xml";
 		InputStream inputStream = getClass().getClassLoader()
 				.getResourceAsStream(testCaseFile);
 		rm = new ResourcesManager();
@@ -45,6 +45,7 @@ public class CommandPrepareAgentsTest {
 		//Init Remote Access
 		RemoteConfigurationHelper remoteHelper = RemoteConfigurationHelper.getInstance();
 		remoteHelper.setConfiguration(rm.getGodietConfiguration().getGoDietConfiguration());
+		remoteHelper.setPlatform(rm.getPlatformModel());
 		RemoteAccess remoteAccess = new RemoteAccessMock();
 		
 		remoteHelper.setRemoteAccess(remoteAccess);

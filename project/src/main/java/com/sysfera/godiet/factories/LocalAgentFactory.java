@@ -1,7 +1,7 @@
 package com.sysfera.godiet.factories;
 
 import com.sysfera.godiet.exceptions.DietResourceCreationException;
-import com.sysfera.godiet.model.DietResourceManager;
+import com.sysfera.godiet.model.DietResourceManaged;
 import com.sysfera.godiet.model.generated.LocalAgent;
 import com.sysfera.godiet.model.generated.ObjectFactory;
 import com.sysfera.godiet.model.generated.Options;
@@ -25,9 +25,9 @@ public class LocalAgentFactory {
 	 * @return The managed LocalAgent
 	 * @throws DietResourceCreationException 
 	 */
-	public DietResourceManager create(LocalAgent localAgentDescription) throws DietResourceCreationException {
+	public DietResourceManaged create(LocalAgent localAgentDescription) throws DietResourceCreationException {
 		
-		DietResourceManager localAgentManaged = new DietResourceManager();
+		DietResourceManaged localAgentManaged = new DietResourceManaged();
 		localAgentManaged.setDietAgent(localAgentDescription);
 		settingConfigurationOptions(localAgentManaged);
 		return localAgentManaged;
@@ -40,7 +40,7 @@ public class LocalAgentFactory {
 	 * @throws DietResourceCreationException
 	 *             if resource not plugged
 	 */
-	private void settingConfigurationOptions(DietResourceManager localAgent)
+	private void settingConfigurationOptions(DietResourceManaged localAgent)
 			throws DietResourceCreationException {
 		if (localAgent.getPluggedOn() == null || localAgent.getDietAgent().getParent() ==null) {
 			throw new DietResourceCreationException(localAgent.getDietAgent()

@@ -9,11 +9,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.sysfera.godiet.exceptions.remote.RemoteAccessException;
-import com.sysfera.godiet.remote.RemoteAccess;
+import com.sysfera.godiet.model.Path;
+import com.sysfera.godiet.model.generated.Node;
+import com.sysfera.godiet.model.generated.Resource;
 
 /**
  * 
- * Mock of ssh. See integration test to test all features	
+ * Mock of ssh. See integration test to test all features
  * 
  * @author phi
  * 
@@ -23,20 +25,29 @@ public class RemoteAccessMock implements RemoteAccess {
 
 	private boolean remoteAccessDown = false;
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.sysfera.godiet.Utils.RemoteAccess#run(java.lang.String,
-	 * java.lang.String, java.lang.String, int)
+	/**
+	 * TODO: randomize the connection error. If remoteAccessDown is true,
+	 * randomize on the a
 	 */
 	@Override
-	public void run(String command, String user, String host, int port)
-			throws RemoteAccessException {
-		if (remoteAccessDown)
+	public void run(String command, Path path) throws RemoteAccessException {
+		Object[] pathResources = ((Object[]) path.getPath().toArray());
+		if (pathResources == null || pathResources.length == 0)
+			throw new RemoteAccessException(
+					"Unable to run a command. The path is empty");
+		String pathInfo = "Connection path:" + ((Resource)pathResources[0]).getId();
+		for(int i = 1 ; i < pathResources.length  ; i++)
+		{
+			pathInfo+= "-->"+((Resource)pathResources[i]).getId();
+		}
+		Node remoteNode  = ((Node)pathResources[pathResources.length - 1]);
+		if (remoteAccessDown) {
 			throw new RemoteAccessException("Unable to run " + command + " on "
-					+ host + ":" + port + " . Login: " + user);
-		log.debug("Run " + command + " on " + host + ":" + port + " . Login: "
-				+ user);
+					+ remoteNode + ":" + remoteNode.getSsh().getPort() + " . Login: "
+					+ remoteNode.getSsh().getPort());
+		}
+
+		log.debug("Run " + command + " on " + remoteNode.getSsh().getServer()+" . Path: "+pathInfo);
 	}
 
 	/*
@@ -63,8 +74,8 @@ public class RemoteAccessMock implements RemoteAccess {
 	}
 
 	@Override
-	public void addKey(String key,String pubkey,String pass) {
+	public void addKey(String key, String pubkey, String pass) {
 		log.debug("Add key: " + key);
-		
+
 	}
 }

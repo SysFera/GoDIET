@@ -1,7 +1,7 @@
 package com.sysfera.godiet.factories;
 
 import com.sysfera.godiet.exceptions.DietResourceCreationException;
-import com.sysfera.godiet.model.DietResourceManager;
+import com.sysfera.godiet.model.DietResourceManaged;
 import com.sysfera.godiet.model.generated.Config;
 import com.sysfera.godiet.model.generated.Forwarder;
 import com.sysfera.godiet.model.generated.Gateway;
@@ -67,10 +67,10 @@ public class ForwarderFactory {
 	 * @throws DietResourceCreationException
 	 *             if resource not plugged
 	 */
-	public DietResourceManager create(Forwarder forwarder)
+	public DietResourceManaged create(Forwarder forwarder)
 			throws DietResourceCreationException {
 
-		DietResourceManager dietResourceManaged = new DietResourceManager();
+		DietResourceManaged dietResourceManaged = new DietResourceManaged();
 		dietResourceManaged.setDietAgent(forwarder);
 		settingConfigurationOptions(dietResourceManaged);
 
@@ -83,7 +83,7 @@ public class ForwarderFactory {
 	 * @throws DietResourceCreationException
 	 *             if resource not plugged
 	 */
-	private void settingConfigurationOptions(DietResourceManager forwarder)
+	private void settingConfigurationOptions(DietResourceManaged forwarder)
 			throws DietResourceCreationException {
 		if (forwarder.getPluggedOn() == null) {
 			throw new DietResourceCreationException(forwarder.getDietAgent()

@@ -16,7 +16,7 @@ import com.sysfera.godiet.exceptions.CommandExecutionException;
 import com.sysfera.godiet.managers.Diet;
 import com.sysfera.godiet.managers.Platform;
 import com.sysfera.godiet.managers.ResourcesManager;
-import com.sysfera.godiet.model.DietResourceManager;
+import com.sysfera.godiet.model.DietResourceManaged;
 import com.sysfera.godiet.utils.xml.XMLParser;
 import com.sysfera.godiet.utils.xml.XmlScannerJaxbImpl;
 
@@ -89,16 +89,16 @@ public class CommandLoadXMLImplTest {
 				Assert.fail();
 
 			// check if all Diet are pluged on physical resources
-			for (DietResourceManager ma : diet.getMasterAgents()) {
+			for (DietResourceManaged ma : diet.getMasterAgents()) {
 				if (ma.getPluggedOn() == null)
 					Assert.fail();
 			}
-			for (DietResourceManager la : diet.getLocalAgents()) {
+			for (DietResourceManaged la : diet.getLocalAgents()) {
 				if (la.getPluggedOn() == null)
 					Assert.fail();
 			}
 
-			for (DietResourceManager sed : diet.getSeds()) {
+			for (DietResourceManaged sed : diet.getSeds()) {
 				if (sed.getPluggedOn() == null)
 					Assert.fail();
 			}
@@ -147,16 +147,16 @@ public class CommandLoadXMLImplTest {
 				Assert.fail();
 
 			// check if all Diet are pluged on physical resources
-			for (DietResourceManager ma : diet.getMasterAgents()) {
+			for (DietResourceManaged ma : diet.getMasterAgents()) {
 				if (ma.getPluggedOn() == null)
 					Assert.fail();
 			}
-			for (DietResourceManager la : diet.getLocalAgents()) {
+			for (DietResourceManaged la : diet.getLocalAgents()) {
 				if (la.getPluggedOn() == null)
 					Assert.fail();
 			}
 
-			for (DietResourceManager sed : diet.getSeds()) {
+			for (DietResourceManaged sed : diet.getSeds()) {
 				if (sed.getPluggedOn() == null)
 					Assert.fail();
 			}

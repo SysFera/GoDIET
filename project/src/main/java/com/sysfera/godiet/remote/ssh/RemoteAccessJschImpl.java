@@ -18,14 +18,24 @@ import com.jcraft.jsch.Session;
 import com.jcraft.jsch.UserInfo;
 import com.sysfera.godiet.exceptions.remote.AddKeyException;
 import com.sysfera.godiet.exceptions.remote.RemoteAccessException;
+import com.sysfera.godiet.model.Path;
+import com.sysfera.godiet.model.generated.Node;
+import com.sysfera.godiet.model.generated.Ssh;
 import com.sysfera.godiet.remote.RemoteAccess;
 
+/**
+ * JSCH remote access implementation
+ * 
+ * @author phi
+ *
+ */
 public class RemoteAccessJschImpl implements RemoteAccess {
 	private Logger log = LoggerFactory.getLogger(getClass());
 
 	private final JSch jsch;
 	private final UserInfo trustedUI;
 
+	//TODO: Extract JSCH default options.
 	public RemoteAccessJschImpl() {
 		this.jsch = new JSch();
 		Properties config = new java.util.Properties();
@@ -47,14 +57,16 @@ public class RemoteAccessJschImpl implements RemoteAccess {
 	 * java.lang.String, int)
 	 */
 	@Override
-	public void run(String command, String user, String host, int port)
+	public void run(String command, Path path)
 			throws RemoteAccessException {
 
 		Channel channel = null;
 		Session session = null;
 		try {
-
-			session = jsch.getSession(user, host, port);
+			//TODO loop on path, create Proxy
+			Node last = (Node) path.getPath().toArray()[path.getPath().size()-1];
+			Ssh lastNodeContig = last.getSsh();
+			session = jsch.getSession(lastNodeContig.getServer(), lastNodeContig.getLogin(), lastNodeContig.getPort());
 			
 			session.setUserInfo(trustedUI);
 			session.connect();

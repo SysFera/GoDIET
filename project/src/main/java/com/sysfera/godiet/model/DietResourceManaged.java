@@ -18,13 +18,13 @@ import com.sysfera.godiet.model.states.UpStateImpl;
  * @author phi
  * 
  */
-public class DietResourceManager extends SoftwareManager {
+public class DietResourceManaged extends SoftwareManager {
 	private Logger log = LoggerFactory.getLogger(getClass());
 
 	// Agent description
 	private Agent agentManaged;
 
-	public DietResourceManager() {
+	public DietResourceManaged() {
 		stateController = new StateController(this);
 	}
 

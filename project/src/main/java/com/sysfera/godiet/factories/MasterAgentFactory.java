@@ -1,7 +1,7 @@
 package com.sysfera.godiet.factories;
 
 import com.sysfera.godiet.exceptions.DietResourceCreationException;
-import com.sysfera.godiet.model.DietResourceManager;
+import com.sysfera.godiet.model.DietResourceManaged;
 import com.sysfera.godiet.model.generated.MasterAgent;
 import com.sysfera.godiet.model.generated.ObjectFactory;
 import com.sysfera.godiet.model.generated.Options;
@@ -24,9 +24,9 @@ public class MasterAgentFactory {
 	 * @return The managed MasterAgent
 	 * @throws DietResourceCreationException 
 	 */
-	public DietResourceManager create(MasterAgent masterAgentDescription) throws DietResourceCreationException
+	public DietResourceManaged create(MasterAgent masterAgentDescription) throws DietResourceCreationException
 	{
-		DietResourceManager sedManaged = new DietResourceManager();
+		DietResourceManaged sedManaged = new DietResourceManaged();
 		sedManaged.setDietAgent(masterAgentDescription);
 		settingConfigurationOptions(sedManaged);
 		return sedManaged;
@@ -38,7 +38,7 @@ public class MasterAgentFactory {
 	 * @throws DietResourceCreationException
 	 *             if resource not plugged
 	 */
-	private void settingConfigurationOptions(DietResourceManager masterAgent)
+	private void settingConfigurationOptions(DietResourceManaged masterAgent)
 			throws DietResourceCreationException {
 		if (masterAgent.getPluggedOn() == null) {
 			throw new DietResourceCreationException(masterAgent.getDietAgent()

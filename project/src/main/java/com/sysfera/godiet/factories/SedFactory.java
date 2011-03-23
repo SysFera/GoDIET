@@ -1,6 +1,6 @@
 package com.sysfera.godiet.factories;
 
-import com.sysfera.godiet.model.DietResourceManager;
+import com.sysfera.godiet.model.DietResourceManaged;
 import com.sysfera.godiet.model.generated.Sed;
 
 
@@ -17,9 +17,9 @@ public class SedFactory {
 	 * @param sedDescription
 	 * @return The managed Sed
 	 */
-	public DietResourceManager create(Sed sedDescription)
+	public DietResourceManaged create(Sed sedDescription)
 	{
-		DietResourceManager sedManaged = new DietResourceManager();
+		DietResourceManaged sedManaged = new DietResourceManaged();
 		sedManaged.setDietAgent(sedDescription);
 		
 		return sedManaged;

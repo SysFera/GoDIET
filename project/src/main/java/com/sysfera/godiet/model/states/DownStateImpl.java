@@ -8,7 +8,7 @@ import com.sysfera.godiet.exceptions.remote.PrepareException;
 import com.sysfera.godiet.remote.RemoteConfigurationHelper;
 
 /**
- * Init State. The remote agent isn't yet bind. Call prepare to state ready
+ * Init State. The remote agent isn't yet bind. Call prepare to state ready.
  * 
  * @author phi
  * 

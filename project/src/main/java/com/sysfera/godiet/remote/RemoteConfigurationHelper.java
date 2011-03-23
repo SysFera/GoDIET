@@ -10,13 +10,17 @@ import java.io.OutputStreamWriter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.sysfera.godiet.exceptions.graph.PathException;
 import com.sysfera.godiet.exceptions.remote.LaunchException;
 import com.sysfera.godiet.exceptions.remote.PrepareException;
 import com.sysfera.godiet.exceptions.remote.RemoteAccessException;
-import com.sysfera.godiet.model.DietResourceManager;
+import com.sysfera.godiet.managers.Platform;
+import com.sysfera.godiet.model.DietResourceManaged;
+import com.sysfera.godiet.model.Path;
 import com.sysfera.godiet.model.generated.GoDietConfiguration;
 import com.sysfera.godiet.model.generated.Node;
 import com.sysfera.godiet.model.generated.Options;
+import com.sysfera.godiet.model.generated.Resource;
 import com.sysfera.godiet.model.generated.Scratch;
 import com.sysfera.godiet.model.generated.Ssh;
 import com.sysfera.godiet.model.generated.Options.Option;
@@ -34,6 +38,7 @@ public class RemoteConfigurationHelper {
 
 	private RemoteAccess remoteAccess;
 	private GoDietConfiguration configuration;
+	private Platform platform;
 
 	private RemoteConfigurationHelper() {
 	}
@@ -65,26 +70,48 @@ public class RemoteConfigurationHelper {
 	 * @throws PrepareException
 	 *             if create local files or can't copy files on remote host.
 	 */
-	public void configure(DietResourceManager resource) throws PrepareException {
-		if (remoteAccess == null || configuration == null) {
-			log.error("Unable to configure remote resource. Remote configurator isn't corectly initialized");
-			throw new PrepareException(
-					"Initialize the remote access and configuration first");
+	public void configure(DietResourceManaged resource) throws PrepareException {
+		if (remoteAccess == null || configuration == null || platform == null) {
+			log.error("Unable to configure remote resource. Remote helper isn't correctly initialized");
+			throw new PrepareException("Remote configurator isn't ready");
 		}
 
-		Node node = resource.getPluggedOn();
-		if (node == null) {
+		// the remote physical node to configure
+		Node remoteNode = resource.getPluggedOn();
+		if (remoteNode == null) {
 			log.error("Unable to configure remote resource. Resource not plugged on physial resource");
 			throw new PrepareException(
 					"Resource not plugged on physial resource");
 		}
-		Ssh sshConfig = node.getSsh();
+
+		//the local node. From where the command is launch.
+		// TODO : Path findpath(FromDomain, ToNode);	
+		Resource localNode = platform.getResource(configuration.getLocalNode());
+		if(localNode == null || !(localNode instanceof Node)){
+			log.error("Unable to find the local resource.");
+			throw new PrepareException(
+					"Unable to find the resource from which the remote command is call");
+		}
+		// Find a path between the current node until remote node
+		Path path = null;
+		try {
+			path = platform.findPath((Node)localNode, remoteNode);
+		} catch (PathException e1) {
+			throw new PrepareException("",e1);
+		}
+		if (path == null) {
+			log.error("Unable to configure remote resource. Unable to find a path");
+			throw new PrepareException(
+					"Path node found");
+		}
+		
+		
+		Ssh sshConfig = remoteNode.getSsh();
 		String command = "";
 		try {
 			// Create Remote Directory
-			command = "mkdir -p " + node.getDisk().getScratch().getDir();
-			remoteAccess.run(command, sshConfig.getLogin(),
-					sshConfig.getServer(), sshConfig.getPort());
+			command = "mkdir -p " + remoteNode.getDisk().getScratch().getDir();
+			remoteAccess.run(command, path);
 
 			// Create local config file
 			File file = createConfigFile(resource);
@@ -94,10 +121,10 @@ public class RemoteConfigurationHelper {
 					sshConfig.getServer(), sshConfig.getPort());
 		} catch (RemoteAccessException e) {
 			log.error("Unable to configure " + resource.getDietAgent().getId()
-					+ " on " + node.getId() + " commmand " + command, e);
+					+ " on " + remoteNode.getId() + " commmand " + command, e);
 			throw new PrepareException("Unable to run configure "
-					+ resource.getDietAgent().getId() + " on " + node.getId()
-					+ " .Commmand: " + command,e);
+					+ resource.getDietAgent().getId() + " on "
+					+ remoteNode.getId() + " .Commmand: " + command, e);
 		}
 
 	}
@@ -111,7 +138,7 @@ public class RemoteConfigurationHelper {
 	 * @throws PrepareException
 	 *             if unable write on local scratch directory
 	 */
-	private File createConfigFile(DietResourceManager resource)
+	private File createConfigFile(DietResourceManaged resource)
 			throws PrepareException {
 		Scratch scratch = configuration.getLocalscratch();
 		File file = new File(scratch.getDir());
@@ -167,7 +194,7 @@ public class RemoteConfigurationHelper {
 	 * @throws LaunchException
 	 *             if can't connect to the remote host or can't launch binary
 	 */
-	public void launch(DietResourceManager resource) throws LaunchException {
+	public void launch(DietResourceManaged resource) throws LaunchException {
 
 	}
 
@@ -180,7 +207,7 @@ public class RemoteConfigurationHelper {
 	 * @throws LaunchException
 	 *             if can't connect to the remote host or can't launch binary
 	 */
-	public void stop(DietResourceManager resource) throws LaunchException {
+	public void stop(DietResourceManaged resource) throws LaunchException {
 
 	}
 
@@ -192,11 +219,15 @@ public class RemoteConfigurationHelper {
 		this.configuration = configuration;
 	}
 
-	private String getFileName(DietResourceManager resource) {
+	private String getFileName(DietResourceManaged resource) {
 		return resource.getDietAgent().getId();
 	}
 
-	private String getConfigFileName(DietResourceManager resource) {
+	private String getConfigFileName(DietResourceManaged resource) {
 		return getFileName(resource) + ".cfg";
+	}
+
+	public void setPlatform(Platform platform) {
+		this.platform = platform;
 	}
 }

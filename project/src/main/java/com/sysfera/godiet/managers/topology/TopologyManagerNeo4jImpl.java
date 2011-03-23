@@ -74,12 +74,23 @@ public class TopologyManagerNeo4jImpl implements TopologyManager {
 	 * com.sysfera.godiet.model.generated.Resource)
 	 */
 	@Override
-	public Path findPath(Resource from, Resource to) throws PathException {
+	public Path findPath(com.sysfera.godiet.model.generated.Node from, com.sysfera.godiet.model.generated.Node to) throws PathException {
+		//If the nodes are in the same domain create a simple path
+		if(from != null && to!= null && to.getDomain().equals(from.getDomain())){
+			Path simplePath = new Path();
+			LinkedHashSet<Resource> simplePathHashSet = new LinkedHashSet<Resource>();
+			simplePathHashSet.add(from);
+			simplePathHashSet.add(to);
+			simplePath.setPath(simplePathHashSet);
+			return simplePath;
+		}
+		
 		// Temporary add node on graph for computation path
 		Node nodeFrom = getNode(from);
 		Node nodeTo = getNode(to);
 		boolean resourceFromExist = true;
 		boolean resourceToExist = true;
+		
 		try {
 			if (nodeFrom == null) {
 				resourceFromExist = false;
@@ -96,7 +107,7 @@ public class TopologyManagerNeo4jImpl implements TopologyManager {
 				nodeTo = getNode(to);
 			}
 		} catch (GraphDataException e) {
-			throw new IllegalStateException("Find path error", e);
+			throw new PathException("Find path error", e);
 		}
 
 		// Shorted Path

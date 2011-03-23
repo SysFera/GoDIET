@@ -60,6 +60,10 @@
 
 	</dependencies>
 
+	<organization>
+		<name>Sysfera</name>
+		<url>http://www.sysfera.com</url>
+	</organization>
 	<build>
 
 		<plugins>

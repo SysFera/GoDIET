@@ -9,7 +9,7 @@ import com.sysfera.godiet.factories.LocalAgentFactory;
 import com.sysfera.godiet.factories.MasterAgentFactory;
 import com.sysfera.godiet.factories.OmniNamesFactory;
 import com.sysfera.godiet.factories.SedFactory;
-import com.sysfera.godiet.model.DietResourceManager;
+import com.sysfera.godiet.model.DietResourceManaged;
 import com.sysfera.godiet.model.DietServiceManager;
 import com.sysfera.godiet.model.generated.Forwarder;
 import com.sysfera.godiet.model.generated.LocalAgent;
@@ -31,18 +31,18 @@ public class Diet {
 	private final OmniNamesFactory omFactory;
 	private final ForwarderFactory forwFactory;
 
-	private final List<DietResourceManager> masterAgents;
-	private final List<DietResourceManager> localAgents;
-	private final List<DietResourceManager> seds;
+	private final List<DietResourceManaged> masterAgents;
+	private final List<DietResourceManaged> localAgents;
+	private final List<DietResourceManaged> seds;
 	private final List<DietServiceManager> omninames;
-	private final List<DietResourceManager> forwaders;
+	private final List<DietResourceManaged> forwaders;
 
 	public Diet() {
-		this.masterAgents = new ArrayList<DietResourceManager>();
-		this.localAgents = new ArrayList<DietResourceManager>();
-		this.seds = new ArrayList<DietResourceManager>();
+		this.masterAgents = new ArrayList<DietResourceManaged>();
+		this.localAgents = new ArrayList<DietResourceManaged>();
+		this.seds = new ArrayList<DietResourceManaged>();
 		this.omninames = new ArrayList<DietServiceManager>();
-		this.forwaders = new ArrayList<DietResourceManager>();
+		this.forwaders = new ArrayList<DietResourceManaged>();
 
 		this.maFactory = new MasterAgentFactory();
 		this.laFactory = new LocalAgentFactory();
@@ -54,21 +54,21 @@ public class Diet {
 	/**
 	 * @return the masterAgents
 	 */
-	public List<DietResourceManager> getMasterAgents() {
+	public List<DietResourceManaged> getMasterAgents() {
 		return masterAgents;
 	}
 
 	/**
 	 * @return the localAgents
 	 */
-	public List<DietResourceManager> getLocalAgents() {
+	public List<DietResourceManaged> getLocalAgents() {
 		return localAgents;
 	}
 
 	/**
 	 * @return the seds
 	 */
-	public List<DietResourceManager> getSeds() {
+	public List<DietResourceManaged> getSeds() {
 		return seds;
 	}
 
@@ -76,7 +76,7 @@ public class Diet {
 	 * 
 	 * @return list of forwarders
 	 */
-	public List<DietResourceManager> getForwarders() {
+	public List<DietResourceManaged> getForwarders() {
 		return forwaders;
 	}
 

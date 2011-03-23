@@ -14,7 +14,7 @@ import com.sysfera.godiet.command.CommandInitForwarders;
 import com.sysfera.godiet.command.CommandLoadXMLImpl;
 import com.sysfera.godiet.exceptions.CommandExecutionException;
 import com.sysfera.godiet.managers.ResourcesManager;
-import com.sysfera.godiet.model.DietResourceManager;
+import com.sysfera.godiet.model.DietResourceManaged;
 import com.sysfera.godiet.utils.xml.XmlScannerJaxbImpl;
 
 public class CommandInitForwardersTest {
@@ -51,7 +51,7 @@ public class CommandInitForwardersTest {
 
 		try {
 			initForwardersInit.execute();
-			List<DietResourceManager> forwarders = rm.getDietModel().getForwarders();
+			List<DietResourceManaged> forwarders = rm.getDietModel().getForwarders();
 			if(forwarders.size() != 6) Assert.fail();
 		} catch (CommandExecutionException e) {
 			Assert.fail(e.getMessage());
