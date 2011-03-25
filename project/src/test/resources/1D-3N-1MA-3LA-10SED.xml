@@ -48,7 +48,7 @@
 	</infrastructure>
 
 	<dietServices>
-		<omniNames>
+		<omniNames id="omniNamesDomain1">
 			<config server="Node1" remoteBinary="omniNames" />
 		</omniNames>
 	</dietServices>

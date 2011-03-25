@@ -20,7 +20,7 @@ public class SedFactory {
 	public DietResourceManaged create(Sed sedDescription)
 	{
 		DietResourceManaged sedManaged = new DietResourceManaged();
-		sedManaged.setDietAgent(sedDescription);
+		sedManaged.setManagedSoftware(sedDescription);
 		
 		return sedManaged;
 	}

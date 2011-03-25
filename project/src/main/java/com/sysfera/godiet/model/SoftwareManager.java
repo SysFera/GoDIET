@@ -1,6 +1,7 @@
 package com.sysfera.godiet.model;
 
 import com.sysfera.godiet.model.generated.Node;
+import com.sysfera.godiet.model.generated.Software;
 import com.sysfera.godiet.model.states.StateController;
 
 /**
@@ -14,7 +15,10 @@ public abstract class SoftwareManager {
 
 	protected StateController stateController;
 
-	
+	public SoftwareManager() {
+		stateController = new StateController(this);
+
+	}
 	/**
 	 * Return the physical resource on which agent is plugged on
 	 * 
@@ -29,5 +33,6 @@ public abstract class SoftwareManager {
 	public StateController getStateController() {
 		return stateController;
 	}
+	public abstract Software getSoftwareDescription();
 
 }

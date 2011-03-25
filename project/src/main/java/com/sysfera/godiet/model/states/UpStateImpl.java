@@ -43,7 +43,7 @@ public class UpStateImpl implements ResourceState {
 	@Override
 	public void stop() {
 		try {
-			launcher.stop(this.stateController.agent);
+			launcher.stop(this.stateController.softwareManaged);
 			this.stateController.state = this.stateController.down;
 		} catch (LaunchException e) {
 			// TODO Logger

@@ -27,17 +27,19 @@ public class CommandLoadXMLImplTest {
 	public void testCommand() {
 		List<String> testCaseFiles = Arrays.asList(new String[] {
 				"exampleMultiDomainsNG.xml", "3D-5N-3G-3L-2MA-1LA-6SED.xml",
-				 "1D-3N-1MA-3LA-10SED.xml" });
-//TODO "3D-5N-3G-3L-1MA-3SED.xml",
-		ResourcesManager rm = new ResourcesManager();
+				 "1D-3N-1MA-3LA-10SED.xml", "3D-5N-3G-3L-1MA-3SED.xml",
+				 "testbed.xml" });
+
 		XMLParser scanner = new XmlScannerJaxbImpl();
 
 		CommandLoadXMLImpl xmlLoadingCommand = new CommandLoadXMLImpl();
-		xmlLoadingCommand.setRm(rm);
 
 		xmlLoadingCommand.setXmlParser(scanner);
 
 		for (String testCaseFile : testCaseFiles) {
+			ResourcesManager rm = new ResourcesManager();
+			xmlLoadingCommand.setRm(rm);
+
 			try {
 				InputStream inputStream = getClass().getClassLoader()
 						.getResourceAsStream(testCaseFile);

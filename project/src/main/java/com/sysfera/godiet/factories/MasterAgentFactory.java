@@ -27,7 +27,7 @@ public class MasterAgentFactory {
 	public DietResourceManaged create(MasterAgent masterAgentDescription) throws DietResourceCreationException
 	{
 		DietResourceManaged sedManaged = new DietResourceManaged();
-		sedManaged.setDietAgent(masterAgentDescription);
+		sedManaged.setManagedSoftware(masterAgentDescription);
 		settingConfigurationOptions(sedManaged);
 		return sedManaged;
 	}

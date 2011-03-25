@@ -15,7 +15,7 @@ import com.sysfera.godiet.exceptions.remote.LaunchException;
 import com.sysfera.godiet.exceptions.remote.PrepareException;
 import com.sysfera.godiet.exceptions.remote.RemoteAccessException;
 import com.sysfera.godiet.managers.Platform;
-import com.sysfera.godiet.model.DietResourceManaged;
+import com.sysfera.godiet.model.SoftwareManager;
 import com.sysfera.godiet.model.Path;
 import com.sysfera.godiet.model.generated.GoDietConfiguration;
 import com.sysfera.godiet.model.generated.Node;
@@ -70,7 +70,7 @@ public class RemoteConfigurationHelper {
 	 * @throws PrepareException
 	 *             if create local files or can't copy files on remote host.
 	 */
-	public void configure(DietResourceManaged resource) throws PrepareException {
+	public void configure(SoftwareManager resource) throws PrepareException {
 		if (remoteAccess == null || configuration == null || platform == null) {
 			log.error("Unable to configure remote resource. Remote helper isn't correctly initialized");
 			throw new PrepareException("Remote configurator isn't ready");
@@ -120,10 +120,10 @@ public class RemoteConfigurationHelper {
 			remoteAccess.copy(file, sshConfig.getLogin(),
 					sshConfig.getServer(), sshConfig.getPort());
 		} catch (RemoteAccessException e) {
-			log.error("Unable to configure " + resource.getDietAgent().getId()
+			log.error("Unable to configure " + resource.getSoftwareDescription().getId()
 					+ " on " + remoteNode.getId() + " commmand " + command, e);
 			throw new PrepareException("Unable to run configure "
-					+ resource.getDietAgent().getId() + " on "
+					+ resource.getSoftwareDescription().getId() + " on "
 					+ remoteNode.getId() + " .Commmand: " + command, e);
 		}
 
@@ -138,7 +138,7 @@ public class RemoteConfigurationHelper {
 	 * @throws PrepareException
 	 *             if unable write on local scratch directory
 	 */
-	private File createConfigFile(DietResourceManaged resource)
+	private File createConfigFile(SoftwareManager resource)
 			throws PrepareException {
 		Scratch scratch = configuration.getLocalscratch();
 		File file = new File(scratch.getDir());
@@ -158,7 +158,7 @@ public class RemoteConfigurationHelper {
 
 			writerFile = new BufferedWriter(new OutputStreamWriter(
 					new FileOutputStream(retFile)));
-			Options options = resource.getDietAgent().getCfgOptions();
+			Options options = resource.getSoftwareDescription().getCfgOptions();
 
 			if (options != null) {
 				for (Option option : options.getOption()) {
@@ -194,7 +194,7 @@ public class RemoteConfigurationHelper {
 	 * @throws LaunchException
 	 *             if can't connect to the remote host or can't launch binary
 	 */
-	public void launch(DietResourceManaged resource) throws LaunchException {
+	public void launch(SoftwareManager resource) throws LaunchException {
 
 	}
 
@@ -207,7 +207,7 @@ public class RemoteConfigurationHelper {
 	 * @throws LaunchException
 	 *             if can't connect to the remote host or can't launch binary
 	 */
-	public void stop(DietResourceManaged resource) throws LaunchException {
+	public void stop(SoftwareManager resource) throws LaunchException {
 
 	}
 
@@ -219,11 +219,11 @@ public class RemoteConfigurationHelper {
 		this.configuration = configuration;
 	}
 
-	private String getFileName(DietResourceManaged resource) {
-		return resource.getDietAgent().getId();
+	private String getFileName(SoftwareManager resource) {
+		return resource.getSoftwareDescription().getId();
 	}
 
-	private String getConfigFileName(DietResourceManaged resource) {
+	private String getConfigFileName(SoftwareManager resource) {
 		return getFileName(resource) + ".cfg";
 	}
 

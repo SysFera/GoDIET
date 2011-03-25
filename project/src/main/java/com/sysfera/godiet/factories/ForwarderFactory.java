@@ -71,7 +71,7 @@ public class ForwarderFactory {
 			throws DietResourceCreationException {
 
 		DietResourceManaged dietResourceManaged = new DietResourceManaged();
-		dietResourceManaged.setDietAgent(forwarder);
+		dietResourceManaged.setManagedSoftware(forwarder);
 		settingConfigurationOptions(dietResourceManaged);
 
 		return dietResourceManaged;

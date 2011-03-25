@@ -1,6 +1,7 @@
 package com.sysfera.godiet.model.states;
 
 import com.sysfera.godiet.model.DietResourceManaged;
+import com.sysfera.godiet.model.SoftwareManager;
 /**
  * Main class of State Design Pattern
  * Currently five State
@@ -9,7 +10,7 @@ import com.sysfera.godiet.model.DietResourceManaged;
  */
 public class StateController {
 
-	final DietResourceManaged agent;
+	final SoftwareManager softwareManaged;
 	final ReadyStateImpl ready;
 	final DownStateImpl down;
 	final UpStateImpl up;
@@ -17,8 +18,8 @@ public class StateController {
 	// Down by default
 	ResourceState state;
 
-	public StateController(DietResourceManaged agent) {
-		this.agent = agent;
+	public StateController(SoftwareManager agent) {
+		this.softwareManaged = agent;
 		this.down = new DownStateImpl(this);
 		this.up = new UpStateImpl(this);
 		this.error = new ErrorStateImpl(this);

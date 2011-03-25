@@ -39,7 +39,7 @@ public class ReadyStateImpl implements ResourceState{
 	@Override
 	public void start() throws LaunchException {
 		try {
-			launcher.launch(this.stateController.agent);
+			launcher.launch(this.stateController.softwareManaged);
 			this.stateController.state = this.stateController.up;
 		} catch (LaunchException e) {
 			this.stateController.state = this.stateController.error;

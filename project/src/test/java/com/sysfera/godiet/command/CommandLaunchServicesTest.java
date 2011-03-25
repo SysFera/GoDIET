@@ -16,7 +16,7 @@ import com.sysfera.godiet.remote.RemoteAccessMock;
 import com.sysfera.godiet.remote.RemoteConfigurationHelper;
 import com.sysfera.godiet.utils.xml.XmlScannerJaxbImpl;
 
-public class CommandPrepareAgentsTest {
+public class CommandLaunchServicesTest {
 
 	private Logger log = LoggerFactory.getLogger(getClass());
 	private ResourcesManager rm;
@@ -51,17 +51,18 @@ public class CommandPrepareAgentsTest {
 		remoteHelper.setRemoteAccess(remoteAccess);
 
 	}
+
+
 	
 	@Test
-	public void testPrepare() {
-		CommandPrepareAgents prepareCommand = new CommandPrepareAgents();
-		prepareCommand.setRm(rm);
+	public void testLaunchService() {
+		CommandLaunchServices launchServicesCommand = new CommandLaunchServices();
+		launchServicesCommand.setRm(rm);
 		try {
-			prepareCommand.execute();
+			launchServicesCommand.execute();
 		} catch (CommandExecutionException e) {
 			e.printStackTrace();
 			Assert.fail(e.getMessage());
 		}
 	}
-	
 }

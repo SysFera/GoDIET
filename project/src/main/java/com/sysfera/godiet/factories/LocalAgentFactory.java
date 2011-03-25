@@ -28,7 +28,7 @@ public class LocalAgentFactory {
 	public DietResourceManaged create(LocalAgent localAgentDescription) throws DietResourceCreationException {
 		
 		DietResourceManaged localAgentManaged = new DietResourceManaged();
-		localAgentManaged.setDietAgent(localAgentDescription);
+		localAgentManaged.setManagedSoftware(localAgentDescription);
 		settingConfigurationOptions(localAgentManaged);
 		return localAgentManaged;
 	}

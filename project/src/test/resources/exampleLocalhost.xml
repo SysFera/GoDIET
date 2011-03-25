@@ -30,7 +30,7 @@
 		</domain>
 	</infrastructure>
 	<dietServices>
-		<omniNames>
+		<omniNames id="omniNamesDomain1">
 			<config server="MyNode" remoteBinary="omniNames" />
 		</omniNames>
 	</dietServices>

@@ -60,10 +60,10 @@
 		</infrastructure>
 
 	<dietServices>
-		<omniNames>
+		<omniNames id="omniNamesDomain1">
 			<config server="Kev" remoteBinary="omniNames" />
 		</omniNames>
-		<omniNames>
+		<omniNames id="omniNamesDomain2">
 			<config server="Graal" remoteBinary="omniNames" />
 		</omniNames>
 	</dietServices>

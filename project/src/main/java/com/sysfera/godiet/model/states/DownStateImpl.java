@@ -31,7 +31,7 @@ public class DownStateImpl implements ResourceState {
 	@Override
 	public void prepare() throws PrepareException {
 		try {
-			launcher.configure(this.stateController.agent);
+			launcher.configure(this.stateController.softwareManaged);
 			this.stateController.state = this.stateController.ready;
 		} catch (PrepareException e) {
 			this.stateController.state = this.stateController.error;

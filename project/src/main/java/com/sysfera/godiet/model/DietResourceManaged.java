@@ -5,12 +5,9 @@ import org.slf4j.LoggerFactory;
 
 import com.sysfera.godiet.exceptions.remote.LaunchException;
 import com.sysfera.godiet.exceptions.remote.PrepareException;
-import com.sysfera.godiet.model.generated.Agent;
 import com.sysfera.godiet.model.generated.Node;
-import com.sysfera.godiet.model.states.DownStateImpl;
+import com.sysfera.godiet.model.generated.Software;
 import com.sysfera.godiet.model.states.ResourceState;
-import com.sysfera.godiet.model.states.StateController;
-import com.sysfera.godiet.model.states.UpStateImpl;
 
 /**
  * Use to manage and control all DIET elements (SeD, MA, LA, MA_DAG)
@@ -22,10 +19,10 @@ public class DietResourceManaged extends SoftwareManager {
 	private Logger log = LoggerFactory.getLogger(getClass());
 
 	// Agent description
-	private Agent agentManaged;
+	private Software agentManaged;
 
 	public DietResourceManaged() {
-		stateController = new StateController(this);
+	
 	}
 
 	/**
@@ -33,7 +30,7 @@ public class DietResourceManaged extends SoftwareManager {
 	 * 
 	 * @param dietAgent
 	 */
-	public void setDietAgent(Agent dietAgent) {
+	public void setManagedSoftware(Software dietAgent) {
 		this.agentManaged = dietAgent;
 	}
 
@@ -42,7 +39,7 @@ public class DietResourceManaged extends SoftwareManager {
 	 * 
 	 * @return the agent description
 	 */
-	public Agent getDietAgent() {
+	public Software getDietAgent() {
 		return agentManaged;
 	}
 
@@ -67,5 +64,10 @@ public class DietResourceManaged extends SoftwareManager {
 
 		currentState.prepare();
 
+	}
+
+	@Override
+	public Software getSoftwareDescription() {
+		return agentManaged;
 	}
 }

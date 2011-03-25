@@ -22,7 +22,8 @@ public class OmniNamesFactory {
 	public DietServiceManager create(OmniNames omniNamesDescription) 
 	{
 		DietServiceManager omniNamesManaged = new DietServiceManager();
-		omniNamesManaged.setDietService(omniNamesDescription);
+		
+		omniNamesManaged.setManagedSoftware(omniNamesDescription);
 		
 		return omniNamesManaged;
 	} 

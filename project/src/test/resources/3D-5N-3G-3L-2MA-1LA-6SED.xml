@@ -78,13 +78,13 @@
 	</infrastructure>
 
 	<dietServices>
-		<omniNames>
+		<omniNames id="omniNamesDomain1">
 			<config server="Node1" remoteBinary="omniNames" />
 		</omniNames>
-		<omniNames>
+		<omniNames id="omniNamesDomain2">
 			<config server="Node2" remoteBinary="omniNames" />
 		</omniNames>
-		<omniNames>
+		<omniNames id="omniNamesDomain3">
 			<config server="Node4" remoteBinary="omniNames" />
 		</omniNames>
 	</dietServices>
