@@ -15,15 +15,14 @@ import com.sysfera.godiet.exceptions.remote.LaunchException;
 import com.sysfera.godiet.exceptions.remote.PrepareException;
 import com.sysfera.godiet.exceptions.remote.RemoteAccessException;
 import com.sysfera.godiet.managers.Platform;
-import com.sysfera.godiet.model.SoftwareManager;
 import com.sysfera.godiet.model.Path;
+import com.sysfera.godiet.model.SoftwareManager;
 import com.sysfera.godiet.model.generated.GoDietConfiguration;
 import com.sysfera.godiet.model.generated.Node;
 import com.sysfera.godiet.model.generated.Options;
+import com.sysfera.godiet.model.generated.Options.Option;
 import com.sysfera.godiet.model.generated.Resource;
 import com.sysfera.godiet.model.generated.Scratch;
-import com.sysfera.godiet.model.generated.Ssh;
-import com.sysfera.godiet.model.generated.Options.Option;
 
 /**
  * Agent configuration and remote access helper.
@@ -34,12 +33,14 @@ import com.sysfera.godiet.model.generated.Options.Option;
 public class RemoteConfigurationHelper {
 	private Logger log = LoggerFactory.getLogger(getClass());
 
-	private volatile static RemoteConfigurationHelper instance;
+
 
 	private RemoteAccess remoteAccess;
 	private GoDietConfiguration configuration;
 	private Platform platform;
 
+	//Singleton
+	private volatile static RemoteConfigurationHelper instance;
 	private RemoteConfigurationHelper() {
 	}
 
@@ -71,6 +72,7 @@ public class RemoteConfigurationHelper {
 	 *             if create local files or can't copy files on remote host.
 	 */
 	public void configure(SoftwareManager resource) throws PrepareException {
+		//TODO: Delete this check when Spring IOC configuration will be done
 		if (remoteAccess == null || configuration == null || platform == null) {
 			log.error("Unable to configure remote resource. Remote helper isn't correctly initialized");
 			throw new PrepareException("Remote configurator isn't ready");
@@ -85,7 +87,7 @@ public class RemoteConfigurationHelper {
 		}
 
 		//the local node. From where the command is launch.
-		// TODO : Path findpath(FromDomain, ToNode);	
+		// TODO : Path findpath(FromDomain, ToNode); Move this code	
 		Resource localNode = platform.getResource(configuration.getLocalNode());
 		if(localNode == null || !(localNode instanceof Node)){
 			log.error("Unable to find the local resource.");
@@ -106,7 +108,6 @@ public class RemoteConfigurationHelper {
 		}
 		
 		
-		Ssh sshConfig = remoteNode.getSsh();
 		String command = "";
 		try {
 			// Create Remote Directory
@@ -114,11 +115,11 @@ public class RemoteConfigurationHelper {
 			remoteAccess.run(command, path);
 
 			// Create local config file
+			// TODO: not to be here
 			File file = createConfigFile(resource);
 
 			// Copy file on remote host
-			remoteAccess.copy(file, sshConfig.getLogin(),
-					sshConfig.getServer(), sshConfig.getPort());
+			remoteAccess.copy(file, remoteNode.getSsh());
 		} catch (RemoteAccessException e) {
 			log.error("Unable to configure " + resource.getSoftwareDescription().getId()
 					+ " on " + remoteNode.getId() + " commmand " + command, e);
@@ -133,7 +134,7 @@ public class RemoteConfigurationHelper {
 	 * 
 	 * Create the resource configuration file on local scratch directory
 	 * 
-	 * 
+	 * TODO: Move this code in prepare app
 	 * @param resource
 	 * @throws PrepareException
 	 *             if unable write on local scratch directory
@@ -187,20 +188,69 @@ public class RemoteConfigurationHelper {
 	}
 
 	/**
-	 * Launch diet agent on the physical resource - Search the physical resource
+	 * Launch software on the physical resource - Search the physical resource
 	 * to run the diet agent - Launch command
 	 * 
-	 * @param resource
+	 * @param managedSofware
 	 * @throws LaunchException
 	 *             if can't connect to the remote host or can't launch binary
 	 */
-	public void launch(SoftwareManager resource) throws LaunchException {
+	public void launch(SoftwareManager managedSofware) throws LaunchException {
+		//TODO: Delete this check when Spring IOC configuration will be done
+		//TODO: Begin duplicated code with config() method
+		if (remoteAccess == null || configuration == null || platform == null) {
+			log.error("Unable to configure remote resource. Remote helper isn't correctly initialized");
+			throw new LaunchException("Remote configurator isn't ready");
+		}
+		// the remote physical node to configure
+		Node remoteNode = managedSofware.getPluggedOn();
+		if (remoteNode == null) {
+			log.error("Unable to configure remote resource. Resource not plugged on physial resource");
+			throw new LaunchException(
+					"Resource not plugged on physial resource");
+		}
+		//the local node. From where the command is launch.
+		// TODO : Path findpath(FromDomain, ToNode); Move this code	
+		Resource localNode = platform.getResource(configuration.getLocalNode());
+		if(localNode == null || !(localNode instanceof Node)){
+			log.error("Unable to find the local resource.");
+			throw new LaunchException(
+					"Unable to find the resource from which the remote command is call");
+		}
+		// Find a path between the current node until remote node
+		Path path = null;
+		try {
+			path = platform.findPath((Node)localNode, remoteNode);
+		} catch (PathException e1) {
+			throw new LaunchException("",e1);
+		}
+		if (path == null) {
+			log.error("Unable to configure remote resource. Unable to find a path");
+			throw new LaunchException(
+					"Path node found");
+		}
+		
+		
+		//End of duplicate code
+		
 
+		String command = RemoteCommandBuilder.buildOmniNamesCommand(managedSofware, remoteNode);
+		try {
+			remoteAccess.run(command, path);
+		} catch (RemoteAccessException e) {
+			log.error("Unable to configure " + managedSofware.getSoftwareDescription().getId()
+					+ " on " + remoteNode.getId() + " commmand " + command, e);
+			throw new LaunchException("Unable to run configure "
+					+ managedSofware.getSoftwareDescription().getId() + " on "
+					+ remoteNode.getId() + " .Commmand: " + command, e);
+		}
+		
 	}
 
 	/**
-	 * Stop diet agent on the physical resource - Search the physical resource
-	 * to stop the diet agent - Launch stop command (actually kill but hope
+	 * Stop software on the physical resource 
+	 * - Search the physical resource to stop the diet agent 
+	 * - Launch stop command (actually kill but hope
 	 * change :) )
 	 * 
 	 * @param resource

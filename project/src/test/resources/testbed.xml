@@ -56,9 +56,9 @@
 		<domain label="Domain3">
 			<storage label="Disk3">
 				<scratch dir="/tmp/scratch_runtime/Domain3" />
-				<scp server="IPNFS3" login="godiet" />
+				<scp server="192.168.3.12" login="godiet" />
 			</storage>
-			<node id="Node4" disk="Disk1">
+			<node id="Node4" disk="Disk3">
 				<ssh server="192.168.3.11" login="godiet" />
 				<env>
 					<var name="PATH"
@@ -66,7 +66,7 @@
 					<var name="LD_LIBRARY_PATH" value="/home/godiet/GRAAL/build/lib" />
 				</env>
 			</node>
-			<node id="Node5" disk="Disk1">
+			<node id="Node5" disk="Disk3">
 				<ssh server="192.168.3.12" login="godiet" />
 				<env>
 					<var name="PATH"

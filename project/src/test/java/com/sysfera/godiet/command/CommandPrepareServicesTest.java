@@ -16,7 +16,7 @@ import com.sysfera.godiet.remote.RemoteAccessMock;
 import com.sysfera.godiet.remote.RemoteConfigurationHelper;
 import com.sysfera.godiet.utils.xml.XmlScannerJaxbImpl;
 
-public class CommandLaunchServicesTest {
+public class CommandPrepareServicesTest {
 
 	private Logger log = LoggerFactory.getLogger(getClass());
 	private ResourcesManager rm;
@@ -55,31 +55,11 @@ public class CommandLaunchServicesTest {
 
 	
 	@Test
-	public void testLaunchBeforePrepare() {
-		CommandLaunchServices launchServicesCommand = new CommandLaunchServices();
-		launchServicesCommand.setRm(rm);
-		
-		Exception eOutOfBounds = null;
-
+	public void testPrepareService() {
+		CommandPrepareServices prepareServicesCommand = new CommandPrepareServices();
+		prepareServicesCommand.setRm(rm);
 		try {
-			launchServicesCommand.execute();
-		} catch (CommandExecutionException e) {
-			eOutOfBounds = e;
-		}
-		 // asset the exception object
-	    Assert.assertNotNull("No expected exception", eOutOfBounds);
-	}
-	
-	
-	@Test
-	public void testLaunch() {
-		CommandPrepareServices prepareCommand = new CommandPrepareServices();
-		prepareCommand.setRm(rm);
-		CommandLaunchServices launchServicesCommand = new CommandLaunchServices();
-		launchServicesCommand.setRm(rm);
-		try {
-			prepareCommand.execute();
-			launchServicesCommand.execute();
+			prepareServicesCommand.execute();
 		} catch (CommandExecutionException e) {
 			e.printStackTrace();
 			Assert.fail(e.getMessage());

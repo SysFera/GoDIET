@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 
 import com.sysfera.godiet.exceptions.CommandExecutionException;
 import com.sysfera.godiet.exceptions.remote.LaunchException;
+import com.sysfera.godiet.exceptions.remote.PrepareException;
 import com.sysfera.godiet.managers.ResourcesManager;
 import com.sysfera.godiet.model.DietServiceManager;
 
@@ -16,7 +17,7 @@ import com.sysfera.godiet.model.DietServiceManager;
  * @author phi
  * 
  */
-public class CommandLaunchServices implements Command {
+public class CommandPrepareServices implements Command {
 	private Logger log = LoggerFactory.getLogger(getClass());
 
 	private ResourcesManager rm;
@@ -36,12 +37,13 @@ public class CommandLaunchServices implements Command {
 					+ " not initialized correctly");
 		}
 		List<DietServiceManager> omniNames = rm.getDietModel().getOmninames();
-		log.debug("Will start  " +omniNames.size() + " omniNames");
+		log.debug("Will prepare  " +omniNames.size() + " omniNames");
 		for (DietServiceManager omniName : omniNames) {
 			try {
-				omniName.start();
-			} catch (LaunchException e) {
-				throw new CommandExecutionException("Launch "+ omniName.getSoftwareDescription().getId()+ " failed",e);
+				omniName.prepare();
+			} catch (PrepareException e) {
+				e.printStackTrace();
+				log.error(e.getMessage());
 			}
 		}
 	}

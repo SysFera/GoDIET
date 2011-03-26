@@ -8,3 +8,4 @@ neo4j-shortest-path/
 .settings
 .classpath
 /.project
+/target

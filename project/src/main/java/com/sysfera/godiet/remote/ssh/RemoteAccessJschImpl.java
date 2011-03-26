@@ -128,11 +128,14 @@ public class RemoteAccessJschImpl implements RemoteAccess {
 	 * java.lang.String, int)
 	 */
 	@Override
-	public void copy(File localFile, String user, String host, int port)
+	public void copy(File localFile, Ssh sshConfig)
 			throws RemoteAccessException {
 		FileInputStream fis = null;
 		Channel channel = null;
 		Session session = null;
+		String user = sshConfig.getLogin();
+		String host = sshConfig.getServer();
+		int port = sshConfig.getPort();
 		try {
 
 			session = jsch.getSession(user, host, 22);

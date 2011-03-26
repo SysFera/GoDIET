@@ -86,7 +86,7 @@ public class ForwarderFactory {
 	private void settingConfigurationOptions(DietResourceManaged forwarder)
 			throws DietResourceCreationException {
 		if (forwarder.getPluggedOn() == null) {
-			throw new DietResourceCreationException(forwarder.getDietAgent()
+			throw new DietResourceCreationException(forwarder.getManagedSoftwareDescription()
 					.getId() + " not plugged on physical resource");
 		}
 
@@ -100,7 +100,7 @@ public class ForwarderFactory {
 		reject.setValue(forwarder.getPluggedOn().getSsh().getServer());
 		opts.getOption().add(accept);
 		opts.getOption().add(reject);
-		forwarder.getDietAgent().setCfgOptions(opts);
+		forwarder.getManagedSoftwareDescription().setCfgOptions(opts);
 
 	}
 }

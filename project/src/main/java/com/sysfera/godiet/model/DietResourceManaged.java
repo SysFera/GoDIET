@@ -39,7 +39,7 @@ public class DietResourceManaged extends SoftwareManager {
 	 * 
 	 * @return the agent description
 	 */
-	public Software getDietAgent() {
+	public Software getManagedSoftwareDescription() {
 		return agentManaged;
 	}
 
@@ -61,7 +61,6 @@ public class DietResourceManaged extends SoftwareManager {
 
 	public void prepare() throws PrepareException {
 		ResourceState currentState = this.stateController.getState();
-
 		currentState.prepare();
 
 	}

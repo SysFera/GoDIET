@@ -12,6 +12,7 @@ import com.sysfera.godiet.exceptions.remote.RemoteAccessException;
 import com.sysfera.godiet.model.Path;
 import com.sysfera.godiet.model.generated.Node;
 import com.sysfera.godiet.model.generated.Resource;
+import com.sysfera.godiet.model.generated.Ssh;
 
 /**
  * 
@@ -57,15 +58,15 @@ public class RemoteAccessMock implements RemoteAccess {
 	 * java.lang.String, java.lang.String, int)
 	 */
 	@Override
-	public void copy(File file, String user, String host, int port)
+	public void copy(File file, Ssh sshConfig)
 			throws RemoteAccessException {
 		if (remoteAccessDown)
 			throw new RemoteAccessException("Unable to copy file "
-					+ file.getName() + " on " + host + ":" + port
-					+ " . Login: " + user);
+					+ file.getName() + " on " + sshConfig.getServer() + ":" + sshConfig.getPort()
+					+ " . Login: " + sshConfig.getLogin());
 
-		log.debug("Copy " + file.getName() + " on " + host + ":" + port
-				+ " . Login: " + user);
+		log.debug("Copy " + file.getName() + " on " + sshConfig.getServer() + ":" + sshConfig.getPort()
+				+ " . Login: " + sshConfig.getLogin());
 
 	}
 

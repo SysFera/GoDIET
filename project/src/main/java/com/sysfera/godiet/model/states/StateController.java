@@ -1,6 +1,5 @@
 package com.sysfera.godiet.model.states;
 
-import com.sysfera.godiet.model.DietResourceManaged;
 import com.sysfera.godiet.model.SoftwareManager;
 /**
  * Main class of State Design Pattern

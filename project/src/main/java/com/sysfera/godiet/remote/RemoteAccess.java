@@ -5,6 +5,7 @@ import java.io.File;
 import com.sysfera.godiet.exceptions.remote.AddKeyException;
 import com.sysfera.godiet.exceptions.remote.RemoteAccessException;
 import com.sysfera.godiet.model.Path;
+import com.sysfera.godiet.model.generated.Ssh;
 
 /**
  * Interface to execute and copy file on a host remote
@@ -32,16 +33,11 @@ public interface RemoteAccess {
 	 * 
 	 * @param file
 	 *            The file to copy
-	 * @param user
-	 *            User name
-	 * @param host
-	 *            The destination host
-	 * @param port
-	 *            The destination port
+	 * @param SSH The ssh configuration
 	 * @throws RemoteAccessException
 	 *             if can't copy file on remote host
 	 */
-	public abstract void copy(File file, String user, String host, int port)
+	public abstract void copy(File file, Ssh sshConfiguration)
 			throws RemoteAccessException;
 
 	/**
