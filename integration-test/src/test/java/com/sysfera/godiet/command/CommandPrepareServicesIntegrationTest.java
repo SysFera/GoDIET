@@ -59,7 +59,7 @@ public class CommandPrepareServicesIntegrationTest {
 		try {
 			remoteAccess.addKey(urlFile.getFile(), null, "godiet");
 			// Here add a key to access on testbed
-			remoteAccess.addKey("/home/phi/tmp/id_dsa", null, "");
+		//	remoteAccess.addKey("/home/phi/tmp/id_dsa", null, "");
 		} catch (AddKeyException e) {
 			Assert.fail(e.getMessage());
 		}
