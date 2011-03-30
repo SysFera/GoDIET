@@ -33,7 +33,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
  *         &lt;element name="scratch" type="{}scratch"/>
- *         &lt;element name="scp" type="{}scp"/>
+ *         &lt;element name="scp" type="{}ssh"/>
  *       &lt;/sequence>
  *       &lt;attribute name="label" use="required" type="{http://www.w3.org/2001/XMLSchema}ID" />
  *     &lt;/restriction>
@@ -53,7 +53,7 @@ public class Storage {
     @XmlElement(required = true)
     protected Scratch scratch;
     @XmlElement(required = true)
-    protected Scp scp;
+    protected Ssh scp;
     @XmlAttribute(required = true)
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     @XmlID
@@ -89,10 +89,10 @@ public class Storage {
      * 
      * @return
      *     possible object is
-     *     {@link Scp }
+     *     {@link Ssh }
      *     
      */
-    public Scp getScp() {
+    public Ssh getScp() {
         return scp;
     }
 
@@ -101,10 +101,10 @@ public class Storage {
      * 
      * @param value
      *     allowed object is
-     *     {@link Scp }
+     *     {@link Ssh }
      *     
      */
-    public void setScp(Scp value) {
+    public void setScp(Ssh value) {
         this.scp = value;
     }
 

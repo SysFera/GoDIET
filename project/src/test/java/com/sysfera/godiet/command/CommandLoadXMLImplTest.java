@@ -104,7 +104,7 @@ public class CommandLoadXMLImplTest {
 			}
 
 		} catch (CommandExecutionException e) {
-			log.error("Test Fail", e);
+			log.error("Test testCountDietElement1 Fail", e);
 			Assert.fail();
 		}
 
@@ -162,7 +162,7 @@ public class CommandLoadXMLImplTest {
 			}
 
 		} catch (CommandExecutionException e) {
-			log.error("Test Fail", e);
+			log.error("Test testCountDietElement2 Fail", e);
 			Assert.fail();
 		}
 

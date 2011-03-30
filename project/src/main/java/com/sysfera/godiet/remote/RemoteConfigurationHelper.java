@@ -92,7 +92,7 @@ public class RemoteConfigurationHelper {
 		if(localNode == null || !(localNode instanceof Node)){
 			log.error("Unable to find the local resource.");
 			throw new PrepareException(
-					"Unable to find the resource from which the remote command is call");
+					"Unable to find the resource: " +configuration.getLocalNode());
 		}
 		// Find a path between the current node until remote node
 		Path path = null;
@@ -115,11 +115,11 @@ public class RemoteConfigurationHelper {
 			remoteAccess.run(command, path);
 
 			// Create local config file
-			// TODO: not to be here
+			// TODO: not to be here ?
 			File file = createConfigFile(resource);
 
 			// Copy file on remote host
-			remoteAccess.copy(file, remoteNode.getSsh());
+			remoteAccess.copy(file, remoteNode.getDisk().getScratch().getDir(),path);
 		} catch (RemoteAccessException e) {
 			log.error("Unable to configure " + resource.getSoftwareDescription().getId()
 					+ " on " + remoteNode.getId() + " commmand " + command, e);
@@ -195,7 +195,7 @@ public class RemoteConfigurationHelper {
 	 * @throws LaunchException
 	 *             if can't connect to the remote host or can't launch binary
 	 */
-	public void launch(SoftwareManager managedSofware) throws LaunchException {
+	public void execute(SoftwareManager managedSofware) throws LaunchException {
 		//TODO: Delete this check when Spring IOC configuration will be done
 		//TODO: Begin duplicated code with config() method
 		if (remoteAccess == null || configuration == null || platform == null) {
@@ -234,7 +234,7 @@ public class RemoteConfigurationHelper {
 		//End of duplicate code
 		
 
-		String command = RemoteCommandBuilder.buildOmniNamesCommand(managedSofware, remoteNode);
+		String command = RemoteCommandBuilder.buildRunCommand(managedSofware, remoteNode);
 		try {
 			remoteAccess.run(command, path);
 		} catch (RemoteAccessException e) {

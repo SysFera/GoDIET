@@ -1,4 +1,4 @@
-package com.sysfera.godiet.factories;
+package com.sysfera.godiet.model.factories;
 
 import com.sysfera.godiet.model.DietResourceManaged;
 import com.sysfera.godiet.model.generated.Sed;

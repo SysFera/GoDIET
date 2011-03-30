@@ -33,11 +33,12 @@ public interface RemoteAccess {
 	 * 
 	 * @param file
 	 *            The file to copy
-	 * @param SSH The ssh configuration
+	 * @param remotePath The remote path where file must be copied
+	 * @param path The resources path need to be cross 
 	 * @throws RemoteAccessException
 	 *             if can't copy file on remote host
 	 */
-	public abstract void copy(File file, Ssh sshConfiguration)
+	public abstract void copy(File file, String remotePath,Path path)
 			throws RemoteAccessException;
 
 	/**

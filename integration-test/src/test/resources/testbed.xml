@@ -3,7 +3,7 @@
 	xsi:noNamespaceSchemaLocation="GoDietNG.xsd">
 
 	<goDietConfiguration debug="1" saveStdOut="true"
-		saveStdErr="true" log="true" localNode="myLaptop">
+		saveStdErr="true" log="true" localNode="graal">
 		<localscratch dir="/tmp/scratch_godiet" />
 	</goDietConfiguration>
 
@@ -31,10 +31,10 @@
 		</domain>
 		<domain label="DomainTestBed">
 			<node disk="fake" id="testbedVM">
-				<ssh login="pmartinez" server="localhost" port="40022" />
+				<ssh login="godiet" server="140.77.166.19" port="40022"/>
 			</node>
 			<gateway ref="graal" id="testbedVMGW">
-				<ssh login="pmartinez" server="140.77.166.19" />
+				<ssh login="godiet" server="140.77.166.19" port="40022" />
 			</gateway>
 		</domain>
 		<domain label="Domain1">

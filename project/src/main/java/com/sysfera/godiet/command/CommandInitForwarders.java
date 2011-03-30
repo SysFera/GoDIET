@@ -7,8 +7,8 @@ import org.slf4j.LoggerFactory;
 
 import com.sysfera.godiet.exceptions.CommandExecutionException;
 import com.sysfera.godiet.exceptions.DietResourceCreationException;
-import com.sysfera.godiet.factories.ForwarderFactory;
 import com.sysfera.godiet.managers.ResourcesManager;
+import com.sysfera.godiet.model.factories.ForwarderFactory;
 import com.sysfera.godiet.model.generated.Forwarder;
 import com.sysfera.godiet.model.generated.Link;
 

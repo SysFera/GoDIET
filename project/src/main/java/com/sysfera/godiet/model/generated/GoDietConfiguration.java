@@ -60,6 +60,8 @@ public class GoDietConfiguration {
     protected Boolean log;
     @XmlAttribute
     protected Integer watcherPeriod;
+    @XmlAttribute
+    protected String localNode;
 
     /**
      * Gets the value of the localscratch property.
@@ -246,8 +248,12 @@ public class GoDietConfiguration {
     }
 
 	public String getLocalNode() {
-		// TODO Auto-generated method stub
-		return "Node1";
+		if(localNode == null || localNode.equals("")) return "Node1";
+		return localNode;
 	}
+	public void setLocalNode(String value) {
+		this.localNode = value;
+	}
+
 
 }

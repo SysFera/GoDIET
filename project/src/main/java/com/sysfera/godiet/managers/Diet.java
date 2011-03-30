@@ -4,13 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.sysfera.godiet.exceptions.DietResourceCreationException;
-import com.sysfera.godiet.factories.ForwarderFactory;
-import com.sysfera.godiet.factories.LocalAgentFactory;
-import com.sysfera.godiet.factories.MasterAgentFactory;
-import com.sysfera.godiet.factories.OmniNamesFactory;
-import com.sysfera.godiet.factories.SedFactory;
 import com.sysfera.godiet.model.DietResourceManaged;
 import com.sysfera.godiet.model.DietServiceManager;
+import com.sysfera.godiet.model.factories.ForwarderFactory;
+import com.sysfera.godiet.model.factories.LocalAgentFactory;
+import com.sysfera.godiet.model.factories.MasterAgentFactory;
+import com.sysfera.godiet.model.factories.OmniNamesFactory;
+import com.sysfera.godiet.model.factories.SedFactory;
 import com.sysfera.godiet.model.generated.Forwarder;
 import com.sysfera.godiet.model.generated.LocalAgent;
 import com.sysfera.godiet.model.generated.MasterAgent;

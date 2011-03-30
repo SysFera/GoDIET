@@ -20,7 +20,7 @@ public class TrustedUserInfo implements UserInfo  {
 	}
 
 	public boolean promptPassword(String s) {
-		log.info(s);
+		log.error(s);
 		return false;
 	}
 
