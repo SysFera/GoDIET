@@ -164,13 +164,7 @@ public class ObjectFactory {
         return new LogCentral();
     }
 
-    /**
-     * Create an instance of {@link Scp }
-     * 
-     */
-    public Scp createScp() {
-        return new Scp();
-    }
+
 
     /**
      * Create an instance of {@link Infrastructure }

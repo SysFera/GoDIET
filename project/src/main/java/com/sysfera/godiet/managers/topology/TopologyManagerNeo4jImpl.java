@@ -136,8 +136,20 @@ public class TopologyManagerNeo4jImpl implements TopologyManager {
 		return dietPath;
 	}
 
+	/**
+	 * Helper class to convert the Neo4j path in GoDiet path
+	 * @author phi
+	 *
+	 */
 	private static class DietPathBuilder {
 
+		/**
+		 * 
+		 * @param neo4JPath
+		 * @param platform
+		 * @return
+		 * @throws GraphDataException Fatal. Hope never appear (Inconsitent data model)
+		 */
 		static Path build(final org.neo4j.graphdb.Path neo4JPath,
 				final Platform platform) throws GraphDataException {
 			Path path = new Path();
@@ -148,7 +160,7 @@ public class TopologyManagerNeo4jImpl implements TopologyManager {
 						.getProperty(RESOURCE_KEY, node.getId()));
 				if (resource == null)
 					throw new GraphDataException(
-							"Fatal. Resource null, will never appears");
+							"Fatal. Resource null. Error will never appears. Model is inconstitent");
 				res.add(resource);
 			}
 			path.setPath(res);
@@ -179,8 +191,6 @@ public class TopologyManagerNeo4jImpl implements TopologyManager {
 				continue;
 			Transaction tx = graphDb.beginTx();
 			try {
-				log.info("Mesh " + resToAdd.getId() + " with "
-						+ resource.getId());
 				createChain(resToAdd, resource);
 				createChain(resource, resToAdd);
 				tx.success();

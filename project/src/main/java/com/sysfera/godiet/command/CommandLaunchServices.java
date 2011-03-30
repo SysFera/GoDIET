@@ -36,11 +36,12 @@ public class CommandLaunchServices implements Command {
 					+ " not initialized correctly");
 		}
 		List<DietServiceManager> omniNames = rm.getDietModel().getOmninames();
-		log.debug("Will start  " +omniNames.size() + " omniNames");
+		log.debug("Try to launch  " +omniNames.size() + " omniNames");
 		for (DietServiceManager omniName : omniNames) {
 			try {
 				omniName.start();
 			} catch (LaunchException e) {
+				log.error("Unable to run omniNames "+omniName.getManagedSoftwareDescription().getId());
 				throw new CommandExecutionException("Launch "+ omniName.getSoftwareDescription().getId()+ " failed",e);
 			}
 		}

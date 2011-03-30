@@ -5,8 +5,12 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.jcraft.jsch.ChannelExec;
 import com.jcraft.jsch.JSch;
+import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Proxy;
 import com.jcraft.jsch.Session;
 import com.jcraft.jsch.SocketFactory;
@@ -18,14 +22,18 @@ import com.jcraft.jsch.UserInfo;
  *
  */
 public class NCProxy implements Proxy {
+	private Logger log = LoggerFactory.getLogger(getClass());
+
 	private ChannelExec channel;
 	private Session session1;
-	private String username;
 	private JSch jsch;
-	private String host;
-	private int port;
+	
+	private final String username;
+	private final String host;
+	private final int port;
 	private UserInfo ui;
 	private Proxy proxy = null;
+
 
 	public NCProxy(String username, String host, int port, JSch jsch,UserInfo ui) {
 		this.host = host;
@@ -34,10 +42,14 @@ public class NCProxy implements Proxy {
 		this.jsch = jsch;
 		this.ui = ui;
 	}
+	public String getHost() {
+		return host;
+	}
 
 	@Override
 	public void connect(SocketFactory socket_factory, String dhost, int dport,
 			int timeout) throws Exception {
+		try{
 		session1 = jsch.getSession(username, host, port);
 		session1.setUserInfo(ui);
 		if(proxy != null)session1.setProxy(proxy);
@@ -45,6 +57,10 @@ public class NCProxy implements Proxy {
 		channel = (ChannelExec) session1.openChannel("exec");
 		channel.setCommand("nc " + dhost + " " + dport); // or netcat, bash, ...
 		channel.connect(timeout);
+		}catch (JSchException e) {
+			log.error("Unable to connect to " + username + "@" + host+ ":"+port);
+			throw e;
+		}
 		
 	}
 

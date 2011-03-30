@@ -59,15 +59,15 @@ public class CommandLaunchServicesTest {
 		CommandLaunchServices launchServicesCommand = new CommandLaunchServices();
 		launchServicesCommand.setRm(rm);
 		
-		Exception eOutOfBounds = null;
+		Exception commandExecException = null;
 
 		try {
 			launchServicesCommand.execute();
 		} catch (CommandExecutionException e) {
-			eOutOfBounds = e;
+			commandExecException = e;
 		}
-		 // asset the exception object
-	    Assert.assertNotNull("No expected exception", eOutOfBounds);
+		 // ass0et the exception object
+	    Assert.assertNotNull("No expected exception", commandExecException);
 	}
 	
 	

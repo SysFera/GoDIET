@@ -2,6 +2,7 @@ package com.sysfera.godiet.remote;
 
 import com.sysfera.godiet.model.SoftwareManager;
 import com.sysfera.godiet.model.generated.Node;
+import com.sysfera.godiet.model.generated.OmniNames;
 
 /**
  * 
@@ -11,27 +12,36 @@ import com.sysfera.godiet.model.generated.Node;
  */
 public class RemoteCommandBuilder {
 
+	
+	
+	public static String buildRunCommand(SoftwareManager softManaged,
+			Node remoteNode)
+	{
+		if(softManaged.getSoftwareDescription() instanceof OmniNames)
+			return buildOmniNamesCommand( softManaged,
+					 remoteNode);
+		throw new IllegalArgumentException("Cannot build command for " +softManaged.getSoftwareDescription().getId() );
+		
+	}
+	
 	/**
 	 * Build the omniNames launching command
-	 * OMNINAMES_LOGDIR={scratch_runtime}/{DomainName}/{omniNamesId}/log/ +
-	 * OMNIORB_CONFIG={scratch_runtime}/{DomainName}/{omniNamesId}.cfg +
+	 * OMNINAMES_LOGDIR={scratch_runtime}/{DomainName}/ +
+	 * OMNIORB_CONFIG={scratch_runtime}/{omniNamesId}.cfg +
 	 * {OmniNamesBinary} + -start
 	 * 
 	 * @param softManaged
 	 * @param remoteNode
 	 * @return
 	 */
-	public static String buildOmniNamesCommand(SoftwareManager softManaged,
+	private static String buildOmniNamesCommand(SoftwareManager softManaged,
 			Node remoteNode) {
 		String command = "";
 		command += "OMNINAMES_LOGDIR="
-				+ remoteNode.getDisk().getScratch().getDir() +"/"
-				+ remoteNode.getDomain().getLabel() +"/"
-				+ softManaged.getSoftwareDescription().getId() + "/log/";
+				+ remoteNode.getDisk().getScratch().getDir() +"/";
 		command += " ";
 		command += "OMNIORB_CONFIG="
 				+ remoteNode.getDisk().getScratch().getDir() +"/"
-				+ remoteNode.getDomain().getLabel() +"/"
 				+ softManaged.getSoftwareDescription().getId() + ".cfg";
 		command += " ";
 		command += softManaged.getSoftwareDescription().getConfig()

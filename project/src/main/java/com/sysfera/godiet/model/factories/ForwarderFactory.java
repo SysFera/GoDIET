@@ -1,4 +1,4 @@
-package com.sysfera.godiet.factories;
+package com.sysfera.godiet.model.factories;
 
 import com.sysfera.godiet.exceptions.DietResourceCreationException;
 import com.sysfera.godiet.model.DietResourceManaged;
@@ -90,12 +90,13 @@ public class ForwarderFactory {
 					.getId() + " not plugged on physical resource");
 		}
 
-		Options opts = new ObjectFactory().createOptions();
+		ObjectFactory factory = new ObjectFactory();
+		Options opts = factory.createOptions();
 
-		Option accept = new Option();
+		Option accept = factory.createOptionsOption();
 		accept.setKey("accept");
 		accept.setValue(".*");
-		Option reject = new Option();
+		Option reject = factory.createOptionsOption();
 		reject.setKey("reject");
 		reject.setValue(forwarder.getPluggedOn().getSsh().getServer());
 		opts.getOption().add(accept);

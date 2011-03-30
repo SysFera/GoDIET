@@ -48,7 +48,7 @@ public class RemoteAccessMock implements RemoteAccess {
 					+ remoteNode.getSsh().getPort());
 		}
 
-		log.debug("Run " + command + " on " + remoteNode.getSsh().getServer()+" . Path: "+pathInfo);
+		log.debug("Execute: \"" + command + "\" on " + remoteNode.getSsh().getServer()+"("+remoteNode.getId() +"). Path: "+pathInfo);
 	}
 
 	/*
@@ -58,15 +58,25 @@ public class RemoteAccessMock implements RemoteAccess {
 	 * java.lang.String, java.lang.String, int)
 	 */
 	@Override
-	public void copy(File file, Ssh sshConfig)
+	public void copy(File file, String remotePath, Path path)
 			throws RemoteAccessException {
+		Object[] pathResources = ((Object[]) path.getPath().toArray());
+		if (pathResources == null || pathResources.length == 0)
+			throw new RemoteAccessException(
+					"Unable to run a command. The path is empty");
+		String pathInfo = "Connection path:" + ((Resource)pathResources[0]).getId();
+		for(int i = 1 ; i < pathResources.length  ; i++)
+		{
+			pathInfo+= "-->"+((Resource)pathResources[i]).getId();
+		}
+		Node remoteNode  = ((Node)pathResources[pathResources.length - 1]);
 		if (remoteAccessDown)
 			throw new RemoteAccessException("Unable to copy file "
-					+ file.getName() + " on " + sshConfig.getServer() + ":" + sshConfig.getPort()
-					+ " . Login: " + sshConfig.getLogin());
+					+ file.getName() + " on " + remoteNode.getSsh().getPort() + " . Login: "
+					+ remoteNode.getSsh().getPort());
 
-		log.debug("Copy " + file.getName() + " on " + sshConfig.getServer() + ":" + sshConfig.getPort()
-				+ " . Login: " + sshConfig.getLogin());
+		log.debug("scp " + file.getAbsolutePath() + " " +remoteNode.getDisk().getScp().getLogin()+ "@" + remoteNode.getDisk().getScp().getServer() + ":" + remoteNode.getDisk().getScp().getPort()
+				+ ":" + remotePath);
 
 	}
 

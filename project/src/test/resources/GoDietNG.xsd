@@ -30,6 +30,7 @@
 		<xs:attribute name="saveStdErr" type="xs:boolean"
 			default="true" />
 		<xs:attribute name="log" type="xs:boolean" />
+		<xs:attribute name="localNode" type="xs:string" use="optional"/>
 		<xs:attribute name="watcherPeriod" type="xs:int" default="30000" />
 	</xs:complexType>
 
@@ -160,7 +161,7 @@
 		</xs:annotation>
 		<xs:sequence>
 			<xs:element name="scratch" type="scratch" />
-			<xs:element name="scp" type="scp" />
+			<xs:element name="scp" type="ssh" />
 		</xs:sequence>
 		<xs:attribute name="label" type="xs:ID" use="required" />
 	</xs:complexType>
@@ -169,10 +170,7 @@
 		<xs:attribute name="dir" type="xs:string" use="required" />
 	</xs:complexType>
 
-	<xs:complexType name="scp">
-		<xs:attribute name="login" type="xs:string" use="required" />
-		<xs:attribute name="server" type="xs:string" use="required" />
-	</xs:complexType>
+
 
 	<xs:complexType name="node">
 		<xs:complexContent>
