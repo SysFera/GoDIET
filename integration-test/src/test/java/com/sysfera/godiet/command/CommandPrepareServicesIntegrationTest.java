@@ -48,7 +48,7 @@ public class CommandPrepareServicesIntegrationTest {
 		remoteHelper.setPlatform(rm.getPlatformModel());
 		//Real Remote SSH
 		RemoteAccessJschImpl remoteAccess = new RemoteAccessJschImpl();
-		remoteAccess.jschDebug(true);
+		remoteAccess.debug(true);
 		String fakeKey = "fakeuser/testbedKey";
 		URL urlFile = getClass().getClassLoader().getResource(fakeKey);
 		if (urlFile == null || urlFile.getFile().isEmpty())
@@ -57,9 +57,9 @@ public class CommandPrepareServicesIntegrationTest {
 		if (urlFile == null)
 			Assert.fail("Unable to load ssh key" + fakeKey);
 		try {
-			remoteAccess.addKey(urlFile.getFile(), null, "godiet");
+			remoteAccess.addItentity(urlFile.getFile(), null, "godiet");
 			// Here add a key to access on testbed
-		//	remoteAccess.addKey("/home/phi/tmp/id_dsa", null, "");
+			remoteAccess.addItentity("/home/phi/tmp/id_dsa", null, "");
 		} catch (AddKeyException e) {
 			Assert.fail(e.getMessage());
 		}
@@ -73,6 +73,15 @@ public class CommandPrepareServicesIntegrationTest {
 	public void testPrepareService() {
 		CommandPrepareServices prepareServicesCommand = new CommandPrepareServices();
 		prepareServicesCommand.setRm(rm);
+		CommandLaunchServices launchServicesCommand = new CommandLaunchServices();
+		launchServicesCommand.setRm(rm);
+		try {
+			prepareServicesCommand.execute();
+			launchServicesCommand.execute();
+		} catch (CommandExecutionException e) {
+			e.printStackTrace();
+			Assert.fail(e.getMessage());
+		}
 		try {
 			prepareServicesCommand.execute();
 		} catch (CommandExecutionException e) {

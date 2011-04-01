@@ -5,26 +5,18 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.Iterator;
-import java.util.LinkedHashSet;
 import java.util.Properties;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.jcraft.jsch.Channel;
 import com.jcraft.jsch.ChannelExec;
 import com.jcraft.jsch.JSch;
-import com.jcraft.jsch.JSchException;
-import com.jcraft.jsch.Session;
-import com.jcraft.jsch.UserInfo;
 import com.sysfera.godiet.exceptions.remote.AddKeyException;
 import com.sysfera.godiet.exceptions.remote.RemoteAccessException;
 import com.sysfera.godiet.model.Path;
-import com.sysfera.godiet.model.generated.Gateway;
-import com.sysfera.godiet.model.generated.Node;
-import com.sysfera.godiet.model.generated.Resource;
-import com.sysfera.godiet.model.generated.Ssh;
 import com.sysfera.godiet.remote.RemoteAccess;
 
 /**
@@ -36,22 +28,20 @@ import com.sysfera.godiet.remote.RemoteAccess;
 public class RemoteAccessJschImpl implements RemoteAccess {
 	private Logger log = LoggerFactory.getLogger(getClass());
 
-	private final JSch jsch;
-	private final UserInfo trustedUI;
+	@Autowired
+	private ChannelManagerJsch channelManager;
 
 	// TODO: Extract JSCH default options.
 	public RemoteAccessJschImpl() {
-		this.jsch = new JSch();
 		Properties config = new java.util.Properties();
 		config.put("StrictHostKeyChecking", "no");
 		JSch.setConfig(config);
 
-		this.trustedUI = new TrustedUserInfo();
-
 	}
 
+	
 	public JSch getJsch() {
-		return jsch;
+		return channelManager.getJsch();
 	}
 
 	/*
@@ -61,57 +51,36 @@ public class RemoteAccessJschImpl implements RemoteAccess {
 	 * java.lang.String, int)
 	 */
 	@Override
-	public void run(String command, Path path) throws RemoteAccessException {
+	public Integer launch(String command, Path path) throws RemoteAccessException {
 
-		Channel channel = null;
-		Session session = null;
-
-		LinkedHashSet<? extends Resource> hops = path.getPath();
-		if (hops.size() < 2)
-			throw new RemoteAccessException(
-					"Path length must be > 2 (source + destination");
+		log.debug(command);
+		ChannelExec channel = null;
+		StringBuilder sb = new StringBuilder();
 		try {
-			// Create the session with the last Node
-			Node last = null;
-			try {
-				last = (Node) hops.toArray()[hops.size() - 1];
-			} catch (ClassCastException e) {
-				throw new RemoteAccessException(
-						"The last node must be a Node. It's a "
-								+ hops.toArray()[hops.size() - 1].getClass()
-										.getCanonicalName());
-			}
-
-			Ssh lastNodeContig = last.getSsh();
-			session = jsch.getSession(lastNodeContig.getLogin(),
-					lastNodeContig.getServer(), lastNodeContig.getPort());
-			session.setUserInfo(trustedUI);
-			initProxiesPath(hops, session, trustedUI);
-
-			session.connect();
-
-			channel = session.openChannel("exec");
+			channel = channelManager.getExecChannel(path, false);
 			// TODO: Decor with tee to write on standard err and out stream and
 			// alse remote scratch file
-			((ChannelExec) channel).setCommand(command);
+			String getPidCommand = "( /bin/echo \"" + command+ "\";  echo 'echo ${!}' )|sh -";
+			channel.setCommand(getPidCommand);
 
 			channel.setInputStream(null);
-			((ChannelExec) channel).setErrStream(System.err);
+			channel.setErrStream(System.err);
 
 			InputStream in = channel.getInputStream();
 
 			channel.connect();
 
+			//Read Pid
 			byte[] tmp = new byte[1024];
 			while (true) {
 				while (in.available() > 0) {
 					int i = in.read(tmp, 0, 1024);
 					if (i < 0)
 						break;
-					log.debug(new String(tmp, 0, i));
+					sb.append(new String(tmp, 0, i));
 				}
 				if (channel.isClosed()) {
-
+					
 					break;
 				}
 				try {
@@ -131,12 +100,19 @@ public class RemoteAccessJschImpl implements RemoteAccess {
 			try {
 				if (channel != null)
 					channel.disconnect();
-				if (session != null)
-					session.disconnect();
 			} catch (Exception e) {
 				log.error("SSH disconnect error", e);
 			}
 		}
+		//parse pid
+		Integer  pid = null;
+		try{
+		pid = Integer.valueOf(sb.toString().trim());
+		}catch (NumberFormatException e) {
+			log.error("Unable to convert the command output to PID ! Output =  " + sb.toString());
+			
+		}
+		return pid;
 
 	}
 
@@ -150,39 +126,12 @@ public class RemoteAccessJschImpl implements RemoteAccess {
 	public void copy(File localFile, String remotePath, Path path)
 			throws RemoteAccessException {
 		FileInputStream fis = null;
+
 		Channel channel = null;
-		Session session = null;
-
-		LinkedHashSet<? extends Resource> hops = path.getPath();
-		if (hops.size() < 2)
-			throw new RemoteAccessException(
-					"Path length must be > 2 (source + destination");
 		try {
-			// Create the session with the last Node
-			Node last = null;
-			try {
-				last = (Node) hops.toArray()[hops.size() - 1];
-			} catch (ClassCastException e) {
-				throw new RemoteAccessException(
-						"The last node must be a Node. It's a "
-								+ hops.toArray()[hops.size() - 1].getClass()
-										.getCanonicalName());
-			}
-
-			Ssh lastNodeContig = last.getDisk().getScp();
-			session = jsch.getSession(lastNodeContig.getLogin(),
-					lastNodeContig.getServer(), lastNodeContig.getPort());
-			log.info("Open SSH session to " + lastNodeContig.getLogin() + "@"
-					+ lastNodeContig.getServer() + ":"
-					+ lastNodeContig.getPort());
-			session.setUserInfo(trustedUI);
-			initProxiesPath(hops, session, trustedUI);
-
-			session.connect();
-
+			channel = channelManager.getExecChannel(path, true);
 			// exec 'scp -t rfile' remotely
 			String command = "scp -p -t " + remotePath + "/";
-			channel = session.openChannel("exec");
 			((ChannelExec) channel).setCommand(command);
 
 			// get I/O streams for remote scp
@@ -231,19 +180,11 @@ public class RemoteAccessJschImpl implements RemoteAccess {
 			out.write(buf, 0, 1);
 			out.flush();
 			if (checkAck(in) != 0) {
-				throw new RemoteAccessException("Error when close connection ");// +
-																				// user
-																				// +
-																				// "@"
-																				// +
-																				// host
-				// + ":" + port + "Command: " + command);
+				throw new RemoteAccessException("Error when close connection ");
+				// + user +"@" + host + ":" + port + "Command: " + command);
 			}
 			out.close();
-
 			channel.disconnect();
-			session.disconnect();
-
 		} catch (Exception e) {
 			throw new RemoteAccessException("Unable to scp");// on :
 																// " + user + "@"
@@ -252,8 +193,6 @@ public class RemoteAccessJschImpl implements RemoteAccess {
 			try {
 				if (channel != null)
 					channel.disconnect();
-				if (session != null)
-					session.disconnect();
 				try {
 					if (fis != null)
 						fis.close();
@@ -263,55 +202,6 @@ public class RemoteAccessJschImpl implements RemoteAccess {
 				log.error("SSH disconnect error", e);
 			}
 		}
-
-	}
-
-	/**
-	 * Set the proxy on session
-	 * 
-	 * @param hops
-	 * 
-	 * @throws JSchException
-	 * @throws RemoteAccessException
-	 */
-	private void initProxiesPath(LinkedHashSet<? extends Resource> hops,
-			Session session, UserInfo ui) throws JSchException,
-			RemoteAccessException {
-
-		// TODO: #1 Change resource to RemoteNode (ie ssh) .=> remove switch
-		Resource[] resources = hops.toArray(new Resource[0]);
-		log.debug("hopsSize: " + resources.length);
-		if (resources.length < 3)
-			return; // no need to create proxy. Path contains source and
-					// destination which are in the same domain
-		NCProxy lastProxy = null;
-		//i = 0 is the source. Don't create a proxy
-		for (int i = 1; i <= resources.length - 2; i++) {
-			Resource resource = resources[i];
-			Ssh ssh = null;
-
-			if (resource instanceof Gateway) {
-				ssh = ((Gateway) resource).getSsh();
-			} else if (resource instanceof Node) {
-				ssh = ((Node) resource).getSsh();
-			} else {
-				new RemoteAccessException("Physical resource"
-						+ resource.getClass().getCanonicalName()
-						+ "not managed");
-			}
-
-			NCProxy proxy = new NCProxy(ssh.getLogin(), ssh.getServer(),
-					ssh.getPort(), jsch, ui);
-			if (lastProxy != null) {
-				log.debug("Add proxy "+ ssh.getServer()+" to " +  lastProxy.getHost() );
-				proxy.setProxy(lastProxy);
-			}
-			
-			lastProxy = proxy;
-
-		}
-		log.debug("Add proxy "+  lastProxy.getHost() +" to session");
-		session.setProxy(lastProxy);
 
 	}
 
@@ -352,60 +242,16 @@ public class RemoteAccessJschImpl implements RemoteAccess {
 	 * java.lang.String, java.lang.String)
 	 */
 	@Override
-	public void addKey(String privateKey, String publicKey, String passphrase)
+	public void addItentity(String privateKey, String publicKey, String passphrase)
 			throws AddKeyException {
-		try {
-			jsch.addIdentity(privateKey, publicKey, passphrase.getBytes());
-		} catch (JSchException e) {
 
-			throw new AddKeyException("Unable to add key", e);
-		} finally {
-			// Give to GC
-			passphrase = null;
-		}
-
+		channelManager.addIdentity(privateKey, publicKey, passphrase);
 	}
 
 	// TODO: to improve
 
-	public void jschDebug(boolean activate) {
-		if (activate) {
-			com.jcraft.jsch.Logger jschLog = new com.jcraft.jsch.Logger() {
-
-				@Override
-				public void log(int level, String message) {
-					switch (level) {
-					case 0:
-						log.debug(message);
-						break;
-					case 1:
-						log.info(message);
-						break;
-					case 2:
-						log.warn(message);
-						break;
-					case 3:
-						log.error(message);
-						break;
-					case 4:
-						log.error("FATAL" + message);
-						break;
-
-					default:
-						break;
-					}
-
-				}
-
-				@Override
-				public boolean isEnabled(int level) {
-					return true;
-				}
-			};
-			JSch.setLogger(jschLog);
-		} else
-			JSch.setLogger(null);
-
+	public void debug(boolean activate) {
+		channelManager.debug(activate);
 	}
 
 }

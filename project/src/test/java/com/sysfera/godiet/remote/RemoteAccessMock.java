@@ -31,7 +31,7 @@ public class RemoteAccessMock implements RemoteAccess {
 	 * randomize on the a
 	 */
 	@Override
-	public void run(String command, Path path) throws RemoteAccessException {
+	public Integer launch(String command, Path path) throws RemoteAccessException {
 		Object[] pathResources = ((Object[]) path.getPath().toArray());
 		if (pathResources == null || pathResources.length == 0)
 			throw new RemoteAccessException(
@@ -49,6 +49,7 @@ public class RemoteAccessMock implements RemoteAccess {
 		}
 
 		log.debug("Execute: \"" + command + "\" on " + remoteNode.getSsh().getServer()+"("+remoteNode.getId() +"). Path: "+pathInfo);
+		return null;
 	}
 
 	/*
@@ -85,7 +86,7 @@ public class RemoteAccessMock implements RemoteAccess {
 	}
 
 	@Override
-	public void addKey(String key, String pubkey, String pass) {
+	public void addItentity(String key, String pubkey, String pass) {
 		log.debug("Add key: " + key);
 
 	}

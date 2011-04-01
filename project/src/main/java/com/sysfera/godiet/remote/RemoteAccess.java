@@ -21,11 +21,12 @@ public interface RemoteAccess {
 	 * @param command
 	 *            The Command to execute
 	 * @param path
-	 *            The path to reach the resource destination. 
+	 *            The path to reach the resource destination.
+	 * @return pid the Process identifier or null if can't get it
 	 * @throws RemoteAccessException
 	 *             if can't execute command
 	 */
-	public abstract void run(String command, Path path)
+	public abstract Integer launch(String command, Path path)
 			throws RemoteAccessException;
 
 	/**
@@ -33,12 +34,14 @@ public interface RemoteAccess {
 	 * 
 	 * @param file
 	 *            The file to copy
-	 * @param remotePath The remote path where file must be copied
-	 * @param path The resources path need to be cross 
+	 * @param remotePath
+	 *            The remote path where file must be copied
+	 * @param path
+	 *            The resources path need to be cross
 	 * @throws RemoteAccessException
 	 *             if can't copy file on remote host
 	 */
-	public abstract void copy(File file, String remotePath,Path path)
+	public abstract void copy(File file, String remotePath, Path path)
 			throws RemoteAccessException;
 
 	/**
@@ -53,6 +56,6 @@ public interface RemoteAccess {
 	 *             if error when key insertion. Unable to find private key,
 	 *             public key or bad password TODO Check
 	 */
-	public abstract void addKey(String privKey, String pubKey, String passphrase)
+	public abstract void addItentity(String privKey, String pubKey, String passphrase)
 			throws AddKeyException;
 }

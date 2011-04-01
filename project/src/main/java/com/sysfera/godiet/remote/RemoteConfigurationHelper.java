@@ -112,7 +112,7 @@ public class RemoteConfigurationHelper {
 		try {
 			// Create Remote Directory
 			command = "mkdir -p " + remoteNode.getDisk().getScratch().getDir();
-			remoteAccess.run(command, path);
+			remoteAccess.launch(command, path);
 
 			// Create local config file
 			// TODO: not to be here ?
@@ -236,7 +236,9 @@ public class RemoteConfigurationHelper {
 
 		String command = RemoteCommandBuilder.buildRunCommand(managedSofware, remoteNode);
 		try {
-			remoteAccess.run(command, path);
+			Integer pid = remoteAccess.launch(command, path);
+			managedSofware.setPid(pid);
+			log.info("Command "+ command + " run with pid " + pid);
 		} catch (RemoteAccessException e) {
 			log.error("Unable to configure " + managedSofware.getSoftwareDescription().getId()
 					+ " on " + remoteNode.getId() + " commmand " + command, e);

@@ -3,7 +3,7 @@
 	xsi:noNamespaceSchemaLocation="GoDietNG.xsd">
 
 	<goDietConfiguration debug="1" saveStdOut="true"
-		saveStdErr="true" log="true" localNode="testbedVM">
+		saveStdErr="true" log="true" localNode="myLaptop">
 		<localscratch dir="/tmp/sc_godiet" />
 	</goDietConfiguration>
 

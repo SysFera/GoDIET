@@ -28,7 +28,7 @@ public class RemoteCommandBuilder {
 	 * Build the omniNames launching command
 	 * OMNINAMES_LOGDIR={scratch_runtime}/{DomainName}/ +
 	 * OMNIORB_CONFIG={scratch_runtime}/{omniNamesId}.cfg +
-	 * {OmniNamesBinary} + -start
+	 * nohup {OmniNamesBinary} + -start -always &
 	 * 
 	 * @param softManaged
 	 * @param remoteNode
@@ -43,12 +43,12 @@ public class RemoteCommandBuilder {
 		command += "OMNIORB_CONFIG="
 				+ remoteNode.getDisk().getScratch().getDir() +"/"
 				+ softManaged.getSoftwareDescription().getId() + ".cfg";
-		command += " ";
+		command += " nohup ";
 		command += softManaged.getSoftwareDescription().getConfig()
 				.getRemoteBinary();
 		
 		command += " ";
-		command += "-start";
+		command += "-start -always &";
 		return command;
 	}
 }

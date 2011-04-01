@@ -13,6 +13,7 @@ import com.sysfera.godiet.model.states.StateController;
  */
 public abstract class SoftwareManager {
 
+	private Integer pid;
 	protected StateController stateController;
 
 	public SoftwareManager() {
@@ -35,4 +36,12 @@ public abstract class SoftwareManager {
 	}
 	public abstract Software getSoftwareDescription();
 
+	
+	public void setPid(Integer pid) {
+		this.pid = pid;
+	}
+	public Integer getPid()
+	{
+		return pid;
+	}
 }
