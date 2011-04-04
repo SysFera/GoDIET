@@ -39,7 +39,8 @@ public class ReadyStateImpl implements ResourceState{
 	@Override
 	public void start() throws LaunchException {
 		try {
-			launcher.execute(this.stateController.softwareManaged);
+			launcher.launch(this.stateController.softwareManaged);
+			//TODO: Check if started 
 			this.stateController.state = this.stateController.up;
 		} catch (LaunchException e) {
 			this.stateController.state = this.stateController.error;

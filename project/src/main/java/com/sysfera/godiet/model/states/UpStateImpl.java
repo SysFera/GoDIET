@@ -3,8 +3,7 @@ package com.sysfera.godiet.model.states;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.sysfera.godiet.exceptions.remote.LaunchException;
-import com.sysfera.godiet.exceptions.remote.PrepareException;
+import com.sysfera.godiet.exceptions.remote.StopException;
 import com.sysfera.godiet.remote.RemoteConfigurationHelper;
 
 /**
@@ -27,7 +26,7 @@ public class UpStateImpl implements ResourceState {
 	}
 
 	@Override
-	public void prepare() throws PrepareException {
+	public void prepare() {
 		log.warn("Already run !");
 	}
 
@@ -41,14 +40,13 @@ public class UpStateImpl implements ResourceState {
 	 * error.
 	 */
 	@Override
-	public void stop() {
+	public void stop() throws StopException{
 		try {
 			launcher.stop(this.stateController.softwareManaged);
 			this.stateController.state = this.stateController.down;
-		} catch (LaunchException e) {
-			// TODO Logger
+		} catch (StopException e) {
 			this.stateController.state = this.stateController.error;
-
+			throw e;
 		}
 	}
 
