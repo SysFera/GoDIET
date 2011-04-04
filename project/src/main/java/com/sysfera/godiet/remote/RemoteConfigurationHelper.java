@@ -14,6 +14,7 @@ import com.sysfera.godiet.exceptions.graph.PathException;
 import com.sysfera.godiet.exceptions.remote.LaunchException;
 import com.sysfera.godiet.exceptions.remote.PrepareException;
 import com.sysfera.godiet.exceptions.remote.RemoteAccessException;
+import com.sysfera.godiet.exceptions.remote.StopException;
 import com.sysfera.godiet.managers.Platform;
 import com.sysfera.godiet.model.Path;
 import com.sysfera.godiet.model.SoftwareManager;
@@ -33,14 +34,13 @@ import com.sysfera.godiet.model.generated.Scratch;
 public class RemoteConfigurationHelper {
 	private Logger log = LoggerFactory.getLogger(getClass());
 
-
-
 	private RemoteAccess remoteAccess;
 	private GoDietConfiguration configuration;
 	private Platform platform;
 
-	//Singleton
+	// Singleton
 	private volatile static RemoteConfigurationHelper instance;
+
 	private RemoteConfigurationHelper() {
 	}
 
@@ -72,7 +72,7 @@ public class RemoteConfigurationHelper {
 	 *             if create local files or can't copy files on remote host.
 	 */
 	public void configure(SoftwareManager resource) throws PrepareException {
-		//TODO: Delete this check when Spring IOC configuration will be done
+		// TODO: Delete this check when Spring IOC configuration will be done
 		if (remoteAccess == null || configuration == null || platform == null) {
 			log.error("Unable to configure remote resource. Remote helper isn't correctly initialized");
 			throw new PrepareException("Remote configurator isn't ready");
@@ -86,28 +86,26 @@ public class RemoteConfigurationHelper {
 					"Resource not plugged on physial resource");
 		}
 
-		//the local node. From where the command is launch.
-		// TODO : Path findpath(FromDomain, ToNode); Move this code	
+		// the local node. From where the command is launch.
+		// TODO : Path findpath(FromDomain, ToNode); Move this code
 		Resource localNode = platform.getResource(configuration.getLocalNode());
-		if(localNode == null || !(localNode instanceof Node)){
+		if (localNode == null || !(localNode instanceof Node)) {
 			log.error("Unable to find the local resource.");
-			throw new PrepareException(
-					"Unable to find the resource: " +configuration.getLocalNode());
+			throw new PrepareException("Unable to find the resource: "
+					+ configuration.getLocalNode());
 		}
 		// Find a path between the current node until remote node
 		Path path = null;
 		try {
-			path = platform.findPath((Node)localNode, remoteNode);
+			path = platform.findPath((Node) localNode, remoteNode);
 		} catch (PathException e1) {
-			throw new PrepareException("",e1);
+			throw new PrepareException("", e1);
 		}
 		if (path == null) {
 			log.error("Unable to configure remote resource. Unable to find a path");
-			throw new PrepareException(
-					"Path node found");
+			throw new PrepareException("Path node found");
 		}
-		
-		
+
 		String command = "";
 		try {
 			// Create Remote Directory
@@ -119,10 +117,12 @@ public class RemoteConfigurationHelper {
 			File file = createConfigFile(resource);
 
 			// Copy file on remote host
-			remoteAccess.copy(file, remoteNode.getDisk().getScratch().getDir(),path);
+			remoteAccess.copy(file, remoteNode.getDisk().getScratch().getDir(),
+					path);
 		} catch (RemoteAccessException e) {
-			log.error("Unable to configure " + resource.getSoftwareDescription().getId()
-					+ " on " + remoteNode.getId() + " commmand " + command, e);
+			log.error("Unable to configure "
+					+ resource.getSoftwareDescription().getId() + " on "
+					+ remoteNode.getId() + " commmand " + command, e);
 			throw new PrepareException("Unable to run configure "
 					+ resource.getSoftwareDescription().getId() + " on "
 					+ remoteNode.getId() + " .Commmand: " + command, e);
@@ -135,6 +135,7 @@ public class RemoteConfigurationHelper {
 	 * Create the resource configuration file on local scratch directory
 	 * 
 	 * TODO: Move this code in prepare app
+	 * 
 	 * @param resource
 	 * @throws PrepareException
 	 *             if unable write on local scratch directory
@@ -195,9 +196,8 @@ public class RemoteConfigurationHelper {
 	 * @throws LaunchException
 	 *             if can't connect to the remote host or can't launch binary
 	 */
-	public void execute(SoftwareManager managedSofware) throws LaunchException {
-		//TODO: Delete this check when Spring IOC configuration will be done
-		//TODO: Begin duplicated code with config() method
+	public void launch(SoftwareManager managedSofware) throws LaunchException {
+		// TODO: Delete this check when Spring IOC configuration will be done
 		if (remoteAccess == null || configuration == null || platform == null) {
 			log.error("Unable to configure remote resource. Remote helper isn't correctly initialized");
 			throw new LaunchException("Remote configurator isn't ready");
@@ -209,10 +209,10 @@ public class RemoteConfigurationHelper {
 			throw new LaunchException(
 					"Resource not plugged on physial resource");
 		}
-		//the local node. From where the command is launch.
-		// TODO : Path findpath(FromDomain, ToNode); Move this code	
+		// the local node. From where the command is launch.
+		// TODO : Path findpath(FromDomain, ToNode); Move this code
 		Resource localNode = platform.getResource(configuration.getLocalNode());
-		if(localNode == null || !(localNode instanceof Node)){
+		if (localNode == null || !(localNode instanceof Node)) {
 			log.error("Unable to find the local resource.");
 			throw new LaunchException(
 					"Unable to find the resource from which the remote command is call");
@@ -220,46 +220,96 @@ public class RemoteConfigurationHelper {
 		// Find a path between the current node until remote node
 		Path path = null;
 		try {
-			path = platform.findPath((Node)localNode, remoteNode);
+			path = platform.findPath((Node) localNode, remoteNode);
 		} catch (PathException e1) {
-			throw new LaunchException("",e1);
+			throw new LaunchException("", e1);
 		}
 		if (path == null) {
 			log.error("Unable to configure remote resource. Unable to find a path");
-			throw new LaunchException(
-					"Path node found");
+			throw new LaunchException("Path node found");
 		}
-		
-		
-		//End of duplicate code
-		
 
-		String command = RemoteCommandBuilder.buildRunCommand(managedSofware, remoteNode);
+		// End of duplicate code
+
+		String command = RemoteCommandBuilder.buildRunCommand(managedSofware,
+				remoteNode);
 		try {
 			Integer pid = remoteAccess.launch(command, path);
 			managedSofware.setPid(pid);
-			log.info("Command "+ command + " run with pid " + pid);
+			log.info("Command " + command + " run with pid " + pid);
 		} catch (RemoteAccessException e) {
-			log.error("Unable to configure " + managedSofware.getSoftwareDescription().getId()
-					+ " on " + remoteNode.getId() + " commmand " + command, e);
+			log.error("Unable to configure "
+					+ managedSofware.getSoftwareDescription().getId() + " on "
+					+ remoteNode.getId() + " commmand " + command, e);
 			throw new LaunchException("Unable to run configure "
 					+ managedSofware.getSoftwareDescription().getId() + " on "
 					+ remoteNode.getId() + " .Commmand: " + command, e);
 		}
-		
+
 	}
 
 	/**
-	 * Stop software on the physical resource 
-	 * - Search the physical resource to stop the diet agent 
-	 * - Launch stop command (actually kill but hope
-	 * change :) )
+	 * Stop software on the physical resource - Search the physical resource to
+	 * stop the diet agent - Launch stop command (actually kill but hope change
+	 * :) )
 	 * 
 	 * @param resource
 	 * @throws LaunchException
 	 *             if can't connect to the remote host or can't launch binary
 	 */
-	public void stop(SoftwareManager resource) throws LaunchException {
+	public void stop(SoftwareManager resource) throws StopException {
+		// TODO: Delete this check when Spring IOC configuration will be done
+		// TODO: Duplicate code with configure, start
+		if (remoteAccess == null || configuration == null || platform == null) {
+			log.error("Unable to configure remote resource. Remote helper isn't correctly initialized");
+			throw new StopException("Remote configurator isn't ready");
+		}
+
+		// the remote physical node to configure
+		Node remoteNode = resource.getPluggedOn();
+		if (remoteNode == null) {
+			log.error("Unable to configure remote resource. Resource not plugged on physial resource");
+			throw new StopException("Resource not plugged on physial resource");
+		}
+
+		// the local node. From where the command is launch.
+		// TODO : Path findpath(FromDomain, ToNode); Move this code
+		Resource localNode = platform.getResource(configuration.getLocalNode());
+		if (localNode == null || !(localNode instanceof Node)) {
+			log.error("Unable to find the local resource.");
+			throw new StopException("Unable to find the resource: "
+					+ configuration.getLocalNode());
+		}
+		// Find a path between the current node until remote node
+		Path path = null;
+		try {
+			path = platform.findPath((Node) localNode, remoteNode);
+		} catch (PathException e1) {
+			throw new StopException("", e1);
+		}
+		if (path == null) {
+			log.error("Unable to configure remote resource. Unable to find a path");
+			throw new StopException("Path node found");
+		}
+
+		Integer pid = resource.getPid();
+		if (pid == null)
+			throw new StopException("Unable to kill "
+					+ resource.getSoftwareDescription().getId()
+					+ ". Pid is null");
+		
+		
+		//End of duplicate code
+		String command = "kill " + pid;
+
+		try {
+			remoteAccess.launch(command, path);
+			
+			//TODO: Check if always run
+		} catch (RemoteAccessException e) {
+			throw new StopException("Unable to kill "
+					+ resource.getSoftwareDescription().getId(), e);
+		}
 
 	}
 

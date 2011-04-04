@@ -3,6 +3,7 @@ package com.sysfera.godiet.remote;
 import com.sysfera.godiet.model.SoftwareManager;
 import com.sysfera.godiet.model.generated.Node;
 import com.sysfera.godiet.model.generated.OmniNames;
+import com.sysfera.godiet.model.generated.Software;
 
 /**
  * 
@@ -12,23 +13,21 @@ import com.sysfera.godiet.model.generated.OmniNames;
  */
 public class RemoteCommandBuilder {
 
-	
-	
 	public static String buildRunCommand(SoftwareManager softManaged,
-			Node remoteNode)
-	{
-		if(softManaged.getSoftwareDescription() instanceof OmniNames)
-			return buildOmniNamesCommand( softManaged,
-					 remoteNode);
-		throw new IllegalArgumentException("Cannot build command for " +softManaged.getSoftwareDescription().getId() );
-		
+			Node remoteNode) {
+		if (softManaged.getSoftwareDescription() instanceof OmniNames)
+			return buildOmniNamesCommand(softManaged, remoteNode);
+		throw new IllegalArgumentException("Cannot build command for "
+				+ softManaged.getSoftwareDescription().getId());
+
 	}
-	
+
 	/**
 	 * Build the omniNames launching command
 	 * OMNINAMES_LOGDIR={scratch_runtime}/{DomainName}/ +
-	 * OMNIORB_CONFIG={scratch_runtime}/{omniNamesId}.cfg +
-	 * nohup {OmniNamesBinary} + -start -always &
+	 * OMNIORB_CONFIG={scratch_runtime}/{omniNamesId}.cfg + nohup
+	 * {OmniNamesBinary} + -start -always > {scratch_runtime}/OmniNames.out 2>
+	 * {scratch_runtime}/OmniNames.err
 	 * 
 	 * @param softManaged
 	 * @param remoteNode
@@ -37,18 +36,21 @@ public class RemoteCommandBuilder {
 	private static String buildOmniNamesCommand(SoftwareManager softManaged,
 			Node remoteNode) {
 		String command = "";
-		command += "OMNINAMES_LOGDIR="
-				+ remoteNode.getDisk().getScratch().getDir() +"/";
+		String scratchDir = remoteNode.getDisk().getScratch().getDir();
+		Software softwareDescription = softManaged.getSoftwareDescription();
+		command += "OMNINAMES_LOGDIR=" + scratchDir + "/";
 		command += " ";
-		command += "OMNIORB_CONFIG="
-				+ remoteNode.getDisk().getScratch().getDir() +"/"
-				+ softManaged.getSoftwareDescription().getId() + ".cfg";
+
+		command += "OMNIORB_CONFIG=" + scratchDir + "/"
+				+ softwareDescription.getId() + ".cfg";
 		command += " nohup ";
-		command += softManaged.getSoftwareDescription().getConfig()
-				.getRemoteBinary();
-		
+		command += softwareDescription.getConfig().getRemoteBinary();
+
 		command += " ";
-		command += "-start -always &";
+		command += "-start -always >";
+		command += scratchDir + "/OmniNames.out 2> ";
+		command += scratchDir + "/OmniNames.err ";
 		return command;
 	}
+
 }

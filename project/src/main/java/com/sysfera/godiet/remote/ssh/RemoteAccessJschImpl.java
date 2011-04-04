@@ -9,7 +9,6 @@ import java.util.Properties;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import com.jcraft.jsch.Channel;
 import com.jcraft.jsch.ChannelExec;
@@ -28,7 +27,6 @@ import com.sysfera.godiet.remote.RemoteAccess;
 public class RemoteAccessJschImpl implements RemoteAccess {
 	private Logger log = LoggerFactory.getLogger(getClass());
 
-	@Autowired
 	private ChannelManagerJsch channelManager;
 
 	// TODO: Extract JSCH default options.
@@ -44,6 +42,10 @@ public class RemoteAccessJschImpl implements RemoteAccess {
 		return channelManager.getJsch();
 	}
 
+	
+	public void setChannelManager(ChannelManagerJsch channelManager) {
+		this.channelManager = channelManager;
+	}
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -60,12 +62,13 @@ public class RemoteAccessJschImpl implements RemoteAccess {
 			channel = channelManager.getExecChannel(path, false);
 			// TODO: Decor with tee to write on standard err and out stream and
 			// alse remote scratch file
-			String getPidCommand = "( /bin/echo \"" + command+ "\";  echo 'echo ${!}' )|sh -";
+			String getPidCommand = "( /bin/echo \"" + command+ "&\";  echo 'echo ${!}' )|sh -";
 			channel.setCommand(getPidCommand);
+			log.debug(getPidCommand);
 
 			channel.setInputStream(null);
 			channel.setErrStream(System.err);
-
+			
 			InputStream in = channel.getInputStream();
 
 			channel.connect();
