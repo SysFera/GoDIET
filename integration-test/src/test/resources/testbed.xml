@@ -18,7 +18,7 @@
 				<ssh login="phi" server="192.168.1.19" />
 			</node>
 			<gateway ref="myLaptop" id="myLaptopGateway">
-				<ssh login="phi" server="192.168.1.19" />
+				<ssh login="phi" server="192.168.1.26" />
 			</gateway>
 		</domain>
 		<domain label="DomainEns">

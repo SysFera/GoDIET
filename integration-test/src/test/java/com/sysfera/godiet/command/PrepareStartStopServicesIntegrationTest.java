@@ -7,8 +7,12 @@ import junit.framework.Assert;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.sysfera.godiet.exceptions.CommandExecutionException;
 import com.sysfera.godiet.exceptions.remote.AddKeyException;
@@ -17,10 +21,16 @@ import com.sysfera.godiet.remote.RemoteConfigurationHelper;
 import com.sysfera.godiet.remote.ssh.RemoteAccessJschImpl;
 import com.sysfera.godiet.utils.xml.XmlScannerJaxbImpl;
 
-public class CommandPrepareServicesIntegrationTest {
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations={"/spring/spring-config.xml","/spring/ssh-context.xml"})
+public class PrepareStartStopServicesIntegrationTest {
 	private Logger log = LoggerFactory.getLogger(getClass());
 	private ResourcesManager rm;
 
+	@Autowired
+	private RemoteAccessJschImpl remoteAccess;
+	
+	
 	@Before
 	public void init() {
 		
@@ -46,8 +56,10 @@ public class CommandPrepareServicesIntegrationTest {
 		RemoteConfigurationHelper remoteHelper = RemoteConfigurationHelper.getInstance();
 		remoteHelper.setConfiguration(rm.getGodietConfiguration().getGoDietConfiguration());
 		remoteHelper.setPlatform(rm.getPlatformModel());
+
 		//Real Remote SSH
-		RemoteAccessJschImpl remoteAccess = new RemoteAccessJschImpl();
+		
+		
 		remoteAccess.debug(true);
 		String fakeKey = "fakeuser/testbedKey";
 		URL urlFile = getClass().getClassLoader().getResource(fakeKey);
@@ -70,24 +82,22 @@ public class CommandPrepareServicesIntegrationTest {
 	}
 	
 	@Test
-	public void testPrepareService() {
-		CommandPrepareServices prepareServicesCommand = new CommandPrepareServices();
-		prepareServicesCommand.setRm(rm);
+	public void testPrepareStartStopServices() {
+		CommandPrepareServices prepareCommand = new CommandPrepareServices();
+		prepareCommand.setRm(rm);
 		CommandLaunchServices launchServicesCommand = new CommandLaunchServices();
 		launchServicesCommand.setRm(rm);
+		StopServicesCommand stopServicesCommand = new StopServicesCommand();
+		stopServicesCommand.setRm(rm);
 		try {
-			prepareServicesCommand.execute();
+			prepareCommand.execute();
 			launchServicesCommand.execute();
+			stopServicesCommand.execute();
 		} catch (CommandExecutionException e) {
 			e.printStackTrace();
 			Assert.fail(e.getMessage());
 		}
-		try {
-			prepareServicesCommand.execute();
-		} catch (CommandExecutionException e) {
-			e.printStackTrace();
-			Assert.fail(e.getMessage());
-		}
+
 	
 	}
 }
