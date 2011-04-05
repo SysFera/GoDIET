@@ -30,7 +30,7 @@ public class ForwarderFactory {
 
 
 	/**
-	 * TODO: Need to move this function
+	 * TODO: Need to move this function. TODO: Why ?
 	 * 
 	 * @param gateway
 	 * @param type

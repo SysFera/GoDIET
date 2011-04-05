@@ -91,8 +91,10 @@ public class NCProxy implements Proxy {
 
 	@Override
 	public void close() {
+		
 		channel.disconnect();
 		session1.disconnect();
+
 	}
 	
 	

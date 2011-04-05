@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.sysfera.godiet.exceptions.graph.PathException;
+import com.sysfera.godiet.exceptions.remote.CheckException;
 import com.sysfera.godiet.exceptions.remote.LaunchException;
 import com.sysfera.godiet.exceptions.remote.PrepareException;
 import com.sysfera.godiet.exceptions.remote.RemoteAccessException;
@@ -61,7 +62,7 @@ public class RemoteConfigurationHelper {
 	}
 
 	/**
-	 * Prepare physical resource to launch the diet agent - Search the physical
+	 * Prepare physical resource to launch the Software - Search the physical
 	 * resource to run the diet agent - Create remote directory - Create
 	 * configuration file on local scratch directory - Copy configuration files
 	 * on remote physical resource
@@ -109,6 +110,7 @@ public class RemoteConfigurationHelper {
 		String command = "";
 		try {
 			// Create Remote Directory
+			// TODO: Do that in a init platform method
 			command = "mkdir -p " + remoteNode.getDisk().getScratch().getDir();
 			remoteAccess.launch(command, path);
 
@@ -231,8 +233,7 @@ public class RemoteConfigurationHelper {
 
 		// End of duplicate code
 
-		String command = RemoteCommandBuilder.buildRunCommand(managedSofware,
-				remoteNode);
+		String command = RemoteCommandBuilder.buildRunCommand(managedSofware);
 		try {
 			Integer pid = remoteAccess.launch(command, path);
 			managedSofware.setPid(pid);
@@ -313,6 +314,66 @@ public class RemoteConfigurationHelper {
 
 	}
 
+	/**
+	 * Check if the software running
+	 * @param managed
+	 */
+	public void check(SoftwareManager resource) throws CheckException
+	{
+		// TODO: Delete this check when Spring IOC configuration will be done
+		// TODO:  99% Duplicate code with  stop :) GENIAL !
+		if (remoteAccess == null || configuration == null || platform == null) {
+			log.error("Unable to configure remote resource. Remote helper isn't correctly initialized");
+			throw new CheckException("Remote configurator isn't ready");
+		}
+
+		// the remote physical node to configure
+		Node remoteNode = resource.getPluggedOn();
+		if (remoteNode == null) {
+			log.error("Unable to configure remote resource. Resource not plugged on physial resource");
+			throw new CheckException("Resource not plugged on physial resource");
+		}
+
+		// the local node. From where the command is launch.
+		// TODO : Path findpath(FromDomain, ToNode); Move this code
+		Resource localNode = platform.getResource(configuration.getLocalNode());
+		if (localNode == null || !(localNode instanceof Node)) {
+			log.error("Unable to find the local resource.");
+			throw new CheckException("Unable to find the resource: "
+					+ configuration.getLocalNode());
+		}
+		// Find a path between the current node until remote node
+		Path path = null;
+		try {
+			path = platform.findPath((Node) localNode, remoteNode);
+		} catch (PathException e1) {
+			throw new CheckException("", e1);
+		}
+		if (path == null) {
+			log.error("Unable to configure remote resource. Unable to find a path");
+			throw new CheckException("Path node found");
+		}
+
+		Integer pid = resource.getPid();
+		if (pid == null)
+			throw new CheckException("Unable to check "
+					+ resource.getSoftwareDescription().getId()
+					+ ". Pid is null");
+		
+		
+		//End of duplicate code
+		String command = "kill -0 " + pid;
+
+		try {
+			remoteAccess.check(command, path);
+			
+			//TODO: Check if always run
+		} catch (RemoteAccessException e) {
+			throw new CheckException("Unable to check "
+					+ resource.getSoftwareDescription().getId(), e);
+		}
+
+	}
 	public void setRemoteAccess(RemoteAccess remoteAccess) {
 		this.remoteAccess = remoteAccess;
 	}

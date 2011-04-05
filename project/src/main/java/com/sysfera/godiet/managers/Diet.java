@@ -6,6 +6,7 @@ import java.util.List;
 import com.sysfera.godiet.exceptions.DietResourceCreationException;
 import com.sysfera.godiet.model.DietResourceManaged;
 import com.sysfera.godiet.model.DietServiceManager;
+import com.sysfera.godiet.model.SoftwareManager;
 import com.sysfera.godiet.model.factories.ForwarderFactory;
 import com.sysfera.godiet.model.factories.LocalAgentFactory;
 import com.sysfera.godiet.model.factories.MasterAgentFactory;
@@ -135,6 +136,22 @@ public class Diet {
 	public void addOmniName(OmniNames omniName)
 			throws DietResourceCreationException {
 		this.omninames.add(omFactory.create(omniName));
+	}
+
+	/**
+	 * Create a new list contains a reference on all Software Managed by Godiet
+	 * Contains a reference on OmniNames, *Agents and SeDs.
+	 * @return A list of all softwares managed by godiet
+	 */
+	public List<SoftwareManager> getAllDietSoftwareManaged() {
+		List<SoftwareManager> softwaresManaged = new ArrayList<SoftwareManager>();
+		softwaresManaged.addAll(forwaders);
+		softwaresManaged.addAll(localAgents);
+		softwaresManaged.addAll(masterAgents);
+		softwaresManaged.addAll(seds);
+		softwaresManaged.addAll(omninames);
+		
+		return softwaresManaged;
 	}
 
 }

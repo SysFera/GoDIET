@@ -70,7 +70,7 @@ public class ChannelManagerJsch {
 			LinkedHashSet<? extends Resource> hops = path.getPath();
 			if (hops.size() < 2)
 				throw new RemoteAccessException(
-						"Path length must be > 2 (source + destination");
+						"Path length must be > 2 (source + destination)");
 
 			// Create the session with the last Node
 			Node last = null;
@@ -169,42 +169,42 @@ public class ChannelManagerJsch {
 	}
 
 	public void debug(boolean activate) {
-		if (activate) {
-			com.jcraft.jsch.Logger jschLog = new com.jcraft.jsch.Logger() {
-
-				@Override
-				public void log(int level, String message) {
-					switch (level) {
-					case 0:
-						log.debug(message);
-						break;
-					case 1:
-						log.info(message);
-						break;
-					case 2:
-						log.warn(message);
-						break;
-					case 3:
-						log.error(message);
-						break;
-					case 4:
-						log.error("FATAL" + message);
-						break;
-
-					default:
-						break;
-					}
-
-				}
-
-				@Override
-				public boolean isEnabled(int level) {
-					return true;
-				}
-			};
-			JSch.setLogger(jschLog);
-		} else
-			JSch.setLogger(null);
+//		if (activate) {
+//			com.jcraft.jsch.Logger jschLog = new com.jcraft.jsch.Logger() {
+//
+//				@Override
+//				public void log(int level, String message) {
+//					switch (level) {
+//					case 0:
+//						log.debug(message);
+//						break;
+//					case 1:
+//						log.info(message);
+//						break;
+//					case 2:
+//						log.warn(message);
+//						break;
+//					case 3:
+//						log.error(message);
+//						break;
+//					case 4:
+//						log.error("FATAL" + message);
+//						break;
+//
+//					default:
+//						break;
+//					}
+//
+//				}
+//
+//				@Override
+//				public boolean isEnabled(int level) {
+//					return true;
+//				}
+//			};
+//			JSch.setLogger(jschLog);
+//		} else
+//			JSch.setLogger(null);
 
 		
 	}

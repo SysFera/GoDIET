@@ -17,7 +17,7 @@ import com.sysfera.godiet.remote.RemoteConfigurationHelper;
 import com.sysfera.godiet.utils.xml.XmlScannerJaxbImpl;
 
 
-public class CommandLaunchServicesTest {
+public class StopServicesCommandTest {
 
 	private Logger log = LoggerFactory.getLogger(getClass());
 	private ResourcesManager rm;
@@ -78,9 +78,12 @@ public class CommandLaunchServicesTest {
 		prepareCommand.setRm(rm);
 		CommandLaunchServices launchServicesCommand = new CommandLaunchServices();
 		launchServicesCommand.setRm(rm);
+		StopServicesCommand stopServicesCommand = new StopServicesCommand();
+		stopServicesCommand.setRm(rm);
 		try {
 			prepareCommand.execute();
 			launchServicesCommand.execute();
+			stopServicesCommand.execute();
 		} catch (CommandExecutionException e) {
 			e.printStackTrace();
 			Assert.fail(e.getMessage());

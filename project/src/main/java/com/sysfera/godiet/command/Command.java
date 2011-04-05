@@ -10,7 +10,7 @@ import com.sysfera.godiet.exceptions.CommandExecutionException;
 public interface Command {
 
 	/**
-	 * Comand description
+	 * Command description
 	 * @return The command description
 	 */
 	public abstract String getDescription();

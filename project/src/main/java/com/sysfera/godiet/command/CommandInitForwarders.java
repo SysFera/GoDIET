@@ -1,6 +1,8 @@
 package com.sysfera.godiet.command;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -8,7 +10,10 @@ import org.slf4j.LoggerFactory;
 import com.sysfera.godiet.exceptions.CommandExecutionException;
 import com.sysfera.godiet.exceptions.DietResourceCreationException;
 import com.sysfera.godiet.managers.ResourcesManager;
+import com.sysfera.godiet.model.DietResourceManaged;
+import com.sysfera.godiet.model.SoftwareManager;
 import com.sysfera.godiet.model.factories.ForwarderFactory;
+import com.sysfera.godiet.model.generated.Domain;
 import com.sysfera.godiet.model.generated.Forwarder;
 import com.sysfera.godiet.model.generated.Link;
 
@@ -32,7 +37,7 @@ public class CommandInitForwarders implements Command {
 
 	@Override
 	public String getDescription() {
-		return "A dummy way to to initialize and add forwarders in data model";
+		return "Add forwarders in data model if needed (In each domains where there are Diet Services Agents and Seds";
 	}
 
 	@Override
@@ -45,22 +50,35 @@ public class CommandInitForwarders implements Command {
 					+ " not initialized correctly");
 		}
 
+		// Create a list of all domains where are Diet Services Agents and Seds.
+		Set<String> domains = new HashSet<String>();
+		List<SoftwareManager> dietResourcesManaged = this.rm.getDietModel()
+				.getAllDietSoftwareManaged();
+		for (SoftwareManager softwareManaged : dietResourcesManaged) {
+			domains.add(softwareManaged.getSoftwareDescription().getConfig()
+					.getServer().getDomain().getLabel());
+		}
 		List<Link> links = rm.getPlatformModel().getLinks();
 		if (links != null) {
 			for (Link link : links) {
+				if (domains.contains(link.getFrom().getDomain().getLabel())
+						&& domains
+								.contains(link.getTo().getDomain().getLabel())) {
+					Forwarder forwarderClient = forwarderFactory.create(
+							link.getFrom(),
+							ForwarderFactory.ForwarderType.CLIENT);
+					Forwarder forwarderServer = forwarderFactory
+							.create(link.getTo(),
+									ForwarderFactory.ForwarderType.SERVER);
 
-				Forwarder forwarderClient = forwarderFactory.create(
-						link.getFrom(), ForwarderFactory.ForwarderType.CLIENT);
-				Forwarder forwarderServer = forwarderFactory.create(
-						link.getTo(), ForwarderFactory.ForwarderType.SERVER);
+					try {
+						rm.getDietModel().addForwarder(forwarderClient);
 
-				try {
-					rm.getDietModel().addForwarder(forwarderClient);
-
-					rm.getDietModel().addForwarder(forwarderServer);
-				} catch (DietResourceCreationException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+						rm.getDietModel().addForwarder(forwarderServer);
+					} catch (DietResourceCreationException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 				}
 			}
 		}

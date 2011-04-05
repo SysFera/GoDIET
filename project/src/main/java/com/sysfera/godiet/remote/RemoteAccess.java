@@ -3,9 +3,9 @@ package com.sysfera.godiet.remote;
 import java.io.File;
 
 import com.sysfera.godiet.exceptions.remote.AddKeyException;
+import com.sysfera.godiet.exceptions.remote.CheckException;
 import com.sysfera.godiet.exceptions.remote.RemoteAccessException;
 import com.sysfera.godiet.model.Path;
-import com.sysfera.godiet.model.generated.Ssh;
 
 /**
  * Interface to execute and copy file on a host remote
@@ -16,7 +16,7 @@ import com.sysfera.godiet.model.generated.Ssh;
 public interface RemoteAccess {
 
 	/**
-	 * Execute a remote command
+	 * Execute a remote command and return the pid
 	 * 
 	 * @param command
 	 *            The Command to execute
@@ -58,4 +58,14 @@ public interface RemoteAccess {
 	 */
 	public abstract void addItentity(String privKey, String pubKey, String passphrase)
 			throws AddKeyException;
+
+	
+	/**
+	 * Check the process given by pid is running
+	 * @param pid The pid of process to check
+	 * @param path
+	 * @return
+	 * @throws CheckException If unable to check or if the process doesn't running
+	 */
+	public abstract void check(String pid, Path path) throws RemoteAccessException;
 }

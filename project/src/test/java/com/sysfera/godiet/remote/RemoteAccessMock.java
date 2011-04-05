@@ -49,7 +49,7 @@ public class RemoteAccessMock implements RemoteAccess {
 		}
 
 		log.debug("Execute: \"" + command + "\" on " + remoteNode.getSsh().getServer()+"("+remoteNode.getId() +"). Path: "+pathInfo);
-		return null;
+		return 1234;
 	}
 
 	/*
@@ -89,5 +89,27 @@ public class RemoteAccessMock implements RemoteAccess {
 	public void addItentity(String key, String pubkey, String pass) {
 		log.debug("Add key: " + key);
 
+	}
+
+	@Override
+	public void check(String pid, Path path) throws RemoteAccessException {
+		Object[] pathResources = ((Object[]) path.getPath().toArray());
+		if (pathResources == null || pathResources.length == 0)
+			throw new RemoteAccessException(
+					"Unable to run a command. The path is empty");
+		String pathInfo = "Connection path:" + ((Resource)pathResources[0]).getId();
+		for(int i = 1 ; i < pathResources.length  ; i++)
+		{
+			pathInfo+= "-->"+((Resource)pathResources[i]).getId();
+		}
+		Node remoteNode  = ((Node)pathResources[pathResources.length - 1]);
+		if (remoteAccessDown) {
+			throw new RemoteAccessException("Unable to check process " + pid + " on "
+					+ remoteNode + ":" + remoteNode.getSsh().getPort() + " . Login: "
+					+ remoteNode.getSsh().getPort());
+		}
+
+		log.debug("Process " + pid + " running on "+ remoteNode.getId());
+		
 	}
 }

@@ -37,24 +37,25 @@ public class RemoteAccessJschImpl implements RemoteAccess {
 
 	}
 
-	
 	public JSch getJsch() {
 		return channelManager.getJsch();
 	}
 
-	
 	public void setChannelManager(ChannelManagerJsch channelManager) {
 		this.channelManager = channelManager;
 	}
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.sysfera.godiet.Utils.RemoteAccess#execute(java.lang.String,
-	 * java.lang.String, int)
-	 */
-	@Override
-	public Integer launch(String command, Path path) throws RemoteAccessException {
 
+	/**
+	 * Execute the command on the destination path and parse the output to
+	 * return an integer
+	 * 
+	 * @param command
+	 * @param path
+	 * @return
+	 * @throws RemoteAccessException
+	 */
+	private Integer execute(String command, Path path)
+			throws RemoteAccessException {
 		log.debug(command);
 		ChannelExec channel = null;
 		StringBuilder sb = new StringBuilder();
@@ -62,18 +63,17 @@ public class RemoteAccessJschImpl implements RemoteAccess {
 			channel = channelManager.getExecChannel(path, false);
 			// TODO: Decor with tee to write on standard err and out stream and
 			// alse remote scratch file
-			String getPidCommand = "( /bin/echo \"" + command+ "&\";  echo 'echo ${!}' )|sh -";
-			channel.setCommand(getPidCommand);
-			log.debug(getPidCommand);
+
+			channel.setCommand(command);
 
 			channel.setInputStream(null);
 			channel.setErrStream(System.err);
-			
+
 			InputStream in = channel.getInputStream();
 
 			channel.connect();
 
-			//Read Pid
+			// Read Pid
 			byte[] tmp = new byte[1024];
 			while (true) {
 				while (in.available() > 0) {
@@ -83,7 +83,7 @@ public class RemoteAccessJschImpl implements RemoteAccess {
 					sb.append(new String(tmp, 0, i));
 				}
 				if (channel.isClosed()) {
-					
+
 					break;
 				}
 				try {
@@ -107,17 +107,52 @@ public class RemoteAccessJschImpl implements RemoteAccess {
 				log.error("SSH disconnect error", e);
 			}
 		}
-		//parse pid
-		Integer  pid = null;
-		try{
-		pid = Integer.valueOf(sb.toString().trim());
-		}catch (NumberFormatException e) {
-			log.error("Unable to convert the command output to PID ! Output =  " + sb.toString());
-			
+		// parse pid
+		Integer pid = null;
+		try {
+			pid = Integer.valueOf(sb.toString().trim());
+		} catch (NumberFormatException e) {
+			log.error("Unable to convert the command output to PID ! Output =  "
+					+ sb.toString());
+
 		}
 		return pid;
-
 	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.sysfera.godiet.Utils.RemoteAccess#execute(java.lang.String,
+	 * java.lang.String, int)
+	 */
+	@Override
+	public Integer launch(String command, Path path)
+			throws RemoteAccessException {
+		String getPidCommand = "( /bin/echo \"" + command
+				+ "\";  echo 'echo ${!}' )|sh -";
+		return execute(getPidCommand, path);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.sysfera.godiet.remote.RemoteAccess#check(java.lang.String,
+	 * com.sysfera.godiet.model.Path)
+	 */
+	@Override
+	public void check(String command, Path path) throws RemoteAccessException {
+		String checkCommand = "( /bin/echo \"" + command
+				+ " \";  echo 'echo ${?}' )|sh -";
+		Integer result = execute(checkCommand, path);
+		if (result.intValue() == 0 || result.intValue() == 1) {
+			if (result.intValue() == 1)
+				throw new RemoteAccessException("Process doesn't running");
+		} else
+			throw new RemoteAccessException("Unable to check if " + "sds"
+					+ " process running");
+	}
+
+
 
 	/*
 	 * (non-Javadoc)
@@ -245,8 +280,8 @@ public class RemoteAccessJschImpl implements RemoteAccess {
 	 * java.lang.String, java.lang.String)
 	 */
 	@Override
-	public void addItentity(String privateKey, String publicKey, String passphrase)
-			throws AddKeyException {
+	public void addItentity(String privateKey, String publicKey,
+			String passphrase) throws AddKeyException {
 
 		channelManager.addIdentity(privateKey, publicKey, passphrase);
 	}

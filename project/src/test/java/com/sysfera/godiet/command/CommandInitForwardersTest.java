@@ -21,18 +21,24 @@ public class CommandInitForwardersTest {
 
 	private Logger log = LoggerFactory.getLogger(getClass());
 	private ResourcesManager rm;
+	private XmlScannerJaxbImpl scanner;
+	CommandLoadXMLImpl xmlLoadingCommand;
 
 	@Before
 	public void initRM() {
+		scanner = new XmlScannerJaxbImpl();
+		xmlLoadingCommand = new CommandLoadXMLImpl();
+		xmlLoadingCommand.setXmlParser(scanner);
+	}
+
+	@Test
+	public void testCommandInitForwarder1() {
 		String testCaseFile = "3D-5N-3G-3L-1MA-3SED.xml";
 		InputStream inputStream = getClass().getClassLoader()
 				.getResourceAsStream(testCaseFile);
 		rm = new ResourcesManager();
-		XmlScannerJaxbImpl scanner = new XmlScannerJaxbImpl();
-		CommandLoadXMLImpl xmlLoadingCommand = new CommandLoadXMLImpl();
 		xmlLoadingCommand.setRm(rm);
 		xmlLoadingCommand.setXmlInput(inputStream);
-		xmlLoadingCommand.setXmlParser(scanner);
 
 		try {
 			xmlLoadingCommand.execute();
@@ -41,18 +47,46 @@ public class CommandInitForwardersTest {
 			log.error("Test Fail", e);
 			Assert.fail();
 		}
-
-	}
-
-	@Test
-	public void testCommandInit() {
 		CommandInitForwarders initForwardersInit = new CommandInitForwarders();
 		initForwardersInit.setRm(rm);
 
 		try {
 			initForwardersInit.execute();
-			List<DietResourceManaged> forwarders = rm.getDietModel().getForwarders();
-			if(forwarders.size() != 6) Assert.fail();
+			List<DietResourceManaged> forwarders = rm.getDietModel()
+					.getForwarders();
+			if (forwarders.size() != 6)
+				Assert.fail();
+		} catch (CommandExecutionException e) {
+			Assert.fail(e.getMessage());
+		}
+
+	}
+	
+	@Test
+	public void testCommandInitForwarder2() {
+		String testCaseFile = "testbed.xml";
+		InputStream inputStream = getClass().getClassLoader()
+				.getResourceAsStream(testCaseFile);
+		rm = new ResourcesManager();
+		xmlLoadingCommand.setRm(rm);
+		xmlLoadingCommand.setXmlInput(inputStream);
+
+		try {
+			xmlLoadingCommand.execute();
+
+		} catch (CommandExecutionException e) {
+			log.error("Test Fail", e);
+			Assert.fail();
+		}
+		CommandInitForwarders initForwardersInit = new CommandInitForwarders();
+		initForwardersInit.setRm(rm);
+
+		try {
+			initForwardersInit.execute();
+			List<DietResourceManaged> forwarders = rm.getDietModel()
+					.getForwarders();
+			if (forwarders.size() != 6)
+				Assert.fail();
 		} catch (CommandExecutionException e) {
 			Assert.fail(e.getMessage());
 		}

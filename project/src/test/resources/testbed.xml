@@ -4,7 +4,7 @@
 
 	<goDietConfiguration debug="1" saveStdOut="true"
 		saveStdErr="true" log="true" localNode="myLaptop">
-		<localscratch dir="/tmp/scratch_godiet" />
+		<localscratch dir="/tmp/sc_godiet" />
 	</goDietConfiguration>
 
 	<infrastructure>
@@ -18,7 +18,7 @@
 				<ssh login="phi" server="192.168.1.19" />
 			</node>
 			<gateway ref="myLaptop" id="myLaptopGateway">
-				<ssh login="phi" server="192.168.1.19" />
+				<ssh login="phi" server="192.168.1.26" />
 			</gateway>
 		</domain>
 		<domain label="DomainEns">
@@ -31,10 +31,10 @@
 		</domain>
 		<domain label="DomainTestBed">
 			<node disk="fake" id="testbedVM">
-				<ssh login="pmartinez" server="localhost" port="40022" />
+				<ssh login="godiet" server="140.77.166.19" port="40022"/>
 			</node>
 			<gateway ref="graal" id="testbedVMGW">
-				<ssh login="pmartinez" server="140.77.166.19" />
+				<ssh login="godiet" server="140.77.166.19" port="40022" />
 			</gateway>
 		</domain>
 		<domain label="Domain1">

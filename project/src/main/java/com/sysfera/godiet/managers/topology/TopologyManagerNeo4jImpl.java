@@ -26,6 +26,7 @@ import org.slf4j.LoggerFactory;
 import com.sysfera.godiet.exceptions.graph.GraphDataException;
 import com.sysfera.godiet.exceptions.graph.PathException;
 import com.sysfera.godiet.managers.Platform;
+import com.sysfera.godiet.managers.topology.PathManager.PathDesc;
 import com.sysfera.godiet.model.Path;
 import com.sysfera.godiet.model.generated.Domain;
 import com.sysfera.godiet.model.generated.Resource;
@@ -40,7 +41,7 @@ import com.sysfera.godiet.model.generated.Resource;
 public class TopologyManagerNeo4jImpl implements TopologyManager {
 
 	private Logger log = LoggerFactory.getLogger(getClass());
-
+	private PathManager pathManager;
 	private static final String DB_PATH = "neo4j-shortest-path";
 	// private static final String DOMAINNAME_KEY = "domainname";
 	private static final String RESOURCE_KEY = "resource";
@@ -58,6 +59,7 @@ public class TopologyManagerNeo4jImpl implements TopologyManager {
 	public TopologyManagerNeo4jImpl(Platform platform) {
 		this.platform = platform;
 		this.resourcesDomain = new HashMap<String, Set<Resource>>();
+		this.pathManager = new PathManager();
 		deleteFileOrDirectory(new File(DB_PATH));
 		graphDb = new EmbeddedGraphDatabase(DB_PATH);
 		indexService = new LuceneIndexService(graphDb);
@@ -74,9 +76,11 @@ public class TopologyManagerNeo4jImpl implements TopologyManager {
 	 * com.sysfera.godiet.model.generated.Resource)
 	 */
 	@Override
-	public Path findPath(com.sysfera.godiet.model.generated.Node from, com.sysfera.godiet.model.generated.Node to) throws PathException {
-		//If the nodes are in the same domain create a simple path
-		if(from != null && to!= null && to.getDomain().equals(from.getDomain())){
+	public Path findPath(com.sysfera.godiet.model.generated.Node from,
+			com.sysfera.godiet.model.generated.Node to) throws PathException {
+		// If the nodes are in the same domain create a simple path
+		if (from != null && to != null
+				&& to.getDomain().equals(from.getDomain())) {
 			Path simplePath = new Path();
 			LinkedHashSet<Resource> simplePathHashSet = new LinkedHashSet<Resource>();
 			simplePathHashSet.add(from);
@@ -84,13 +88,20 @@ public class TopologyManagerNeo4jImpl implements TopologyManager {
 			simplePath.setPath(simplePathHashSet);
 			return simplePath;
 		}
+		// return stored path if the have have already calculated
+		PathManager.PathDesc pDesc = pathManager.new PathDesc(from, to);
+		Path storedPath = pathManager.paths.get(pDesc);
+		if (storedPath != null) {
+			log.debug("Find a stored path " +pDesc);
+			return storedPath;
+		}
 		
 		// Temporary add node on graph for computation path
 		Node nodeFrom = getNode(from);
 		Node nodeTo = getNode(to);
 		boolean resourceFromExist = true;
 		boolean resourceToExist = true;
-		
+
 		try {
 			if (nodeFrom == null) {
 				resourceFromExist = false;
@@ -123,6 +134,7 @@ public class TopologyManagerNeo4jImpl implements TopologyManager {
 			if (foundPath == null)
 				return null;
 			dietPath = DietPathBuilder.build(foundPath, platform);
+			pathManager.paths.put(pathManager.new PathDesc(from, to), dietPath);
 		} catch (GraphDataException e) {
 			throw new PathException("Unable to build path", e);
 		} finally {
@@ -138,8 +150,9 @@ public class TopologyManagerNeo4jImpl implements TopologyManager {
 
 	/**
 	 * Helper class to convert the Neo4j path in GoDiet path
+	 * 
 	 * @author phi
-	 *
+	 * 
 	 */
 	private static class DietPathBuilder {
 
@@ -148,7 +161,8 @@ public class TopologyManagerNeo4jImpl implements TopologyManager {
 		 * @param neo4JPath
 		 * @param platform
 		 * @return
-		 * @throws GraphDataException Fatal. Hope never appear (Inconsitent data model)
+		 * @throws GraphDataException
+		 *             Fatal. Hope never appear (Inconsitent data model)
 		 */
 		static Path build(final org.neo4j.graphdb.Path neo4JPath,
 				final Platform platform) throws GraphDataException {
@@ -219,7 +233,8 @@ public class TopologyManagerNeo4jImpl implements TopologyManager {
 				tx.finish();
 			}
 		} catch (IllegalArgumentException e) {
-			throw new GraphDataException("Error when try to add link between " + from.getId() + " and " +to.getId(),e);
+			throw new GraphDataException("Error when try to add link between "
+					+ from.getId() + " and " + to.getId(), e);
 		}
 	}
 
