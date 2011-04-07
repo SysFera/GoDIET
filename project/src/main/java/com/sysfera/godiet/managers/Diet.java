@@ -3,16 +3,20 @@ package com.sysfera.godiet.managers;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.sysfera.godiet.exceptions.DietResourceCreationException;
 import com.sysfera.godiet.model.DietResourceManaged;
 import com.sysfera.godiet.model.DietServiceManager;
 import com.sysfera.godiet.model.SoftwareManager;
-import com.sysfera.godiet.model.factories.ForwarderFactory;
+import com.sysfera.godiet.model.factories.ForwardersFactory;
 import com.sysfera.godiet.model.factories.LocalAgentFactory;
 import com.sysfera.godiet.model.factories.MasterAgentFactory;
 import com.sysfera.godiet.model.factories.OmniNamesFactory;
 import com.sysfera.godiet.model.factories.SedFactory;
-import com.sysfera.godiet.model.generated.Forwarder;
+import com.sysfera.godiet.model.generated.Domain;
+import com.sysfera.godiet.model.generated.Forwarders;
 import com.sysfera.godiet.model.generated.LocalAgent;
 import com.sysfera.godiet.model.generated.MasterAgent;
 import com.sysfera.godiet.model.generated.OmniNames;
@@ -25,12 +29,13 @@ import com.sysfera.godiet.model.generated.Sed;
  * 
  */
 public class Diet {
+	private Logger log = LoggerFactory.getLogger(getClass());
 
 	private final MasterAgentFactory maFactory;
 	private final LocalAgentFactory laFactory;
 	private final SedFactory sedFactory;
 	private final OmniNamesFactory omFactory;
-	private final ForwarderFactory forwFactory;
+	private final ForwardersFactory forwFactory;
 
 	private final List<DietResourceManaged> masterAgents;
 	private final List<DietResourceManaged> localAgents;
@@ -49,7 +54,7 @@ public class Diet {
 		this.laFactory = new LocalAgentFactory();
 		this.sedFactory = new SedFactory();
 		this.omFactory = new OmniNamesFactory();
-		this.forwFactory = new ForwarderFactory();
+		this.forwFactory = new ForwardersFactory(this);
 	}
 
 	/**
@@ -123,7 +128,7 @@ public class Diet {
 	 * @param forwarder
 	 * @throws DietResourceCreationException
 	 */
-	public void addForwarder(Forwarder forwarder)
+	public void addForwarders(Forwarders forwarder)
 			throws DietResourceCreationException {
 
 		this.forwaders.add(forwFactory.create(forwarder));
@@ -141,6 +146,7 @@ public class Diet {
 	/**
 	 * Create a new list contains a reference on all Software Managed by Godiet
 	 * Contains a reference on OmniNames, *Agents and SeDs.
+	 * 
 	 * @return A list of all softwares managed by godiet
 	 */
 	public List<SoftwareManager> getAllDietSoftwareManaged() {
@@ -150,8 +156,28 @@ public class Diet {
 		softwaresManaged.addAll(masterAgents);
 		softwaresManaged.addAll(seds);
 		softwaresManaged.addAll(omninames);
-		
+
 		return softwaresManaged;
 	}
 
+	/**
+	 * 
+	 * @param managedSoftware
+	 * @return The managed omniName which are is in the managedSoftware's
+	 *         domain. Null if it's not found
+	 */
+	public OmniNames getOmniName(SoftwareManager managedSoftware) {
+		Domain domain = managedSoftware.getPluggedOn().getDomain();
+
+		for (DietServiceManager omniName : omninames) {
+			if (omniName.getPluggedOn().getDomain().getLabel()
+					.equals(domain.getLabel())) {
+			//	return omniName.;
+			}
+
+		}
+		log.error("Unable to find a known domain for the software with the name: "
+				+ managedSoftware.getSoftwareDescription().getId());
+		return null;
+	}
 }

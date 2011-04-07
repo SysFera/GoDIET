@@ -30,7 +30,7 @@
 		<xs:attribute name="saveStdErr" type="xs:boolean"
 			default="true" />
 		<xs:attribute name="log" type="xs:boolean" />
-		<xs:attribute name="localNode" type="xs:string" use="optional"/>
+		<xs:attribute name="localNode" type="xs:string" use="optional" />
 		<xs:attribute name="watcherPeriod" type="xs:int" default="30000" />
 	</xs:complexType>
 
@@ -387,6 +387,12 @@
 		</xs:complexContent>
 	</xs:complexType>
 
+	<xs:complexType name="forwarders">
+		<xs:sequence>
+			<xs:element name="client" type="forwarder"/>
+			<xs:element name="server" type="forwarder"/>
+		</xs:sequence>
+	</xs:complexType>
 	<xs:complexType name="forwarder">
 		<xs:annotation>
 			<xs:documentation>A Diet Forwarder is a way to encapsulate all
