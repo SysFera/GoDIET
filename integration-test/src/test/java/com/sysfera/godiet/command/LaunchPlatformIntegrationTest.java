@@ -72,7 +72,7 @@ public class LaunchPlatformIntegrationTest {
 		try {
 			remoteAccess.addItentity(urlFile.getFile(), null, "godiet");
 			// Here add a key to access on testbed
-			remoteAccess.addItentity("/home/phi/tmp/id_dsa", null, "");
+		//	remoteAccess.addItentity("/home/phi/tmp/id_dsa", null, "");
 		} catch (AddKeyException e) {
 			Assert.fail(e.getMessage());
 		}
