@@ -41,7 +41,7 @@ public class RemoteAccessMock implements RemoteAccess {
 		{
 			pathInfo+= "-->"+((Resource)pathResources[i]).getId();
 		}
-		Node remoteNode  = ((Node)pathResources[pathResources.length - 1]);
+		Resource remoteNode  = ((Resource)pathResources[pathResources.length - 1]);
 		if (remoteAccessDown) {
 			throw new RemoteAccessException("Unable to run " + command + " on "
 					+ remoteNode + ":" + remoteNode.getSsh().getPort() + " . Login: "
@@ -70,7 +70,7 @@ public class RemoteAccessMock implements RemoteAccess {
 		{
 			pathInfo+= "-->"+((Resource)pathResources[i]).getId();
 		}
-		Node remoteNode  = ((Node)pathResources[pathResources.length - 1]);
+		Resource remoteNode  = (Resource) pathResources[pathResources.length - 1];
 		if (remoteAccessDown)
 			throw new RemoteAccessException("Unable to copy file "
 					+ file.getName() + " on " + remoteNode.getSsh().getPort() + " . Login: "
@@ -102,7 +102,7 @@ public class RemoteAccessMock implements RemoteAccess {
 		{
 			pathInfo+= "-->"+((Resource)pathResources[i]).getId();
 		}
-		Node remoteNode  = ((Node)pathResources[pathResources.length - 1]);
+		Resource remoteNode  = ((Resource)pathResources[pathResources.length - 1]);
 		if (remoteAccessDown) {
 			throw new RemoteAccessException("Unable to check process " + pid + " on "
 					+ remoteNode + ":" + remoteNode.getSsh().getPort() + " . Login: "
