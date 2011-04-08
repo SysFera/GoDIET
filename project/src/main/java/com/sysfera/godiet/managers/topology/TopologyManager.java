@@ -28,5 +28,5 @@ public interface TopologyManager {
 	 * @return The Path or null if no path exist
 	 * TODO CHECK ALL PATHEXCEPTION THROWN REASON
 	 */
-	public abstract Path findPath(Node from, Node to) throws PathException;
+	public abstract Path findPath(Resource from, Resource to) throws PathException;
 }

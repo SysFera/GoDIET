@@ -41,7 +41,7 @@ public class CommandLaunchServices implements Command {
 			try {
 				omniName.start();
 			} catch (LaunchException e) {
-				log.error("Unable to run omniNames "+omniName.getManagedSoftwareDescription().getId());
+				log.error("Unable to run omniNames "+omniName.getSoftwareDescription().getId());
 				throw new CommandExecutionException("Launch "+ omniName.getSoftwareDescription().getId()+ " failed",e);
 			}
 		}

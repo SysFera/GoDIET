@@ -43,7 +43,7 @@ public class Config {
     @XmlAttribute(required = true)
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
-    protected Node server;
+    protected Resource server;
 
     /**
      * Gets the value of the remoteBinary property.
@@ -77,7 +77,7 @@ public class Config {
      *     {@link Object }
      *     
      */
-    public Node getServer() {
+    public Resource getServer() {
         return server;
     }
 
@@ -89,7 +89,7 @@ public class Config {
      *     {@link Object }
      *     
      */
-    public void setServer(Node value) {
+    public void setServer(Resource value) {
         this.server = value;
     }
 

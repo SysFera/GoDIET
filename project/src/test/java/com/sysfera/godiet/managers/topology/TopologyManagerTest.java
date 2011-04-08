@@ -16,7 +16,6 @@ import com.sysfera.godiet.exceptions.graph.PathException;
 import com.sysfera.godiet.managers.Platform;
 import com.sysfera.godiet.managers.ResourcesManager;
 import com.sysfera.godiet.model.Path;
-import com.sysfera.godiet.model.generated.Gateway;
 import com.sysfera.godiet.model.generated.Node;
 import com.sysfera.godiet.model.generated.Resource;
 import com.sysfera.godiet.utils.xml.XmlScannerJaxbImpl;
@@ -53,23 +52,14 @@ public class TopologyManagerTest {
 		Platform physPlatform = rm.getPlatformModel();
 		Node sourceNode = (Node) physPlatform.getResource("Node1");
 		Node destinationNode = (Node) physPlatform.getResource("Node5");
-		
 
 		try {
-			Path p = physPlatform.findPath((Node)sourceNode, (Node)destinationNode);
+			Path p = physPlatform.findPath(sourceNode,destinationNode);
 			LinkedHashSet<? extends Resource> res = p.getPath();
 			String info = "Find path: ";
 			for (Resource resource : res) {
 
-				if (resource instanceof Node) {
-					Node n = (Node) resource;
-					info += (n.getSsh().getServer() + " ");
-				} else if (resource instanceof Gateway) {
-					Node n = (Node) ((Gateway) resource).getRef();
-					info += (n.getSsh().getServer() + " ");
-				} else
-					Assert.fail("New resource type ? "
-							+ resource.getClass().getName());
+				info += (resource.getSsh().getServer() + " ");
 			}
 			log.info(info);
 		} catch (PathException e) {
@@ -100,44 +90,43 @@ public class TopologyManagerTest {
 			Assert.fail("Must be null, not throw exception");
 		}
 
-
-		//Complex path (from D4 to D1. Find ClientNodeDomain4<-->G4<-->(G6<-->G7)<-->G2<-->G3<-->G1<-->Node1 )
+		// Complex path (from D4 to D1. Find
+		// ClientNodeDomain4<-->G4<-->(G6<-->G7)<-->G2<-->G3<-->G1<-->Node1 )
 		sourceNode = (Node) physPlatform.getResource("ClientNodeDomain4");
 		destinationNode = (Node) physPlatform.getResource("Node1");
 		try {
 			Path p = physPlatform.findPath(sourceNode, destinationNode);
 			Object[] pathResources = p.getPath().toArray();
-			Assert.assertEquals(8,pathResources.length);
+			Assert.assertEquals(8, pathResources.length);
 
-			Assert.assertEquals("ClientNodeDomain4",((Resource)pathResources[0]).getId());
-			Assert.assertEquals("G4",((Resource)pathResources[1]).getId());
-			Assert.assertEquals("G6",((Resource)pathResources[2]).getId());
-			Assert.assertEquals("G7",((Resource)pathResources[3]).getId());
-			Assert.assertEquals("G2",((Resource)pathResources[4]).getId());
-			Assert.assertEquals("G3",((Resource)pathResources[5]).getId());
-			Assert.assertEquals("G1",((Resource)pathResources[6]).getId());
-			Assert.assertEquals("Node1",((Resource)pathResources[7]).getId());
-			
+			Assert.assertEquals("ClientNodeDomain4",
+					((Resource) pathResources[0]).getId());
+			Assert.assertEquals("G4", ((Resource) pathResources[1]).getId());
+			Assert.assertEquals("G6", ((Resource) pathResources[2]).getId());
+			Assert.assertEquals("G7", ((Resource) pathResources[3]).getId());
+			Assert.assertEquals("G2", ((Resource) pathResources[4]).getId());
+			Assert.assertEquals("G3", ((Resource) pathResources[5]).getId());
+			Assert.assertEquals("G1", ((Resource) pathResources[6]).getId());
+			Assert.assertEquals("Node1", ((Resource) pathResources[7]).getId());
 
 		} catch (PathException e) {
 			Assert.fail();
 		}
-		
-		//Path.length = 2 cause nodes are in the same domain
+
+		// Path.length = 2 cause nodes are in the same domain
 		sourceNode = (Node) physPlatform.getResource("Node4");
 		destinationNode = (Node) physPlatform.getResource("Node5");
 		try {
 			Path p = physPlatform.findPath(sourceNode, destinationNode);
 			Object[] pathResources = p.getPath().toArray();
-			Assert.assertEquals(2,pathResources.length);
+			Assert.assertEquals(2, pathResources.length);
 
-			Assert.assertEquals("Node4",((Resource)pathResources[0]).getId());
-			Assert.assertEquals("Node5",((Resource)pathResources[1]).getId());
+			Assert.assertEquals("Node4", ((Resource) pathResources[0]).getId());
+			Assert.assertEquals("Node5", ((Resource) pathResources[1]).getId());
 		} catch (PathException e) {
 			Assert.fail("Must be null, not throw exception");
 		}
-		
 
-		//TODO Try to add an exising link
+		// TODO Try to add an exising link
 	}
 }

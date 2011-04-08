@@ -159,7 +159,7 @@ public class Platform {
 	 * @throws PathException
 	 *             If one of argument are null.
 	 */
-	public Path findPath(Node from, Node to) throws PathException {
+	public Path findPath(Resource from, Resource to) throws PathException {
 		if (from == null || to == null)
 			throw new PathException("Try to find path between null argument");
 		return topologyManager.findPath(from, to);

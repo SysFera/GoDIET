@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <dietDescription xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:noNamespaceSchemaLocation="GoDietNG.xsd">
-	<!-- Six domains. The sixth have two gateways. See links field to have more details  -->
+	<!-- Six domains. The sixth have two gateways. See links field to have more 
+		details -->
 	<goDietConfiguration debug="1" saveStdOut="true"
 		saveStdErr="true" log="true">
 		<localscratch dir="/tmp/scratch_godiet" />
@@ -23,7 +24,14 @@
 					<var name="LD_LIBRARY_PATH" value="/usr/local/Diet/build/lib" />
 				</env>
 			</node>
-			<gateway ref="Node1" id="G1" />
+			<gateway id="G1" disk="Disk1">
+				<ssh server="IP1Gate" login="phi" />
+				<env>
+					<var name="PATH"
+						value="/usr/local/Diet/build/bin:/usr/local/Diet/build/bin/examples/dmat_manips/:$PATH" />
+					<var name="LD_LIBRARY_PATH" value="/usr/local/Diet/build/lib" />
+				</env>
+			</gateway>
 		</domain>
 		<domain label="Domain2">
 			<storage label="Disk2">
@@ -47,7 +55,14 @@
 					<var name="LD_LIBRARY_PATH" value="/usr/local/Soft/diet/build/lib" />
 				</env>
 			</node>
-			<gateway ref="Node3" id="G2" />
+			<gateway id="G2" disk="Disk1">
+				<ssh server="IP3" login="phi" />
+				<env>
+					<var name="PATH"
+						value="/usr/local/Soft/Diet/bin:/usr/local/Soft/Diet/bin/examples/dmat_manips/:$PATH" />
+					<var name="LD_LIBRARY_PATH" value="/usr/local/Soft/diet/build/lib" />
+				</env>
+			</gateway>
 		</domain>
 		<domain label="Domain3">
 			<storage label="Disk3">
@@ -70,7 +85,14 @@
 					<var name="LD_LIBRARY_PATH" value="/usr/local/Soft/diet/build/lib" />
 				</env>
 			</node>
-			<gateway ref="Node4" id="G3" />
+			<gateway id="G3" disk="Disk1">
+				<ssh server="IP4Gate" login="phi" />
+				<env>
+					<var name="PATH"
+						value="/usr/local/Soft/Diet/bin:/usr/local/Soft/Diet/bin/examples/dmat_manips/:$PATH" />
+					<var name="LD_LIBRARY_PATH" value="/usr/local/Soft/diet/build/lib" />
+				</env>
+			</gateway>
 		</domain>
 
 		<domain label="Domain4">
@@ -86,7 +108,7 @@
 					<var name="LD_LIBRARY_PATH" value="/usr/local/Diet/build/lib" />
 				</env>
 			</node>
-				<node id="ClientNodeDomain4" disk="Disk6">
+			<node id="ClientNodeDomain4" disk="Disk6">
 				<ssh server="IP6" login="phi" />
 				<env>
 					<var name="PATH"
@@ -94,7 +116,14 @@
 					<var name="LD_LIBRARY_PATH" value="/usr/local/Diet/build/lib" />
 				</env>
 			</node>
-			<gateway ref="Node6" id="G4" />
+			<gateway id="G4" disk="Disk6">
+				<ssh server="IP6Gate" login="phi" />
+				<env>
+					<var name="PATH"
+						value="/usr/local/Diet/build/bin:/usr/local/Diet/build/bin/examples/dmat_manips/:$PATH" />
+					<var name="LD_LIBRARY_PATH" value="/usr/local/Diet/build/lib" />
+				</env>
+			</gateway>
 		</domain>
 
 		<domain label="Domain5">
@@ -110,7 +139,14 @@
 					<var name="LD_LIBRARY_PATH" value="/usr/local/Diet/build/lib" />
 				</env>
 			</node>
-			<gateway ref="Node7" id="G5" />
+			<gateway id="G5" disk="Disk7">
+				<ssh server="IP7" login="phi" />
+				<env>
+					<var name="PATH"
+						value="/usr/local/Diet/build/bin:/usr/local/Diet/build/bin/examples/dmat_manips/:$PATH" />
+					<var name="LD_LIBRARY_PATH" value="/usr/local/Diet/build/lib" />
+				</env>
+			</gateway>
 		</domain>
 
 		<domain label="Domain6">
@@ -134,8 +170,22 @@
 					<var name="LD_LIBRARY_PATH" value="/usr/local/Diet/build/lib" />
 				</env>
 			</node>
-			<gateway ref="Node8" id="G6" />
-			<gateway ref="Node9" id="G7" />
+			<gateway id="G6" disk="Disk8">
+				<ssh server="IP8Gate" login="phi" />
+				<env>
+					<var name="PATH"
+						value="/usr/local/Diet/build/bin:/usr/local/Diet/build/bin/examples/dmat_manips/:$PATH" />
+					<var name="LD_LIBRARY_PATH" value="/usr/local/Diet/build/lib" />
+				</env>
+			</gateway>
+			<gateway  id="G7"  disk="Disk8">
+				<ssh server="IP9Gate" login="phi" />
+				<env>
+					<var name="PATH"
+						value="/usr/local/Diet/build/bin:/usr/local/Diet/build/bin/examples/dmat_manips/:$PATH" />
+					<var name="LD_LIBRARY_PATH" value="/usr/local/Diet/build/lib" />
+				</env>
+			</gateway>
 		</domain>
 		<!-- D1, D2 and D3 are interconnected with a ring -->
 		<link from="G1" to="G2" />

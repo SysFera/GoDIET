@@ -23,7 +23,14 @@
 					<var name="LD_LIBRARY_PATH" value="/usr/local/Diet/build/lib" />
 				</env>
 			</node>
-			<gateway ref="Node1" id="G1" />
+			<gateway id="G1" disk="Disk1">
+				<ssh server="IP1Gate" login="phi" />
+				<env>
+					<var name="PATH"
+						value="/usr/local/Diet/build/bin:/usr/local/Diet/build/bin/examples/dmat_manips/:$PATH" />
+					<var name="LD_LIBRARY_PATH" value="/usr/local/Diet/build/lib" />
+				</env>
+			</gateway>
 		</domain>
 		<domain label="Domain2">
 			<storage label="Disk2">
@@ -47,7 +54,14 @@
 					<var name="LD_LIBRARY_PATH" value="/usr/local/Soft/diet/build/lib" />
 				</env>
 			</node>
-			<gateway ref="Node3" id="G2" />
+			<gateway id="G2"  disk="Disk1">
+				<ssh server="IP2Gate" login="phi" />
+				<env>
+					<var name="PATH"
+						value="/usr/local/Soft/Diet/bin:/usr/local/Soft/Diet/bin/examples/dmat_manips/:$PATH" />
+					<var name="LD_LIBRARY_PATH" value="/usr/local/Soft/diet/build/lib" />
+				</env>
+			</gateway>
 		</domain>
 		<domain label="Domain3">
 			<storage label="Disk3">
@@ -70,7 +84,14 @@
 					<var name="LD_LIBRARY_PATH" value="/usr/local/Soft/diet/build/lib" />
 				</env>
 			</node>
-			<gateway ref="Node4" id="G3" />
+			<gateway  id="G3" disk="Disk1">
+				<ssh server="IP4" login="phi" />
+				<env>
+					<var name="PATH"
+						value="/usr/local/Soft/Diet/bin:/usr/local/Soft/Diet/bin/examples/dmat_manips/:$PATH" />
+					<var name="LD_LIBRARY_PATH" value="/usr/local/Soft/diet/build/lib" />
+				</env>
+			</gateway>
 		</domain>
 		<link from="G1" to="G2" />
 		<link from="G2" to="G3" />

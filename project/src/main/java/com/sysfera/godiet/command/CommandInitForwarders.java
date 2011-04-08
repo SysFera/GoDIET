@@ -10,11 +10,10 @@ import org.slf4j.LoggerFactory;
 import com.sysfera.godiet.exceptions.CommandExecutionException;
 import com.sysfera.godiet.exceptions.DietResourceCreationException;
 import com.sysfera.godiet.managers.ResourcesManager;
-import com.sysfera.godiet.model.DietResourceManaged;
 import com.sysfera.godiet.model.SoftwareManager;
-import com.sysfera.godiet.model.factories.ForwarderFactory;
-import com.sysfera.godiet.model.generated.Domain;
+import com.sysfera.godiet.model.factories.ForwardersFactory;
 import com.sysfera.godiet.model.generated.Forwarder;
+import com.sysfera.godiet.model.generated.Forwarders;
 import com.sysfera.godiet.model.generated.Link;
 
 /**
@@ -29,11 +28,6 @@ public class CommandInitForwarders implements Command {
 	private Logger log = LoggerFactory.getLogger(getClass());
 
 	private ResourcesManager rm;
-	private final ForwarderFactory forwarderFactory;
-
-	public CommandInitForwarders() {
-		this.forwarderFactory = new ForwarderFactory();
-	}
 
 	@Override
 	public String getDescription() {
@@ -64,17 +58,12 @@ public class CommandInitForwarders implements Command {
 				if (domains.contains(link.getFrom().getDomain().getLabel())
 						&& domains
 								.contains(link.getTo().getDomain().getLabel())) {
-					Forwarder forwarderClient = forwarderFactory.create(
-							link.getFrom(),
-							ForwarderFactory.ForwarderType.CLIENT);
-					Forwarder forwarderServer = forwarderFactory
-							.create(link.getTo(),
-									ForwarderFactory.ForwarderType.SERVER);
+					Forwarders forwarders= ForwardersFactory.create(link);
+				
 
 					try {
-						rm.getDietModel().addForwarder(forwarderClient);
+						rm.getDietModel().addForwarders(forwarders);
 
-						rm.getDietModel().addForwarder(forwarderServer);
 					} catch (DietResourceCreationException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();

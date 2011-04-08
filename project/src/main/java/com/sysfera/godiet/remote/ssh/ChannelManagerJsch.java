@@ -73,9 +73,9 @@ public class ChannelManagerJsch {
 						"Path length must be > 2 (source + destination)");
 
 			// Create the session with the last Node
-			Node last = null;
+			Resource  last = null;
 			try {
-				last = (Node) hops.toArray()[hops.size() - 1];
+				last = (Resource) hops.toArray()[hops.size() - 1];
 			} catch (ClassCastException e) {
 				// TODO: Remove when the model will be stable
 				throw new RemoteAccessException(
@@ -130,7 +130,6 @@ public class ChannelManagerJsch {
 			Session session, UserInfo ui) throws JSchException,
 			RemoteAccessException {
 
-		// TODO: #1 Change resource to RemoteNode (ie ssh) .=> remove switch
 		Resource[] resources = hops.toArray(new Resource[0]);
 		log.debug("hopsSize: " + resources.length);
 		if (resources.length < 3)
@@ -140,17 +139,9 @@ public class ChannelManagerJsch {
 		// i = 0 is the source. Don't create a proxy
 		for (int i = 1; i <= resources.length - 2; i++) {
 			Resource resource = resources[i];
-			Ssh ssh = null;
+			Ssh ssh = resource.getSsh();
 
-			if (resource instanceof Gateway) {
-				ssh = ((Gateway) resource).getSsh();
-			} else if (resource instanceof Node) {
-				ssh = ((Node) resource).getSsh();
-			} else {
-				new RemoteAccessException("Physical resource"
-						+ resource.getClass().getCanonicalName()
-						+ "not managed");
-			}
+	
 
 			NCProxy proxy = new NCProxy(ssh.getLogin(), ssh.getServer(),
 					ssh.getPort(), jsch, ui);

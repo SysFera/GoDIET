@@ -12,7 +12,9 @@ import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlID;
+import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlTransient;
@@ -33,6 +35,12 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
  * &lt;complexType name="resource">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
+ *       &lt;sequence>
+ *         &lt;element name="ssh" type="{}ssh"/>
+ *         &lt;element name="env" type="{}env" minOccurs="0"/>
+ *         &lt;element name="endPoint" type="{}endPoint" minOccurs="0"/>
+ *       &lt;/sequence>
+ *       &lt;attribute name="disk" use="required" type="{http://www.w3.org/2001/XMLSchema}IDREF" />
  *       &lt;attribute name="id" use="required" type="{http://www.w3.org/2001/XMLSchema}ID" />
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -42,13 +50,29 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "resource")
+@XmlType(name = "resource", propOrder = {
+    "ssh",
+    "env",
+    "endPoint"
+})
 @XmlSeeAlso({
     Gateway.class,
     Node.class
 })
 public abstract class Resource {
+	 public Domain getDomain() {
+ 		// TODO Auto-generated method stub
+ 		return domain;
+ 	}
 
+ 	@XmlTransient
+ 	protected Domain domain;
+
+ 	public void afterUnmarshal(Unmarshaller u, Object parent) {
+ 		if(parent instanceof Resource)this.domain = ((Resource) parent).getDomain(); 
+ 		else if (parent instanceof Domain)
+ 			this.domain = (Domain) parent;
+ 	}
     @Override
 	public int hashCode() {
 		final int prime = 31;
@@ -80,11 +104,115 @@ public abstract class Resource {
 		return true;
 	}
 
-	@XmlAttribute(required = true)
+    @XmlElement(required = true)
+    protected Ssh ssh;
+    protected Env env;
+    protected EndPoint endPoint;
+    @XmlAttribute(required = true)
+    @XmlIDREF
+    @XmlSchemaType(name = "IDREF")
+    protected Storage disk;
+    @XmlAttribute(required = true)
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     @XmlID
     @XmlSchemaType(name = "ID")
     protected String id;
+
+    /**
+     * Gets the value of the ssh property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link Ssh }
+     *     
+     */
+    public Ssh getSsh() {
+        return ssh;
+    }
+
+    /**
+     * Sets the value of the ssh property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link Ssh }
+     *     
+     */
+    public void setSsh(Ssh value) {
+        this.ssh = value;
+    }
+
+    /**
+     * Gets the value of the env property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link Env }
+     *     
+     */
+    public Env getEnv() {
+        return env;
+    }
+
+    /**
+     * Sets the value of the env property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link Env }
+     *     
+     */
+    public void setEnv(Env value) {
+        this.env = value;
+    }
+
+    /**
+     * Gets the value of the endPoint property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link EndPoint }
+     *     
+     */
+    public EndPoint getEndPoint() {
+        return endPoint;
+    }
+
+    /**
+     * Sets the value of the endPoint property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link EndPoint }
+     *     
+     */
+    public void setEndPoint(EndPoint value) {
+        this.endPoint = value;
+    }
+
+    /**
+     * Gets the value of the disk property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link Object }
+     *     
+     */
+    public Storage getDisk() {
+        return disk;
+    }
+
+    /**
+     * Sets the value of the disk property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link Object }
+     *     
+     */
+    public void setDisk(Storage value) {
+        this.disk = value;
+    }
 
     /**
      * Gets the value of the id property.
@@ -110,17 +238,6 @@ public abstract class Resource {
         this.id = value;
     }
 
-    public Domain getDomain() {
-    		// TODO Auto-generated method stub
-    		return domain;
-    	}
-
-    	@XmlTransient
-    	protected Domain domain;
-
-    	public void afterUnmarshal(Unmarshaller u, Object parent) {
-    		if(parent instanceof Resource)this.domain = ((Resource) parent).getDomain(); 
-    		else if (parent instanceof Domain)
-    			this.domain = (Domain) parent;
-    	}
+  
+   
 }

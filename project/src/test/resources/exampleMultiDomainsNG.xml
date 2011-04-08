@@ -34,7 +34,14 @@
 						<var name="LD_LIBRARY_PATH" value="/home/phi/Soft/diet/build/lib" />
 					</env>
 				</node>
-				<gateway id="SysferaGW" ref="Kev" />
+				<gateway id="SysferaGW" disk="kevinDisk">
+					<ssh server="192.168.1.17" login="phi" />
+					<env>
+						<var name="PATH"
+							value="/home/phi/Diet/build/bin:/home/phi/Diet/build/bin/examples/dmat_manips/:$PATH" />
+						<var name="LD_LIBRARY_PATH" value="/home/phi/Diet/build/lib" />
+					</env>
+				</gateway>
 			</domain>
 			<domain label="ENS">
 				<storage label="graalDisk">
@@ -52,7 +59,15 @@
 							value="/home/pmartinez/Diet/build/lib:/home/bdepardo/soft/omniORB/lib" />
 					</env>
 				</node>
-				<gateway id="ENSGW" ref="Graal" />
+				<gateway id="ENSGW" disk="graalDisk">
+					<ssh server="140.77.166.19" login="pmartinez" />
+					<env>
+						<var name="PATH"
+							value="/home/pmartinez/Diet/build/bin:/home/pmartinez/Diet/build/bin/examples/dmat_manips/:$PATH" />
+						<var name="LD_LIBRARY_PATH"
+							value="/home/pmartinez/Diet/build/lib:/home/bdepardo/soft/omniORB/lib" />
+					</env>
+				</gateway>
 
 			</domain>
 

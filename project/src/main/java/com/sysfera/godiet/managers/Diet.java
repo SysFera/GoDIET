@@ -130,8 +130,10 @@ public class Diet {
 	 */
 	public void addForwarders(Forwarders forwarder)
 			throws DietResourceCreationException {
-
-		this.forwaders.add(forwFactory.create(forwarder));
+		DietResourceManaged[] managedForwarders =  forwFactory.create(forwarder);
+		if(managedForwarders.length != 2) throw new DietResourceCreationException("TODO: What's the fuck");
+		this.forwaders.add(managedForwarders[0]);
+		this.forwaders.add(managedForwarders[1]);
 	}
 
 	/**
@@ -172,7 +174,7 @@ public class Diet {
 		for (DietServiceManager omniName : omninames) {
 			if (omniName.getPluggedOn().getDomain().getLabel()
 					.equals(domain.getLabel())) {
-			//	return omniName.;
+				return (OmniNames) omniName.getSoftwareDescription();
 			}
 
 		}

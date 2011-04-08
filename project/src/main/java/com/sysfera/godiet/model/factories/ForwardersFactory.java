@@ -6,11 +6,14 @@ import com.sysfera.godiet.model.DietResourceManaged;
 import com.sysfera.godiet.model.SoftwareManager;
 import com.sysfera.godiet.model.generated.Config;
 import com.sysfera.godiet.model.generated.Forwarder;
+import com.sysfera.godiet.model.generated.Forwarders;
 import com.sysfera.godiet.model.generated.Gateway;
+import com.sysfera.godiet.model.generated.Link;
 import com.sysfera.godiet.model.generated.ObjectFactory;
 import com.sysfera.godiet.model.generated.OmniNames;
 import com.sysfera.godiet.model.generated.Options;
 import com.sysfera.godiet.model.generated.Options.Option;
+import com.sysfera.godiet.model.utils.ResourceUtil;
 
 /**
  * Managed Forwarder factory
@@ -39,115 +42,258 @@ public class ForwardersFactory {
 	}
 
 	/**
-	 * TODO: Need to move this function. Describe Forwarder in XSD and use the
-	 * Jaxb factory
+	 * TODO: Need to move this function cause this a managed Forwarder factory +
+	 * duplicate code
 	 * 
 	 * @param gateway
 	 * @param type
 	 * @return
 	 */
-	public static Forwarder create(Gateway gateway,
-			ForwardersFactory.ForwarderType type) {
-		Forwarder forwarder = new Forwarder();
-		Config config = new Config();
-		config.setServer(gateway.getRef());
-		config.setRemoteBinary(FORWARDERBINARY);
-		forwarder.setConfig(config);
-		forwarder.setId("DietForwarder-" + gateway.getId() + "-" + type);
-		switch (type) {
-		case CLIENT:
-			forwarder.setType("CLIENT");
-			break;
+	public static Forwarders create(Link link) {
+		ObjectFactory factory = new ObjectFactory();
+		Forwarders forwarders = factory.createForwarders();
 
-		case SERVER:
-			forwarder.setType("SERVER");
-			break;
+		/*
+		 * Create managed client
+		 */
+		{
+			Gateway clientGateway = link.getFrom();
 
-		default:
-			break;
+			Forwarder clientForwarder = factory.createForwarder();
+
+			Config clientconfig = factory.createConfig();
+			clientconfig.setServer(clientGateway);
+			clientconfig.setRemoteBinary(FORWARDERBINARY);
+			clientForwarder.setConfig(clientconfig);
+			clientForwarder.setId("DietForwarder-" + clientGateway.getId()
+					+ "-CLIENT");
+			clientForwarder.setType("CLIENT");
+			forwarders.setClient(clientForwarder);
+
 		}
-		return forwarder;
+
+		/*
+		 * Create managed server
+		 */
+		{
+			Gateway serverGateway = link.getTo();
+
+			Forwarder serverForwarder = factory.createForwarder();
+
+			Config serverconfig = factory.createConfig();
+			serverconfig.setServer(serverGateway);
+			serverconfig.setRemoteBinary(FORWARDERBINARY);
+			serverForwarder.setConfig(serverconfig);
+			serverForwarder.setId("DietForwarder-" + serverGateway.getId()
+					+ "-SERVER");
+			serverForwarder.setType("SERVER");
+			forwarders.setServer(serverForwarder);
+
+		}
+		return forwarders;
 	}
 
 	/**
 	 * Create a managed diet resource. Check description validity and add
 	 * default parameters if needed.
 	 * 
-	 * @param forwarder
-	 *            Forwarder description
-	 * @return The Managed forwarder
+	 * @param forwarders
+	 *            Forwarders description
+	 * @return The Managed forwarders. DietResourceManaged[0] the client and
+	 *         DietResourceManaged[1] the server
 	 * @throws DietResourceCreationException
 	 *             if resource not plugged
 	 */
-	public DietResourceManaged create(Forwarder forwarder)
+	public DietResourceManaged[] create(Forwarders forwarders)
 			throws DietResourceCreationException {
 
-		DietResourceManaged dietResourceManaged = new DietResourceManaged();
-		dietResourceManaged.setManagedSoftware(forwarder);
-		settingConfigurationOptions(dietResourceManaged);
-		buildForwarderCommand(dietResourceManaged);
-		return dietResourceManaged;
+		DietResourceManaged[] forwardersManager = new DietResourceManaged[2];
+		DietResourceManaged clientForwarderManager = new DietResourceManaged();
+		DietResourceManaged serverForwarderManager = new DietResourceManaged();
+
+		clientForwarderManager.setManagedSoftware(forwarders.getClient());
+		serverForwarderManager.setManagedSoftware(forwarders.getServer());
+
+		settingConfigurationOptions(clientForwarderManager,
+				serverForwarderManager);
+		buildForwarderCommand(clientForwarderManager, serverForwarderManager);
+
+		forwardersManager[0] = clientForwarderManager;
+		forwardersManager[1] = serverForwarderManager;
+		return forwardersManager;
 	}
 
 	/**
 	 * Init default value
 	 * 
-	 * @param forwarder
+	 * @param forwarders
 	 * @throws DietResourceCreationException
 	 *             if resource not plugged
 	 */
-	private void settingConfigurationOptions(DietResourceManaged forwarder)
+	private void settingConfigurationOptions(DietResourceManaged managedClient,
+			DietResourceManaged managedServer)
 			throws DietResourceCreationException {
-		if (forwarder.getPluggedOn() == null) {
-			throw new DietResourceCreationException(forwarder
+		if (managedClient.getPluggedOn() == null
+				|| managedServer.getPluggedOn() == null) {
+			throw new DietResourceCreationException(managedClient
 					.getSoftwareDescription().getId()
+					+ " or "
+					+ managedServer.getSoftwareDescription().getId()
 					+ " not plugged on physical resource");
 		}
+		/**
+		 * Client
+		 */
+		{
+			ObjectFactory factory = new ObjectFactory();
+			Options opts = factory.createOptions();
 
-		ObjectFactory factory = new ObjectFactory();
-		Options opts = factory.createOptions();
+			Option accept = factory.createOptionsOption();
+			accept.setKey("accept");
+			accept.setValue(".*");
+			Option reject = factory.createOptionsOption();
+			reject.setKey("reject");
+			reject.setValue("localhost");
+			opts.getOption().add(accept);
+			opts.getOption().add(reject);
+			managedClient.getSoftwareDescription().setCfgOptions(opts);
+		}
+		/**
+		 * Server
+		 */
+		{
+			ObjectFactory factory = new ObjectFactory();
+			Options opts = factory.createOptions();
 
-		Option accept = factory.createOptionsOption();
-		accept.setKey("accept");
-		accept.setValue(".*");
-		Option reject = factory.createOptionsOption();
-		reject.setKey("reject");
-		reject.setValue(forwarder.getPluggedOn().getSsh().getServer());
-		opts.getOption().add(accept);
-		opts.getOption().add(reject);
-		forwarder.getSoftwareDescription().setCfgOptions(opts);
-
+			Option accept = factory.createOptionsOption();
+			accept.setKey("accept");
+			accept.setValue(".*");
+			Option reject = factory.createOptionsOption();
+			reject.setKey("reject");
+			reject.setValue("localhost");
+			opts.getOption().add(accept);
+			opts.getOption().add(reject);
+			managedServer.getSoftwareDescription().setCfgOptions(opts);
+		}
 	}
 
 	/**
 	 * Build the diet forwarder running command
-	 * OMNIORB_CONFIG={scratch_runtime}/{omniNamesId}.cfg
+	 * OMNIORB_CONFIG={scratch_runtime}/{omniNamesId}.cfg TODO: What's the hell
 	 * 
 	 * @param softManaged
 	 * @return
 	 */
-	private void buildForwarderCommand(SoftwareManager softManaged) {
+	private void buildForwarderCommand(SoftwareManager managedClient,
+			SoftwareManager managedServer) {
+		buildForwarderServerCommand(managedClient, managedServer);
+		buildForwarderClientCommand(managedClient, managedServer);
+	}
+
+	/**
+	 * PATH={phyNode.getEnv(Path)}:$PATH
+	 * OMNIORB_CONFIG={phyNode.scratchdir}/{omninames.id}.cfg nohup
+	 * {forwarderBinaryname} --name {forwarderName} --net-config
+	 * {phyNode.scratchDir}/{forwarderName}.cfg >
+	 * {phyNode.scratchdir}/{forwarderName}.out 2>
+	 * {phyNode.scratchdir}/{forwarderName}.err &
+	 * 
+	 * @param managedClient
+	 * @param managedServer
+	 */
+	private void buildForwarderServerCommand(SoftwareManager managedClient,
+			SoftwareManager managedServer) {
 		String command = "";
-		String scratchDir = softManaged.getPluggedOn().getDisk().getScratch()
-		.getDir();
-		Forwarder forwarderDescription = (Forwarder) softManaged.getSoftwareDescription();
+		String scratchDir = managedServer.getPluggedOn().getDisk().getScratch()
+				.getDir();
+		Forwarder forwarderDescription = (Forwarder) managedServer
+				.getSoftwareDescription();
+		//Env PATH
+		String envPath = ResourceUtil.getEnvValue(managedClient.getPluggedOn(),"PATH");
+		command+= "PATH="+envPath+":$PATH ";
 		// find the OmniOrbConfig file on the remote host to set OmniOrb.cfg
-		OmniNames omniName = dietPlatform.getOmniName(softManaged);
+		OmniNames omniName = dietPlatform.getOmniName(managedServer);
 		String omniOrbconfig = "OMNIORB_CONFIG=" + scratchDir + "/"
 				+ omniName.getId() + ".cfg";
 		command += omniOrbconfig + " ";
-		//specific command if it's a CLIENT or SERVER
-		if(forwarderDescription.getType().equals("SERVER")){
-			
-		}
-		else{
-			
-		}
-	
+
+		// nohup {binaryName}
+		command += "nohup "
+				+ forwarderDescription.getConfig().getRemoteBinary() + " ";
+		command += "--name " + forwarderDescription.getId() + " ";
+		command += "--net-config " + scratchDir + "/"
+				+ forwarderDescription.getId() + ".cfg ";
+
+		// > {phyNode.scratchdir}/{forwarderName}.out
+		command += "> " + scratchDir + "/" + forwarderDescription.getId()
+				+ ".out ";
+		// 2> {phyNode.scratchdir}/{forwarderName}.err
+		command += "2> " + scratchDir + "/" + forwarderDescription.getId()
+				+ ".err &";
+		managedServer.setRunningCommand(command);
+	}
+
+	/**
+	 * 
+	 * PATH={phyNode.getEnv(Path)}:$PATH
+	 * OMNIORB_CONFIG={phyNode.scratchdir}/{omninames.id}.cfg nohup
+	 * {forwarderBinaryname} --name {forwarderName} --net-config
+	 * {phyNode.scratchDir}/{forwarderName}.cfg --peer-name
+	 * {remoteForwarderName} --ssh-host {serverHost} --ssh-login {serverLogin}
+	 * --remote-port {remotePort} --remote-host 127.0.0.1 -C &
+	 * 
+	 * @param managedClient
+	 * @param managedServer
+	 */
+	private void buildForwarderClientCommand(SoftwareManager managedClient,
+			SoftwareManager managedServer) {
+		String command = "";
+		String scratchDir = managedClient.getPluggedOn().getDisk().getScratch()
+				.getDir();
+		Forwarder forwarderDescription = (Forwarder) managedClient
+				.getSoftwareDescription();
+		//Env PATH
+		String envPath = ResourceUtil.getEnvValue(managedClient.getPluggedOn(),"PATH");
+		command+= "PATH="+envPath+":$PATH ";
+		// find the OmniOrbConfig file on the remote host to set OmniOrb.cfg
+		OmniNames omniName = dietPlatform.getOmniName(managedClient);
+		String omniOrbconfig = "OMNIORB_CONFIG=" + scratchDir + "/"
+				+ omniName.getId() + ".cfg";
+		command += omniOrbconfig + " ";
+
+		// nohup {binaryName}
+		command += "nohup "
+				+ forwarderDescription.getConfig().getRemoteBinary() + " ";
+		// {name}
+		command += "--name " + forwarderDescription.getId() + " ";
+		// --net-config {phyNode.scratchDir}/{forwarderName}.cfg
+		command += "--net-config " + scratchDir + "/"
+				+ forwarderDescription.getId() + ".cfg ";
+		// --peer-name {remoteForwarderName}
+		command += "--peer-name "
+				+ managedServer.getSoftwareDescription().getId() + " ";
+		// --ssh-host {remoteHost}
+		command += " --ssh-host "
+				+ managedServer.getPluggedOn().getSsh().getServer() + " ";
+		// --ssh-login {remoteLogin}
+		command += "--ssh-login "
+				+ managedServer.getPluggedOn().getSsh().getLogin() + " ";
+		// --remote-port {remotePort} -C &
+		// TODO add the remote port in the forwarder model
+		command += "--remote-port " + "50000 ";
+		//--remote-host 127.0.0.1 -C 
+		command += "--remote-host 127.0.0.1 -C ";
 		
+		// > {phyNode.scratchdir}/{forwarderName}.out
+		command += "> " + scratchDir + "/" + forwarderDescription.getId()
+				+ ".out ";
+		// 2> {phyNode.scratchdir}/{forwarderName}.err
+		command += "2> " + scratchDir + "/" + forwarderDescription.getId()
+				+ ".err ";
+		//&
+		command +="&";
 
-		command += command += " ";
 
-		softManaged.setRunningCommand(command);
+		managedClient.setRunningCommand(command);
 	}
 }

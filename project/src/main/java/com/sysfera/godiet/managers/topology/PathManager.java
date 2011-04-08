@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.sysfera.godiet.model.Path;
-import com.sysfera.godiet.model.generated.Node;
+import com.sysfera.godiet.model.generated.Resource;
 /**
  * Store calculated paths.  
  * TODO: Listen Model modification ( Node down ... ) 
@@ -19,9 +19,9 @@ public class PathManager {
 		 this.paths = new HashMap<PathManager.PathDesc, Path>();
 	}
 	class PathDesc{
-		private final Node from;
-		private final Node to;
-		public PathDesc(Node from, Node to) {
+		private final Resource from;
+		private final Resource to;
+		public PathDesc(Resource from, Resource to) {
 			this.from = from;
 			this.to = to;
 		}

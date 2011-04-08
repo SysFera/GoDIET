@@ -2,11 +2,13 @@ package com.sysfera.godiet.model.factories;
 
 import com.sysfera.godiet.exceptions.DietResourceCreationException;
 import com.sysfera.godiet.model.DietServiceManager;
-import com.sysfera.godiet.model.generated.Node;
+import com.sysfera.godiet.model.SoftwareManager;
 import com.sysfera.godiet.model.generated.ObjectFactory;
 import com.sysfera.godiet.model.generated.OmniNames;
 import com.sysfera.godiet.model.generated.Options;
 import com.sysfera.godiet.model.generated.Options.Option;
+import com.sysfera.godiet.model.generated.Resource;
+import com.sysfera.godiet.model.generated.Software;
 
 /**
  * Managed OmniNames factory
@@ -33,8 +35,38 @@ public class OmniNamesFactory {
 
 		omniNamesManaged.setManagedSoftware(omniNamesDescription);
 		settingConfigurationOptions(omniNamesManaged);
-
+		settingOmniNamesRunningCommand(omniNamesManaged);
 		return omniNamesManaged;
+	}
+
+	/**
+	 * Build the omniNames running command
+	 * OMNINAMES_LOGDIR={scratch_runtime}/{DomainName}/ +
+	 * OMNIORB_CONFIG={scratch_runtime}/{omniNamesId}.cfg + nohup
+	 * {OmniNamesBinary} + -start -always > {scratch_runtime}/OmniNames.out 2>
+	 * {scratch_runtime}/OmniNames.err &
+	 * 
+	 * @param softManaged
+	 * @return
+	 */
+	private void settingOmniNamesRunningCommand(SoftwareManager softManaged) {
+		String command = "";
+		String scratchDir = softManaged.getPluggedOn().getDisk().getScratch()
+				.getDir();
+		Software softwareDescription = softManaged.getSoftwareDescription();
+		command += "OMNINAMES_LOGDIR=" + scratchDir + "/";
+		command += " ";
+
+		command += "OMNIORB_CONFIG=" + scratchDir + "/"
+				+ softwareDescription.getId() + ".cfg";
+		command += " nohup ";
+		command += softwareDescription.getConfig().getRemoteBinary();
+
+		command += " ";
+		command += "-start -always >";
+		command += scratchDir + "/OmniNames.out 2> ";
+		command += scratchDir + "/OmniNames.err &";
+		softManaged.setRunningCommand(command);
 	}
 
 	/**
@@ -46,25 +78,29 @@ public class OmniNamesFactory {
 	 */
 	private void settingConfigurationOptions(DietServiceManager omniNamesManaged)
 			throws DietResourceCreationException {
-		Node plugged = omniNamesManaged.getPluggedOn();
+		Resource plugged = omniNamesManaged.getPluggedOn();
 		if (plugged == null) {
 			throw new DietResourceCreationException(omniNamesManaged
-					.getManagedSoftwareDescription().getId()
+					.getSoftwareDescription().getId()
 					+ " not plugged on physical resource");
 		}
 
 		ObjectFactory factory = new ObjectFactory();
 		Options opts = factory.createOptions();
-		
+
 		Option nameService = factory.createOptionsOption();
 		nameService.setKey("InitRef");
-		nameService.setValue("NameService=corbaname::"+plugged.getSsh().getServer()+":" + ((OmniNames)omniNamesManaged.getManagedSoftwareDescription()).getPort());
+		nameService.setValue("NameService=corbaname::"
+				+ plugged.getSsh().getServer()
+				+ ":"
+				+ ((OmniNames) omniNamesManaged.getSoftwareDescription())
+						.getPort());
 		Option supportBootstrapAgent = factory.createOptionsOption();
 		supportBootstrapAgent.setKey("supportBootstrapAgent");
 		supportBootstrapAgent.setValue("1");
 		opts.getOption().add(nameService);
 		opts.getOption().add(supportBootstrapAgent);
-		omniNamesManaged.getManagedSoftwareDescription().setCfgOptions(opts);
+		omniNamesManaged.getSoftwareDescription().setCfgOptions(opts);
 
 	}
 }

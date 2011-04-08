@@ -76,8 +76,8 @@ public class TopologyManagerNeo4jImpl implements TopologyManager {
 	 * com.sysfera.godiet.model.generated.Resource)
 	 */
 	@Override
-	public Path findPath(com.sysfera.godiet.model.generated.Node from,
-			com.sysfera.godiet.model.generated.Node to) throws PathException {
+	public Path findPath(com.sysfera.godiet.model.generated.Resource from,
+			com.sysfera.godiet.model.generated.Resource to) throws PathException {
 		// If the nodes are in the same domain create a simple path
 		if (from != null && to != null
 				&& to.getDomain().equals(from.getDomain())) {

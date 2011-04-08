@@ -6,7 +6,7 @@ import org.slf4j.LoggerFactory;
 import com.sysfera.godiet.exceptions.remote.LaunchException;
 import com.sysfera.godiet.exceptions.remote.PrepareException;
 import com.sysfera.godiet.exceptions.remote.StopException;
-import com.sysfera.godiet.model.generated.Node;
+import com.sysfera.godiet.model.generated.Resource;
 import com.sysfera.godiet.model.generated.Software;
 import com.sysfera.godiet.model.states.ResourceState;
 
@@ -23,7 +23,7 @@ public class DietResourceManaged extends SoftwareManager {
 	private Software agentManaged;
 
 	public DietResourceManaged() {
-	
+
 	}
 
 	/**
@@ -35,17 +35,9 @@ public class DietResourceManaged extends SoftwareManager {
 		this.agentManaged = dietAgent;
 	}
 
-	/**
-	 * The agent that is managed
-	 * 
-	 * @return the agent description
-	 */
-	public Software getManagedSoftwareDescription() {
-		return agentManaged;
-	}
 
 	@Override
-	public Node getPluggedOn() {
+	public Resource getPluggedOn() {
 		if (agentManaged != null) {
 			return agentManaged.getConfig().getServer();
 		} else
@@ -66,10 +58,11 @@ public class DietResourceManaged extends SoftwareManager {
 
 	}
 
-	public void stop() throws StopException{
+	public void stop() throws StopException {
 		ResourceState currentState = this.stateController.getState();
 		currentState.stop();
 	}
+
 	@Override
 	public Software getSoftwareDescription() {
 		return agentManaged;

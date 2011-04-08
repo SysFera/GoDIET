@@ -15,25 +15,25 @@
 				<scp server="fake" login="fake" />
 			</storage>
 			<node disk="fake" id="myLaptop">
-				<ssh login="phi" server="192.168.1.19" />
+				<ssh login="phi" server="192.168.0.14" />
 			</node>
-			<gateway ref="myLaptop" id="myLaptopGateway">
-				<ssh login="phi" server="192.168.1.26" />
+			<gateway  id="myLaptopGateway" disk="fake">
+				<ssh login="phi" server="192.168.0.14" />
 			</gateway>
 		</domain>
 		<domain label="DomainEns">
 			<node disk="fake" id="graal">
 				<ssh login="pmartinez" server="140.77.166.19" />
 			</node>
-			<gateway ref="graal" id="graalGW">
+			<gateway  id="graalGW" disk="fake">
 				<ssh login="pmartinez" server="140.77.166.19" />
 			</gateway>
 		</domain>
 		<domain label="DomainTestBed">
 			<node disk="fake" id="testbedVM">
-				<ssh login="godiet" server="140.77.166.19" port="40022"/>
+				<ssh login="godiet" server="140.77.166.19" port="40022" />
 			</node>
-			<gateway ref="graal" id="testbedVMGW">
+			<gateway id="testbedVMGW" disk="fake">
 				<ssh login="godiet" server="140.77.166.19" port="40022" />
 			</gateway>
 		</domain>
@@ -51,8 +51,13 @@
 					<var name="LD_LIBRARY_PATH" value="/home/godiet/GRAAL/build/lib" />
 				</env>
 			</node>
-			<gateway ref="Node1" id="G1">
+			<gateway id="G1" disk="Disk1">
 				<ssh server="192.169.1.1" login="godiet" />
+				<env>
+					<var name="PATH"
+						value="/home/godiet/GRAAL/build/bin:/home/godiet/GRAAL/build/bin/examples/dmat_manips/:$PATH" />
+					<var name="LD_LIBRARY_PATH" value="/home/godiet/GRAAL/build/lib" />
+				</env>
 			</gateway>
 		</domain>
 		<domain label="Domain2">
@@ -77,8 +82,13 @@
 					<var name="LD_LIBRARY_PATH" value="/home/godiet/GRAAL/build/lib" />
 				</env>
 			</node>
-			<gateway ref="Node3" id="G2">
+			<gateway id="G2" disk="Disk2">
 				<ssh server="192.169.1.2" login="godiet" />
+				<env>
+					<var name="PATH"
+						value="/home/godiet/GRAAL/build/bin:/home/godiet/GRAAL/build/bin/examples/dmat_manips/:$PATH" />
+					<var name="LD_LIBRARY_PATH" value="/home/godiet/GRAAL/build/lib" />
+				</env>
 			</gateway>
 		</domain>
 		<domain label="Domain3">
@@ -102,8 +112,13 @@
 					<var name="LD_LIBRARY_PATH" value="/home/godiet/GRAAL/build/lib" />
 				</env>
 			</node>
-			<gateway ref="Node5" id="G3">
+			<gateway id="G3" disk="Disk3">
 				<ssh server="192.169.1.3" login="godiet" />
+				<env>
+					<var name="PATH"
+						value="/home/godiet/GRAAL/build/bin:/home/godiet/GRAAL/build/bin/examples/dmat_manips/:$PATH" />
+					<var name="LD_LIBRARY_PATH" value="/home/godiet/GRAAL/build/lib" />
+				</env>
 			</gateway>
 		</domain>
 		<link from="myLaptopGateway" to="graalGW" />

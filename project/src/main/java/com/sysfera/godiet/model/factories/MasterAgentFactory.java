@@ -41,7 +41,7 @@ public class MasterAgentFactory {
 	private void settingConfigurationOptions(DietResourceManaged masterAgent)
 			throws DietResourceCreationException {
 		if (masterAgent.getPluggedOn() == null) {
-			throw new DietResourceCreationException(masterAgent.getManagedSoftwareDescription()
+			throw new DietResourceCreationException(masterAgent.getSoftwareDescription()
 					.getId() + " not plugged on physical resource");
 		}
 
@@ -52,11 +52,11 @@ public class MasterAgentFactory {
 		type.setValue("DIET_MASTER_AGENT");
 		Option name = new Option();
 		name.setKey("name");
-		name.setValue(masterAgent.getManagedSoftwareDescription().getId());
+		name.setValue(masterAgent.getSoftwareDescription().getId());
 		opts.getOption().add(type);
 		opts.getOption().add(name);
 		
-		masterAgent.getManagedSoftwareDescription().setCfgOptions(opts);
+		masterAgent.getSoftwareDescription().setCfgOptions(opts);
 		
 
 	}

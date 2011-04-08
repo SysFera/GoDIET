@@ -80,7 +80,7 @@ public class RemoteConfigurationHelper {
 		}
 
 		// the remote physical node to configure
-		Node remoteNode = resource.getPluggedOn();
+		Resource remoteNode = resource.getPluggedOn();
 		if (remoteNode == null) {
 			log.error("Unable to configure remote resource. Resource not plugged on physial resource");
 			throw new PrepareException(
@@ -98,11 +98,11 @@ public class RemoteConfigurationHelper {
 		// Find a path between the current node until remote node
 		Path path = null;
 		try {
-			path = platform.findPath((Node) localNode, remoteNode);
+			path = platform.findPath(localNode, remoteNode);
 		} catch (PathException e1) {
 			throw new PrepareException("", e1);
 		}
-		if (path == null) {
+		if (path == null) { 
 			log.error("Unable to configure remote resource. Unable to find a path");
 			throw new PrepareException("Path node found");
 		}
@@ -205,7 +205,7 @@ public class RemoteConfigurationHelper {
 			throw new LaunchException("Remote configurator isn't ready");
 		}
 		// the remote physical node to configure
-		Node remoteNode = managedSofware.getPluggedOn();
+		Resource remoteNode = managedSofware.getPluggedOn();
 		if (remoteNode == null) {
 			log.error("Unable to configure remote resource. Resource not plugged on physial resource");
 			throw new LaunchException(
@@ -222,7 +222,7 @@ public class RemoteConfigurationHelper {
 		// Find a path between the current node until remote node
 		Path path = null;
 		try {
-			path = platform.findPath((Node) localNode, remoteNode);
+			path = platform.findPath(localNode, remoteNode);
 		} catch (PathException e1) {
 			throw new LaunchException("", e1);
 		}
@@ -233,7 +233,7 @@ public class RemoteConfigurationHelper {
 
 		// End of duplicate code
 
-		String command = RemoteCommandBuilder.buildRunCommand(managedSofware);
+		String command = managedSofware.getRunningCommand();
 		try {
 			Integer pid = remoteAccess.launch(command, path);
 			managedSofware.setPid(pid);
@@ -267,7 +267,7 @@ public class RemoteConfigurationHelper {
 		}
 
 		// the remote physical node to configure
-		Node remoteNode = resource.getPluggedOn();
+		Resource remoteNode = resource.getPluggedOn();
 		if (remoteNode == null) {
 			log.error("Unable to configure remote resource. Resource not plugged on physial resource");
 			throw new StopException("Resource not plugged on physial resource");
@@ -284,7 +284,7 @@ public class RemoteConfigurationHelper {
 		// Find a path between the current node until remote node
 		Path path = null;
 		try {
-			path = platform.findPath((Node) localNode, remoteNode);
+			path = platform.findPath(localNode, remoteNode);
 		} catch (PathException e1) {
 			throw new StopException("", e1);
 		}
@@ -328,7 +328,7 @@ public class RemoteConfigurationHelper {
 		}
 
 		// the remote physical node to configure
-		Node remoteNode = resource.getPluggedOn();
+		Resource remoteNode = resource.getPluggedOn();
 		if (remoteNode == null) {
 			log.error("Unable to configure remote resource. Resource not plugged on physial resource");
 			throw new CheckException("Resource not plugged on physial resource");
@@ -345,7 +345,7 @@ public class RemoteConfigurationHelper {
 		// Find a path between the current node until remote node
 		Path path = null;
 		try {
-			path = platform.findPath((Node) localNode, remoteNode);
+			path = platform.findPath(localNode, remoteNode);
 		} catch (PathException e1) {
 			throw new CheckException("", e1);
 		}
