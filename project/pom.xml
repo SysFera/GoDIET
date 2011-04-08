@@ -13,12 +13,7 @@
 	</parent>
 
 	<dependencies>
-		<dependency>
-			<groupId>jline</groupId>
-			<artifactId>jline</artifactId>
-			<version>0.9.9</version>
-			<scope></scope>
-		</dependency>
+
 		<dependency>
 			<groupId>com.sun.xml.bind</groupId>
 			<artifactId>jaxb-xjc</artifactId>
@@ -31,7 +26,7 @@
 			<artifactId>jsch</artifactId>
 			<version>0.1.44-1</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.springframework.data</groupId>
 			<artifactId>spring-data-neo4j</artifactId>
@@ -42,12 +37,17 @@
 			<artifactId>com.springsource.org.apache.commons.vfs</artifactId>
 			<version>1.0.0</version>
 		</dependency>
+		<dependency>
+			<groupId>org.codehaus.groovy</groupId>
+			<artifactId>groovy-all</artifactId>
+			<version>1.7.10</version>
+		</dependency>
 	</dependencies>
 
 	<build>
 
 		<plugins>
-			
+
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-assembly-plugin</artifactId>
