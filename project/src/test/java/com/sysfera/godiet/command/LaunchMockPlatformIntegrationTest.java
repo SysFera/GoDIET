@@ -1,7 +1,6 @@
 package com.sysfera.godiet.command;
 
 import java.io.InputStream;
-import java.net.URL;
 
 import junit.framework.Assert;
 
@@ -9,28 +8,22 @@ import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import com.sysfera.godiet.exceptions.CommandExecutionException;
-import com.sysfera.godiet.exceptions.remote.AddKeyException;
 import com.sysfera.godiet.managers.ResourcesManager;
 import com.sysfera.godiet.remote.RemoteAccess;
 import com.sysfera.godiet.remote.RemoteAccessMock;
 import com.sysfera.godiet.remote.RemoteConfigurationHelper;
-import com.sysfera.godiet.remote.ssh.RemoteAccessJschImpl;
 import com.sysfera.godiet.utils.xml.XmlScannerJaxbImpl;
-
 
 public class LaunchMockPlatformIntegrationTest {
 	private Logger log = LoggerFactory.getLogger(getClass());
 	private ResourcesManager rm;
 
-
 	@Before
 	public void init() {
 
-		
-		//Init RM
+		// Init RM
 		String testCaseFile = "testbed.xml";
 		InputStream inputStream = getClass().getClassLoader()
 				.getResourceAsStream(testCaseFile);
@@ -48,12 +41,14 @@ public class LaunchMockPlatformIntegrationTest {
 			log.error("Test Fail", e);
 			Assert.fail(e.getMessage());
 		}
-		//Init Remote Access
-		RemoteConfigurationHelper remoteHelper = RemoteConfigurationHelper.getInstance();
-		remoteHelper.setConfiguration(rm.getGodietConfiguration().getGoDietConfiguration());
+		// Init Remote Access
+		RemoteConfigurationHelper remoteHelper = RemoteConfigurationHelper
+				.getInstance();
+		remoteHelper.setConfiguration(rm.getGodietConfiguration()
+				.getGoDietConfiguration());
 		remoteHelper.setPlatform(rm.getPlatformModel());
 		RemoteAccess remoteAccess = new RemoteAccessMock();
-		
+
 		remoteHelper.setRemoteAccess(remoteAccess);
 	}
 
@@ -62,34 +57,50 @@ public class LaunchMockPlatformIntegrationTest {
 	 */
 	@Test
 	public void launchPlatform() {
-		//Services Command
+		// Services commands
 		CommandPrepareServices prepareCommand = new CommandPrepareServices();
 		prepareCommand.setRm(rm);
 		CommandLaunchServices launchServicesCommand = new CommandLaunchServices();
 		launchServicesCommand.setRm(rm);
 		StopServicesCommand stopServicesCommand = new StopServicesCommand();
 		stopServicesCommand.setRm(rm);
-		
-		//Agent Services
-		CommandPrepareAgents prepareAgents = new CommandPrepareAgents();
-		prepareAgents.setRm(rm);
+
+		// Agents commands
 		CommandInitForwarders initForwardersCommand = new CommandInitForwarders();
 		initForwardersCommand.setRm(rm);
+
+		CommandPrepareAgents prepareAgents = new CommandPrepareAgents();
+		prepareAgents.setRm(rm);
+
+		LaunchForwardersCommand launchForwarers = new LaunchForwardersCommand();
+		launchForwarers.setRm(rm);
+		StopForwardersCommand stopForwarders = new StopForwardersCommand();
+		stopForwarders.setRm(rm);
 		try {
 			prepareCommand.execute();
 			launchServicesCommand.execute();
+
 			initForwardersCommand.execute();
+
 			prepareAgents.execute();
+			launchForwarers.execute();
 
 		} catch (CommandExecutionException e) {
 			log.error(e.getMessage());
 			Assert.fail(e.getMessage());
 		} finally {
 			try {
-				stopServicesCommand.execute();
+				stopForwarders.execute();
 			} catch (CommandExecutionException e) {
 				log.error(e.getMessage());
 				Assert.fail(e.getMessage());
+			} finally {
+				try {
+					stopServicesCommand.execute();
+				} catch (CommandExecutionException e) {
+					log.error(e.getMessage());
+					Assert.fail(e.getMessage());
+				}
 			}
 		}
 

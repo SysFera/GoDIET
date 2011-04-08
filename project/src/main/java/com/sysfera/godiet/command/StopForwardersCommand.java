@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 
 import com.sysfera.godiet.exceptions.CommandExecutionException;
 import com.sysfera.godiet.exceptions.remote.LaunchException;
+import com.sysfera.godiet.exceptions.remote.StopException;
 import com.sysfera.godiet.managers.ResourcesManager;
 import com.sysfera.godiet.model.DietResourceManaged;
 import com.sysfera.godiet.model.generated.Forwarder;
@@ -19,14 +20,15 @@ import com.sysfera.godiet.model.generated.Forwarder;
  * @author phi
  * 
  */
-public class LaunchForwardersCommand implements Command {
+public class StopForwardersCommand implements Command {
 	private Logger log = LoggerFactory.getLogger(getClass());
 
 	private ResourcesManager rm;
 
+
 	@Override
 	public String getDescription() {
-		return "Launch all forwarders. Begin with forwarders client";
+		return "Stop";
 	}
 
 	@Override
@@ -38,35 +40,32 @@ public class LaunchForwardersCommand implements Command {
 			throw new CommandExecutionException(getClass().getName()
 					+ " not initialized correctly");
 		}
-		List<DietResourceManaged> forwarders = rm.getDietModel()
-				.getForwarders();
-		log.debug("Try to launch  " + forwarders.size() + " Forwarders");
-
-		for (DietResourceManaged forwarder : forwarders) {
-			try {
-				Forwarder forwarderDescription = (Forwarder) forwarder
-						.getSoftwareDescription();
-				if (forwarderDescription.getType().equals("SERVER"))
-					forwarder.start();
-			} catch (LaunchException e) {
-				log.error("Unable to run Forwarder "
-						+ forwarder.getSoftwareDescription().getId());
-				throw new CommandExecutionException("Launch server forwarder"
-						+ forwarder.getSoftwareDescription().getId()
-						+ " failed", e);
-			}
-		}
-
+		List<DietResourceManaged> forwarders = rm.getDietModel().getForwarders();
+		log.debug("Try to stop  " + forwarders.size() + " Forwarders");
 		for (DietResourceManaged forwarder : forwarders) {
 			try {
 				Forwarder forwarderDescription = (Forwarder) forwarder
 						.getSoftwareDescription();
 				if (forwarderDescription.getType().equals("CLIENT"))
-					forwarder.start();
-			} catch (LaunchException e) {
+					forwarder.stop();
+			} catch (StopException e) {
 				log.error("Unable to run Forwarder "
 						+ forwarder.getSoftwareDescription().getId());
-				throw new CommandExecutionException("Launch client forwarder"
+				throw new CommandExecutionException("Stop client forwarder"
+						+ forwarder.getSoftwareDescription().getId()
+						+ " failed", e);
+			}
+		}
+		for (DietResourceManaged forwarder : forwarders) {
+			try {
+				Forwarder forwarderDescription = (Forwarder) forwarder
+						.getSoftwareDescription();
+				if (forwarderDescription.getType().equals("SERVER"))
+					forwarder.stop();
+			} catch (StopException e) {
+				log.error("Unable to run Forwarder "
+						+ forwarder.getSoftwareDescription().getId());
+				throw new CommandExecutionException("Stop server forwarder"
 						+ forwarder.getSoftwareDescription().getId()
 						+ " failed", e);
 			}

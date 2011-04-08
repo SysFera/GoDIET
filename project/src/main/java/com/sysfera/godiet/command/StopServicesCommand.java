@@ -6,7 +6,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.sysfera.godiet.exceptions.CommandExecutionException;
-import com.sysfera.godiet.exceptions.remote.LaunchException;
 import com.sysfera.godiet.exceptions.remote.StopException;
 import com.sysfera.godiet.managers.ResourcesManager;
 import com.sysfera.godiet.model.DietServiceManager;
@@ -24,7 +23,7 @@ public class StopServicesCommand implements Command {
 
 	@Override
 	public String getDescription() {
-		return "Launch diet services. Only OmniNames for now";
+		return "Stop diet services. Only OmniNames for now";
 	}
 
 	@Override
@@ -37,12 +36,12 @@ public class StopServicesCommand implements Command {
 					+ " not initialized correctly");
 		}
 		List<DietServiceManager> omniNames = rm.getDietModel().getOmninames();
-		log.debug("Try to launch  " +omniNames.size() + " omniNames");
+		log.debug("Try to stop  " +omniNames.size() + " omniNames");
 		for (DietServiceManager omniName : omniNames) {
 			try {
 				omniName.stop();
 			} catch (StopException e) {
-				log.error("Unable to stop omniNames "+omniName.getManagedSoftwareDescription().getId());
+				log.error("Unable to stop omniNames "+omniName.getSoftwareDescription().getId());
 				throw new CommandExecutionException("Stop "+ omniName.getSoftwareDescription().getId()+ " failed",e);
 			}
 		}

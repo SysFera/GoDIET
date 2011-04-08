@@ -30,7 +30,7 @@
 		<xs:attribute name="saveStdErr" type="xs:boolean"
 			default="true" />
 		<xs:attribute name="log" type="xs:boolean" />
-		<xs:attribute name="localNode" type="xs:string" use="optional"/>
+		<xs:attribute name="localNode" type="xs:string" use="optional" />
 		<xs:attribute name="watcherPeriod" type="xs:int" default="30000" />
 	</xs:complexType>
 
@@ -115,36 +115,7 @@
 		<xs:attribute name="label" type="xs:ID" />
 	</xs:complexType>
 
-	<xs:complexType name="resource" abstract="true">
-		<xs:annotation>
-			<xs:documentation>Represent a physical resource on which you can run
-				DietAgent</xs:documentation>
-		</xs:annotation>
-		<xs:attribute name="id" type="xs:ID" use="required" />
-	</xs:complexType>
 
-
-	<xs:complexType name="gateway">
-		<xs:complexContent>
-			<xs:extension base="resource">
-				<xs:sequence>
-					<xs:element name="ssh" type="ssh" minOccurs="0" />
-				</xs:sequence>
-
-				<xs:attribute name="ref" type="xs:IDREF" use="required">
-					<xs:annotation>
-						<xs:appinfo>
-							<jaxb:property>
-								<jaxb:baseType name="Node" />
-							</jaxb:property>
-						</xs:appinfo>
-					</xs:annotation>
-				</xs:attribute>
-
-			</xs:extension>
-		</xs:complexContent>
-
-	</xs:complexType>
 
 
 
@@ -170,28 +141,39 @@
 		<xs:attribute name="dir" type="xs:string" use="required" />
 	</xs:complexType>
 
+	<xs:complexType name="resource" abstract="true">
+		<xs:annotation>
+			<xs:documentation>Represent a physical resource on which you can run
+				DietAgent</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="ssh" type="ssh" />
+			<xs:element name="env" type="env" minOccurs="0" maxOccurs="1" />
+			<xs:element name="endPoint" type="endPoint" minOccurs="0"
+				maxOccurs="1" />
+		</xs:sequence>
+		<xs:attribute name="disk" type="xs:IDREF" use="required">
+			<xs:annotation>
+				<xs:appinfo>
+					<jaxb:property>
+						<jaxb:baseType name="Storage" />
+					</jaxb:property>
+				</xs:appinfo>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="id" type="xs:ID" use="required" />
+	</xs:complexType>
 
+
+	<xs:complexType name="gateway">
+		<xs:complexContent>
+			<xs:extension base="resource" />
+		</xs:complexContent>
+	</xs:complexType>
 
 	<xs:complexType name="node">
 		<xs:complexContent>
-			<xs:extension base="resource">
-				<xs:sequence>
-					<xs:element name="ssh" type="ssh" />
-					<xs:element name="env" type="env" minOccurs="0"
-						maxOccurs="1" />
-					<xs:element name="endPoint" type="endPoint" minOccurs="0"
-						maxOccurs="1" />
-				</xs:sequence>
-				<xs:attribute name="disk" type="xs:IDREF" use="required">
-					<xs:annotation>
-						<xs:appinfo>
-							<jaxb:property>
-								<jaxb:baseType name="Storage" />
-							</jaxb:property>
-						</xs:appinfo>
-					</xs:annotation>
-				</xs:attribute>
-			</xs:extension>
+			<xs:extension base="resource" />
 		</xs:complexContent>
 	</xs:complexType>
 
@@ -387,6 +369,12 @@
 		</xs:complexContent>
 	</xs:complexType>
 
+	<xs:complexType name="forwarders">
+		<xs:sequence>
+			<xs:element name="client" type="forwarder" />
+			<xs:element name="server" type="forwarder" />
+		</xs:sequence>
+	</xs:complexType>
 	<xs:complexType name="forwarder">
 		<xs:annotation>
 			<xs:documentation>A Diet Forwarder is a way to encapsulate all

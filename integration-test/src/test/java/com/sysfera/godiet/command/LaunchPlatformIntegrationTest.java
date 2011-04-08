@@ -86,34 +86,50 @@ public class LaunchPlatformIntegrationTest {
 	 */
 	@Test
 	public void launchPlatform() {
-		//Services Command
+		// Services commands
 		CommandPrepareServices prepareCommand = new CommandPrepareServices();
 		prepareCommand.setRm(rm);
 		CommandLaunchServices launchServicesCommand = new CommandLaunchServices();
 		launchServicesCommand.setRm(rm);
 		StopServicesCommand stopServicesCommand = new StopServicesCommand();
 		stopServicesCommand.setRm(rm);
-		
-		//Agents Command
-		CommandPrepareAgents prepareAgents = new CommandPrepareAgents();
-		prepareAgents.setRm(rm);
+
+		// Agents commands
 		CommandInitForwarders initForwardersCommand = new CommandInitForwarders();
 		initForwardersCommand.setRm(rm);
+
+		CommandPrepareAgents prepareAgents = new CommandPrepareAgents();
+		prepareAgents.setRm(rm);
+
+		LaunchForwardersCommand launchForwarers = new LaunchForwardersCommand();
+		launchForwarers.setRm(rm);
+		StopForwardersCommand stopForwarders = new StopForwardersCommand();
+		stopForwarders.setRm(rm);
 		try {
 			prepareCommand.execute();
 			launchServicesCommand.execute();
+
 			initForwardersCommand.execute();
+
 			prepareAgents.execute();
+			launchForwarers.execute();
 
 		} catch (CommandExecutionException e) {
-			log.error(e.getMessage());
+			log.error(e.getMessage(),e);
 			Assert.fail(e.getMessage());
 		} finally {
 			try {
-				stopServicesCommand.execute();
+				stopForwarders.execute();
 			} catch (CommandExecutionException e) {
-				log.error(e.getMessage());
+				log.error(e.getMessage(),e);
 				Assert.fail(e.getMessage());
+			} finally {
+				try {
+					stopServicesCommand.execute();
+				} catch (CommandExecutionException e) {
+					log.error(e.getMessage(),e);
+					Assert.fail(e.getMessage());
+				}
 			}
 		}
 
