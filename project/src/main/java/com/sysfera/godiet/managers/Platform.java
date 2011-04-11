@@ -8,8 +8,8 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.sysfera.godiet.exceptions.generics.PathException;
 import com.sysfera.godiet.exceptions.graph.GraphDataException;
-import com.sysfera.godiet.exceptions.graph.PathException;
 import com.sysfera.godiet.managers.topology.TopologyManager;
 import com.sysfera.godiet.managers.topology.TopologyManagerNeo4jImpl;
 import com.sysfera.godiet.model.Path;

@@ -12,11 +12,9 @@ import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
 import com.jcraft.jsch.UserInfo;
+import com.sysfera.godiet.exceptions.generics.RemoteAccessException;
 import com.sysfera.godiet.exceptions.remote.AddKeyException;
-import com.sysfera.godiet.exceptions.remote.RemoteAccessException;
 import com.sysfera.godiet.model.Path;
-import com.sysfera.godiet.model.generated.Gateway;
-import com.sysfera.godiet.model.generated.Node;
 import com.sysfera.godiet.model.generated.Resource;
 import com.sysfera.godiet.model.generated.Ssh;
 

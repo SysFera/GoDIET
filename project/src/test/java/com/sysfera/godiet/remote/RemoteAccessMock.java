@@ -8,7 +8,7 @@ import java.io.File;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.sysfera.godiet.exceptions.remote.RemoteAccessException;
+import com.sysfera.godiet.exceptions.generics.RemoteAccessException;
 import com.sysfera.godiet.model.Path;
 import com.sysfera.godiet.model.generated.Node;
 import com.sysfera.godiet.model.generated.Resource;

@@ -23,8 +23,8 @@ import org.neo4j.kernel.Traversal;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.sysfera.godiet.exceptions.generics.PathException;
 import com.sysfera.godiet.exceptions.graph.GraphDataException;
-import com.sysfera.godiet.exceptions.graph.PathException;
 import com.sysfera.godiet.managers.Platform;
 import com.sysfera.godiet.managers.topology.PathManager.PathDesc;
 import com.sysfera.godiet.model.Path;

@@ -1,4 +1,4 @@
-package com.sysfera.godiet.exceptions.graph;
+package com.sysfera.godiet.exceptions.generics;
 
 /**
  * 

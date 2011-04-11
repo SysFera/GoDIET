@@ -13,8 +13,8 @@ import org.slf4j.LoggerFactory;
 import com.jcraft.jsch.Channel;
 import com.jcraft.jsch.ChannelExec;
 import com.jcraft.jsch.JSch;
+import com.sysfera.godiet.exceptions.generics.RemoteAccessException;
 import com.sysfera.godiet.exceptions.remote.AddKeyException;
-import com.sysfera.godiet.exceptions.remote.RemoteAccessException;
 import com.sysfera.godiet.model.Path;
 import com.sysfera.godiet.remote.RemoteAccess;
 

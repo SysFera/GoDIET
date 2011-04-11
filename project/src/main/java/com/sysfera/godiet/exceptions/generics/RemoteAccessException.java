@@ -1,4 +1,4 @@
-package com.sysfera.godiet.exceptions.remote;
+package com.sysfera.godiet.exceptions.generics;
 
 /**
  * Throw when Remote access error

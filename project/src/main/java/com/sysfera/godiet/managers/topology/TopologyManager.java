@@ -1,7 +1,7 @@
 package com.sysfera.godiet.managers.topology;
 
+import com.sysfera.godiet.exceptions.generics.PathException;
 import com.sysfera.godiet.exceptions.graph.GraphDataException;
-import com.sysfera.godiet.exceptions.graph.PathException;
 import com.sysfera.godiet.model.Path;
 import com.sysfera.godiet.model.generated.Node;
 import com.sysfera.godiet.model.generated.Resource;

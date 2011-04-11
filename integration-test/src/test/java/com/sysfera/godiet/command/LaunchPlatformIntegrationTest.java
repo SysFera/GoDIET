@@ -71,10 +71,15 @@ public class LaunchPlatformIntegrationTest {
 			Assert.fail("Unable to load ssh key" + fakeKey);
 		try {
 			remoteAccess.addItentity(urlFile.getFile(), null, "godiet");
-			// Here add a key to access on testbed
-		//	remoteAccess.addItentity("/home/phi/tmp/id_dsa", null, "");
 		} catch (AddKeyException e) {
-			Assert.fail(e.getMessage());
+			Assert.fail("Unable to load testbed key");
+		}
+
+		try {
+			// Here add a key to access on testbed
+			remoteAccess.addItentity("/home/phi/tmp/id_dsa", null, "");
+		} catch (AddKeyException e) {
+			log.error("unable to load your key");
 		}
 
 		remoteHelper.setRemoteAccess(remoteAccess);
@@ -115,19 +120,19 @@ public class LaunchPlatformIntegrationTest {
 			launchForwarers.execute();
 
 		} catch (CommandExecutionException e) {
-			log.error(e.getMessage(),e);
+			log.error(e.getMessage(), e);
 			Assert.fail(e.getMessage());
 		} finally {
 			try {
 				stopForwarders.execute();
 			} catch (CommandExecutionException e) {
-				log.error(e.getMessage(),e);
+				log.error(e.getMessage(), e);
 				Assert.fail(e.getMessage());
 			} finally {
 				try {
 					stopServicesCommand.execute();
 				} catch (CommandExecutionException e) {
-					log.error(e.getMessage(),e);
+					log.error(e.getMessage(), e);
 					Assert.fail(e.getMessage());
 				}
 			}

@@ -2,9 +2,9 @@ package com.sysfera.godiet.remote;
 
 import java.io.File;
 
+import com.sysfera.godiet.exceptions.generics.RemoteAccessException;
 import com.sysfera.godiet.exceptions.remote.AddKeyException;
 import com.sysfera.godiet.exceptions.remote.CheckException;
-import com.sysfera.godiet.exceptions.remote.RemoteAccessException;
 import com.sysfera.godiet.model.Path;
 
 /**

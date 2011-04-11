@@ -10,11 +10,11 @@ import java.io.OutputStreamWriter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.sysfera.godiet.exceptions.graph.PathException;
+import com.sysfera.godiet.exceptions.generics.PathException;
+import com.sysfera.godiet.exceptions.generics.RemoteAccessException;
 import com.sysfera.godiet.exceptions.remote.CheckException;
 import com.sysfera.godiet.exceptions.remote.LaunchException;
 import com.sysfera.godiet.exceptions.remote.PrepareException;
-import com.sysfera.godiet.exceptions.remote.RemoteAccessException;
 import com.sysfera.godiet.exceptions.remote.StopException;
 import com.sysfera.godiet.managers.Platform;
 import com.sysfera.godiet.model.Path;
