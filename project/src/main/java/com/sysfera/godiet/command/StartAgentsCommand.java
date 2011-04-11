@@ -8,22 +8,24 @@ import org.slf4j.LoggerFactory;
 import com.sysfera.godiet.exceptions.CommandExecutionException;
 import com.sysfera.godiet.exceptions.remote.LaunchException;
 import com.sysfera.godiet.managers.ResourcesManager;
-import com.sysfera.godiet.model.DietServiceManager;
+import com.sysfera.godiet.model.DietResourceManaged;
 
 /**
- * Launch diet services.
- * Throw an CommandExecutionException if one Omninames launching failed
+ * 
+ * Run all Diet Agents and Seds contains in the data model.
+ * Throw an CommandExecutionException if one agents or seds launching failed
+ * 
  * @author phi
  * 
  */
-public class StartServicesCommand implements Command {
+public class StartAgentsCommand implements Command {
 	private Logger log = LoggerFactory.getLogger(getClass());
 
 	private ResourcesManager rm;
 
 	@Override
 	public String getDescription() {
-		return "Launch diet services. Only OmniNames for now";
+		return "Launch all forwarders. Begin with forwarders client";
 	}
 
 	@Override
@@ -35,21 +37,26 @@ public class StartServicesCommand implements Command {
 			throw new CommandExecutionException(getClass().getName()
 					+ " not initialized correctly");
 		}
-		List<DietServiceManager> omniNames = rm.getDietModel().getOmninames();
-		log.debug("Try to launch  " +omniNames.size() + " omniNames");
+		List<DietResourceManaged> mas = rm.getDietModel().getMasterAgents();
+		log.debug("Try to launch  " + mas.size() + " Diet Master Agent");
 		boolean error = false;
-		for (DietServiceManager omniName : omniNames) {
+		for (DietResourceManaged ma : mas) {
 			try {
-				omniName.start();
+				ma.start();
 			} catch (LaunchException e) {
-				log.error("Unable to run omniNames "+omniName.getSoftwareDescription().getId());
 				error = true;
+				log.error("Unable to run Forwarder "
+						+ ma.getSoftwareDescription().getId());
+
 			}
 		}
-		if(error)
-		{
-			throw new CommandExecutionException("Error when launching an OmniNames");
+		log.debug("TODO implement start and stop for LA and SEDS");
+		if (error) {
+			throw new CommandExecutionException(
+					"Error when launching a Master Agent");
+
 		}
+
 	}
 
 	public void setRm(ResourcesManager rm) {

@@ -50,7 +50,7 @@ public class Diet {
 		this.omninames = new ArrayList<DietServiceManager>();
 		this.forwaders = new ArrayList<DietResourceManaged>();
 
-		this.maFactory = new MasterAgentFactory();
+		this.maFactory = new MasterAgentFactory(this);
 		this.laFactory = new LocalAgentFactory();
 		this.sedFactory = new SedFactory();
 		this.omFactory = new OmniNamesFactory();

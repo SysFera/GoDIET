@@ -47,7 +47,7 @@ public class OmniNamesFactory {
 	 * {scratch_runtime}/OmniNames.err &
 	 * 
 	 * @param softManaged
-	 * @return
+	 * 
 	 */
 	private void settingOmniNamesRunningCommand(SoftwareManager softManaged) {
 		String command = "";

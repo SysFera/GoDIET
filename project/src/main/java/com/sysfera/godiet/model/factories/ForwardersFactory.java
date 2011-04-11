@@ -220,7 +220,11 @@ public class ForwardersFactory {
 		// nohup {binaryName}
 		command += "nohup "
 				+ forwarderDescription.getConfig().getRemoteBinary() + " ";
+		
+		//--name
 		command += "--name " + forwarderDescription.getId() + " ";
+		
+		//--net-config
 		command += "--net-config " + scratchDir + "/"
 				+ forwarderDescription.getId() + ".cfg ";
 

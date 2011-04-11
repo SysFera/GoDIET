@@ -1,11 +1,16 @@
 package com.sysfera.godiet.model.factories;
 
 import com.sysfera.godiet.exceptions.DietResourceCreationException;
+import com.sysfera.godiet.managers.Diet;
 import com.sysfera.godiet.model.DietResourceManaged;
+import com.sysfera.godiet.model.SoftwareManager;
+import com.sysfera.godiet.model.generated.Forwarder;
 import com.sysfera.godiet.model.generated.MasterAgent;
 import com.sysfera.godiet.model.generated.ObjectFactory;
+import com.sysfera.godiet.model.generated.OmniNames;
 import com.sysfera.godiet.model.generated.Options;
 import com.sysfera.godiet.model.generated.Options.Option;
+import com.sysfera.godiet.model.utils.ResourceUtil;
 
 
 /**
@@ -15,8 +20,13 @@ import com.sysfera.godiet.model.generated.Options.Option;
  *
  */
 public class MasterAgentFactory {
+	// Needed to find the omniNames of the Domain
+	private final Diet dietPlatform;
+
 	
-	private static String MASTERAGENTBINARY = "dietAgent";
+	public MasterAgentFactory(Diet dietPlatform) {
+		this.dietPlatform = dietPlatform;
+	}
 	/**
 	 * Create a managed MasterAgent given his description. Check validity. Set the default option if needed (like 
 	 * command launch).
@@ -26,10 +36,11 @@ public class MasterAgentFactory {
 	 */
 	public DietResourceManaged create(MasterAgent masterAgentDescription) throws DietResourceCreationException
 	{
-		DietResourceManaged sedManaged = new DietResourceManaged();
-		sedManaged.setManagedSoftware(masterAgentDescription);
-		settingConfigurationOptions(sedManaged);
-		return sedManaged;
+		DietResourceManaged MAManaged = new DietResourceManaged();
+		MAManaged.setManagedSoftware(masterAgentDescription);
+		settingConfigurationOptions(MAManaged);
+		settingMaRunningCommand(MAManaged);
+		return MAManaged;
 	}
 	
 	/**
@@ -59,5 +70,50 @@ public class MasterAgentFactory {
 		masterAgent.getSoftwareDescription().setCfgOptions(opts);
 		
 
+	}
+	
+	/**
+	 * PATH={phyNode.getEnv(Path)}:$PATH
+	 * OMNIORB_CONFIG={phyNode.scratchdir}/{omninames.id}.cfg nohup
+	 * {MABinaryname} --config-file  
+	 * {phyNode.scratchDir}/{MAName}.cfg >
+	 * {phyNode.scratchdir}/{MAName}.out 2>
+	 * {phyNode.scratchdir}/{MAName}.err &
+	 * 
+	 * @param softManaged
+	 * 
+	 */
+	private void settingMaRunningCommand(SoftwareManager softManaged) {
+		String command = "";
+		String scratchDir = softManaged.getPluggedOn().getDisk().getScratch()
+				.getDir();
+		MasterAgent masterAgentDescription = (MasterAgent) softManaged
+				.getSoftwareDescription();
+		//Env PATH
+		String envPath = ResourceUtil.getEnvValue(softManaged.getPluggedOn(),"PATH");
+		command+= "PATH="+envPath+":$PATH ";
+		// find the OmniOrbConfig file on the remote host to set OmniOrb.cfg
+		OmniNames omniName = dietPlatform.getOmniName(softManaged);
+		String omniOrbconfig = "OMNIORB_CONFIG=" + scratchDir + "/"
+				+ omniName.getId() + ".cfg";
+		command += omniOrbconfig + " ";
+
+		// nohup {binaryName}
+		command += "nohup "
+				+ masterAgentDescription.getConfig().getRemoteBinary() + " ";
+		
+		
+		
+		//--config-file
+		command += "-c " + scratchDir + "/"
+				+ masterAgentDescription.getId() + ".cfg ";
+		// > {phyNode.scratchdir}/{MAName}.out
+		command += "> " + scratchDir + "/" + masterAgentDescription.getId()
+				+ ".out ";
+		// 2> {phyNode.scratchdir}/{MAName}.err
+		command += "2> " + scratchDir + "/" + masterAgentDescription.getId()
+				+ ".err &";
+		softManaged.setRunningCommand(command);
+		
 	}
 }

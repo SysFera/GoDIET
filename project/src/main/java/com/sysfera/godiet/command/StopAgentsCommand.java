@@ -6,24 +6,28 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.sysfera.godiet.exceptions.CommandExecutionException;
+import com.sysfera.godiet.exceptions.remote.LaunchException;
 import com.sysfera.godiet.exceptions.remote.StopException;
 import com.sysfera.godiet.managers.ResourcesManager;
-import com.sysfera.godiet.model.DietServiceManager;
+import com.sysfera.godiet.model.DietResourceManaged;
 
 /**
- * Launch diet services.
+ * 
+ * Stop all Agents and Seds contains in the data model. Iterative stopping all
+ * MA,LA then Seds.
+ * Throw an CommandExecutionException if one ma launching failed
  * 
  * @author phi
  * 
  */
-public class StopServicesCommand implements Command {
+public class StopAgentsCommand implements Command {
 	private Logger log = LoggerFactory.getLogger(getClass());
 
 	private ResourcesManager rm;
 
 	@Override
 	public String getDescription() {
-		return "Stop diet services. Only OmniNames for now";
+		return "Launch all forwarders. Begin with forwarders client";
 	}
 
 	@Override
@@ -35,19 +39,23 @@ public class StopServicesCommand implements Command {
 			throw new CommandExecutionException(getClass().getName()
 					+ " not initialized correctly");
 		}
-		List<DietServiceManager> omniNames = rm.getDietModel().getOmninames();
-		log.debug("Try to stop  " +omniNames.size() + " omniNames");
+		List<DietResourceManaged> mas = rm.getDietModel().getMasterAgents();
+		log.debug("Try to stop  " + mas.size() + " Diet Master Agent");
 		boolean error = false;
-		for (DietServiceManager omniName : omniNames) {
+		for (DietResourceManaged ma : mas) {
 			try {
-				omniName.stop();
+				ma.stop();
 			} catch (StopException e) {
-				log.error("Unable to stop omniNames "+omniName.getSoftwareDescription().getId());
 				error = true;
+				log.error("Unable to stop Ma"
+						+ ma.getSoftwareDescription().getId());
+
 			}
 		}
-		if(error){
-			throw new CommandExecutionException("Error when stopping OmniNames");
+		if (error) {
+			throw new CommandExecutionException(
+					"Error when launching a Master Agent");
+
 		}
 
 	}

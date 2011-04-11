@@ -13,9 +13,10 @@ import com.sysfera.godiet.model.generated.Forwarder;
 
 /**
  * 
- * A dummy way to initialize and add forwarders in data model. Create two
- * forwarders for each declared links.
- * 
+ * Run all Diet forwarders contains in the data model. Iterative running all
+ * Server then Client forwarders.
+ * Throw an CommandExecutionException if one forwarder launching failed
+ * @see Forwarders
  * @author phi
  * 
  */
@@ -41,7 +42,7 @@ public class StartForwardersCommand implements Command {
 		List<DietResourceManaged> forwarders = rm.getDietModel()
 				.getForwarders();
 		log.debug("Try to launch  " + forwarders.size() + " Forwarders");
-
+		boolean error = false;
 		for (DietResourceManaged forwarder : forwarders) {
 			try {
 				Forwarder forwarderDescription = (Forwarder) forwarder
@@ -51,9 +52,7 @@ public class StartForwardersCommand implements Command {
 			} catch (LaunchException e) {
 				log.error("Unable to run Forwarder "
 						+ forwarder.getSoftwareDescription().getId());
-				throw new CommandExecutionException("Launch server forwarder"
-						+ forwarder.getSoftwareDescription().getId()
-						+ " failed", e);
+				error = true;
 			}
 		}
 
@@ -66,10 +65,14 @@ public class StartForwardersCommand implements Command {
 			} catch (LaunchException e) {
 				log.error("Unable to run Forwarder "
 						+ forwarder.getSoftwareDescription().getId());
-				throw new CommandExecutionException("Launch client forwarder"
-						+ forwarder.getSoftwareDescription().getId()
-						+ " failed", e);
+				error = true;
+
 			}
+		}
+
+		if (error) {
+			throw new CommandExecutionException(
+					"Error when try to running a client forwarder");
 		}
 
 	}

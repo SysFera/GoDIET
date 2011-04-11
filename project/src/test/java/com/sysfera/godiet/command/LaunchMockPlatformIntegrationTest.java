@@ -72,10 +72,16 @@ public class LaunchMockPlatformIntegrationTest {
 		PrepareAgentsCommand prepareAgents = new PrepareAgentsCommand();
 		prepareAgents.setRm(rm);
 
-		StartForwardersCommand launchForwarers = new StartForwardersCommand();
-		launchForwarers.setRm(rm);
+		StartForwardersCommand launchForwarders = new StartForwardersCommand();
+		launchForwarders.setRm(rm);
 		StopForwardersCommand stopForwarders = new StopForwardersCommand();
 		stopForwarders.setRm(rm);
+
+		StartAgentsCommand startMas = new StartAgentsCommand();
+		startMas.setRm(rm);
+		StopAgentsCommand stopAgents = new StopAgentsCommand();
+		stopAgents.setRm(rm);
+
 		try {
 			prepareCommand.execute();
 			launchServicesCommand.execute();
@@ -83,23 +89,33 @@ public class LaunchMockPlatformIntegrationTest {
 			initForwardersCommand.execute();
 
 			prepareAgents.execute();
-			launchForwarers.execute();
-
+		
+			launchForwarders.execute();
+			startMas.execute();
+			
 		} catch (CommandExecutionException e) {
 			log.error(e.getMessage());
 			Assert.fail(e.getMessage());
 		} finally {
 			try {
-				stopForwarders.execute();
+				stopAgents.execute();
 			} catch (CommandExecutionException e) {
 				log.error(e.getMessage());
 				Assert.fail(e.getMessage());
+
 			} finally {
 				try {
-					stopServicesCommand.execute();
+					stopForwarders.execute();
 				} catch (CommandExecutionException e) {
 					log.error(e.getMessage());
 					Assert.fail(e.getMessage());
+				} finally {
+					try {
+						stopServicesCommand.execute();
+					} catch (CommandExecutionException e) {
+						log.error(e.getMessage());
+						Assert.fail(e.getMessage());
+					}
 				}
 			}
 		}
