@@ -13,13 +13,13 @@ import com.sysfera.godiet.remote.RemoteConfigurationHelper;
  * @author phi
  * 
  */
-public class DownStateImpl implements ResourceState {
+public class IncubateStateImpl implements ResourceState {
 	private Logger log = LoggerFactory.getLogger(getClass());
 
 	private final RemoteConfigurationHelper launcher;
 	private final StateController stateController;
 
-	public DownStateImpl(StateController stateController) {
+	public IncubateStateImpl(StateController stateController) {
 		this.stateController = stateController;
 		this.launcher = RemoteConfigurationHelper.getInstance();
 	}
@@ -34,7 +34,9 @@ public class DownStateImpl implements ResourceState {
 			launcher.configure(this.stateController.softwareManaged);
 			this.stateController.state = this.stateController.ready;
 		} catch (PrepareException e) {
+			this.stateController.errorCause = e;
 			this.stateController.state = this.stateController.error;
+			
 			throw e;
 		}
 
