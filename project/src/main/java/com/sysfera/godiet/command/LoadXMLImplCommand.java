@@ -33,7 +33,7 @@ import com.sysfera.godiet.utils.xml.XMLParser;
  * @author phi
  * 
  */
-public class CommandLoadXMLImpl implements Command {
+public class LoadXMLImplCommand implements Command {
 	private Logger log = LoggerFactory.getLogger(getClass());
 
 	private ResourcesManager rm;

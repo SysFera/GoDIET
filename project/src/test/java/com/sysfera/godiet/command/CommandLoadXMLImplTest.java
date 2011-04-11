@@ -30,7 +30,7 @@ public class CommandLoadXMLImplTest {
 
 		XMLParser scanner = new XmlScannerJaxbImpl();
 
-		CommandLoadXMLImpl xmlLoadingCommand = new CommandLoadXMLImpl();
+		LoadXMLImplCommand xmlLoadingCommand = new LoadXMLImplCommand();
 
 		xmlLoadingCommand.setXmlParser(scanner);
 
@@ -59,7 +59,7 @@ public class CommandLoadXMLImplTest {
 				.getResourceAsStream(testCaseFile);
 		ResourcesManager rm = new ResourcesManager();
 		XmlScannerJaxbImpl scanner = new XmlScannerJaxbImpl();
-		CommandLoadXMLImpl xmlLoadingCommand = new CommandLoadXMLImpl();
+		LoadXMLImplCommand xmlLoadingCommand = new LoadXMLImplCommand();
 		xmlLoadingCommand.setRm(rm);
 		xmlLoadingCommand.setXmlInput(inputStream);
 		xmlLoadingCommand.setXmlParser(scanner);
@@ -117,7 +117,7 @@ public class CommandLoadXMLImplTest {
 				.getResourceAsStream(testCaseFile);
 		ResourcesManager rm = new ResourcesManager();
 		XmlScannerJaxbImpl scanner = new XmlScannerJaxbImpl();
-		CommandLoadXMLImpl xmlLoadingCommand = new CommandLoadXMLImpl();
+		LoadXMLImplCommand xmlLoadingCommand = new LoadXMLImplCommand();
 		xmlLoadingCommand.setRm(rm);
 		xmlLoadingCommand.setXmlInput(inputStream);
 		xmlLoadingCommand.setXmlParser(scanner);

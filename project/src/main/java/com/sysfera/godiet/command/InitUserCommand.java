@@ -6,7 +6,7 @@ import org.slf4j.LoggerFactory;
 import com.sysfera.godiet.exceptions.CommandExecutionException;
 import com.sysfera.godiet.model.generated.GoDietConfiguration;
 
-public class CommandInitUser implements Command {
+public class InitUserCommand implements Command {
 	private Logger log = LoggerFactory.getLogger(getClass());
 
 	private GoDietConfiguration configuration;

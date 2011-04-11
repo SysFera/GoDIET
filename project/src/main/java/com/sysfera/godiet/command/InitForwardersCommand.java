@@ -24,7 +24,7 @@ import com.sysfera.godiet.model.generated.Link;
  * @author phi
  * 
  */
-public class CommandInitForwarders implements Command {
+public class InitForwardersCommand implements Command {
 	private Logger log = LoggerFactory.getLogger(getClass());
 
 	private ResourcesManager rm;

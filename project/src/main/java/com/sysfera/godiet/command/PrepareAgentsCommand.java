@@ -16,7 +16,7 @@ import com.sysfera.godiet.model.DietResourceManaged;
  * @author phi
  * 
  */
-public class CommandPrepareAgents implements Command {
+public class PrepareAgentsCommand implements Command {
 	private Logger log = LoggerFactory.getLogger(getClass());
 
 	private ResourcesManager rm;

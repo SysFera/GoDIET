@@ -8,7 +8,7 @@ import com.sysfera.godiet.model.generated.GoDietConfiguration;
  * @author phi
  *
  */
-public class CommandInitGoDiet implements Command{
+public class InitGoDietCommand implements Command{
 
 	
 	private GoDietConfiguration configuration;

@@ -31,7 +31,7 @@ public class CommandLaunchServicesTest {
 				.getResourceAsStream(testCaseFile);
 		rm = new ResourcesManager();
 		XmlScannerJaxbImpl scanner = new XmlScannerJaxbImpl();
-		CommandLoadXMLImpl xmlLoadingCommand = new CommandLoadXMLImpl();
+		LoadXMLImplCommand xmlLoadingCommand = new LoadXMLImplCommand();
 		xmlLoadingCommand.setRm(rm);
 		xmlLoadingCommand.setXmlInput(inputStream);
 		xmlLoadingCommand.setXmlParser(scanner);
@@ -57,7 +57,7 @@ public class CommandLaunchServicesTest {
 	
 	@Test
 	public void testLaunchBeforePrepare() {
-		CommandLaunchServices launchServicesCommand = new CommandLaunchServices();
+		StartServicesCommand launchServicesCommand = new StartServicesCommand();
 		launchServicesCommand.setRm(rm);
 		
 		Exception commandExecException = null;
@@ -74,9 +74,9 @@ public class CommandLaunchServicesTest {
 	
 	@Test
 	public void testLaunch() {
-		CommandPrepareServices prepareCommand = new CommandPrepareServices();
+		PrepareServicesCommand prepareCommand = new PrepareServicesCommand();
 		prepareCommand.setRm(rm);
-		CommandLaunchServices launchServicesCommand = new CommandLaunchServices();
+		StartServicesCommand launchServicesCommand = new StartServicesCommand();
 		launchServicesCommand.setRm(rm);
 		try {
 			prepareCommand.execute();

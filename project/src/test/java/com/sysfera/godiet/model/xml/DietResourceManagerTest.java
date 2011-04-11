@@ -9,7 +9,7 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.sysfera.godiet.command.CommandLoadXMLImpl;
+import com.sysfera.godiet.command.LoadXMLImplCommand;
 import com.sysfera.godiet.exceptions.CommandExecutionException;
 import com.sysfera.godiet.managers.ResourcesManager;
 import com.sysfera.godiet.utils.xml.XmlScannerJaxbImpl;
@@ -24,7 +24,7 @@ public class DietResourceManagerTest {
 				.getResourceAsStream(testCaseFile);
 		rm = new ResourcesManager();
 		XmlScannerJaxbImpl scanner = new XmlScannerJaxbImpl();
-		CommandLoadXMLImpl xmlLoadingCommand = new CommandLoadXMLImpl();
+		LoadXMLImplCommand xmlLoadingCommand = new LoadXMLImplCommand();
 		xmlLoadingCommand.setRm(rm);
 		xmlLoadingCommand.setXmlInput(inputStream);
 		xmlLoadingCommand.setXmlParser(scanner);

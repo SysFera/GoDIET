@@ -10,8 +10,8 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.sysfera.godiet.command.CommandInitForwarders;
-import com.sysfera.godiet.command.CommandLoadXMLImpl;
+import com.sysfera.godiet.command.InitForwardersCommand;
+import com.sysfera.godiet.command.LoadXMLImplCommand;
 import com.sysfera.godiet.exceptions.CommandExecutionException;
 import com.sysfera.godiet.managers.ResourcesManager;
 import com.sysfera.godiet.model.DietResourceManaged;
@@ -22,12 +22,12 @@ public class CommandInitForwardersTest {
 	private Logger log = LoggerFactory.getLogger(getClass());
 	private ResourcesManager rm;
 	private XmlScannerJaxbImpl scanner;
-	CommandLoadXMLImpl xmlLoadingCommand;
+	LoadXMLImplCommand xmlLoadingCommand;
 
 	@Before
 	public void initRM() {
 		scanner = new XmlScannerJaxbImpl();
-		xmlLoadingCommand = new CommandLoadXMLImpl();
+		xmlLoadingCommand = new LoadXMLImplCommand();
 		xmlLoadingCommand.setXmlParser(scanner);
 	}
 
@@ -47,7 +47,7 @@ public class CommandInitForwardersTest {
 			log.error("Test Fail", e);
 			Assert.fail();
 		}
-		CommandInitForwarders initForwardersInit = new CommandInitForwarders();
+		InitForwardersCommand initForwardersInit = new InitForwardersCommand();
 		initForwardersInit.setRm(rm);
 
 		try {
@@ -78,7 +78,7 @@ public class CommandInitForwardersTest {
 			log.error("Test Fail", e);
 			Assert.fail();
 		}
-		CommandInitForwarders initForwardersInit = new CommandInitForwarders();
+		InitForwardersCommand initForwardersInit = new InitForwardersCommand();
 		initForwardersInit.setRm(rm);
 
 		try {

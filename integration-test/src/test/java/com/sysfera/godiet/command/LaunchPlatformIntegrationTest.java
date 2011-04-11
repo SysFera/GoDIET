@@ -40,7 +40,7 @@ public class LaunchPlatformIntegrationTest {
 				.getResourceAsStream(testCaseFile);
 		rm = new ResourcesManager();
 		XmlScannerJaxbImpl scanner = new XmlScannerJaxbImpl();
-		CommandLoadXMLImpl xmlLoadingCommand = new CommandLoadXMLImpl();
+		LoadXMLImplCommand xmlLoadingCommand = new LoadXMLImplCommand();
 		xmlLoadingCommand.setRm(rm);
 		xmlLoadingCommand.setXmlInput(inputStream);
 		xmlLoadingCommand.setXmlParser(scanner);
@@ -92,21 +92,21 @@ public class LaunchPlatformIntegrationTest {
 	@Test
 	public void launchPlatform() {
 		// Services commands
-		CommandPrepareServices prepareCommand = new CommandPrepareServices();
+		PrepareServicesCommand prepareCommand = new PrepareServicesCommand();
 		prepareCommand.setRm(rm);
-		CommandLaunchServices launchServicesCommand = new CommandLaunchServices();
+		StartServicesCommand launchServicesCommand = new StartServicesCommand();
 		launchServicesCommand.setRm(rm);
 		StopServicesCommand stopServicesCommand = new StopServicesCommand();
 		stopServicesCommand.setRm(rm);
 
 		// Agents commands
-		CommandInitForwarders initForwardersCommand = new CommandInitForwarders();
+		InitForwardersCommand initForwardersCommand = new InitForwardersCommand();
 		initForwardersCommand.setRm(rm);
 
-		CommandPrepareAgents prepareAgents = new CommandPrepareAgents();
+		PrepareAgentsCommand prepareAgents = new PrepareAgentsCommand();
 		prepareAgents.setRm(rm);
 
-		LaunchForwardersCommand launchForwarers = new LaunchForwardersCommand();
+		StartForwardersCommand launchForwarers = new StartForwardersCommand();
 		launchForwarers.setRm(rm);
 		StopForwardersCommand stopForwarders = new StopForwardersCommand();
 		stopForwarders.setRm(rm);

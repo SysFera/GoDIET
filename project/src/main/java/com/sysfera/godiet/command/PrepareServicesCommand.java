@@ -17,7 +17,7 @@ import com.sysfera.godiet.model.DietServiceManager;
  * @author phi
  * 
  */
-public class CommandPrepareServices implements Command {
+public class PrepareServicesCommand implements Command {
 	private Logger log = LoggerFactory.getLogger(getClass());
 
 	private ResourcesManager rm;

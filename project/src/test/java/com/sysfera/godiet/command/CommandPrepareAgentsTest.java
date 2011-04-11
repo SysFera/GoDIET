@@ -30,7 +30,7 @@ public class CommandPrepareAgentsTest {
 				.getResourceAsStream(testCaseFile);
 		rm = new ResourcesManager();
 		XmlScannerJaxbImpl scanner = new XmlScannerJaxbImpl();
-		CommandLoadXMLImpl xmlLoadingCommand = new CommandLoadXMLImpl();
+		LoadXMLImplCommand xmlLoadingCommand = new LoadXMLImplCommand();
 		xmlLoadingCommand.setRm(rm);
 		xmlLoadingCommand.setXmlInput(inputStream);
 		xmlLoadingCommand.setXmlParser(scanner);
@@ -54,7 +54,7 @@ public class CommandPrepareAgentsTest {
 	
 	@Test
 	public void testPrepare() {
-		CommandPrepareAgents prepareCommand = new CommandPrepareAgents();
+		PrepareAgentsCommand prepareCommand = new PrepareAgentsCommand();
 		prepareCommand.setRm(rm);
 		try {
 			prepareCommand.execute();
