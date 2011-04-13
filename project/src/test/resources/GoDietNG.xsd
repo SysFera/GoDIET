@@ -296,6 +296,10 @@
 			<xs:element name="config" type="config" />
 			<xs:element name="cfgOptions" type="options" minOccurs="0"
 				maxOccurs="1" />
+			<xs:sequence>
+				<xs:element name="parameters" type="parameters"
+					maxOccurs="unbounded" minOccurs="0" />
+			</xs:sequence>
 		</xs:sequence>
 		<xs:attribute name="id" type="xs:ID" use="required" />
 		<xs:attribute name="stats" type="xs:boolean" default="false" />
@@ -325,10 +329,6 @@
 	<xs:complexType name="maDag">
 		<xs:complexContent>
 			<xs:extension base="software">
-				<xs:sequence>
-					<xs:element name="parameters" type="parameters"
-						maxOccurs="1" minOccurs="0" />
-				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
@@ -361,10 +361,7 @@
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="software">
-				<xs:sequence>
-					<xs:element name="parameters" type="parameters"
-						maxOccurs="unbounded" minOccurs="0" />
-				</xs:sequence>
+
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
