@@ -10,6 +10,6 @@ package com.sysfera.godiet.model;
  * @author phi
  * 
  */
-public class DietServiceManager extends DietResourceManaged {
+public class DietServiceManaged extends DietResourceManaged {
 
 }

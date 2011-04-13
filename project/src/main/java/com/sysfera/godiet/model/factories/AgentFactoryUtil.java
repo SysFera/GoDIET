@@ -1,5 +1,7 @@
 package com.sysfera.godiet.model.factories;
 
+import java.util.List;
+
 import com.sysfera.godiet.exceptions.DietResourceCreationException;
 import com.sysfera.godiet.managers.Diet;
 import com.sysfera.godiet.model.DietResourceManaged;
@@ -8,6 +10,7 @@ import com.sysfera.godiet.model.generated.ObjectFactory;
 import com.sysfera.godiet.model.generated.OmniNames;
 import com.sysfera.godiet.model.generated.Options;
 import com.sysfera.godiet.model.generated.Options.Option;
+import com.sysfera.godiet.model.generated.Parameters;
 import com.sysfera.godiet.model.generated.Software;
 import com.sysfera.godiet.model.utils.ResourceUtil;
 
@@ -61,8 +64,8 @@ public class AgentFactoryUtil {
 	/**
 	 * PATH={phyNode.getEnv(Path)}:$PATH
 	 * OMNIORB_CONFIG={phyNode.scratchdir}/{omninames.id}.cfg nohup
-	 * {AgentBinaryName} --config-file {phyNode.scratchDir}/{MAName}.cfg >
-	 * {phyNode.scratchdir}/{MAName}.out 2> {phyNode.scratchdir}/{MAName}.err &
+	 * {AgentBinaryName} -c {phyNode.scratchDir}/{AgentName}.cfg [agentParameters]>
+	 * {phyNode.scratchdir}/{AgentName}.out 2> {phyNode.scratchdir}/{AgentName}.err &
 	 * 
 	 * @param softManaged
 	 * 
@@ -86,10 +89,16 @@ public class AgentFactoryUtil {
 		// nohup {binaryName}
 		command += "nohup " + agenteDescription.getConfig().getRemoteBinary()
 				+ " ";
-
-		// --config-file
-		command += "-c " + scratchDir + "/" + agenteDescription.getId()
+		
+		// --config-file //TODO: add -c or --config-file when the command line will be specified (DIetV3)
+		command +=  scratchDir + "/" + agenteDescription.getId()
 				+ ".cfg ";
+		
+		//[agentParameters]
+		List<Parameters> parameters = agenteDescription.getParameters();
+		for (Parameters parameter : parameters) {
+			command += parameter.getString() + " ";
+		}
 		// > {phyNode.scratchdir}/{MAName}.out
 		command += "> " + scratchDir + "/" + agenteDescription.getId()
 				+ ".out ";

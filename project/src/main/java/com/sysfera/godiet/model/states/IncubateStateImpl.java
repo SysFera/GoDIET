@@ -34,9 +34,9 @@ public class IncubateStateImpl implements ResourceState {
 			launcher.configure(this.stateController.softwareManaged);
 			this.stateController.state = this.stateController.ready;
 		} catch (PrepareException e) {
-			this.stateController.errorCause = e;
 			this.stateController.state = this.stateController.error;
-			
+			this.stateController.errorCause = e;
+
 			throw e;
 		}
 

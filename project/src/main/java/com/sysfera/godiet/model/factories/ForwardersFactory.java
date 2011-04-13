@@ -244,7 +244,7 @@ public class ForwardersFactory {
 	 * {forwarderBinaryname} --name {forwarderName} --net-config
 	 * {phyNode.scratchDir}/{forwarderName}.cfg --peer-name
 	 * {remoteForwarderName} --ssh-host {serverHost} --ssh-login {serverLogin}
-	 * --remote-port {remotePort} --remote-host 127.0.0.1 -C &
+	 *  --remote-host 127.0.0.1 -C &
 	 * 
 	 * @param managedClient
 	 * @param managedServer
@@ -283,8 +283,7 @@ public class ForwardersFactory {
 		command += "--ssh-login "
 				+ managedServer.getPluggedOn().getSsh().getLogin() + " ";
 		// --remote-port {remotePort} -C &
-		// TODO add the remote port in the forwarder model
-		command += "--remote-port " + "50000 ";
+	
 		//--remote-host 127.0.0.1 -C 
 		command += "--remote-host 127.0.0.1 -C ";
 		

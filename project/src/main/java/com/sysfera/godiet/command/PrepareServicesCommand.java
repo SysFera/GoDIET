@@ -9,7 +9,7 @@ import com.sysfera.godiet.exceptions.CommandExecutionException;
 import com.sysfera.godiet.exceptions.remote.LaunchException;
 import com.sysfera.godiet.exceptions.remote.PrepareException;
 import com.sysfera.godiet.managers.ResourcesManager;
-import com.sysfera.godiet.model.DietServiceManager;
+import com.sysfera.godiet.model.DietServiceManaged;
 
 /**
  * Launch diet services.
@@ -36,9 +36,9 @@ public class PrepareServicesCommand implements Command {
 			throw new CommandExecutionException(getClass().getName()
 					+ " not initialized correctly");
 		}
-		List<DietServiceManager> omniNames = rm.getDietModel().getOmninames();
+		List<DietServiceManaged> omniNames = rm.getDietModel().getOmninames();
 		log.debug("Will prepare  " +omniNames.size() + " omniNames");
-		for (DietServiceManager omniName : omniNames) {
+		for (DietServiceManaged omniName : omniNames) {
 			try {
 				omniName.prepare();
 			} catch (PrepareException e) {

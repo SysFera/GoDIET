@@ -8,7 +8,7 @@ import org.slf4j.LoggerFactory;
 
 import com.sysfera.godiet.exceptions.DietResourceCreationException;
 import com.sysfera.godiet.model.DietResourceManaged;
-import com.sysfera.godiet.model.DietServiceManager;
+import com.sysfera.godiet.model.DietServiceManaged;
 import com.sysfera.godiet.model.SoftwareManager;
 import com.sysfera.godiet.model.factories.ForwardersFactory;
 import com.sysfera.godiet.model.factories.LocalAgentFactory;
@@ -40,19 +40,19 @@ public class Diet {
 	private final List<DietResourceManaged> masterAgents;
 	private final List<DietResourceManaged> localAgents;
 	private final List<DietResourceManaged> seds;
-	private final List<DietServiceManager> omninames;
+	private final List<DietServiceManaged> omninames;
 	private final List<DietResourceManaged> forwaders;
 
 	public Diet() {
 		this.masterAgents = new ArrayList<DietResourceManaged>();
 		this.localAgents = new ArrayList<DietResourceManaged>();
 		this.seds = new ArrayList<DietResourceManaged>();
-		this.omninames = new ArrayList<DietServiceManager>();
+		this.omninames = new ArrayList<DietServiceManaged>();
 		this.forwaders = new ArrayList<DietResourceManaged>();
 
 		this.maFactory = new MasterAgentFactory(this);
-		this.laFactory = new LocalAgentFactory();
-		this.sedFactory = new SedFactory();
+		this.laFactory = new LocalAgentFactory(this);
+		this.sedFactory = new SedFactory(this);
 		this.omFactory = new OmniNamesFactory();
 		this.forwFactory = new ForwardersFactory(this);
 	}
@@ -89,7 +89,7 @@ public class Diet {
 	/**
 	 * @return the omninames
 	 */
-	public List<DietServiceManager> getOmninames() {
+	public List<DietServiceManaged> getOmninames() {
 		return omninames;
 	}
 
@@ -171,7 +171,7 @@ public class Diet {
 	public OmniNames getOmniName(SoftwareManager managedSoftware) {
 		Domain domain = managedSoftware.getPluggedOn().getDomain();
 
-		for (DietServiceManager omniName : omninames) {
+		for (DietServiceManaged omniName : omninames) {
 			if (omniName.getPluggedOn().getDomain().getLabel()
 					.equals(domain.getLabel())) {
 				return (OmniNames) omniName.getSoftwareDescription();

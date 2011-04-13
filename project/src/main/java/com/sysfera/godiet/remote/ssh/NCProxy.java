@@ -55,6 +55,7 @@ public class NCProxy implements Proxy {
 		if(proxy != null)session1.setProxy(proxy);
 		session1.connect(timeout);
 		channel = (ChannelExec) session1.openChannel("exec");
+		channel.setAgentForwarding(true);
 		channel.setCommand("nc " + dhost + " " + dport); // or netcat, bash, ...
 		channel.connect(timeout);
 		}catch (JSchException e) {

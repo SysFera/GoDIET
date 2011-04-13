@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 
 import com.sysfera.godiet.exceptions.CommandExecutionException;
 import com.sysfera.godiet.exceptions.remote.LaunchException;
+import com.sysfera.godiet.exceptions.remote.StopException;
 import com.sysfera.godiet.managers.ResourcesManager;
 import com.sysfera.godiet.model.DietResourceManaged;
 
@@ -38,19 +39,43 @@ public class StartAgentsCommand implements Command {
 					+ " not initialized correctly");
 		}
 		List<DietResourceManaged> mas = rm.getDietModel().getMasterAgents();
-		log.debug("Try to launch  " + mas.size() + " Diet Master Agent");
+		log.debug("Trying to run  " + mas.size() + " Diet Master Agent");
 		boolean error = false;
 		for (DietResourceManaged ma : mas) {
 			try {
 				ma.start();
 			} catch (LaunchException e) {
 				error = true;
-				log.error("Unable to run Forwarder "
+				log.error("Unable to run MA "
 						+ ma.getSoftwareDescription().getId());
 
 			}
 		}
-		log.debug("TODO implement start and stop for LA and SEDS");
+		List<DietResourceManaged> las = rm.getDietModel().getLocalAgents();
+
+		for (DietResourceManaged la : las) {
+			try {
+				la.start();
+			} catch (LaunchException e) {
+				error = true;
+				log.error("Unable to run LA "
+						+ la.getSoftwareDescription().getId());
+
+			}
+		}
+		List<DietResourceManaged> seds = rm.getDietModel().getSeds();
+		log.debug("Trying to start  " + seds.size() + " Sed Agent");
+		for (DietResourceManaged sed : seds) {
+			try {
+				sed.start();
+			} catch (LaunchException e) {
+				error = true;
+				log.error("Unable to start Sed: "
+						+ sed.getSoftwareDescription().getId());
+
+			}
+		}
+		
 		if (error) {
 			throw new CommandExecutionException(
 					"Error when launching a Master Agent");

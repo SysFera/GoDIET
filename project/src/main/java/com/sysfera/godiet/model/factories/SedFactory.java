@@ -1,7 +1,11 @@
 package com.sysfera.godiet.model.factories;
 
+import com.sysfera.godiet.managers.Diet;
 import com.sysfera.godiet.model.DietResourceManaged;
+import com.sysfera.godiet.model.generated.ObjectFactory;
+import com.sysfera.godiet.model.generated.Options;
 import com.sysfera.godiet.model.generated.Sed;
+import com.sysfera.godiet.model.generated.Options.Option;
 
 
 /**
@@ -11,6 +15,11 @@ import com.sysfera.godiet.model.generated.Sed;
  */
 public class SedFactory {
 	
+	private final Diet dietPlatform;
+	
+	public SedFactory(Diet dietPlatform) {
+		this.dietPlatform = dietPlatform;
+	}
 	/**
 	 * Create a managed sed given his description. Check validity. Set the default option if needed (like 
 	 * command launch).
@@ -21,7 +30,22 @@ public class SedFactory {
 	{
 		DietResourceManaged sedManaged = new DietResourceManaged();
 		sedManaged.setManagedSoftware(sedDescription);
-		
+	
+
+		settingConfigurationOptions(sedManaged);
+		AgentFactoryUtil.settingRunningCommand(dietPlatform,sedManaged);
 		return sedManaged;
 	}
+	
+	private void settingConfigurationOptions(DietResourceManaged sedManaged)
+	{
+		Options opts = new ObjectFactory().createOptions();
+		Option parent = new Option();
+		parent.setKey("parentName");
+		parent.setValue(sedManaged.getSoftwareDescription().getParent().getId());
+		opts.getOption().add(parent);
+		sedManaged.getSoftwareDescription().setCfgOptions(opts);
+	}
+	
+
 }

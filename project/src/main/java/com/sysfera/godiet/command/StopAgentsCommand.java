@@ -6,7 +6,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.sysfera.godiet.exceptions.CommandExecutionException;
-import com.sysfera.godiet.exceptions.remote.LaunchException;
 import com.sysfera.godiet.exceptions.remote.StopException;
 import com.sysfera.godiet.managers.ResourcesManager;
 import com.sysfera.godiet.model.DietResourceManaged;
@@ -40,15 +39,40 @@ public class StopAgentsCommand implements Command {
 					+ " not initialized correctly");
 		}
 		List<DietResourceManaged> mas = rm.getDietModel().getMasterAgents();
-		log.debug("Try to stop  " + mas.size() + " Diet Master Agent");
+		log.debug("Trying to stop  " + mas.size() + " Diet Master Agent");
 		boolean error = false;
 		for (DietResourceManaged ma : mas) {
 			try {
 				ma.stop();
 			} catch (StopException e) {
 				error = true;
-				log.error("Unable to stop Ma"
+				log.error("Unable to stop MA"
 						+ ma.getSoftwareDescription().getId());
+
+			}
+		}
+
+		List<DietResourceManaged> las = rm.getDietModel().getMasterAgents();
+		log.debug("Trying to stop  " + las.size() + " Diet Local Agent");
+		for (DietResourceManaged la : las) {
+			try {
+				la.stop();
+			} catch (StopException e) {
+				error = true;
+				log.error("Unable to stop LA"
+						+ la.getSoftwareDescription().getId());
+
+			}
+		}
+		List<DietResourceManaged> seds = rm.getDietModel().getSeds();
+		log.debug("Trying to stop  " + seds.size() + " Sed Agent");
+		for (DietResourceManaged sed : seds) {
+			try {
+				sed.stop();
+			} catch (StopException e) {
+				error = true;
+				log.error("Unable to stop Sed: "
+						+ sed.getSoftwareDescription().getId());
 
 			}
 		}

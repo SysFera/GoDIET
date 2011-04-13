@@ -8,7 +8,7 @@ import org.slf4j.LoggerFactory;
 import com.sysfera.godiet.exceptions.CommandExecutionException;
 import com.sysfera.godiet.exceptions.remote.StopException;
 import com.sysfera.godiet.managers.ResourcesManager;
-import com.sysfera.godiet.model.DietServiceManager;
+import com.sysfera.godiet.model.DietServiceManaged;
 
 /**
  * Launch diet services.
@@ -35,10 +35,10 @@ public class StopServicesCommand implements Command {
 			throw new CommandExecutionException(getClass().getName()
 					+ " not initialized correctly");
 		}
-		List<DietServiceManager> omniNames = rm.getDietModel().getOmninames();
+		List<DietServiceManaged> omniNames = rm.getDietModel().getOmninames();
 		log.debug("Try to stop  " +omniNames.size() + " omniNames");
 		boolean error = false;
-		for (DietServiceManager omniName : omniNames) {
+		for (DietServiceManaged omniName : omniNames) {
 			try {
 				omniName.stop();
 			} catch (StopException e) {

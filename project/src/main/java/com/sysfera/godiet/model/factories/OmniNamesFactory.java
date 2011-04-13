@@ -1,7 +1,7 @@
 package com.sysfera.godiet.model.factories;
 
 import com.sysfera.godiet.exceptions.DietResourceCreationException;
-import com.sysfera.godiet.model.DietServiceManager;
+import com.sysfera.godiet.model.DietServiceManaged;
 import com.sysfera.godiet.model.SoftwareManager;
 import com.sysfera.godiet.model.generated.ObjectFactory;
 import com.sysfera.godiet.model.generated.OmniNames;
@@ -29,9 +29,9 @@ public class OmniNamesFactory {
 	 * @throws DietResourceCreationException
 	 *             if resource not plugged
 	 */
-	public DietServiceManager create(OmniNames omniNamesDescription)
+	public DietServiceManaged create(OmniNames omniNamesDescription)
 			throws DietResourceCreationException {
-		DietServiceManager omniNamesManaged = new DietServiceManager();
+		DietServiceManaged omniNamesManaged = new DietServiceManaged();
 
 		omniNamesManaged.setManagedSoftware(omniNamesDescription);
 		settingConfigurationOptions(omniNamesManaged);
@@ -76,7 +76,7 @@ public class OmniNamesFactory {
 	 * @throws DietResourceCreationException
 	 *             if resource not plugged
 	 */
-	private void settingConfigurationOptions(DietServiceManager omniNamesManaged)
+	private void settingConfigurationOptions(DietServiceManaged omniNamesManaged)
 			throws DietResourceCreationException {
 		Resource plugged = omniNamesManaged.getPluggedOn();
 		if (plugged == null) {

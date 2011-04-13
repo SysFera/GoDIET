@@ -41,7 +41,7 @@ public class StartForwardersCommand implements Command {
 		}
 		List<DietResourceManaged> forwarders = rm.getDietModel()
 				.getForwarders();
-		log.debug("Try to launch  " + forwarders.size() + " Forwarders");
+		log.debug("Trying to run  " + forwarders.size() + " Forwarders");
 		boolean error = false;
 		for (DietResourceManaged forwarder : forwarders) {
 			try {

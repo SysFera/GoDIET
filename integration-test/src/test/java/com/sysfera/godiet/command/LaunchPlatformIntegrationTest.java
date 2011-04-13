@@ -1,5 +1,6 @@
 package com.sysfera.godiet.command;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 
@@ -111,8 +112,8 @@ public class LaunchPlatformIntegrationTest {
 		StopForwardersCommand stopForwarders = new StopForwardersCommand();
 		stopForwarders.setRm(rm);
 
-		StartAgentsCommand startMas = new StartAgentsCommand();
-		startMas.setRm(rm);
+		StartAgentsCommand startAgent = new StartAgentsCommand();
+		startAgent.setRm(rm);
 		StopAgentsCommand stopAgents = new StopAgentsCommand();
 		stopAgents.setRm(rm);
 
@@ -125,8 +126,13 @@ public class LaunchPlatformIntegrationTest {
 			prepareAgents.execute();
 		
 			launchForwarders.execute();
-			startMas.execute();
-			
+			startAgent.execute();
+//			try {
+//				char c = (char)System.in.read();
+//			} catch (IOException e1) {
+//				// TODO Auto-generated catch block
+//				e1.printStackTrace();
+//			}
 		} catch (CommandExecutionException e) {
 			log.error(e.getMessage());
 			Assert.fail(e.getMessage());

@@ -97,6 +97,7 @@ public class ChannelManagerJsch {
 			sessions.put(path, session);
 		}
 		ChannelExec channelExec = (ChannelExec) session.openChannel("exec");
+		channelExec.setAgentForwarding(true);
 		return channelExec;
 
 	}
