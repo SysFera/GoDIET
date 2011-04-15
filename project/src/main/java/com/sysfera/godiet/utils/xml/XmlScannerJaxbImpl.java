@@ -7,6 +7,9 @@ import javax.xml.XMLConstants;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
+import javax.xml.bind.ValidationEvent;
+import javax.xml.bind.ValidationEventLocator;
+import javax.xml.bind.util.ValidationEventCollector;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 
@@ -22,7 +25,7 @@ import com.sysfera.godiet.model.generated.DietDescription;
  * @author phi
  */
 
-public class XmlScannerJaxbImpl implements XMLParser{ 
+public class XmlScannerJaxbImpl implements XMLParser {
 
 	private final static String GODIET_SCHEMA_PATH = "/GoDietNG.xsd";
 	private final static String MODEL_PACKAGE_NAME = "com.sysfera.godiet.model.generated";
@@ -56,5 +59,21 @@ public class XmlScannerJaxbImpl implements XMLParser{
 		}
 	}
 
+	 class JAXBValidator extends ValidationEventCollector {
+		@Override
+		public boolean handleEvent(ValidationEvent event) {
+			if (event.getSeverity() == event.ERROR
+					|| event.getSeverity() == event.FATAL_ERROR) {
+				ValidationEventLocator locator = event.getLocator();
+				// change RuntimeException to something more appropriate
+				throw new RuntimeException("XML Validation Exception:  "
+						+ event.getMessage() + " at row: "
+						+ locator.getLineNumber() + " column: "
+						+ locator.getColumnNumber());
+			}
+
+			return true;
+		}
+	}
 
 }

@@ -151,7 +151,7 @@ public class Diet {
 	 * 
 	 * @return A list of all softwares managed by godiet
 	 */
-	public List<SoftwareManager> getAllDietSoftwareManaged() {
+	public List<SoftwareManager> getAllManagedSoftware() {
 		List<SoftwareManager> softwaresManaged = new ArrayList<SoftwareManager>();
 		softwaresManaged.addAll(forwaders);
 		softwaresManaged.addAll(localAgents);

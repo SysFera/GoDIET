@@ -44,10 +44,10 @@ public class InitForwardersCommand implements Command {
 					+ " not initialized correctly");
 		}
 
-		// Create a list of all domains where are Diet Services Agents and Seds.
+		//Search all domains where a software will be launched.
 		Set<String> domains = new HashSet<String>();
 		List<SoftwareManager> dietResourcesManaged = this.rm.getDietModel()
-				.getAllDietSoftwareManaged();
+				.getAllManagedSoftware();
 		for (SoftwareManager softwareManaged : dietResourcesManaged) {
 			domains.add(softwareManaged.getSoftwareDescription().getConfig()
 					.getServer().getDomain().getLabel());

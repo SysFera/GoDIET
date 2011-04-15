@@ -8,8 +8,18 @@
 	<modules>
 		<module>project</module>
 		<module>integration-test</module>
+		<module>shell</module>
 	</modules>
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
 
+	<pluginRepositories>
+		<pluginRepository>
+			<id>springsource</id>
+			<url>http://maven.springframework.org/snapshot</url>
+		</pluginRepository>
+	</pluginRepositories>
 	<dependencies>
 
 		<!-- Logging -->
@@ -74,7 +84,15 @@
 				<configuration>
 					<source>1.6</source>
 					<target>1.6</target>
-
+				</configuration>
+			</plugin>
+			<plugin>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<version>2.2.1</version>
+				<configuration>
+					<descriptors>
+						<descriptor>assemblies/distribution.xml</descriptor>
+					</descriptors>
 				</configuration>
 			</plugin>
 
@@ -84,6 +102,18 @@
 	</build>
 
 	<repositories>
+
+		<!-- For shell -->
+		<repository>
+			<id>springsource</id>
+			<url>http://maven.springframework.org/snapshot</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
 
 		<repository>
 			<id>spring-maven-milestone</id>
