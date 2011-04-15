@@ -36,25 +36,33 @@ public class PathManager {
 		}
 		@Override
 		public boolean equals(Object obj) {
-			if (this == obj)
+			if (this == obj) {
 				return true;
-			if (obj == null)
+                        }
+			if (obj == null) {
 				return false;
-			if (getClass() != obj.getClass())
+                        }
+			if (getClass() != obj.getClass()) {
 				return false;
+                        }
 			PathDesc other = (PathDesc) obj;
-			if (!getOuterType().equals(other.getOuterType()))
+			if (!getOuterType().equals(other.getOuterType())) {
 				return false;
+                        }
 			if (from == null) {
-				if (other.from != null)
+				if (other.from != null) {
 					return false;
-			} else if (!from.getId().equals(other.from.getId()))
+                                }
+			} else if (!from.getId().equals(other.from.getId())) {
 				return false;
+                        }
 			if (to == null) {
-				if (other.to != null)
+				if (other.to != null) {
 					return false;
-			} else if (!to.getId().equals(other.to.getId()))
+                                }
+			} else if (!to.getId().equals(other.to.getId())) {
 				return false;
+                        }
 			return true;
 		}
 		private PathManager getOuterType() {

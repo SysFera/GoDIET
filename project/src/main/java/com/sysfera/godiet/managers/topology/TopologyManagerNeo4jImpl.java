@@ -131,18 +131,21 @@ public class TopologyManagerNeo4jImpl implements TopologyManager {
 
 		Path dietPath = null;
 		try {
-			if (foundPath == null)
+			if (foundPath == null) {
 				return null;
+                        }
 			dietPath = DietPathBuilder.build(foundPath, platform);
 			pathManager.paths.put(pathManager.new PathDesc(from, to), dietPath);
 		} catch (GraphDataException e) {
 			throw new PathException("Unable to build path", e);
 		} finally {
 			// Delete resources if needed
-			if (resourceFromExist == false)
+			if (resourceFromExist == false) {
 				deleteNode(from);
-			if (resourceToExist == false)
+                        }
+			if (resourceToExist == false) {
 				deleteNode(to);
+                        }
 
 		}
 		return dietPath;
@@ -172,9 +175,10 @@ public class TopologyManagerNeo4jImpl implements TopologyManager {
 			for (Node node : nodes) {
 				Resource resource = platform.getResource((String) node
 						.getProperty(RESOURCE_KEY, node.getId()));
-				if (resource == null)
+				if (resource == null) {
 					throw new GraphDataException(
 							"Fatal. Resource null. Error will never appears. Model is inconstitent");
+                                }
 				res.add(resource);
 			}
 			path.setPath(res);
@@ -195,14 +199,16 @@ public class TopologyManagerNeo4jImpl implements TopologyManager {
 	private void addResource(Resource resToAdd) throws GraphDataException {
 		if (resToAdd.getDomain() == null
 				|| !resourcesDomain
-						.containsKey(resToAdd.getDomain().getLabel()))
+						.containsKey(resToAdd.getDomain().getLabel())) {
 			throw new GraphDataException("Incorrect domain for "
 					+ resToAdd.getId());
+                }
 		Set<Resource> resources = resourcesDomain.get(resToAdd.getDomain()
 				.getLabel());
 		for (Resource resource : resources) {
-			if (resource.equals(resToAdd))
+			if (resource.equals(resToAdd)) {
 				continue;
+                        }
 			Transaction tx = graphDb.beginTx();
 			try {
 				createChain(resToAdd, resource);
@@ -275,8 +281,9 @@ public class TopologyManagerNeo4jImpl implements TopologyManager {
 			// Remove from resource referenced in the domain
 			Set<Resource> resources = resourcesDomain.get(resource.getDomain()
 					.getLabel());
-			if (resources == null || !resources.remove(resource))
+			if (resources == null || !resources.remove(resource)) {
 				log.error("Unable to remove element from list");
+                        }
 
 			// Remove from graph
 			Node nodeToDelete = getNode(resource);
