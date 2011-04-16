@@ -66,9 +66,10 @@ public class ChannelManagerJsch {
 		if (session == null) {
 
 			LinkedHashSet<? extends Resource> hops = path.getPath();
-			if (hops.size() < 2)
+			if (hops.size() < 2) {
 				throw new RemoteAccessException(
 						"Path length must be > 2 (source + destination)");
+                        }
 
 			// Create the session with the last Node
 			Resource  last = null;
@@ -83,10 +84,11 @@ public class ChannelManagerJsch {
 			}
 			Ssh lastNodeConfig = null;
 
-			if (isDisk)
+			if (isDisk) {
 				lastNodeConfig = last.getDisk().getScp();
-			else
+			} else {
 				lastNodeConfig = last.getSsh();
+                        }
 
 			session = jsch.getSession(lastNodeConfig.getLogin(),
 					lastNodeConfig.getServer(), lastNodeConfig.getPort());
@@ -131,9 +133,10 @@ public class ChannelManagerJsch {
 
 		Resource[] resources = hops.toArray(new Resource[0]);
 		log.debug("hopsSize: " + resources.length);
-		if (resources.length < 3)
+		if (resources.length < 3) {
 			return; // no need to create proxy. Path contains source and
 					// destination which are in the same domain
+                }
 		NCProxy lastProxy = null;
 		// i = 0 is the source. Don't create a proxy
 		for (int i = 1; i <= resources.length - 2; i++) {

@@ -52,13 +52,15 @@ public class NCProxy implements Proxy {
 		try{
 		session1 = jsch.getSession(username, host, port);
 		session1.setUserInfo(ui);
-		if(proxy != null)session1.setProxy(proxy);
+		if(proxy != null) {
+                    session1.setProxy(proxy);
+                }
 		session1.connect(timeout);
 		channel = (ChannelExec) session1.openChannel("exec");
 		channel.setAgentForwarding(true);
 		channel.setCommand("nc " + dhost + " " + dport); // or netcat, bash, ...
 		channel.connect(timeout);
-		}catch (JSchException e) {
+		} catch (JSchException e) {
 			log.error("Unable to connect to " + username + "@" + host+ ":"+port);
 			throw e;
 		}

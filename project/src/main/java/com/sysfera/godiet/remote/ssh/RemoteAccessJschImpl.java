@@ -78,8 +78,9 @@ public class RemoteAccessJschImpl implements RemoteAccess {
 			while (true) {
 				while (in.available() > 0) {
 					int i = in.read(tmp, 0, 1024);
-					if (i < 0)
+					if (i < 0) {
 						break;
+                                        }
 					sb.append(new String(tmp, 0, i));
 				}
 				if (channel.isClosed()) {
@@ -93,16 +94,18 @@ public class RemoteAccessJschImpl implements RemoteAccess {
 					throw new RemoteAccessException("Thread interupted", e);
 				}
 			}
-			if (channel.getExitStatus() < 0)
+			if (channel.getExitStatus() < 0) {
 				throw new RemoteAccessException("SSH connection close abruptly");
+                        }
 
 		} catch (Exception e) {
 			throw new RemoteAccessException("Unable to SSH connect. Command: "
 					+ command, e);
 		} finally {
 			try {
-				if (channel != null)
+				if (channel != null) {
 					channel.disconnect();
+                                }
 			} catch (Exception e) {
 				log.error("SSH disconnect error", e);
 			}
@@ -145,11 +148,13 @@ public class RemoteAccessJschImpl implements RemoteAccess {
 				+ " \";  echo 'echo ${?}' )|sh -";
 		Integer result = execute(checkCommand, path);
 		if (result.intValue() == 0 || result.intValue() == 1) {
-			if (result.intValue() == 1)
+			if (result.intValue() == 1) {
 				throw new RemoteAccessException("Process doesn't running");
-		} else
+                        }
+		} else {
 			throw new RemoteAccessException("Unable to check if " + "sds"
 					+ " process running");
+                }
 	}
 
 
@@ -207,8 +212,9 @@ public class RemoteAccessJschImpl implements RemoteAccess {
 			byte[] buf = new byte[1024];
 			while (true) {
 				int len = fis.read(buf, 0, buf.length);
-				if (len <= 0)
+				if (len <= 0) {
 					break;
+                                }
 				out.write(buf, 0, len); // out.flush();
 			}
 			fis.close();
@@ -229,11 +235,13 @@ public class RemoteAccessJschImpl implements RemoteAccess {
 			// + host + ":" + port, e);
 		} finally {
 			try {
-				if (channel != null)
+				if (channel != null) {
 					channel.disconnect();
+                                }
 				try {
-					if (fis != null)
+					if (fis != null) {
 						fis.close();
+                                        }
 				} catch (Exception ee) {
 				}
 			} catch (Exception e) {
@@ -249,10 +257,12 @@ public class RemoteAccessJschImpl implements RemoteAccess {
 		// 1 for error,
 		// 2 for fatal error,
 		// -1
-		if (b == 0)
+		if (b == 0) {
 			return b;
-		if (b == -1)
+                }
+		if (b == -1) {
 			return b;
+                }
 
 		if (b == 1 || b == 2) {
 			StringBuffer sb = new StringBuffer();
