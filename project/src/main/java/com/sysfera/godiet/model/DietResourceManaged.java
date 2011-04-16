@@ -40,9 +40,9 @@ public class DietResourceManaged extends SoftwareManager {
 	public Resource getPluggedOn() {
 		if (agentManaged != null) {
 			return agentManaged.getConfig().getServer();
-		} else
+		} else {
 			return null;
-
+                }
 	}
 
 	public void start() throws LaunchException {
