@@ -180,11 +180,12 @@ public class RemoteConfigurationHelper {
 			throw new PrepareException("Unable to write on file "
 					+ scratch.getDir() + filename, e);
 		} finally {
-			if (writerFile != null)
+			if (writerFile != null) {
 				try {
 					writerFile.close();
 				} catch (IOException e) {
 				}
+                        }
 
 		}
 		return retFile;
@@ -294,10 +295,11 @@ public class RemoteConfigurationHelper {
 		}
 
 		Integer pid = resource.getPid();
-		if (pid == null)
+		if (pid == null) {
 			throw new StopException("Unable to kill "
 					+ resource.getSoftwareDescription().getId()
 					+ ". Pid is null");
+                }
 		
 		
 		//End of duplicate code
@@ -355,10 +357,11 @@ public class RemoteConfigurationHelper {
 		}
 
 		Integer pid = resource.getPid();
-		if (pid == null)
+		if (pid == null) {
 			throw new CheckException("Unable to check "
 					+ resource.getSoftwareDescription().getId()
 					+ ". Pid is null");
+                }
 		
 		
 		//End of duplicate code

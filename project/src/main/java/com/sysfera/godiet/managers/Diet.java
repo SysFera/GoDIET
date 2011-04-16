@@ -131,7 +131,9 @@ public class Diet {
 	public void addForwarders(Forwarders forwarder)
 			throws DietResourceCreationException {
 		DietResourceManaged[] managedForwarders =  forwFactory.create(forwarder);
-		if(managedForwarders.length != 2) throw new DietResourceCreationException("TODO: What's the fuck");
+		if(managedForwarders.length != 2) {
+                    throw new DietResourceCreationException("TODO: What the fuck");
+                }
 		this.forwaders.add(managedForwarders[0]);
 		this.forwaders.add(managedForwarders[1]);
 	}

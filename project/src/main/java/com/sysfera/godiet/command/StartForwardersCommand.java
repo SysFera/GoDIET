@@ -47,8 +47,9 @@ public class StartForwardersCommand implements Command {
 			try {
 				Forwarder forwarderDescription = (Forwarder) forwarder
 						.getSoftwareDescription();
-				if (forwarderDescription.getType().equals("SERVER"))
+				if (forwarderDescription.getType().equals("SERVER")) {
 					forwarder.start();
+                                }
 			} catch (LaunchException e) {
 				log.error("Unable to run Forwarder "
 						+ forwarder.getSoftwareDescription().getId());
@@ -60,8 +61,9 @@ public class StartForwardersCommand implements Command {
 			try {
 				Forwarder forwarderDescription = (Forwarder) forwarder
 						.getSoftwareDescription();
-				if (forwarderDescription.getType().equals("CLIENT"))
+				if (forwarderDescription.getType().equals("CLIENT")) {
 					forwarder.start();
+                                }
 			} catch (LaunchException e) {
 				log.error("Unable to run Forwarder "
 						+ forwarder.getSoftwareDescription().getId());

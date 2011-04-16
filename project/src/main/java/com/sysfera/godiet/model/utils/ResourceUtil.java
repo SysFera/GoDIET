@@ -17,8 +17,9 @@ public class ResourceUtil {
 	{
 		List<Var> vars = node.getEnv().getVar();
 		for (Var var : vars) {
-			if(var.getName().equals(varName))
+			if(var.getName().equals(varName)) {
 				return var.getValue();
+                        }
 		}
 		return null;
 	}

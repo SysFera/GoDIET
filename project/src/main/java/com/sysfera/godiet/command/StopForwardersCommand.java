@@ -46,8 +46,9 @@ public class StopForwardersCommand implements Command {
 			try {
 				Forwarder forwarderDescription = (Forwarder) forwarder
 						.getSoftwareDescription();
-				if (forwarderDescription.getType().equals("CLIENT"))
+				if (forwarderDescription.getType().equals("CLIENT")) {
 					forwarder.stop();
+                                }
 			} catch (StopException e) {
 				log.error("Unable to run Forwarder "
 						+ forwarder.getSoftwareDescription().getId());
@@ -59,8 +60,9 @@ public class StopForwardersCommand implements Command {
 			try {
 				Forwarder forwarderDescription = (Forwarder) forwarder
 						.getSoftwareDescription();
-				if (forwarderDescription.getType().equals("SERVER"))
+				if (forwarderDescription.getType().equals("SERVER")) {
 					forwarder.stop();
+                                }
 			} catch (StopException e) {
 				log.error("Unable to run Forwarder "
 						+ forwarder.getSoftwareDescription().getId());
@@ -68,7 +70,9 @@ public class StopForwardersCommand implements Command {
 			}
 		}
 		
-		if(error) throw new CommandExecutionException("Error when stopping forwarders");
+		if(error) {
+                    throw new CommandExecutionException("Error when stopping forwarders");
+                }
 
 	}
 
