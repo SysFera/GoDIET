@@ -6,7 +6,7 @@ import jline.FileNameCompletor
 
 import org.codehaus.groovy.tools.shell.CommandSupport
 import org.codehaus.groovy.tools.shell.Shell
-
+import java.lang.Integer
 import com.sysfera.godiet.command.LoadXMLImplCommand;
 import com.sysfera.godiet.exceptions.CommandExecutionException;
 import com.sysfera.godiet.managers.ResourcesManager;

@@ -24,6 +24,7 @@ import jline.Terminal
 import org.codehaus.groovy.runtime.InvokerHelper
 import org.codehaus.groovy.runtime.StackTraceUtils
 import org.codehaus.groovy.tools.shell.BufferManager
+import org.codehaus.groovy.tools.shell.Command
 import org.codehaus.groovy.tools.shell.ExitNotification
 import org.codehaus.groovy.tools.shell.IO
 import org.codehaus.groovy.tools.shell.InteractiveShellRunner
@@ -476,4 +477,7 @@ extends Shell {
 
 		return code
 	}
+
+
+	
 }
