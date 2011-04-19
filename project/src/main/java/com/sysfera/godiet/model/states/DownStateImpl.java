@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 import com.sysfera.godiet.exceptions.remote.CheckException;
 import com.sysfera.godiet.exceptions.remote.LaunchException;
 import com.sysfera.godiet.exceptions.remote.PrepareException;
+import com.sysfera.godiet.model.SoftwareController;
 import com.sysfera.godiet.remote.RemoteConfigurationHelper;
 
 /**
@@ -17,12 +18,10 @@ import com.sysfera.godiet.remote.RemoteConfigurationHelper;
 public class DownStateImpl implements ResourceState {
 	private Logger log = LoggerFactory.getLogger(getClass());
 
-	private final RemoteConfigurationHelper launcher;
 	private final StateController stateController;
 
 	public DownStateImpl(StateController stateController) {
 		this.stateController = stateController;
-		launcher = RemoteConfigurationHelper.getInstance();
 	}
 
 
@@ -32,9 +31,9 @@ public class DownStateImpl implements ResourceState {
 	@Override
 	public void start() throws LaunchException {
 		try {
-			launcher.launch(this.stateController.softwareManaged);
+			stateController.softwareControler.launch(this.stateController.softwareManaged);
 			Thread.sleep(400);
-			launcher.check(this.stateController.softwareManaged);
+			stateController.softwareControler.check(this.stateController.softwareManaged);
 			this.stateController.state = this.stateController.up;
 		} catch (LaunchException e) {
 			this.stateController.state = this.stateController.error;

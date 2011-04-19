@@ -43,12 +43,16 @@
 				<xs:element name="ssh" minOccurs="0">
 					<xs:complexType>
 						<xs:sequence>
-							<xs:element name="key">
+							<xs:element name="key" maxOccurs="unbounded">
 								<xs:annotation>
-									<xs:documentation>Give key to load in goDiet
+									<xs:documentation>Give keys to load in goDiet
 									</xs:documentation>
 								</xs:annotation>
 								<xs:complexType>
+									<xs:annotation>
+										<xs:documentation>Private key path. By default the public associated key 
+										</xs:documentation>
+									</xs:annotation>
 									<xs:attribute name="path" type="xs:string" use="required" />
 									<xs:attribute name="pathPub" type="xs:string" use="optional" />
 								</xs:complexType>

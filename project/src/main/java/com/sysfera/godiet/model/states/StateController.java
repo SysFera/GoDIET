@@ -3,6 +3,7 @@ package com.sysfera.godiet.model.states;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.sysfera.godiet.model.SoftwareController;
 import com.sysfera.godiet.model.SoftwareManager;
 
 /**
@@ -21,11 +22,14 @@ public class StateController {
 	// Down by default
 	ResourceState state;
 
+	final SoftwareController softwareControler;
+	
 	// Error reason
 	Throwable errorCause = null;
 
-	public StateController(SoftwareManager agent) {
+	public StateController(SoftwareManager agent,SoftwareController softwareController) {
 		this.softwareManaged = agent;
+		this.softwareControler = softwareController;
 		this.down = new IncubateStateImpl(this);
 		this.up = new UpStateImpl(this);
 		this.error = new ErrorStateImpl(this);
@@ -33,6 +37,8 @@ public class StateController {
 
 		// Down
 		this.state = down;
+		
+		
 	}
 
 	/**

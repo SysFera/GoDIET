@@ -13,16 +13,15 @@ import com.sysfera.godiet.exceptions.CommandExecutionException;
 import com.sysfera.godiet.managers.ResourcesManager;
 import com.sysfera.godiet.remote.RemoteAccess;
 import com.sysfera.godiet.remote.RemoteAccessMock;
-import com.sysfera.godiet.remote.RemoteConfigurationHelper;
 import com.sysfera.godiet.utils.xml.XmlScannerJaxbImpl;
 
 public class LaunchMockPlatformIntegrationTest {
 	private Logger log = LoggerFactory.getLogger(getClass());
 	private ResourcesManager rm;
+	RemoteAccess remoteAccess = new RemoteAccessMock();
 
 	@Before
 	public void init() {
-
 		// Init RM
 		String testCaseFile = "testbed.xml";
 		InputStream inputStream = getClass().getClassLoader()
@@ -33,6 +32,7 @@ public class LaunchMockPlatformIntegrationTest {
 		xmlLoadingCommand.setRm(rm);
 		xmlLoadingCommand.setXmlInput(inputStream);
 		xmlLoadingCommand.setXmlParser(scanner);
+		xmlLoadingCommand.setRemoteAccess(remoteAccess);
 
 		try {
 			xmlLoadingCommand.execute();
@@ -41,15 +41,9 @@ public class LaunchMockPlatformIntegrationTest {
 			log.error("Test Fail", e);
 			Assert.fail(e.getMessage());
 		}
-		// Init Remote Access
-		RemoteConfigurationHelper remoteHelper = RemoteConfigurationHelper
-				.getInstance();
-		remoteHelper.setConfiguration(rm.getGodietConfiguration()
-				.getGoDietConfiguration());
-		remoteHelper.setPlatform(rm.getPlatformModel());
-		RemoteAccess remoteAccess = new RemoteAccessMock();
 
-		remoteHelper.setRemoteAccess(remoteAccess);
+
+		
 	}
 
 	/***
@@ -68,7 +62,7 @@ public class LaunchMockPlatformIntegrationTest {
 		// Agents commands
 		InitForwardersCommand initForwardersCommand = new InitForwardersCommand();
 		initForwardersCommand.setRm(rm);
-
+		initForwardersCommand.setRemoteAccess(remoteAccess);
 		PrepareAgentsCommand prepareAgents = new PrepareAgentsCommand();
 		prepareAgents.setRm(rm);
 

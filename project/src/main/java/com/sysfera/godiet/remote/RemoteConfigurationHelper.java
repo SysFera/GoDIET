@@ -16,8 +16,10 @@ import com.sysfera.godiet.exceptions.remote.CheckException;
 import com.sysfera.godiet.exceptions.remote.LaunchException;
 import com.sysfera.godiet.exceptions.remote.PrepareException;
 import com.sysfera.godiet.exceptions.remote.StopException;
+import com.sysfera.godiet.managers.GoDiet;
 import com.sysfera.godiet.managers.Platform;
 import com.sysfera.godiet.model.Path;
+import com.sysfera.godiet.model.SoftwareController;
 import com.sysfera.godiet.model.SoftwareManager;
 import com.sysfera.godiet.model.generated.GoDietConfiguration;
 import com.sysfera.godiet.model.generated.Node;
@@ -25,6 +27,7 @@ import com.sysfera.godiet.model.generated.Options;
 import com.sysfera.godiet.model.generated.Options.Option;
 import com.sysfera.godiet.model.generated.Resource;
 import com.sysfera.godiet.model.generated.Scratch;
+import com.sysfera.godiet.remote.ssh.RemoteAccessJschImpl;
 
 /**
  * Agent configuration and remote access helper.
@@ -32,35 +35,37 @@ import com.sysfera.godiet.model.generated.Scratch;
  * @author phi
  * 
  */
-public class RemoteConfigurationHelper {
+public class RemoteConfigurationHelper implements SoftwareController {
 	private Logger log = LoggerFactory.getLogger(getClass());
 
-	private RemoteAccess remoteAccess;
-	private GoDietConfiguration configuration;
-	private Platform platform;
+	private final RemoteAccess remoteAccess;
+	private  GoDietConfiguration configuration;
+	private  Platform platform;
 
-	// Singleton
-	private volatile static RemoteConfigurationHelper instance;
-
-	private RemoteConfigurationHelper() {
-	}
-
-	/**
-	 * Use only with JEE > 1.4 !
-	 * 
-	 * @return the launchhelper singleton instance.
-	 */
-	public static RemoteConfigurationHelper getInstance() {
-		if (instance == null) {
-			synchronized (RemoteConfigurationHelper.class) {
-				if (instance == null) {
-					instance = new RemoteConfigurationHelper();
-				}
-			}
+	//TODO: Add config and platform when the loading of dietconfig and platform will be separately done
+	public RemoteConfigurationHelper(RemoteAccess remoteAccess) {
+		if (remoteAccess == null) {
+			log.error("Unable to create remote controller. One of constructor argument is null");
+			throw new IllegalArgumentException(
+					"Unable to create remote controller. One of constructor argument is null");
 		}
-		return instance;
-	}
+		this.remoteAccess = remoteAccess;
 
+	}
+	
+	public RemoteConfigurationHelper(RemoteAccess remoteAccess,
+			GoDietConfiguration configuration, Platform platform) {
+		if (remoteAccess == null || configuration == null || platform == null) {
+			log.error("Unable to create remote controller. One of constructor argument is null");
+			throw new IllegalArgumentException(
+					"Unable to create remote controller. One of constructor argument is null");
+		}
+		this.remoteAccess= remoteAccess;
+		this.configuration = configuration;
+		this.platform = platform;
+		
+
+	}
 	/**
 	 * Prepare physical resource to launch the Software - Search the physical
 	 * resource to run the diet agent - Create remote directory - Create
@@ -72,12 +77,8 @@ public class RemoteConfigurationHelper {
 	 * @throws PrepareException
 	 *             if create local files or can't copy files on remote host.
 	 */
+	@Override
 	public void configure(SoftwareManager resource) throws PrepareException {
-		// TODO: Delete this check when Spring IOC configuration will be done
-		if (remoteAccess == null || configuration == null || platform == null) {
-			log.error("Unable to configure remote resource. Remote helper isn't correctly initialized");
-			throw new PrepareException("Remote configurator isn't ready");
-		}
 
 		// the remote physical node to configure
 		Resource remoteNode = resource.getPluggedOn();
@@ -102,7 +103,7 @@ public class RemoteConfigurationHelper {
 		} catch (PathException e1) {
 			throw new PrepareException("", e1);
 		}
-		if (path == null) { 
+		if (path == null) {
 			log.error("Unable to configure remote resource. Unable to find a path");
 			throw new PrepareException("Path node found");
 		}
@@ -185,7 +186,7 @@ public class RemoteConfigurationHelper {
 					writerFile.close();
 				} catch (IOException e) {
 				}
-                        }
+			}
 
 		}
 		return retFile;
@@ -199,12 +200,9 @@ public class RemoteConfigurationHelper {
 	 * @throws LaunchException
 	 *             if can't connect to the remote host or can't launch binary
 	 */
+	@Override
 	public void launch(SoftwareManager managedSofware) throws LaunchException {
-		// TODO: Delete this check when Spring IOC configuration will be done
-		if (remoteAccess == null || configuration == null || platform == null) {
-			log.error("Unable to configure remote resource. Remote helper isn't correctly initialized");
-			throw new LaunchException("Remote configurator isn't ready");
-		}
+	
 		// the remote physical node to configure
 		Resource remoteNode = managedSofware.getPluggedOn();
 		if (remoteNode == null) {
@@ -259,13 +257,11 @@ public class RemoteConfigurationHelper {
 	 * @throws LaunchException
 	 *             if can't connect to the remote host or can't launch binary
 	 */
+	@Override
 	public void stop(SoftwareManager resource) throws StopException {
-		// TODO: Delete this check when Spring IOC configuration will be done
+		
 		// TODO: Duplicate code with configure, start
-		if (remoteAccess == null || configuration == null || platform == null) {
-			log.error("Unable to configure remote resource. Remote helper isn't correctly initialized");
-			throw new StopException("Remote configurator isn't ready");
-		}
+		
 
 		// the remote physical node to configure
 		Resource remoteNode = resource.getPluggedOn();
@@ -299,16 +295,15 @@ public class RemoteConfigurationHelper {
 			throw new StopException("Unable to kill "
 					+ resource.getSoftwareDescription().getId()
 					+ ". Pid is null");
-                }
-		
-		
-		//End of duplicate code
+		}
+
+		// End of duplicate code
 		String command = "kill " + pid;
 
 		try {
 			remoteAccess.launch(command, path);
-			
-			//TODO: Check if always run
+
+			// TODO: Check if always run
 		} catch (RemoteAccessException e) {
 			throw new StopException("Unable to kill "
 					+ resource.getSoftwareDescription().getId(), e);
@@ -318,16 +313,12 @@ public class RemoteConfigurationHelper {
 
 	/**
 	 * Check if the software running
+	 * 
 	 * @param managed
 	 */
-	public void check(SoftwareManager resource) throws CheckException
-	{
-		// TODO: Delete this check when Spring IOC configuration will be done
-		// TODO:  99% Duplicate code with  stop :) GENIAL !
-		if (remoteAccess == null || configuration == null || platform == null) {
-			log.error("Unable to configure remote resource. Remote helper isn't correctly initialized");
-			throw new CheckException("Remote configurator isn't ready");
-		}
+	@Override
+	public void check(SoftwareManager resource) throws CheckException {
+		// TODO: 99% Duplicate code with stop :) GENIAL !
 
 		// the remote physical node to configure
 		Resource remoteNode = resource.getPluggedOn();
@@ -361,29 +352,29 @@ public class RemoteConfigurationHelper {
 			throw new CheckException("Unable to check "
 					+ resource.getSoftwareDescription().getId()
 					+ ". Pid is null");
-                }
-		
-		
-		//End of duplicate code
+		}
+
+		// End of duplicate code
 		String command = "kill -0 " + pid;
 
 		try {
 			remoteAccess.check(command, path);
-			
-			//TODO: Check if always run
+
+			// TODO: Check if always run
 		} catch (RemoteAccessException e) {
 			throw new CheckException("Unable to check "
 					+ resource.getSoftwareDescription().getId(), e);
 		}
 
 	}
-	public void setRemoteAccess(RemoteAccess remoteAccess) {
-		this.remoteAccess = remoteAccess;
-	}
 
+	public void setPlatform(Platform platform) {
+		this.platform = platform;
+	}
 	public void setConfiguration(GoDietConfiguration configuration) {
 		this.configuration = configuration;
 	}
+
 
 	private String getFileName(SoftwareManager resource) {
 		return resource.getSoftwareDescription().getId();
@@ -393,7 +384,4 @@ public class RemoteConfigurationHelper {
 		return getFileName(resource) + ".cfg";
 	}
 
-	public void setPlatform(Platform platform) {
-		this.platform = platform;
-	}
 }

@@ -20,11 +20,12 @@ public class CommandPrepareServicesTest {
 
 	private Logger log = LoggerFactory.getLogger(getClass());
 	private ResourcesManager rm;
+	RemoteAccess remoteAccess = new RemoteAccessMock();
 
 	@Before
 	public void init() {
-		
-		//Init RM
+
+		// Init RM
 		String testCaseFile = "testbed.xml";
 		InputStream inputStream = getClass().getClassLoader()
 				.getResourceAsStream(testCaseFile);
@@ -34,6 +35,7 @@ public class CommandPrepareServicesTest {
 		xmlLoadingCommand.setRm(rm);
 		xmlLoadingCommand.setXmlInput(inputStream);
 		xmlLoadingCommand.setXmlParser(scanner);
+		xmlLoadingCommand.setRemoteAccess(remoteAccess);
 
 		try {
 			xmlLoadingCommand.execute();
@@ -42,18 +44,8 @@ public class CommandPrepareServicesTest {
 			log.error("Test Fail", e);
 			Assert.fail(e.getMessage());
 		}
-		//Init Remote Access
-		RemoteConfigurationHelper remoteHelper = RemoteConfigurationHelper.getInstance();
-		remoteHelper.setConfiguration(rm.getGodietConfiguration().getGoDietConfiguration());
-		remoteHelper.setPlatform(rm.getPlatformModel());
-		RemoteAccess remoteAccess = new RemoteAccessMock();
-		
-		remoteHelper.setRemoteAccess(remoteAccess);
-
 	}
 
-
-	
 	@Test
 	public void testPrepareService() {
 		PrepareServicesCommand prepareServicesCommand = new PrepareServicesCommand();

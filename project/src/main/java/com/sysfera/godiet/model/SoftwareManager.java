@@ -14,11 +14,15 @@ import com.sysfera.godiet.model.states.StateController;
 public abstract class SoftwareManager {
 	private String runningCommand;
 
+	
 	private Integer pid;
-	protected StateController stateController;
+	protected final StateController  stateController;
 
-	public SoftwareManager() {
-		stateController = new StateController(this);
+	
+	
+	public SoftwareManager(SoftwareController softwareController) {
+		
+		stateController = new StateController(this,softwareController);
 
 	}
 
@@ -63,4 +67,5 @@ public abstract class SoftwareManager {
 	public void setRunningCommand(String runningCommand) {
 		this.runningCommand = runningCommand;
 	}
+
 }

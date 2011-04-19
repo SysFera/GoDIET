@@ -2,6 +2,7 @@ package com.sysfera.godiet.model.factories;
 
 import com.sysfera.godiet.exceptions.DietResourceCreationException;
 import com.sysfera.godiet.model.DietServiceManaged;
+import com.sysfera.godiet.model.SoftwareController;
 import com.sysfera.godiet.model.SoftwareManager;
 import com.sysfera.godiet.model.generated.ObjectFactory;
 import com.sysfera.godiet.model.generated.OmniNames;
@@ -18,7 +19,11 @@ import com.sysfera.godiet.model.generated.Software;
  */
 public class OmniNamesFactory {
 
-	private static String OMNINAMESBINARY = "omniNames";
+	private final SoftwareController softwareController;
+
+	public OmniNamesFactory(SoftwareController softwareController) {
+		this.softwareController = softwareController;
+	}
 
 	/**
 	 * Create a managed omninames given his description. Check validity. Set the
@@ -31,7 +36,7 @@ public class OmniNamesFactory {
 	 */
 	public DietServiceManaged create(OmniNames omniNamesDescription)
 			throws DietResourceCreationException {
-		DietServiceManaged omniNamesManaged = new DietServiceManaged();
+		DietServiceManaged omniNamesManaged = new DietServiceManaged(softwareController);
 
 		omniNamesManaged.setManagedSoftware(omniNamesDescription);
 		settingConfigurationOptions(omniNamesManaged);

@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 
 import com.sysfera.godiet.exceptions.remote.LaunchException;
 import com.sysfera.godiet.exceptions.remote.PrepareException;
+import com.sysfera.godiet.model.SoftwareController;
 import com.sysfera.godiet.remote.RemoteConfigurationHelper;
 
 /**
@@ -16,12 +17,12 @@ import com.sysfera.godiet.remote.RemoteConfigurationHelper;
 public class IncubateStateImpl implements ResourceState {
 	private Logger log = LoggerFactory.getLogger(getClass());
 
-	private final RemoteConfigurationHelper launcher;
+	private final SoftwareController launcher;
 	private final StateController stateController;
 
 	public IncubateStateImpl(StateController stateController) {
 		this.stateController = stateController;
-		this.launcher = RemoteConfigurationHelper.getInstance();
+		this.launcher = stateController.softwareControler;
 	}
 
 	/**

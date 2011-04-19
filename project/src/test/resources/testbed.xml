@@ -5,6 +5,12 @@
 	<goDietConfiguration debug="1" saveStdOut="true"
 		saveStdErr="true" log="true" localNode="myLaptop">
 		<localscratch dir="/tmp/sc_godiet" />
+		<user>
+			<ssh>
+				<key path="/home/phi/.ssh/id" />
+				
+			</ssh>
+		</user>
 	</goDietConfiguration>
 
 	<infrastructure>
@@ -17,7 +23,7 @@
 			<node disk="fake" id="myLaptop">
 				<ssh login="phi" server="192.168.0.14" />
 			</node>
-			<gateway  id="myLaptopGateway" disk="fake">
+			<gateway id="myLaptopGateway" disk="fake">
 				<ssh login="phi" server="192.168.0.14" />
 			</gateway>
 		</domain>
@@ -25,7 +31,7 @@
 			<node disk="fake" id="graal">
 				<ssh login="pmartinez" server="140.77.166.19" />
 			</node>
-			<gateway  id="graalGW" disk="fake">
+			<gateway id="graalGW" disk="fake">
 				<ssh login="pmartinez" server="140.77.166.19" />
 			</gateway>
 		</domain>

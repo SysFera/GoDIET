@@ -12,11 +12,15 @@ import org.slf4j.LoggerFactory;
 import com.sysfera.godiet.command.LoadXMLImplCommand;
 import com.sysfera.godiet.exceptions.CommandExecutionException;
 import com.sysfera.godiet.managers.ResourcesManager;
+import com.sysfera.godiet.remote.RemoteAccess;
+import com.sysfera.godiet.remote.RemoteAccessMock;
 import com.sysfera.godiet.utils.xml.XmlScannerJaxbImpl;
 
 public class DietResourceManagerTest {
 	private Logger log = LoggerFactory.getLogger(getClass());
 	private ResourcesManager rm;
+	RemoteAccess remoteAccess = new RemoteAccessMock();
+
 	@Before
 	public void initRM() {
 		String testCaseFile = "exampleLocalhost.xml";
@@ -28,6 +32,7 @@ public class DietResourceManagerTest {
 		xmlLoadingCommand.setRm(rm);
 		xmlLoadingCommand.setXmlInput(inputStream);
 		xmlLoadingCommand.setXmlParser(scanner);
+		xmlLoadingCommand.setRemoteAccess(remoteAccess);
 
 		try {
 			xmlLoadingCommand.execute();

@@ -3,7 +3,6 @@ package com.sysfera.godiet.model.factories;
 import java.util.List;
 
 import com.sysfera.godiet.exceptions.DietResourceCreationException;
-import com.sysfera.godiet.managers.Diet;
 import com.sysfera.godiet.model.DietResourceManaged;
 import com.sysfera.godiet.model.SoftwareManager;
 import com.sysfera.godiet.model.generated.ObjectFactory;
@@ -70,7 +69,7 @@ public class AgentFactoryUtil {
 	 * @param softManaged
 	 * 
 	 */
-	protected static void settingRunningCommand(final Diet dietPlatform,
+	protected static void settingRunningCommand(final OmniNames omniName,
 			final SoftwareManager softManaged) {
 		String command = "";
 		String scratchDir = softManaged.getPluggedOn().getDisk().getScratch()
@@ -81,7 +80,6 @@ public class AgentFactoryUtil {
 				"PATH");
 		command += "PATH=" + envPath + ":$PATH ";
 		// find the OmniOrbConfig file on the remote host to set OmniOrb.cfg
-		OmniNames omniName = dietPlatform.getOmniName(softManaged);
 		String omniOrbconfig = "OMNIORB_CONFIG=" + scratchDir + "/"
 				+ omniName.getId() + ".cfg";
 		command += omniOrbconfig + " ";

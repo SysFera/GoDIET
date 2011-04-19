@@ -1,16 +1,10 @@
 package com.sysfera.godiet.model.factories;
 
 import com.sysfera.godiet.exceptions.DietResourceCreationException;
-import com.sysfera.godiet.managers.Diet;
 import com.sysfera.godiet.model.DietResourceManaged;
-import com.sysfera.godiet.model.SoftwareManager;
-import com.sysfera.godiet.model.generated.Forwarder;
+import com.sysfera.godiet.model.SoftwareController;
 import com.sysfera.godiet.model.generated.MasterAgent;
-import com.sysfera.godiet.model.generated.ObjectFactory;
 import com.sysfera.godiet.model.generated.OmniNames;
-import com.sysfera.godiet.model.generated.Options;
-import com.sysfera.godiet.model.generated.Options.Option;
-import com.sysfera.godiet.model.utils.ResourceUtil;
 
 
 /**
@@ -20,13 +14,12 @@ import com.sysfera.godiet.model.utils.ResourceUtil;
  *
  */
 public class MasterAgentFactory {
-	// Needed to find the omniNames of the Domain
-	private final Diet dietPlatform;
+	private final SoftwareController softwareController;
 
-	
-	public MasterAgentFactory(Diet dietPlatform) {
-		this.dietPlatform = dietPlatform;
+	public MasterAgentFactory(SoftwareController softwareController) {
+		this.softwareController = softwareController;
 	}
+
 	/**
 	 * Create a managed MasterAgent given his description. Check validity. Set the default option if needed (like 
 	 * command launch).
@@ -34,12 +27,12 @@ public class MasterAgentFactory {
 	 * @return The managed MasterAgent
 	 * @throws DietResourceCreationException 
 	 */
-	public DietResourceManaged create(MasterAgent masterAgentDescription) throws DietResourceCreationException
+	public DietResourceManaged create(MasterAgent masterAgentDescription,OmniNames omniNames) throws DietResourceCreationException
 	{
-		DietResourceManaged MAManaged = new DietResourceManaged();
+		DietResourceManaged MAManaged = new DietResourceManaged(softwareController);
 		MAManaged.setManagedSoftware(masterAgentDescription);
 		AgentFactoryUtil.settingConfigurationOptions(MAManaged,"DIET_MASTER_AGENT");
-		AgentFactoryUtil.settingRunningCommand(dietPlatform,MAManaged);
+		AgentFactoryUtil.settingRunningCommand(omniNames,MAManaged);
 		return MAManaged;
 	}
 	

@@ -17,7 +17,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import com.sysfera.godiet.exceptions.CommandExecutionException;
 import com.sysfera.godiet.exceptions.remote.AddKeyException;
 import com.sysfera.godiet.managers.ResourcesManager;
-import com.sysfera.godiet.remote.RemoteConfigurationHelper;
 import com.sysfera.godiet.remote.ssh.RemoteAccessJschImpl;
 import com.sysfera.godiet.utils.xml.XmlScannerJaxbImpl;
 
@@ -44,6 +43,7 @@ public class LaunchPlatformIntegrationTest {
 		xmlLoadingCommand.setRm(rm);
 		xmlLoadingCommand.setXmlInput(inputStream);
 		xmlLoadingCommand.setXmlParser(scanner);
+		xmlLoadingCommand.setRemoteAccess(remoteAccess);
 
 		try {
 			xmlLoadingCommand.execute();
@@ -52,12 +52,7 @@ public class LaunchPlatformIntegrationTest {
 			log.error("Test Fail", e);
 			Assert.fail(e.getMessage());
 		}
-		// Init Remote Access
-		RemoteConfigurationHelper remoteHelper = RemoteConfigurationHelper
-				.getInstance();
-		remoteHelper.setConfiguration(rm.getGodietConfiguration()
-				.getGoDietConfiguration());
-		remoteHelper.setPlatform(rm.getPlatformModel());
+
 
 		// Real Remote SSH
 
@@ -82,7 +77,6 @@ public class LaunchPlatformIntegrationTest {
 			log.error("unable to load your key");
 		}
 
-		remoteHelper.setRemoteAccess(remoteAccess);
 
 	}
 
@@ -102,7 +96,8 @@ public class LaunchPlatformIntegrationTest {
 		// Agents commands
 		InitForwardersCommand initForwardersCommand = new InitForwardersCommand();
 		initForwardersCommand.setRm(rm);
-
+		initForwardersCommand.setRemoteAccess(remoteAccess);
+		
 		PrepareAgentsCommand prepareAgents = new PrepareAgentsCommand();
 		prepareAgents.setRm(rm);
 
@@ -123,15 +118,15 @@ public class LaunchPlatformIntegrationTest {
 			initForwardersCommand.execute();
 
 			prepareAgents.execute();
-		
+
 			launchForwarders.execute();
 			startAgent.execute();
-//			try {
-//				char c = (char)System.in.read();
-//			} catch (IOException e1) {
-//				// TODO Auto-generated catch block
-//				e1.printStackTrace();
-//			}
+			// try {
+			// char c = (char)System.in.read();
+			// } catch (IOException e1) {
+			// // TODO Auto-generated catch block
+			// e1.printStackTrace();
+			// }
 		} catch (CommandExecutionException e) {
 			log.error(e.getMessage());
 			Assert.fail(e.getMessage());

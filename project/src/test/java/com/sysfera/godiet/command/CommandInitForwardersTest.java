@@ -13,6 +13,8 @@ import org.slf4j.LoggerFactory;
 import com.sysfera.godiet.exceptions.CommandExecutionException;
 import com.sysfera.godiet.managers.ResourcesManager;
 import com.sysfera.godiet.model.DietResourceManaged;
+import com.sysfera.godiet.remote.RemoteAccess;
+import com.sysfera.godiet.remote.RemoteAccessMock;
 import com.sysfera.godiet.utils.xml.XmlScannerJaxbImpl;
 
 public class CommandInitForwardersTest {
@@ -21,12 +23,15 @@ public class CommandInitForwardersTest {
 	private ResourcesManager rm;
 	private XmlScannerJaxbImpl scanner;
 	LoadXMLImplCommand xmlLoadingCommand;
+	RemoteAccess remoteAccess = new RemoteAccessMock();
 
 	@Before
 	public void initRM() {
 		scanner = new XmlScannerJaxbImpl();
 		xmlLoadingCommand = new LoadXMLImplCommand();
 		xmlLoadingCommand.setXmlParser(scanner);
+		xmlLoadingCommand.setRemoteAccess(remoteAccess);
+
 	}
 
 	@Test
@@ -47,7 +52,7 @@ public class CommandInitForwardersTest {
 		}
 		InitForwardersCommand initForwardersInit = new InitForwardersCommand();
 		initForwardersInit.setRm(rm);
-
+		initForwardersInit.setRemoteAccess(remoteAccess);
 		try {
 			initForwardersInit.execute();
 			List<DietResourceManaged> forwarders = rm.getDietModel()
@@ -78,6 +83,7 @@ public class CommandInitForwardersTest {
 		}
 		InitForwardersCommand initForwardersInit = new InitForwardersCommand();
 		initForwardersInit.setRm(rm);
+		initForwardersInit.setRemoteAccess(remoteAccess);
 
 		try {
 			initForwardersInit.execute();
@@ -90,4 +96,6 @@ public class CommandInitForwardersTest {
 		}
 
 	}
+	
+	
 }

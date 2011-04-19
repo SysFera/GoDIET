@@ -18,11 +18,14 @@ import com.sysfera.godiet.managers.ResourcesManager;
 import com.sysfera.godiet.model.Path;
 import com.sysfera.godiet.model.generated.Node;
 import com.sysfera.godiet.model.generated.Resource;
+import com.sysfera.godiet.remote.RemoteAccess;
+import com.sysfera.godiet.remote.RemoteAccessMock;
 import com.sysfera.godiet.utils.xml.XmlScannerJaxbImpl;
 
 public class TopologyManagerTest {
 	private Logger log = LoggerFactory.getLogger(getClass());
 	private ResourcesManager rm;
+	RemoteAccess remoteAccess = new RemoteAccessMock();
 
 	@Before
 	public void setupTest() {
@@ -35,7 +38,7 @@ public class TopologyManagerTest {
 		xmlLoadingCommand.setRm(rm);
 		xmlLoadingCommand.setXmlInput(inputStream);
 		xmlLoadingCommand.setXmlParser(scanner);
-
+		xmlLoadingCommand.setRemoteAccess(remoteAccess);
 		try {
 			xmlLoadingCommand.execute();
 

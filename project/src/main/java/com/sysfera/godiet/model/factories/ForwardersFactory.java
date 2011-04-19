@@ -1,14 +1,11 @@
 package com.sysfera.godiet.model.factories;
 
 import com.sysfera.godiet.exceptions.DietResourceCreationException;
-import com.sysfera.godiet.managers.Diet;
 import com.sysfera.godiet.model.DietResourceManaged;
+import com.sysfera.godiet.model.SoftwareController;
 import com.sysfera.godiet.model.SoftwareManager;
-import com.sysfera.godiet.model.generated.Config;
 import com.sysfera.godiet.model.generated.Forwarder;
 import com.sysfera.godiet.model.generated.Forwarders;
-import com.sysfera.godiet.model.generated.Gateway;
-import com.sysfera.godiet.model.generated.Link;
 import com.sysfera.godiet.model.generated.ObjectFactory;
 import com.sysfera.godiet.model.generated.OmniNames;
 import com.sysfera.godiet.model.generated.Options;
@@ -22,10 +19,8 @@ import com.sysfera.godiet.model.utils.ResourceUtil;
  * 
  */
 public class ForwardersFactory {
-	private static String FORWARDERBINARY = "dietForwarder";
 
-	// Needed to find the omniNames of the Domain
-	private final Diet dietPlatform;
+	private final SoftwareController softwareController;
 
 	public static enum ForwarderType {
 		CLIENT("CLIENT"), SERVER("SERVER");
@@ -37,61 +32,12 @@ public class ForwardersFactory {
 
 	}
 
-	public ForwardersFactory(Diet dietPlatform) {
-		this.dietPlatform = dietPlatform;
+
+
+	public ForwardersFactory(SoftwareController softwareController) {
+		this.softwareController = softwareController;
 	}
-
-	/**
-	 * TODO: Need to move this function cause this a managed Forwarder factory +
-	 * duplicate code
-	 * 
-	 * @param gateway
-	 * @param type
-	 * @return
-	 */
-	public static Forwarders create(Link link) {
-		ObjectFactory factory = new ObjectFactory();
-		Forwarders forwarders = factory.createForwarders();
-
-		/*
-		 * Create managed client
-		 */
-		{
-			Gateway clientGateway = link.getFrom();
-
-			Forwarder clientForwarder = factory.createForwarder();
-
-			Config clientconfig = factory.createConfig();
-			clientconfig.setServer(clientGateway);
-			clientconfig.setRemoteBinary(FORWARDERBINARY);
-			clientForwarder.setConfig(clientconfig);
-			clientForwarder.setId("DietForwarder-" + clientGateway.getId()
-					+ "-CLIENT");
-			clientForwarder.setType("CLIENT");
-			forwarders.setClient(clientForwarder);
-
-		}
-
-		/*
-		 * Create managed server
-		 */
-		{
-			Gateway serverGateway = link.getTo();
-
-			Forwarder serverForwarder = factory.createForwarder();
-
-			Config serverconfig = factory.createConfig();
-			serverconfig.setServer(serverGateway);
-			serverconfig.setRemoteBinary(FORWARDERBINARY);
-			serverForwarder.setConfig(serverconfig);
-			serverForwarder.setId("DietForwarder-" + serverGateway.getId()
-					+ "-SERVER");
-			serverForwarder.setType("SERVER");
-			forwarders.setServer(serverForwarder);
-
-		}
-		return forwarders;
-	}
+	
 
 	/**
 	 * Create a managed diet resource. Check description validity and add
@@ -104,19 +50,19 @@ public class ForwardersFactory {
 	 * @throws DietResourceCreationException
 	 *             if resource not plugged
 	 */
-	public DietResourceManaged[] create(Forwarders forwarders)
+	public DietResourceManaged[] create(Forwarders forwarders, OmniNames omniNamesClient, OmniNames omniNamesServer)
 			throws DietResourceCreationException {
 
 		DietResourceManaged[] forwardersManager = new DietResourceManaged[2];
-		DietResourceManaged clientForwarderManager = new DietResourceManaged();
-		DietResourceManaged serverForwarderManager = new DietResourceManaged();
+		DietResourceManaged clientForwarderManager = new DietResourceManaged(softwareController);
+		DietResourceManaged serverForwarderManager = new DietResourceManaged(softwareController);
 
 		clientForwarderManager.setManagedSoftware(forwarders.getClient());
 		serverForwarderManager.setManagedSoftware(forwarders.getServer());
 
 		settingConfigurationOptions(clientForwarderManager,
 				serverForwarderManager);
-		buildForwarderCommand(clientForwarderManager, serverForwarderManager);
+		buildForwarderCommand(clientForwarderManager, serverForwarderManager,omniNamesClient,omniNamesServer);
 
 		forwardersManager[0] = clientForwarderManager;
 		forwardersManager[1] = serverForwarderManager;
@@ -185,9 +131,9 @@ public class ForwardersFactory {
 	 * @return
 	 */
 	private void buildForwarderCommand(SoftwareManager managedClient,
-			SoftwareManager managedServer) {
-		buildForwarderServerCommand(managedClient, managedServer);
-		buildForwarderClientCommand(managedClient, managedServer);
+			SoftwareManager managedServer,OmniNames omniNamesClient,OmniNames omniNamesServer) {
+		buildForwarderServerCommand(managedClient, managedServer,omniNamesClient,omniNamesServer);
+		buildForwarderClientCommand(managedClient, managedServer,omniNamesClient,omniNamesServer);
 	}
 
 	/**
@@ -202,7 +148,7 @@ public class ForwardersFactory {
 	 * @param managedServer
 	 */
 	private void buildForwarderServerCommand(SoftwareManager managedClient,
-			SoftwareManager managedServer) {
+			SoftwareManager managedServer,OmniNames omniNamesClient,OmniNames omniNamesServer) {
 		String command = "";
 		String scratchDir = managedServer.getPluggedOn().getDisk().getScratch()
 				.getDir();
@@ -212,9 +158,8 @@ public class ForwardersFactory {
 		String envPath = ResourceUtil.getEnvValue(managedClient.getPluggedOn(),"PATH");
 		command+= "PATH="+envPath+":$PATH ";
 		// find the OmniOrbConfig file on the remote host to set OmniOrb.cfg
-		OmniNames omniName = dietPlatform.getOmniName(managedServer);
 		String omniOrbconfig = "OMNIORB_CONFIG=" + scratchDir + "/"
-				+ omniName.getId() + ".cfg";
+				+ omniNamesServer.getId() + ".cfg";
 		command += omniOrbconfig + " ";
 
 		// nohup {binaryName}
@@ -250,7 +195,7 @@ public class ForwardersFactory {
 	 * @param managedServer
 	 */
 	private void buildForwarderClientCommand(SoftwareManager managedClient,
-			SoftwareManager managedServer) {
+			SoftwareManager managedServer,OmniNames omniNamesClient,OmniNames omniNamesServer) {
 		String command = "";
 		String scratchDir = managedClient.getPluggedOn().getDisk().getScratch()
 				.getDir();
@@ -260,9 +205,8 @@ public class ForwardersFactory {
 		String envPath = ResourceUtil.getEnvValue(managedClient.getPluggedOn(),"PATH");
 		command+= "PATH="+envPath+":$PATH ";
 		// find the OmniOrbConfig file on the remote host to set OmniOrb.cfg
-		OmniNames omniName = dietPlatform.getOmniName(managedClient);
 		String omniOrbconfig = "OMNIORB_CONFIG=" + scratchDir + "/"
-				+ omniName.getId() + ".cfg";
+				+ omniNamesClient.getId() + ".cfg";
 		command += omniOrbconfig + " ";
 
 		// nohup {binaryName}

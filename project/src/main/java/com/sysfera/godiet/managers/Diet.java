@@ -10,17 +10,8 @@ import com.sysfera.godiet.exceptions.DietResourceCreationException;
 import com.sysfera.godiet.model.DietResourceManaged;
 import com.sysfera.godiet.model.DietServiceManaged;
 import com.sysfera.godiet.model.SoftwareManager;
-import com.sysfera.godiet.model.factories.ForwardersFactory;
-import com.sysfera.godiet.model.factories.LocalAgentFactory;
-import com.sysfera.godiet.model.factories.MasterAgentFactory;
-import com.sysfera.godiet.model.factories.OmniNamesFactory;
-import com.sysfera.godiet.model.factories.SedFactory;
 import com.sysfera.godiet.model.generated.Domain;
-import com.sysfera.godiet.model.generated.Forwarders;
-import com.sysfera.godiet.model.generated.LocalAgent;
-import com.sysfera.godiet.model.generated.MasterAgent;
 import com.sysfera.godiet.model.generated.OmniNames;
-import com.sysfera.godiet.model.generated.Sed;
 
 /**
  * Diet platform description.
@@ -30,12 +21,6 @@ import com.sysfera.godiet.model.generated.Sed;
  */
 public class Diet {
 	private Logger log = LoggerFactory.getLogger(getClass());
-
-	private final MasterAgentFactory maFactory;
-	private final LocalAgentFactory laFactory;
-	private final SedFactory sedFactory;
-	private final OmniNamesFactory omFactory;
-	private final ForwardersFactory forwFactory;
 
 	private final List<DietResourceManaged> masterAgents;
 	private final List<DietResourceManaged> localAgents;
@@ -50,11 +35,6 @@ public class Diet {
 		this.omninames = new ArrayList<DietServiceManaged>();
 		this.forwaders = new ArrayList<DietResourceManaged>();
 
-		this.maFactory = new MasterAgentFactory(this);
-		this.laFactory = new LocalAgentFactory(this);
-		this.sedFactory = new SedFactory(this);
-		this.omFactory = new OmniNamesFactory();
-		this.forwFactory = new ForwardersFactory(this);
 	}
 
 	/**
@@ -96,30 +76,24 @@ public class Diet {
 	/**
 	 * 
 	 * @param sedDiet
-	 * @throws DietResourceCreationException
 	 */
-	public void addSed(Sed sedDiet) throws DietResourceCreationException {
-		sedFactory.create(sedDiet);
-		this.seds.add(sedFactory.create(sedDiet));
+	public void addSed(DietResourceManaged sedDiet) {
+		this.seds.add(sedDiet);
 
 	}
 
 	/**
 	 * @param dietResource
-	 * @throws DietResourceCreationException
 	 */
-	public void addLocalAgent(LocalAgent dietResource)
-			throws DietResourceCreationException {
-		this.localAgents.add(laFactory.create(dietResource));
+	public void addLocalAgent(DietResourceManaged localAgentManaged) {
+		this.localAgents.add(localAgentManaged);
 	}
 
 	/**
 	 * @param dietResource
-	 * @throws DietResourceCreationException
 	 */
-	public void addMasterAgent(MasterAgent dietResource)
-			throws DietResourceCreationException {
-		this.masterAgents.add(maFactory.create(dietResource));
+	public void addMasterAgent(DietResourceManaged masterAgentManaged) {
+		this.masterAgents.add(masterAgentManaged);
 
 	}
 
@@ -128,23 +102,21 @@ public class Diet {
 	 * @param forwarder
 	 * @throws DietResourceCreationException
 	 */
-	public void addForwarders(Forwarders forwarder)
-			throws DietResourceCreationException {
-		DietResourceManaged[] managedForwarders =  forwFactory.create(forwarder);
-		if(managedForwarders.length != 2) {
-                    throw new DietResourceCreationException("TODO: What the fuck");
-                }
-		this.forwaders.add(managedForwarders[0]);
-		this.forwaders.add(managedForwarders[1]);
+	public void addForwarders(DietResourceManaged forwarderClient,DietResourceManaged forwarderServer){
+//		DietResourceManaged[] managedForwarders = forwFactory.create(forwarder);
+//		if (managedForwarders.length != 2) {
+//			throw new DietResourceCreationException("TODO: What the fuck");
+//		}
+		this.forwaders.add(forwarderClient);
+		this.forwaders.add(forwarderServer);
 	}
 
 	/**
 	 * @param omniNames
 	 * @throws DietResourceCreationException
 	 */
-	public void addOmniName(OmniNames omniName)
-			throws DietResourceCreationException {
-		this.omninames.add(omFactory.create(omniName));
+	public void addOmniName(DietServiceManaged omniName){
+		this.omninames.add(omniName);
 	}
 
 	/**
@@ -166,12 +138,11 @@ public class Diet {
 
 	/**
 	 * 
-	 * @param managedSoftware
+	 * @param domain
 	 * @return The managed omniName which are is in the managedSoftware's
 	 *         domain. Null if it's not found
 	 */
-	public OmniNames getOmniName(SoftwareManager managedSoftware) {
-		Domain domain = managedSoftware.getPluggedOn().getDomain();
+	public OmniNames getOmniName(Domain domain) {
 
 		for (DietServiceManaged omniName : omninames) {
 			if (omniName.getPluggedOn().getDomain().getLabel()
@@ -180,8 +151,8 @@ public class Diet {
 			}
 
 		}
-		log.error("Unable to find a known domain for the software with the name: "
-				+ managedSoftware.getSoftwareDescription().getId());
+		log.error("Unable to find a known omniName for domain: "
+				+ domain.getLabel());
 		return null;
 	}
 }

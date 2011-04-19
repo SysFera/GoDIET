@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 import com.sysfera.godiet.exceptions.remote.CheckException;
 import com.sysfera.godiet.exceptions.remote.LaunchException;
 import com.sysfera.godiet.exceptions.remote.PrepareException;
+import com.sysfera.godiet.model.SoftwareController;
 import com.sysfera.godiet.remote.RemoteConfigurationHelper;
 
 /**
@@ -19,12 +20,12 @@ import com.sysfera.godiet.remote.RemoteConfigurationHelper;
 public class ReadyStateImpl implements ResourceState {
 	private Logger log = LoggerFactory.getLogger(getClass());
 
-	private final RemoteConfigurationHelper launcher;
+	private final SoftwareController launcher;
 	private final StateController stateController;
 
 	public ReadyStateImpl(StateController stateController) {
 		this.stateController = stateController;
-		launcher = RemoteConfigurationHelper.getInstance();
+		launcher = stateController.softwareControler;
 	}
 
 	@Override

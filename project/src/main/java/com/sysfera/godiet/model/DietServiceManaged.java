@@ -12,4 +12,8 @@ package com.sysfera.godiet.model;
  */
 public class DietServiceManaged extends DietResourceManaged {
 
+	public DietServiceManaged(SoftwareController softwareController) {
+		super(softwareController);
+	}
+
 }

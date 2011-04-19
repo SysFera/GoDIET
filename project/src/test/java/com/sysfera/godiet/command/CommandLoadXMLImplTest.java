@@ -15,17 +15,20 @@ import com.sysfera.godiet.managers.Diet;
 import com.sysfera.godiet.managers.Platform;
 import com.sysfera.godiet.managers.ResourcesManager;
 import com.sysfera.godiet.model.DietResourceManaged;
+import com.sysfera.godiet.remote.RemoteAccess;
+import com.sysfera.godiet.remote.RemoteAccessMock;
 import com.sysfera.godiet.utils.xml.XMLParser;
 import com.sysfera.godiet.utils.xml.XmlScannerJaxbImpl;
 
 public class CommandLoadXMLImplTest {
 	private Logger log = LoggerFactory.getLogger(getClass());
+	RemoteAccess remoteAccess = new RemoteAccessMock();
 
 	@Test
 	public void testCommand() {
 		List<String> testCaseFiles = Arrays.asList(new String[] {
-//				"exampleMultiDomainsNG.xml", "3D-5N-3G-3L-2MA-1LA-6SED.xml",
-//				 "1D-3N-1MA-3LA-10SED.xml", "3D-5N-3G-3L-1MA-3SED.xml",
+				"exampleMultiDomainsNG.xml", "3D-5N-3G-3L-2MA-1LA-6SED.xml",
+				 "1D-3N-1MA-3LA-10SED.xml", "3D-5N-3G-3L-1MA-3SED.xml",
 				 "testbed.xml" });
 
 		XMLParser scanner = new XmlScannerJaxbImpl();
@@ -33,7 +36,7 @@ public class CommandLoadXMLImplTest {
 		LoadXMLImplCommand xmlLoadingCommand = new LoadXMLImplCommand();
 
 		xmlLoadingCommand.setXmlParser(scanner);
-
+		xmlLoadingCommand.setRemoteAccess(remoteAccess);
 		for (String testCaseFile : testCaseFiles) {
 			ResourcesManager rm = new ResourcesManager();
 			xmlLoadingCommand.setRm(rm);
@@ -63,6 +66,7 @@ public class CommandLoadXMLImplTest {
 		xmlLoadingCommand.setRm(rm);
 		xmlLoadingCommand.setXmlInput(inputStream);
 		xmlLoadingCommand.setXmlParser(scanner);
+		xmlLoadingCommand.setRemoteAccess(remoteAccess);
 
 		try {
 			xmlLoadingCommand.execute();
@@ -121,6 +125,7 @@ public class CommandLoadXMLImplTest {
 		xmlLoadingCommand.setRm(rm);
 		xmlLoadingCommand.setXmlInput(inputStream);
 		xmlLoadingCommand.setXmlParser(scanner);
+		xmlLoadingCommand.setRemoteAccess(remoteAccess);
 
 		try {
 			xmlLoadingCommand.execute();

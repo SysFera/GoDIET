@@ -22,8 +22,9 @@ public class DietResourceManaged extends SoftwareManager {
 	// Agent description
 	private Software agentManaged;
 
-	public DietResourceManaged() {
-
+	public DietResourceManaged(SoftwareController softwareController) {
+		super(softwareController);
+		// TODO Auto-generated constructor stub
 	}
 
 	/**
@@ -35,14 +36,13 @@ public class DietResourceManaged extends SoftwareManager {
 		this.agentManaged = dietAgent;
 	}
 
-
 	@Override
 	public Resource getPluggedOn() {
 		if (agentManaged != null) {
 			return agentManaged.getConfig().getServer();
 		} else {
 			return null;
-                }
+		}
 	}
 
 	public void start() throws LaunchException {

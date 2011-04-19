@@ -4,7 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.sysfera.godiet.exceptions.remote.StopException;
-import com.sysfera.godiet.remote.RemoteConfigurationHelper;
+import com.sysfera.godiet.model.SoftwareController;
 
 /**
  * The remote agent is running. Call Stop to stop remote agent and down state
@@ -17,12 +17,12 @@ import com.sysfera.godiet.remote.RemoteConfigurationHelper;
 public class UpStateImpl implements ResourceState {
 	private Logger log = LoggerFactory.getLogger(getClass());
 
-	private final RemoteConfigurationHelper launcher;
+	private final SoftwareController launcher;
 	private final StateController stateController;
 
 	public UpStateImpl(StateController stateController) {
 		this.stateController = stateController;
-		this.launcher = RemoteConfigurationHelper.getInstance();
+		this.launcher = stateController.softwareControler;
 	}
 
 	@Override
