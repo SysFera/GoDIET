@@ -11,8 +11,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.sysfera.godiet.command.InitUtil;
-import com.sysfera.godiet.command.LoadXMLConfigurationCommand;
-import com.sysfera.godiet.command.LoadXMLDietCommand;
+import com.sysfera.godiet.command.xml.LoadXMLConfigurationCommand;
+import com.sysfera.godiet.command.xml.LoadXMLDietCommand;
 import com.sysfera.godiet.exceptions.CommandExecutionException;
 import com.sysfera.godiet.exceptions.generics.PathException;
 import com.sysfera.godiet.managers.PlatformManager;

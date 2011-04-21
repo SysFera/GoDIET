@@ -1,12 +1,12 @@
-package com.sysfera.godiet.command;
+package com.sysfera.godiet.command.xml;
 
 import java.io.IOException;
 import java.io.InputStream;
 
+import com.sysfera.godiet.command.Command;
 import com.sysfera.godiet.exceptions.CommandExecutionException;
 import com.sysfera.godiet.exceptions.XMLParseException;
 import com.sysfera.godiet.managers.ResourcesManager;
-import com.sysfera.godiet.model.generated.DietDescription;
 import com.sysfera.godiet.model.generated.GoDietConfiguration;
 import com.sysfera.godiet.utils.xml.XMLParser;
 

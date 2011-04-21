@@ -9,6 +9,10 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.sysfera.godiet.command.prepare.PrepareServicesCommand;
+import com.sysfera.godiet.command.start.StartServicesCommand;
+import com.sysfera.godiet.command.stop.StopServicesCommand;
+import com.sysfera.godiet.command.xml.LoadXMLDietCommand;
 import com.sysfera.godiet.exceptions.CommandExecutionException;
 import com.sysfera.godiet.managers.ResourcesManager;
 import com.sysfera.godiet.remote.RemoteAccess;

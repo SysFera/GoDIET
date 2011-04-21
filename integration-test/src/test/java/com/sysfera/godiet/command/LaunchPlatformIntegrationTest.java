@@ -14,6 +14,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import com.sysfera.godiet.command.init.InitForwardersCommand;
+import com.sysfera.godiet.command.prepare.PrepareAgentsCommand;
+import com.sysfera.godiet.command.prepare.PrepareServicesCommand;
+import com.sysfera.godiet.command.start.StartAgentsCommand;
+import com.sysfera.godiet.command.start.StartForwardersCommand;
+import com.sysfera.godiet.command.start.StartServicesCommand;
+import com.sysfera.godiet.command.stop.StopAgentsCommand;
+import com.sysfera.godiet.command.stop.StopForwardersCommand;
+import com.sysfera.godiet.command.stop.StopServicesCommand;
+import com.sysfera.godiet.command.xml.LoadXMLDietCommand;
 import com.sysfera.godiet.exceptions.CommandExecutionException;
 import com.sysfera.godiet.exceptions.remote.AddKeyException;
 import com.sysfera.godiet.managers.ResourcesManager;

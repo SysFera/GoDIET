@@ -4,6 +4,8 @@ import java.io.InputStream;
 
 import junit.framework.Assert;
 
+import com.sysfera.godiet.command.xml.LoadXMLConfigurationCommand;
+import com.sysfera.godiet.command.xml.LoadXMLPlatformCommand;
 import com.sysfera.godiet.exceptions.CommandExecutionException;
 import com.sysfera.godiet.managers.ResourcesManager;
 import com.sysfera.godiet.utils.xml.XMLParser;

@@ -1,5 +1,6 @@
-package com.sysfera.godiet.command;
+package com.sysfera.godiet.command.init;
 
+import com.sysfera.godiet.command.Command;
 import com.sysfera.godiet.exceptions.CommandExecutionException;
 import com.sysfera.godiet.model.generated.GoDietConfiguration;
 
