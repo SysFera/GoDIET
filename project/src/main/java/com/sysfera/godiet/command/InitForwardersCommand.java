@@ -65,7 +65,7 @@ public class InitForwardersCommand implements Command {
 				.getAllManagedSoftware();
 		for (SoftwareManager softwareManaged : dietResourcesManaged) {
 			domains.add(softwareManaged.getSoftwareDescription().getConfig()
-					.getServer().getDomain().getLabel());
+					.getServerNode().getDomain().getLabel());
 		}
 		List<Link> links = rm.getPlatformModel().getLinks();
 		if (links != null) {
@@ -78,11 +78,11 @@ public class InitForwardersCommand implements Command {
 					OmniNames omniNamesServer = this.rm.getDietModel()
 							.getOmniName(
 									forwarders.getServer().getConfig()
-											.getServer().getDomain());
+											.getServerNode().getDomain());
 					OmniNames omniNamesClient = this.rm.getDietModel()
 							.getOmniName(
 									forwarders.getClient().getConfig()
-											.getServer().getDomain());
+											.getServerNode().getDomain());
 					DietResourceManaged[] forwarderManaged;
 					try {
 						forwarderManaged = forwFactory.create(forwarders,
@@ -127,7 +127,7 @@ public class InitForwardersCommand implements Command {
 			Forwarder clientForwarder = factory.createForwarder();
 
 			Config clientconfig = factory.createConfig();
-			clientconfig.setServer(clientGateway);
+			clientconfig.setServerNode(clientGateway);
 			clientconfig.setRemoteBinary(FORWARDERBINARY);
 			clientForwarder.setConfig(clientconfig);
 			clientForwarder.setId("DietForwarder-" + clientGateway.getId()
@@ -146,7 +146,7 @@ public class InitForwardersCommand implements Command {
 			Forwarder serverForwarder = factory.createForwarder();
 
 			Config serverconfig = factory.createConfig();
-			serverconfig.setServer(serverGateway);
+			serverconfig.setServerNode(serverGateway);
 			serverconfig.setRemoteBinary(FORWARDERBINARY);
 			serverForwarder.setConfig(serverconfig);
 			serverForwarder.setId("DietForwarder-" + serverGateway.getId()

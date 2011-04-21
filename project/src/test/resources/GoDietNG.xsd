@@ -1,18 +1,14 @@
 <?xml version="1.0"?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
-	xmlns:jaxb="http://java.sun.com/xml/ns/jaxb" jaxb:version="2.0">
+	targetNamespace="http://www.sysfera.com" xmlns="http://www.sysfera.com"
+	elementFormDefault="unqualified" xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
+	jaxb:version="2.0">
 
-	<xs:element name="dietDescription">
-		<xs:complexType>
-			<xs:sequence>
-				<xs:element name="goDietConfiguration" type="goDietConfiguration"
-					minOccurs="0" maxOccurs="1" />
-				<xs:element name="infrastructure" type="infrastructure" />
-				<xs:element name="dietServices" type="dietServices" />
-				<xs:element name="dietInfrastructure" type="dietInfrastructure" />
-			</xs:sequence>
-		</xs:complexType>
-	</xs:element>
+
+
+	
+
+
 
 	<xs:complexType name="goDietConfiguration">
 		<xs:sequence>
@@ -50,7 +46,8 @@
 								</xs:annotation>
 								<xs:complexType>
 									<xs:annotation>
-										<xs:documentation>Private key path. By default the public associated key 
+										<xs:documentation>Private key path. By default the public
+											associated key 
 										</xs:documentation>
 									</xs:annotation>
 									<xs:attribute name="path" type="xs:string" use="required" />
@@ -171,7 +168,7 @@
 
 	<xs:complexType name="gateway">
 		<xs:complexContent>
-			<xs:extension base="resource" />
+			<xs:extension base="node" />
 		</xs:complexContent>
 	</xs:complexType>
 
@@ -403,7 +400,7 @@
 
 	<xs:complexType name="config">
 		<xs:attribute name="remoteBinary" type="xs:string" use="required" />
-		<xs:attribute name="server" type="xs:IDREF" use="required">
+		<xs:attribute name="server" type="xs:string" use="required">
 			<xs:annotation>
 				<xs:appinfo>
 					<jaxb:property>

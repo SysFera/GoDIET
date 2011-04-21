@@ -11,36 +11,52 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.sysfera.godiet.exceptions.CommandExecutionException;
+import com.sysfera.godiet.exceptions.generics.RemoteAccessException;
+import com.sysfera.godiet.exceptions.remote.AddKeyException;
 import com.sysfera.godiet.managers.ResourcesManager;
 import com.sysfera.godiet.model.DietResourceManaged;
+import com.sysfera.godiet.model.Path;
 import com.sysfera.godiet.remote.RemoteAccess;
 import com.sysfera.godiet.remote.RemoteAccessMock;
+import com.sysfera.godiet.utils.xml.XMLParser;
 import com.sysfera.godiet.utils.xml.XmlScannerJaxbImpl;
 
 public class CommandInitForwardersTest {
 
 	private Logger log = LoggerFactory.getLogger(getClass());
 	private ResourcesManager rm;
-	private XmlScannerJaxbImpl scanner;
-	LoadXMLImplCommand xmlLoadingCommand;
+	LoadXMLDietCommand xmlLoadingCommand;
 	RemoteAccess remoteAccess = new RemoteAccessMock();
 
 	@Before
 	public void initRM() {
-		scanner = new XmlScannerJaxbImpl();
-		xmlLoadingCommand = new LoadXMLImplCommand();
-		xmlLoadingCommand.setXmlParser(scanner);
-		xmlLoadingCommand.setRemoteAccess(remoteAccess);
+		
+		rm = new ResourcesManager();
+		
+		String configurationFile = "configuration/configuration.xml";
+		InputStream inputStream = getClass().getClassLoader()
+				.getResourceAsStream(configurationFile);
+		InitUtil.initConfig(rm, inputStream);
 
+		xmlLoadingCommand = new LoadXMLDietCommand();
+		xmlLoadingCommand.setRm(rm);
+		xmlLoadingCommand.setXmlParser(new XmlScannerJaxbImpl());
+		xmlLoadingCommand.setRemoteAccess(remoteAccess);
+		
 	}
 
 	@Test
 	public void testCommandInitForwarder1() {
-		String testCaseFile = "3D-5N-3G-3L-1MA-3SED.xml";
+		
+		String platformTestCase ="platform/3D-5N-3G-3L.xml";
+		InputStream inputStreamPlatform  = getClass().getClassLoader()
+		.getResourceAsStream(platformTestCase);
+		InitUtil.initPlatform(rm, inputStreamPlatform);
+		
+		String testCaseFile = "diet/1MA-3SED.xml";
 		InputStream inputStream = getClass().getClassLoader()
 				.getResourceAsStream(testCaseFile);
-		rm = new ResourcesManager();
-		xmlLoadingCommand.setRm(rm);
+
 		xmlLoadingCommand.setXmlInput(inputStream);
 
 		try {
@@ -64,14 +80,20 @@ public class CommandInitForwardersTest {
 		}
 
 	}
-	
+
 	@Test
 	public void testCommandInitForwarder2() {
-		String testCaseFile = "testbed.xml";
+		
+		
+		String platformTestCase ="platform/testbed-platform.xml";
+		InputStream inputStreamPlatform  = getClass().getClassLoader()
+		.getResourceAsStream(platformTestCase);
+		InitUtil.initPlatform(rm, inputStreamPlatform);
+		
+		String testCaseFile = "diet/testbed-diet.xml";
 		InputStream inputStream = getClass().getClassLoader()
 				.getResourceAsStream(testCaseFile);
-		rm = new ResourcesManager();
-		xmlLoadingCommand.setRm(rm);
+
 		xmlLoadingCommand.setXmlInput(inputStream);
 
 		try {
@@ -96,6 +118,5 @@ public class CommandInitForwardersTest {
 		}
 
 	}
-	
-	
+
 }

@@ -8,7 +8,7 @@ import com.sysfera.godiet.users.UserManager;
  * @author phi
  *
  */
-public class GoDiet {
+public class ConfigurationManager {
 
 	private GoDietConfiguration goDietConfiguration;
 	private UserManager userManager;

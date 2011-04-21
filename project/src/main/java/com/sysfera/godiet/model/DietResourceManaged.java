@@ -39,7 +39,7 @@ public class DietResourceManaged extends SoftwareManager {
 	@Override
 	public Resource getPluggedOn() {
 		if (agentManaged != null) {
-			return agentManaged.getConfig().getServer();
+			return agentManaged.getConfig().getServerNode();
 		} else {
 			return null;
 		}

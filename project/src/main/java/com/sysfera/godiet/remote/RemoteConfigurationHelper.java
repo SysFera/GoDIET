@@ -16,8 +16,8 @@ import com.sysfera.godiet.exceptions.remote.CheckException;
 import com.sysfera.godiet.exceptions.remote.LaunchException;
 import com.sysfera.godiet.exceptions.remote.PrepareException;
 import com.sysfera.godiet.exceptions.remote.StopException;
-import com.sysfera.godiet.managers.GoDiet;
-import com.sysfera.godiet.managers.Platform;
+import com.sysfera.godiet.managers.ConfigurationManager;
+import com.sysfera.godiet.managers.PlatformManager;
 import com.sysfera.godiet.model.Path;
 import com.sysfera.godiet.model.SoftwareController;
 import com.sysfera.godiet.model.SoftwareManager;
@@ -39,22 +39,23 @@ public class RemoteConfigurationHelper implements SoftwareController {
 	private Logger log = LoggerFactory.getLogger(getClass());
 
 	private final RemoteAccess remoteAccess;
-	private  GoDietConfiguration configuration;
-	private  Platform platform;
+	private  final GoDietConfiguration configuration;
+	private  PlatformManager platform;
 
 	//TODO: Add config and platform when the loading of dietconfig and platform will be separately done
-	public RemoteConfigurationHelper(RemoteAccess remoteAccess) {
-		if (remoteAccess == null) {
+	public RemoteConfigurationHelper(RemoteAccess remoteAccess,GoDietConfiguration configuration) {
+		if (remoteAccess == null || configuration == null) {
 			log.error("Unable to create remote controller. One of constructor argument is null");
 			throw new IllegalArgumentException(
 					"Unable to create remote controller. One of constructor argument is null");
 		}
 		this.remoteAccess = remoteAccess;
+		this.configuration = configuration;
 
 	}
 	
 	public RemoteConfigurationHelper(RemoteAccess remoteAccess,
-			GoDietConfiguration configuration, Platform platform) {
+			GoDietConfiguration configuration, PlatformManager platform) {
 		if (remoteAccess == null || configuration == null || platform == null) {
 			log.error("Unable to create remote controller. One of constructor argument is null");
 			throw new IllegalArgumentException(
@@ -368,12 +369,10 @@ public class RemoteConfigurationHelper implements SoftwareController {
 
 	}
 
-	public void setPlatform(Platform platform) {
+	public void setPlatform(PlatformManager platform) {
 		this.platform = platform;
 	}
-	public void setConfiguration(GoDietConfiguration configuration) {
-		this.configuration = configuration;
-	}
+
 
 
 	private String getFileName(SoftwareManager resource) {

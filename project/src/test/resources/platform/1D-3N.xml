@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<godiet:platform xmlns:godiet="http://www.sysfera.com"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.sysfera.com ../Platform.xsd">
+	<infrastructure>
+		<domain label="Domain1">
+
+			<storage label="Disk1">
+				<scratch dir="/tmp/scratch_runtime" />
+				<scp server="IPNFS" login="phi" />
+			</storage>
+
+			<node id="Node1" disk="Disk1">
+				<ssh server="IP1" login="phi" />
+				<env>
+					<var name="PATH"
+						value="/usr/local/Diet/build/bin:/usr/local/Diet/build/bin/examples/dmat_manips/:$PATH" />
+					<var name="LD_LIBRARY_PATH" value="/usr/local/Diet/build/lib" />
+				</env>
+			</node>
+			<node id="Node2" disk="Disk1">
+				<ssh server="IP2" login="phi" />
+				<env>
+					<var name="PATH"
+						value="/usr/local/Soft/Diet/bin:/usr/local/Soft/Diet/bin/examples/dmat_manips/:$PATH" />
+					<var name="LD_LIBRARY_PATH" value="/usr/local/Soft/diet/build/lib" />
+				</env>
+			</node>
+			<node id="Node3" disk="Disk1">
+				<ssh server="IP3" login="phi" />
+				<env>
+					<var name="PATH"
+						value="/usr/local/Soft/Diet/bin:/usr/local/Soft/Diet/bin/examples/dmat_manips/:$PATH" />
+					<var name="LD_LIBRARY_PATH" value="/usr/local/Soft/diet/build/lib" />
+				</env>
+			</node>
+		</domain>
+	</infrastructure>
+
+</godiet:platform>

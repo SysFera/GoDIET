@@ -1,55 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<dietDescription xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:noNamespaceSchemaLocation="GoDietNG.xsd">
+<godiet:diet xmlns:godiet="http://www.sysfera.com"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.sysfera.com ../Diet.xsd">
 
-	<goDietConfiguration debug="1" saveStdOut="true"
-		saveStdErr="true" log="true">
-		<localscratch dir="/usr/local/tmp/scratch_godiet" />
-		<user>
-			<ssh>
-				<key path="fakeuser/id_rsa" />
-			</ssh>
-		</user>
-	</goDietConfiguration>
-
-	<infrastructure>
-		<domain label="Domain1">
-
-			<storage label="Disk1">
-				<scratch dir="/tmp/scratch_runtime" />
-				<scp server="IPNFS" login="phi" />
-			</storage>
-
-			<node id="Node1" disk="Disk1">
-				<ssh server="IP1" login="phi" />
-				<env>
-					<var name="PATH"
-						value="/usr/local/Diet/build/bin:/usr/local/Diet/build/bin/examples/dmat_manips/:$PATH" />
-					<var name="LD_LIBRARY_PATH" value="/usr/local/Diet/build/lib" />
-				</env>
-			</node>
-			<node id="Node2" disk="Disk1">
-				<ssh server="IP2" login="phi" />
-				<env>
-					<var name="PATH"
-						value="/usr/local/Soft/Diet/bin:/usr/local/Soft/Diet/bin/examples/dmat_manips/:$PATH" />
-					<var name="LD_LIBRARY_PATH" value="/usr/local/Soft/diet/build/lib" />
-				</env>
-			</node>
-			<node id="Node3" disk="Disk1">
-				<ssh server="IP3" login="phi" />
-				<env>
-					<var name="PATH"
-						value="/usr/local/Soft/Diet/bin:/usr/local/Soft/Diet/bin/examples/dmat_manips/:$PATH" />
-					<var name="LD_LIBRARY_PATH" value="/usr/local/Soft/diet/build/lib" />
-				</env>
-			</node>
-		</domain>
-	</infrastructure>
-
+	
 	<dietServices>
 		<omniNames id="omniNamesDomain1">
 			<config server="Node1" remoteBinary="omniNames" />
+		</omniNames>
+		<omniNames id="omniNamesDomain2">
+			<config server="Node2" remoteBinary="omniNames" />
+		</omniNames>
+		<omniNames id="omniNamesDomain3">
+			<config server="Node4" remoteBinary="omniNames" />
 		</omniNames>
 	</dietServices>
 
@@ -108,4 +71,4 @@
 		</masterAgent>
 	</dietInfrastructure>
 
-</dietDescription>
+</godiet:diet>

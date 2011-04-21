@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<godiet:diet xmlns:godiet="http://www.sysfera.com"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.sysfera.com ../Diet.xsd">
+
+	<dietServices>
+		<omniNames id="omniNamesDomain1">
+			<config server="Node1" remoteBinary="omniNames" />
+		</omniNames>
+		<omniNames id="omniNamesDomain2">
+			<config server="Node2" remoteBinary="omniNames" />
+		</omniNames>
+		<omniNames id="omniNamesDomain3">
+			<config server="Node4" remoteBinary="omniNames" />
+		</omniNames>
+	</dietServices>
+
+	<dietInfrastructure>
+		<masterAgent id="MA1">
+			<config server="Node1" remoteBinary="dietAgent" />
+
+			<sed id="sed1">
+				<config server="Node2" remoteBinary="dmat_manips_server" />
+				<parameters string="T" />
+			</sed>
+			<sed id="sed2">
+				<config server="Node3" remoteBinary="dmat_manips_server" />
+				<parameters string="T" />
+			</sed>
+			<sed id="sed3">
+				<config server="Node4" remoteBinary="dmat_manips_server" />
+				<parameters string="T" />
+			</sed>
+		</masterAgent>
+	</dietInfrastructure>
+</godiet:diet>

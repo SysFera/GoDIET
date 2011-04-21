@@ -13,6 +13,7 @@ import com.sysfera.godiet.exceptions.CommandExecutionException;
 import com.sysfera.godiet.managers.ResourcesManager;
 import com.sysfera.godiet.remote.RemoteAccess;
 import com.sysfera.godiet.remote.RemoteAccessMock;
+import com.sysfera.godiet.utils.xml.XMLParser;
 import com.sysfera.godiet.utils.xml.XmlScannerJaxbImpl;
 
 public class LaunchMockPlatformIntegrationTest {
@@ -22,24 +23,41 @@ public class LaunchMockPlatformIntegrationTest {
 
 	@Before
 	public void init() {
-		// Init RM
-		String testCaseFile = "testbed.xml";
-		InputStream inputStream = getClass().getClassLoader()
-				.getResourceAsStream(testCaseFile);
 		rm = new ResourcesManager();
-		XmlScannerJaxbImpl scanner = new XmlScannerJaxbImpl();
-		LoadXMLImplCommand xmlLoadingCommand = new LoadXMLImplCommand();
-		xmlLoadingCommand.setRm(rm);
-		xmlLoadingCommand.setXmlInput(inputStream);
-		xmlLoadingCommand.setXmlParser(scanner);
-		xmlLoadingCommand.setRemoteAccess(remoteAccess);
 
-		try {
-			xmlLoadingCommand.execute();
+		// Loading configuration
+		{
+			String configurationFile = "configuration/configuration.xml";
 
-		} catch (CommandExecutionException e) {
-			log.error("Test Fail", e);
-			Assert.fail(e.getMessage());
+			InputStream inputStream = getClass().getClassLoader()
+					.getResourceAsStream(configurationFile);
+			InitUtil.initConfig(rm, inputStream);
+		}
+		{
+			String platformTestCase = "platform/testbed-platform.xml";
+			InputStream inputStreamPlatform = getClass().getClassLoader()
+					.getResourceAsStream(platformTestCase);
+			InitUtil.initPlatform(rm, inputStreamPlatform);
+		}
+		{
+			// Init RM
+			String testCaseFile = "diet/testbed-diet.xml";
+			InputStream inputStream = getClass().getClassLoader()
+					.getResourceAsStream(testCaseFile);
+			XmlScannerJaxbImpl scanner = new XmlScannerJaxbImpl();
+			LoadXMLDietCommand xmlLoadingCommand = new LoadXMLDietCommand();
+			xmlLoadingCommand.setRm(rm);
+			xmlLoadingCommand.setXmlInput(inputStream);
+			xmlLoadingCommand.setXmlParser(scanner);
+			xmlLoadingCommand.setRemoteAccess(remoteAccess);
+
+			try {
+				xmlLoadingCommand.execute();
+
+			} catch (CommandExecutionException e) {
+				log.error("Test Fail", e);
+				Assert.fail(e.getMessage());
+			}
 		}
 
 

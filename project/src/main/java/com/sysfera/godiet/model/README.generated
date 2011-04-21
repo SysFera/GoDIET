@@ -9,6 +9,9 @@ In Software.java
 		if (parent instanceof Software)
 			this.parent = (Software) parent;
 	}
+		public Software getParent() {
+		return parent;
+	}
 	
 In Resource.java:
 	@XmlTransient
@@ -19,7 +22,9 @@ In Resource.java:
     		else if (parent instanceof Domain)
     			this.domain = (Domain) parent;
     	}
-    	
+    		public Domain getDomain() {
+		return domain;
+	}
     	  @Override
 	public int hashCode() {
 		final int prime = 31;
@@ -50,3 +55,9 @@ In Resource.java:
 			return false;
 		return true;
 	}
+	
+
+Get the Diet, Platform and Configuration generated with the diet.xsd platform.xsd configuration.xsd.
+Add this 3 class in objectFactory
+Add NodeServer in Config
+

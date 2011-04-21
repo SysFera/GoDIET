@@ -10,26 +10,20 @@ import org.slf4j.LoggerFactory;
 import com.sysfera.godiet.exceptions.CommandExecutionException;
 import com.sysfera.godiet.exceptions.DietResourceCreationException;
 import com.sysfera.godiet.exceptions.XMLParseException;
-import com.sysfera.godiet.exceptions.graph.GraphDataException;
-import com.sysfera.godiet.managers.Diet;
-import com.sysfera.godiet.managers.Platform;
+import com.sysfera.godiet.managers.DietManager;
 import com.sysfera.godiet.managers.ResourcesManager;
-import com.sysfera.godiet.model.SoftwareController;
 import com.sysfera.godiet.model.factories.LocalAgentFactory;
 import com.sysfera.godiet.model.factories.MasterAgentFactory;
 import com.sysfera.godiet.model.factories.OmniNamesFactory;
 import com.sysfera.godiet.model.factories.SedFactory;
-import com.sysfera.godiet.model.generated.Cluster;
-import com.sysfera.godiet.model.generated.DietDescription;
+import com.sysfera.godiet.model.generated.Config;
+import com.sysfera.godiet.model.generated.Diet;
 import com.sysfera.godiet.model.generated.DietInfrastructure;
 import com.sysfera.godiet.model.generated.DietServices;
-import com.sysfera.godiet.model.generated.Domain;
-import com.sysfera.godiet.model.generated.GoDietConfiguration;
-import com.sysfera.godiet.model.generated.Infrastructure;
-import com.sysfera.godiet.model.generated.Link;
 import com.sysfera.godiet.model.generated.LocalAgent;
 import com.sysfera.godiet.model.generated.MasterAgent;
 import com.sysfera.godiet.model.generated.OmniNames;
+import com.sysfera.godiet.model.generated.Resource;
 import com.sysfera.godiet.model.generated.Sed;
 import com.sysfera.godiet.remote.RemoteAccess;
 import com.sysfera.godiet.remote.RemoteConfigurationHelper;
@@ -43,7 +37,7 @@ import com.sysfera.godiet.utils.xml.XMLParser;
  * @author phi
  * 
  */
-public class LoadXMLImplCommand implements Command {
+public class LoadXMLDietCommand implements Command {
 	private Logger log = LoggerFactory.getLogger(getClass());
 
 	private ResourcesManager rm;
@@ -54,12 +48,8 @@ public class LoadXMLImplCommand implements Command {
 	private LocalAgentFactory laFactory;
 	private SedFactory sedFactory;
 	private OmniNamesFactory omFactory;
-	
 
 	private RemoteAccess remoteAccess;
-
-
-	
 
 	@Override
 	public String getDescription() {
@@ -71,21 +61,23 @@ public class LoadXMLImplCommand implements Command {
 		log.debug("Enter in "
 				+ Thread.currentThread().getStackTrace()[2].getMethodName()
 				+ " method");
-		if (rm == null || xmlScanner == null || xmlInput == null
-				|| remoteAccess == null ) {
+		if (rm == null
+				|| rm.getGodietConfiguration().getGoDietConfiguration() == null
+				|| xmlScanner == null || xmlInput == null
+				|| remoteAccess == null) {
 			throw new CommandExecutionException(getClass().getName()
 					+ " not initialized correctly");
 		}
-		RemoteConfigurationHelper softwareController = new RemoteConfigurationHelper(remoteAccess);
+		RemoteConfigurationHelper softwareController = new RemoteConfigurationHelper(
+				remoteAccess, rm.getGodietConfiguration()
+						.getGoDietConfiguration());
 		this.maFactory = new MasterAgentFactory(softwareController);
 		this.laFactory = new LocalAgentFactory(softwareController);
 		this.sedFactory = new SedFactory(softwareController);
 		this.omFactory = new OmniNamesFactory(softwareController);
 		try {
-			DietDescription dietDescription = xmlScanner
-					.buildDietModel(xmlInput);
-			load(dietDescription);
-			softwareController.setConfiguration(rm.getGodietConfiguration().getGoDietConfiguration());
+			Diet dietDescription = xmlScanner.buildDietModel(xmlInput);
+			load(rm.getDietModel(), dietDescription);
 			softwareController.setPlatform(rm.getPlatformModel());
 		} catch (IOException e) {
 			throw new CommandExecutionException("XML read error", e);
@@ -127,59 +119,19 @@ public class LoadXMLImplCommand implements Command {
 	}
 
 	/**
-	 * Initialize goDiet configuration Initialize platform (Physical resource)
-	 * Initialize diet platform (diet agents, diet services, seds) Reset all
-	 * model and load DietConfigurtion
+	 * Initialize platform (Physical resource) Initialize diet platform (diet
+	 * agents, diet services, seds) Reset all model .
 	 * 
 	 * @throws DietResourceCreationException
 	 * @throws CommandExecutionException
 	 */
-	private void load(DietDescription dietConfiguration)
+	private void load(DietManager dietManager, Diet dietConfiguration)
 			throws DietResourceCreationException, CommandExecutionException {
-		if (dietConfiguration != null) {
-			this.rm.setGoDietConfiguration(dietConfiguration
-					.getGoDietConfiguration());
-			initPlatform(dietConfiguration.getInfrastructure());
-			initDietPlatform(dietConfiguration.getDietInfrastructure(),
-					dietConfiguration.getDietServices());
-		}
 
-	}
+		initDietPlatform(dietManager,
+				dietConfiguration.getDietInfrastructure(),
+				dietConfiguration.getDietServices());
 
-	/**
-	 * 
-	 * @param infrastructure
-	 * @throws CommandExecutionException
-	 */
-	private void initPlatform(Infrastructure infrastructure)
-			throws CommandExecutionException {
-		List<Domain> domains = infrastructure.getDomain();
-		this.rm.getPlatformModel().addDomains(domains);
-		if (domains != null) {
-			for (Domain domain : domains) {
-				this.rm.getPlatformModel().addGateways(domain.getGateway());
-				this.rm.getPlatformModel().addNodes(domain.getNode());
-				List<Cluster> clusters = domain.getCluster();
-				this.rm.getPlatformModel().addClusters(clusters);
-				if (clusters != null) {
-					for (Cluster cluster : clusters) {
-						this.rm.getPlatformModel().addNodes(
-								cluster.getComputingNode());
-						this.rm.getPlatformModel().addFrontends(
-								cluster.getFronted());
-					}
-				}
-			}
-		}
-
-		List<Link> links = infrastructure.getLink();
-		try {
-			this.rm.getPlatformModel().addLinks(links);
-		} catch (GraphDataException e) {
-
-			throw new CommandExecutionException(
-					"Unable to add links. Error in the model description", e);
-		}
 	}
 
 	/**
@@ -189,14 +141,20 @@ public class LoadXMLImplCommand implements Command {
 	 * @param dietServices
 	 * @throws DietResourceCreationException
 	 */
-	private void initDietPlatform(DietInfrastructure dietHierarchy,
-			DietServices dietServices) throws DietResourceCreationException {
+	private void initDietPlatform(DietManager dietManager,
+			DietInfrastructure dietHierarchy, DietServices dietServices)
+			throws DietResourceCreationException {
 		List<OmniNames> omniNames = dietServices.getOmniNames();
 		for (OmniNames omniName : omniNames) {
-			this.rm.getDietModel().addOmniName(omFactory.create(omniName));
+			Config c = omniName.getConfig();
+			Resource r = this.rm.getPlatformModel().getResource(
+					c.getServer());
+			if(r == null) throw new DietResourceCreationException("Unable to find the physical resource "+c.getServer());
+			c.setServerNode(r);
+			dietManager.addOmniName(omFactory.create(omniName));
 
 		}
-		initMasterAgent(dietHierarchy.getMasterAgent());
+		initMasterAgent(dietManager, dietHierarchy.getMasterAgent());
 
 	}
 
@@ -207,16 +165,26 @@ public class LoadXMLImplCommand implements Command {
 	 *            of masterAgent
 	 * @throws DietResourceCreationException
 	 */
-	private void initMasterAgent(List<MasterAgent> masterAgents)
+	private void initMasterAgent(DietManager dietManager,
+			List<MasterAgent> masterAgents)
 			throws DietResourceCreationException {
 		if (masterAgents != null) {
 			for (MasterAgent masterAgent : masterAgents) {
-				OmniNames omniNames = this.rm.getDietModel().getOmniName(
-						masterAgent.getConfig().getServer().getDomain());
-				this.rm.getDietModel().addMasterAgent(
-						maFactory.create(masterAgent, omniNames));
-				initSeds(masterAgent.getSed());
-				initLocalAgents(masterAgent.getLocalAgent());
+				Config c = masterAgent.getConfig();
+				Resource r = this.rm.getPlatformModel().getResource(
+						c.getServer());
+				if(r == null) throw new DietResourceCreationException("Unable to find the physical resource "+c.getServer());
+				c.setServerNode(r);
+				OmniNames omniNames = dietManager.getOmniName(masterAgent
+						.getConfig().getServerNode().getDomain());
+				if(omniNames == null) throw new DietResourceCreationException("Unable to find the omniNames for domain "+masterAgent.getConfig()
+						.getServerNode().getDomain().getLabel() + ". Master agent id: "+masterAgent.getId());
+
+
+				dietManager.addMasterAgent(maFactory.create(masterAgent,
+						omniNames));
+				initSeds(dietManager, masterAgent.getSed());
+				initLocalAgents(dietManager, masterAgent.getLocalAgent());
 			}
 
 		}
@@ -228,17 +196,24 @@ public class LoadXMLImplCommand implements Command {
 	 * @param localAgent
 	 * @throws DietResourceCreationException
 	 */
-	private void initLocalAgents(List<LocalAgent> localAgents)
-			throws DietResourceCreationException {
+	private void initLocalAgents(DietManager dietManager,
+			List<LocalAgent> localAgents) throws DietResourceCreationException {
 		if (localAgents != null) {
 			for (LocalAgent localAgent : localAgents) {
-				OmniNames omniNames = this.rm.getDietModel().getOmniName(
-						localAgent.getConfig().getServer().getDomain());
+				Config c = localAgent.getConfig();
+				Resource r = this.rm.getPlatformModel().getResource(
+						c.getServer());
+				if(r == null) throw new DietResourceCreationException("Unable to find the physical resource "+c.getServer());
+				c.setServerNode(r);
+				OmniNames omniNames = dietManager.getOmniName(localAgent
+						.getConfig().getServerNode().getDomain());
+				if(omniNames == null) throw new DietResourceCreationException("Unable to find the omniNames for domain "+localAgent.getConfig()
+						.getServerNode().getDomain().getLabel() + ". LocalAgent id: "+localAgent.getId());
 
-				this.rm.getDietModel().addLocalAgent(
-						laFactory.create(localAgent, omniNames));
-				initSeds(localAgent.getSed());
-				initLocalAgents(localAgent.getLocalAgent());
+				dietManager.addLocalAgent(laFactory.create(localAgent,
+						omniNames));
+				initSeds(dietManager, localAgent.getSed());
+				initLocalAgents(dietManager, localAgent.getLocalAgent());
 			}
 
 		}
@@ -249,14 +224,21 @@ public class LoadXMLImplCommand implements Command {
 	 * @param sed
 	 * @throws DietResourceCreationException
 	 */
-	private void initSeds(List<Sed> seds) throws DietResourceCreationException {
+	private void initSeds(DietManager dietManager, List<Sed> seds)
+			throws DietResourceCreationException {
 		if (seds != null) {
 			for (Sed sed : seds) {
-				OmniNames omniNames = this.rm.getDietModel().getOmniName(
-						sed.getConfig().getServer().getDomain());
+				Config c = sed.getConfig();
+				Resource r = this.rm.getPlatformModel().getResource(
+						c.getServer());
+				if(r == null) throw new DietResourceCreationException("Unable to find the physical resource "+c.getServer());
+				c.setServerNode(r);
+				OmniNames omniNames = dietManager.getOmniName(sed.getConfig()
+						.getServerNode().getDomain());
+				if(omniNames == null) throw new DietResourceCreationException("Unable to find the omniNames for domain "+sed.getConfig()
+						.getServerNode().getDomain().getLabel() + " Sed id: "+sed.getId());
 
-				this.rm.getDietModel()
-						.addSed(sedFactory.create(sed, omniNames));
+				dietManager.addSed(sedFactory.create(sed, omniNames));
 			}
 
 		}
@@ -266,6 +248,5 @@ public class LoadXMLImplCommand implements Command {
 	public void setRemoteAccess(RemoteAccess remoteAccess) {
 		this.remoteAccess = remoteAccess;
 	}
-
 
 }

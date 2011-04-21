@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	targetNamespace="http://www.sysfera.com" xmlns="http://www.sysfera.com"
+	elementFormDefault="unqualified">
+	<xs:include schemaLocation="GoDietNG.xsd" />
+
+
+	<xs:element name="diet">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="dietServices" type="dietServices" />
+				<xs:element name="dietInfrastructure" type="dietInfrastructure" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+</xs:schema>

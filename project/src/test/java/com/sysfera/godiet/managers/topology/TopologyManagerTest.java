@@ -10,16 +10,19 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.sysfera.godiet.command.LoadXMLImplCommand;
+import com.sysfera.godiet.command.InitUtil;
+import com.sysfera.godiet.command.LoadXMLConfigurationCommand;
+import com.sysfera.godiet.command.LoadXMLDietCommand;
 import com.sysfera.godiet.exceptions.CommandExecutionException;
 import com.sysfera.godiet.exceptions.generics.PathException;
-import com.sysfera.godiet.managers.Platform;
+import com.sysfera.godiet.managers.PlatformManager;
 import com.sysfera.godiet.managers.ResourcesManager;
 import com.sysfera.godiet.model.Path;
 import com.sysfera.godiet.model.generated.Node;
 import com.sysfera.godiet.model.generated.Resource;
 import com.sysfera.godiet.remote.RemoteAccess;
 import com.sysfera.godiet.remote.RemoteAccessMock;
+import com.sysfera.godiet.utils.xml.XMLParser;
 import com.sysfera.godiet.utils.xml.XmlScannerJaxbImpl;
 
 public class TopologyManagerTest {
@@ -29,30 +32,50 @@ public class TopologyManagerTest {
 
 	@Before
 	public void setupTest() {
-		String testCaseFile = "6D-10N-7G-3L-2MA-1LA-6SED.xml";
-		InputStream inputStream = getClass().getClassLoader()
-				.getResourceAsStream(testCaseFile);
 		rm = new ResourcesManager();
-		XmlScannerJaxbImpl scanner = new XmlScannerJaxbImpl();
-		LoadXMLImplCommand xmlLoadingCommand = new LoadXMLImplCommand();
-		xmlLoadingCommand.setRm(rm);
-		xmlLoadingCommand.setXmlInput(inputStream);
-		xmlLoadingCommand.setXmlParser(scanner);
-		xmlLoadingCommand.setRemoteAccess(remoteAccess);
-		try {
-			xmlLoadingCommand.execute();
 
-		} catch (CommandExecutionException e) {
-			log.error("Test Fail", e);
-			Assert.fail();
+		// Loading configuration
+		{
+			String configurationFile = "configuration/configuration.xml";
+
+			InputStream inputStream = getClass().getClassLoader()
+					.getResourceAsStream(configurationFile);
+			InitUtil.initConfig(rm, inputStream);
 		}
+		{
+			String platformTestCase = "platform/6D-10N-7G-3L.xml";
+			InputStream inputStreamPlatform = getClass().getClassLoader()
+					.getResourceAsStream(platformTestCase);
+			InitUtil.initPlatform(rm, inputStreamPlatform);
+		}
+		{
+			// Init RM
+			String testCaseFile = "diet/2MA-1LA-6SED.xml";
+			InputStream inputStream = getClass().getClassLoader()
+					.getResourceAsStream(testCaseFile);
+			XmlScannerJaxbImpl scanner = new XmlScannerJaxbImpl();
+			LoadXMLDietCommand xmlLoadingCommand = new LoadXMLDietCommand();
+			xmlLoadingCommand.setRm(rm);
+			xmlLoadingCommand.setXmlInput(inputStream);
+			xmlLoadingCommand.setXmlParser(scanner);
+			xmlLoadingCommand.setRemoteAccess(remoteAccess);
+
+			try {
+				xmlLoadingCommand.execute();
+
+			} catch (CommandExecutionException e) {
+				log.error("Test Fail", e);
+				Assert.fail(e.getMessage());
+			}
+		}
+		
 
 	}
 
 	@Test
 	public void topologyTest() {
 		// Correct complex path
-		Platform physPlatform = rm.getPlatformModel();
+		PlatformManager physPlatform = rm.getPlatformModel();
 		Node sourceNode = (Node) physPlatform.getResource("Node1");
 		Node destinationNode = (Node) physPlatform.getResource("Node5");
 

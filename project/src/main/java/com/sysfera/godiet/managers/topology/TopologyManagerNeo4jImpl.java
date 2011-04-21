@@ -25,7 +25,7 @@ import org.slf4j.LoggerFactory;
 
 import com.sysfera.godiet.exceptions.generics.PathException;
 import com.sysfera.godiet.exceptions.graph.GraphDataException;
-import com.sysfera.godiet.managers.Platform;
+import com.sysfera.godiet.managers.PlatformManager;
 import com.sysfera.godiet.managers.topology.PathManager.PathDesc;
 import com.sysfera.godiet.model.Path;
 import com.sysfera.godiet.model.generated.Domain;
@@ -54,9 +54,9 @@ public class TopologyManagerNeo4jImpl implements TopologyManager {
 	// Associate a list of resource(value) for each domain(key) given by name.
 	private final Map<String, Set<Resource>> resourcesDomain;
 
-	private final Platform platform;
+	private final PlatformManager platform;
 
-	public TopologyManagerNeo4jImpl(Platform platform) {
+	public TopologyManagerNeo4jImpl(PlatformManager platform) {
 		this.platform = platform;
 		this.resourcesDomain = new HashMap<String, Set<Resource>>();
 		this.pathManager = new PathManager();
@@ -168,7 +168,7 @@ public class TopologyManagerNeo4jImpl implements TopologyManager {
 		 *             Fatal. Hope never appear (Inconsitent data model)
 		 */
 		static Path build(final org.neo4j.graphdb.Path neo4JPath,
-				final Platform platform) throws GraphDataException {
+				final PlatformManager platform) throws GraphDataException {
 			Path path = new Path();
 			LinkedHashSet<Resource> res = new LinkedHashSet<Resource>();
 			Iterable<Node> nodes = neo4JPath.nodes();

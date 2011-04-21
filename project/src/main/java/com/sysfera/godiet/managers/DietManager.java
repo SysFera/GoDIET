@@ -19,7 +19,7 @@ import com.sysfera.godiet.model.generated.OmniNames;
  * @author phi
  * 
  */
-public class Diet {
+public class DietManager {
 	private Logger log = LoggerFactory.getLogger(getClass());
 
 	private final List<DietResourceManaged> masterAgents;
@@ -28,7 +28,7 @@ public class Diet {
 	private final List<DietServiceManaged> omninames;
 	private final List<DietResourceManaged> forwaders;
 
-	public Diet() {
+	public DietManager() {
 		this.masterAgents = new ArrayList<DietResourceManaged>();
 		this.localAgents = new ArrayList<DietResourceManaged>();
 		this.seds = new ArrayList<DietResourceManaged>();

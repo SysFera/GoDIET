@@ -27,7 +27,7 @@ import com.sysfera.godiet.model.generated.Resource;
  * @author phi
  * 
  */
-public class Platform {
+public class PlatformManager {
 	private Logger log = LoggerFactory.getLogger(getClass());
 
 	// Reference all nodes,gateways, fronted by is id.
@@ -41,7 +41,7 @@ public class Platform {
 	private final List<Domain> domains;
 	private final TopologyManager topologyManager;
 
-	public Platform() {
+	public PlatformManager() {
 		this.topologyManager = new TopologyManagerNeo4jImpl(this);
 		this.domains = new ArrayList<Domain>();
 		this.nodes = new ArrayList<Node>();
