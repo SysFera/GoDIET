@@ -4,6 +4,9 @@
 	<groupId>com.sysfera</groupId>
 	<artifactId>goDiet</artifactId>
 	<version>0.0.8-SNAPSHOT</version>
+	<properties>
+		<spring.graph.version>1.0.0.M2</spring.graph.version>
+	</properties>
 
 	<parent>
 		<groupId>com.sysfera</groupId>
@@ -30,7 +33,7 @@
 		<dependency>
 			<groupId>org.springframework.data</groupId>
 			<artifactId>spring-data-neo4j</artifactId>
-			<version>1.0.0.M2</version>
+			<version>${spring.graph.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.commons</groupId>
