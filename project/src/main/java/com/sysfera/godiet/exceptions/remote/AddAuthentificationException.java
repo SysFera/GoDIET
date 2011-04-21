@@ -5,22 +5,22 @@ package com.sysfera.godiet.exceptions.remote;
  * @author phi
  *
  */
-public class AddKeyException extends Exception {
+public class AddAuthentificationException extends Exception {
 	/*
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 
 	
-	public AddKeyException() {
+	public AddAuthentificationException() {
 		super();
 	}
 	
-	public AddKeyException(String message)
+	public AddAuthentificationException(String message)
 	{
 		super(message);
 	}
-	public AddKeyException(String message,Exception e)
+	public AddAuthentificationException(String message,Exception e)
 	{
 		super(message,e);
 	}

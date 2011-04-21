@@ -13,7 +13,7 @@ import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
 import com.jcraft.jsch.UserInfo;
 import com.sysfera.godiet.exceptions.generics.RemoteAccessException;
-import com.sysfera.godiet.exceptions.remote.AddKeyException;
+import com.sysfera.godiet.exceptions.remote.AddAuthentificationException;
 import com.sysfera.godiet.model.Path;
 import com.sysfera.godiet.model.generated.Resource;
 import com.sysfera.godiet.model.generated.Ssh;
@@ -202,12 +202,12 @@ public class ChannelManagerJsch {
 		
 	}
 
-	public void addIdentity(String privateKey, String publicKey, String passphrase) throws AddKeyException {
+	public void addIdentity(String privateKey, String publicKey, String passphrase) throws AddAuthentificationException {
 		try {
 			jsch.addIdentity(privateKey, publicKey, passphrase.getBytes());
 		} catch (JSchException e) {
 
-			throw new AddKeyException("Unable to add key", e);
+			throw new AddAuthentificationException("Unable to add key", e);
 		} finally {
 			// Give to GC
 			passphrase = null;

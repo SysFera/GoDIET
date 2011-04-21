@@ -3,7 +3,7 @@ package com.sysfera.godiet.remote;
 import java.io.File;
 
 import com.sysfera.godiet.exceptions.generics.RemoteAccessException;
-import com.sysfera.godiet.exceptions.remote.AddKeyException;
+import com.sysfera.godiet.exceptions.remote.AddAuthentificationException;
 import com.sysfera.godiet.exceptions.remote.CheckException;
 import com.sysfera.godiet.model.Path;
 
@@ -52,12 +52,12 @@ public interface RemoteAccess {
 	 * @param pubKey
 	 *            Public key associated to private key. Could be null if
 	 * @param passphrase
-	 * @throws AddKeyException
+	 * @throws AddAuthentificationException
 	 *             if error when key insertion. Unable to find private key,
 	 *             public key or bad password TODO Check
 	 */
 	public abstract void addItentity(String privKey, String pubKey, String passphrase)
-			throws AddKeyException;
+			throws AddAuthentificationException;
 
 	
 	/**
