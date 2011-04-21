@@ -87,10 +87,11 @@ extends Shell {
 		registrar.call(this)
 	}
 	public 	ResourcesManager getRm() {
-		if(rm == null) {
-			rm = new ResourcesManager()
-		}
 		return rm
+	}
+	public void setRm()
+	{
+		this.rm = rm
 	}
 	private static Closure createDefaultRegistrar() {
 		return { shell ->

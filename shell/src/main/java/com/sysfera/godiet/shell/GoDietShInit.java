@@ -1,11 +1,21 @@
 package com.sysfera.godiet.shell;
 
-import com.sysfera.godiet.command.InitGoDietCommand;
+import com.sysfera.godiet.command.init.InitGoDietCommand;
 import com.sysfera.godiet.exceptions.CommandExecutionException;
 
-public class GoDietInit {
+/**
+ * Helper to init the shell command
+ * 
+ * @author phi
+ *
+ */
+public class GoDietShInit {
 	
-	public GoDietInit() {
+	/**
+	 * Load GoDietConfiguration
+	 * 
+	 */
+	public void init() {
 		InitGoDietCommand init = new InitGoDietCommand();
 		try {
 			init.execute();

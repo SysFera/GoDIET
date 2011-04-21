@@ -25,7 +25,7 @@ import com.sysfera.godiet.command.stop.StopForwardersCommand;
 import com.sysfera.godiet.command.stop.StopServicesCommand;
 import com.sysfera.godiet.command.xml.LoadXMLDietCommand;
 import com.sysfera.godiet.exceptions.CommandExecutionException;
-import com.sysfera.godiet.exceptions.remote.AddKeyException;
+import com.sysfera.godiet.exceptions.remote.AddAuthentificationException;
 import com.sysfera.godiet.managers.ResourcesManager;
 import com.sysfera.godiet.remote.ssh.RemoteAccessJschImpl;
 import com.sysfera.godiet.utils.xml.XmlScannerJaxbImpl;
@@ -90,14 +90,14 @@ public class LaunchPlatformIntegrationTest {
 			Assert.fail("Unable to load ssh key" + fakeKey);
 		try {
 			remoteAccess.addItentity(urlFile.getFile(), null, "godiet");
-		} catch (AddKeyException e) {
+		} catch (AddAuthentificationException e) {
 			Assert.fail("Unable to load testbed key");
 		}
 
 		try {
 			// Here add a key to access on testbed
 			remoteAccess.addItentity("/home/phi/tmp/id_dsa", null, "");
-		} catch (AddKeyException e) {
+		} catch (AddAuthentificationException e) {
 			log.error("unable to load your key");
 		}
 

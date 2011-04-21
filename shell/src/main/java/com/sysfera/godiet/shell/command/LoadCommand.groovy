@@ -7,7 +7,8 @@ import jline.FileNameCompletor
 import org.codehaus.groovy.tools.shell.CommandSupport
 import org.codehaus.groovy.tools.shell.Shell
 import java.lang.Integer
-import com.sysfera.godiet.command.LoadXMLImplCommand;
+
+import com.sysfera.godiet.command.xml.LoadXMLDietCommand;
 import com.sysfera.godiet.exceptions.CommandExecutionException;
 import com.sysfera.godiet.managers.ResourcesManager;
 import com.sysfera.godiet.shell.GoDietSh;
@@ -70,7 +71,7 @@ extends CommandSupport {
 		ResourcesManager rm = ((GoDietSh)shell).rm
 		assert rm != null;
 		XmlScannerJaxbImpl scanner = new XmlScannerJaxbImpl();
-		LoadXMLImplCommand xmlLoadingCommand = new LoadXMLImplCommand();
+		LoadXMLDietCommand xmlLoadingCommand = new LoadXMLDietCommand();
 		xmlLoadingCommand.setRm(rm);
 		xmlLoadingCommand.setXmlInput(uc.getInputStream());
 		xmlLoadingCommand.setXmlParser(scanner);
