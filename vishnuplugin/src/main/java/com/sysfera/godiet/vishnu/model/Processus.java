@@ -4,6 +4,14 @@ import java.util.Date;
 
 public class Processus {
 
+	private String nomVishnu;
+	private String status;
+	//The last information update (status)
+	private Date timestamp; 
+	private PhysicalResource pluggedOn;
+	
+	//Pour lancer le sed
+	private String scriptCommand;
 	
 	private String idDiet;
 	public String getIdDiet() {
@@ -16,6 +24,7 @@ public class Processus {
 	}
 
 
+	//UMS, FMS, TMS, IMS ....
 	public String getNomVishnu() {
 		return nomVishnu;
 	}
@@ -26,6 +35,7 @@ public class Processus {
 	}
 
 
+	//UP or DOWN DELETED
 	public String getStatus() {
 		return status;
 	}
@@ -56,13 +66,7 @@ public class Processus {
 	}
 
 
-	private String nomVishnu;
-	private String status;
-	//The last information update (status)
-	private Date timestamp; 
-	
-	
-	private PhysicalResource pluggedOn;
+
 	
 	
 }
