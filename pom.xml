@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.sysfera</groupId>
 	<artifactId>goDiet-parent</artifactId>
-	<version>0.0.8-SNAPSHOT</version>
+	<version>0.0.9-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<modules>
 		<module>project</module>
@@ -12,6 +12,7 @@
 	</modules>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<spring.version>3.0.5.RELEASE</spring.version>
 	</properties>
 
 	<pluginRepositories>
@@ -26,7 +27,7 @@
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context</artifactId>
-			<version>3.0.0.RELEASE</version>
+			<version>${spring.version}</version>
 			<scope>runtime</scope>
 			<exclusions>
 				<exclusion>
