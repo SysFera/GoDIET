@@ -1,9 +1,12 @@
 package com.sysfera.godiet.shell.command.user
 
-import org.codehaus.groovy.tools.shell.CommandRegistry
-import org.codehaus.groovy.tools.shell.CommandSupport
-import org.codehaus.groovy.tools.shell.Shell
-import org.codehaus.groovy.tools.shell.util.SimpleCompletor
+import java.util.List;
+import java.util.SortedSet;
+
+import org.codehaus.groovy.tools.shell.CommandRegistry;
+import org.codehaus.groovy.tools.shell.CommandSupport;
+import org.codehaus.groovy.tools.shell.Shell;
+import org.codehaus.groovy.tools.shell.util.SimpleCompletor;
 
 class UserContext  extends CommandSupport {
 	UserContext(final Shell shell) {

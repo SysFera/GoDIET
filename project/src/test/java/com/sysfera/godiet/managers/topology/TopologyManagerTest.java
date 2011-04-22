@@ -10,8 +10,7 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.sysfera.godiet.command.InitUtil;
-import com.sysfera.godiet.command.xml.LoadXMLConfigurationCommand;
+import com.sysfera.godiet.command.init.util.XMLLoadingHelper;
 import com.sysfera.godiet.command.xml.LoadXMLDietCommand;
 import com.sysfera.godiet.exceptions.CommandExecutionException;
 import com.sysfera.godiet.exceptions.generics.PathException;
@@ -22,7 +21,6 @@ import com.sysfera.godiet.model.generated.Node;
 import com.sysfera.godiet.model.generated.Resource;
 import com.sysfera.godiet.remote.RemoteAccess;
 import com.sysfera.godiet.remote.RemoteAccessMock;
-import com.sysfera.godiet.utils.xml.XMLParser;
 import com.sysfera.godiet.utils.xml.XmlScannerJaxbImpl;
 
 public class TopologyManagerTest {
@@ -33,42 +31,40 @@ public class TopologyManagerTest {
 	@Before
 	public void setupTest() {
 		rm = new ResourcesManager();
+		try {
+			// Loading configuration
+			{
+				String configurationFile = "configuration/configuration.xml";
 
-		// Loading configuration
-		{
-			String configurationFile = "configuration/configuration.xml";
+				InputStream inputStream = getClass().getClassLoader()
+						.getResourceAsStream(configurationFile);
+				XMLLoadingHelper.initConfig(rm, inputStream);
+			}
+			{
+				String platformTestCase = "platform/6D-10N-7G-3L.xml";
+				InputStream inputStreamPlatform = getClass().getClassLoader()
+						.getResourceAsStream(platformTestCase);
+				XMLLoadingHelper.initPlatform(rm, inputStreamPlatform);
+			}
+			{
+				// Init RM
+				String testCaseFile = "diet/2MA-1LA-6SED.xml";
+				InputStream inputStream = getClass().getClassLoader()
+						.getResourceAsStream(testCaseFile);
+				XmlScannerJaxbImpl scanner = new XmlScannerJaxbImpl();
+				LoadXMLDietCommand xmlLoadingCommand = new LoadXMLDietCommand();
+				xmlLoadingCommand.setRm(rm);
+				xmlLoadingCommand.setXmlInput(inputStream);
+				xmlLoadingCommand.setXmlParser(scanner);
+				xmlLoadingCommand.setRemoteAccess(remoteAccess);
 
-			InputStream inputStream = getClass().getClassLoader()
-					.getResourceAsStream(configurationFile);
-			InitUtil.initConfig(rm, inputStream);
-		}
-		{
-			String platformTestCase = "platform/6D-10N-7G-3L.xml";
-			InputStream inputStreamPlatform = getClass().getClassLoader()
-					.getResourceAsStream(platformTestCase);
-			InitUtil.initPlatform(rm, inputStreamPlatform);
-		}
-		{
-			// Init RM
-			String testCaseFile = "diet/2MA-1LA-6SED.xml";
-			InputStream inputStream = getClass().getClassLoader()
-					.getResourceAsStream(testCaseFile);
-			XmlScannerJaxbImpl scanner = new XmlScannerJaxbImpl();
-			LoadXMLDietCommand xmlLoadingCommand = new LoadXMLDietCommand();
-			xmlLoadingCommand.setRm(rm);
-			xmlLoadingCommand.setXmlInput(inputStream);
-			xmlLoadingCommand.setXmlParser(scanner);
-			xmlLoadingCommand.setRemoteAccess(remoteAccess);
-
-			try {
 				xmlLoadingCommand.execute();
 
-			} catch (CommandExecutionException e) {
-				log.error("Test Fail", e);
-				Assert.fail(e.getMessage());
 			}
+		} catch (CommandExecutionException e) {
+			log.error("Test Fail", e);
+			Assert.fail(e.getMessage());
 		}
-		
 
 	}
 
@@ -80,7 +76,7 @@ public class TopologyManagerTest {
 		Node destinationNode = (Node) physPlatform.getResource("Node5");
 
 		try {
-			Path p = physPlatform.findPath(sourceNode,destinationNode);
+			Path p = physPlatform.findPath(sourceNode, destinationNode);
 			LinkedHashSet<? extends Resource> res = p.getPath();
 			String info = "Find path: ";
 			for (Resource resource : res) {

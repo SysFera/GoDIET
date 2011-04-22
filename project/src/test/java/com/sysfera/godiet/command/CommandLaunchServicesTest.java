@@ -9,6 +9,7 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.sysfera.godiet.command.init.util.XMLLoadingHelper;
 import com.sysfera.godiet.command.prepare.PrepareServicesCommand;
 import com.sysfera.godiet.command.start.StartServicesCommand;
 import com.sysfera.godiet.command.xml.LoadXMLDietCommand;
@@ -16,7 +17,6 @@ import com.sysfera.godiet.exceptions.CommandExecutionException;
 import com.sysfera.godiet.managers.ResourcesManager;
 import com.sysfera.godiet.remote.RemoteAccess;
 import com.sysfera.godiet.remote.RemoteAccessMock;
-import com.sysfera.godiet.utils.xml.XMLParser;
 import com.sysfera.godiet.utils.xml.XmlScannerJaxbImpl;
 
 public class CommandLaunchServicesTest {
@@ -28,40 +28,39 @@ public class CommandLaunchServicesTest {
 	@Before
 	public void init() {
 		rm = new ResourcesManager();
+		try {
+			// Loading configuration
+			{
+				String configurationFile = "configuration/configuration.xml";
 
-		// Loading configuration
-		{
-			String configurationFile = "configuration/configuration.xml";
+				InputStream inputStream = getClass().getClassLoader()
+						.getResourceAsStream(configurationFile);
+				XMLLoadingHelper.initConfig(rm, inputStream);
+			}
+			{
+				String platformTestCase = "platform/testbed-platform.xml";
+				InputStream inputStreamPlatform = getClass().getClassLoader()
+						.getResourceAsStream(platformTestCase);
+				XMLLoadingHelper.initPlatform(rm, inputStreamPlatform);
+			}
+			{
+				// Init RM
+				String testCaseFile = "diet/testbed-diet.xml";
+				InputStream inputStream = getClass().getClassLoader()
+						.getResourceAsStream(testCaseFile);
+				XmlScannerJaxbImpl scanner = new XmlScannerJaxbImpl();
+				LoadXMLDietCommand xmlLoadingCommand = new LoadXMLDietCommand();
+				xmlLoadingCommand.setRm(rm);
+				xmlLoadingCommand.setXmlInput(inputStream);
+				xmlLoadingCommand.setXmlParser(scanner);
+				xmlLoadingCommand.setRemoteAccess(remoteAccess);
 
-			InputStream inputStream = getClass().getClassLoader()
-					.getResourceAsStream(configurationFile);
-			InitUtil.initConfig(rm, inputStream);
-		}
-		{
-			String platformTestCase = "platform/testbed-platform.xml";
-			InputStream inputStreamPlatform = getClass().getClassLoader()
-					.getResourceAsStream(platformTestCase);
-			InitUtil.initPlatform(rm, inputStreamPlatform);
-		}
-		{
-			// Init RM
-			String testCaseFile = "diet/testbed-diet.xml";
-			InputStream inputStream = getClass().getClassLoader()
-					.getResourceAsStream(testCaseFile);
-			XmlScannerJaxbImpl scanner = new XmlScannerJaxbImpl();
-			LoadXMLDietCommand xmlLoadingCommand = new LoadXMLDietCommand();
-			xmlLoadingCommand.setRm(rm);
-			xmlLoadingCommand.setXmlInput(inputStream);
-			xmlLoadingCommand.setXmlParser(scanner);
-			xmlLoadingCommand.setRemoteAccess(remoteAccess);
-
-			try {
 				xmlLoadingCommand.execute();
 
-			} catch (CommandExecutionException e) {
-				log.error("Test Fail", e);
-				Assert.fail(e.getMessage());
 			}
+		} catch (CommandExecutionException e) {
+			log.error("Test Fail", e);
+			Assert.fail(e.getMessage());
 		}
 
 	}

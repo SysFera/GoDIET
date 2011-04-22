@@ -11,6 +11,7 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.sysfera.godiet.command.init.util.XMLLoadingHelper;
 import com.sysfera.godiet.command.xml.LoadXMLDietCommand;
 import com.sysfera.godiet.exceptions.CommandExecutionException;
 import com.sysfera.godiet.managers.DietManager;
@@ -38,7 +39,11 @@ public class CommandLoadXMLImplTest {
 
 			InputStream inputStream = getClass().getClassLoader()
 					.getResourceAsStream(configurationFile);
-			InitUtil.initConfig(rm, inputStream);
+			try {
+				XMLLoadingHelper.initConfig(rm, inputStream);
+			} catch (CommandExecutionException e) {
+				Assert.fail();
+			}
 		}
 
 	}
@@ -67,11 +72,12 @@ public class CommandLoadXMLImplTest {
 			// Load platform
 			InputStream platformInputStream = getClass().getClassLoader()
 					.getResourceAsStream(platfomCaseFiles);
-			InitUtil.initPlatform(rm, platformInputStream);
-
-			xmlLoadingCommand.setRm(rm);
 
 			try {
+				XMLLoadingHelper.initPlatform(rm, platformInputStream);
+
+				xmlLoadingCommand.setRm(rm);
+
 				InputStream inputStream = getClass().getClassLoader()
 						.getResourceAsStream(testCaseFile);
 				if (inputStream == null)
@@ -89,25 +95,26 @@ public class CommandLoadXMLImplTest {
 
 	@Test
 	public void testCountDietElement1() {
-		{
-			String platformTestCase = "platform/3D-5N-3G-3L.xml";
-			InputStream inputStreamPlatform = getClass().getClassLoader()
-					.getResourceAsStream(platformTestCase);
-			InitUtil.initPlatform(rm, inputStreamPlatform);
-		}
-
-		String testCaseFile = "diet/1MA-3LA-10SED.xml";
-		InputStream inputStream = getClass().getClassLoader()
-				.getResourceAsStream(testCaseFile);
-
-		XmlScannerJaxbImpl scanner = new XmlScannerJaxbImpl();
-		LoadXMLDietCommand xmlLoadingCommand = new LoadXMLDietCommand();
-		xmlLoadingCommand.setRm(rm);
-		xmlLoadingCommand.setXmlInput(inputStream);
-		xmlLoadingCommand.setXmlParser(scanner);
-		xmlLoadingCommand.setRemoteAccess(remoteAccess);
 
 		try {
+			{
+				String platformTestCase = "platform/3D-5N-3G-3L.xml";
+				InputStream inputStreamPlatform = getClass().getClassLoader()
+						.getResourceAsStream(platformTestCase);
+				XMLLoadingHelper.initPlatform(rm, inputStreamPlatform);
+			}
+
+			String testCaseFile = "diet/1MA-3LA-10SED.xml";
+			InputStream inputStream = getClass().getClassLoader()
+					.getResourceAsStream(testCaseFile);
+
+			XmlScannerJaxbImpl scanner = new XmlScannerJaxbImpl();
+			LoadXMLDietCommand xmlLoadingCommand = new LoadXMLDietCommand();
+			xmlLoadingCommand.setRm(rm);
+			xmlLoadingCommand.setXmlInput(inputStream);
+			xmlLoadingCommand.setXmlParser(scanner);
+			xmlLoadingCommand.setRemoteAccess(remoteAccess);
+
 			xmlLoadingCommand.execute();
 			PlatformManager platform = rm.getPlatformModel();
 			if (platform.getClusters().size() != 0)
@@ -155,24 +162,25 @@ public class CommandLoadXMLImplTest {
 
 	@Test
 	public void testCountDietElement2() {
-		{
-			String platformTestCase = "platform/3D-5N-3G-3L.xml";
-			InputStream inputStreamPlatform = getClass().getClassLoader()
-					.getResourceAsStream(platformTestCase);
-			InitUtil.initPlatform(rm, inputStreamPlatform);
-		}
-
-		String testCaseFile = "diet/2MA-1LA-6SED.xml";
-		InputStream inputStream = getClass().getClassLoader()
-				.getResourceAsStream(testCaseFile);
-		XmlScannerJaxbImpl scanner = new XmlScannerJaxbImpl();
-		LoadXMLDietCommand xmlLoadingCommand = new LoadXMLDietCommand();
-		xmlLoadingCommand.setRm(rm);
-		xmlLoadingCommand.setXmlInput(inputStream);
-		xmlLoadingCommand.setXmlParser(scanner);
-		xmlLoadingCommand.setRemoteAccess(remoteAccess);
 
 		try {
+			{
+				String platformTestCase = "platform/3D-5N-3G-3L.xml";
+				InputStream inputStreamPlatform = getClass().getClassLoader()
+						.getResourceAsStream(platformTestCase);
+				XMLLoadingHelper.initPlatform(rm, inputStreamPlatform);
+			}
+
+			String testCaseFile = "diet/2MA-1LA-6SED.xml";
+			InputStream inputStream = getClass().getClassLoader()
+					.getResourceAsStream(testCaseFile);
+			XmlScannerJaxbImpl scanner = new XmlScannerJaxbImpl();
+			LoadXMLDietCommand xmlLoadingCommand = new LoadXMLDietCommand();
+			xmlLoadingCommand.setRm(rm);
+			xmlLoadingCommand.setXmlInput(inputStream);
+			xmlLoadingCommand.setXmlParser(scanner);
+			xmlLoadingCommand.setRemoteAccess(remoteAccess);
+
 			xmlLoadingCommand.execute();
 			PlatformManager platform = rm.getPlatformModel();
 			if (platform.getClusters().size() != 0)

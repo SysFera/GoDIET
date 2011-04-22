@@ -16,12 +16,15 @@
 
 package com.sysfera.godiet.shell.command
 
-import org.codehaus.groovy.tools.shell.Command
-import org.codehaus.groovy.tools.shell.CommandRegistry
-import org.codehaus.groovy.tools.shell.CommandSupport
-import org.codehaus.groovy.tools.shell.util.SimpleCompletor
+import java.util.List;
+import java.util.SortedSet;
 
-import com.sysfera.godiet.shell.GoDietSh
+import org.codehaus.groovy.tools.shell.Command;
+import org.codehaus.groovy.tools.shell.CommandRegistry;
+import org.codehaus.groovy.tools.shell.CommandSupport;
+import org.codehaus.groovy.tools.shell.util.SimpleCompletor;
+
+import com.sysfera.godiet.shell.GoDietSh;
 
 /**
  * The 'help' command.

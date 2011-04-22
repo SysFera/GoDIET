@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.sysfera</groupId>
 	<artifactId>goDiet</artifactId>
-	<version>0.0.8-SNAPSHOT</version>
+	<version>0.0.9-SNAPSHOT</version>
 	<properties>
 		<spring.graph.version>1.0.0.M2</spring.graph.version>
 	</properties>
@@ -11,7 +11,7 @@
 	<parent>
 		<groupId>com.sysfera</groupId>
 		<artifactId>goDiet-parent</artifactId>
-		<version>0.0.8-SNAPSHOT</version>
+		<version>0.0.9-SNAPSHOT</version>
 
 	</parent>
 

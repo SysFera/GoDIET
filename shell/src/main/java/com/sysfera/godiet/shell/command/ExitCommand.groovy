@@ -16,9 +16,11 @@
 
 package com.sysfera.godiet.shell.command
 
-import org.codehaus.groovy.tools.shell.CommandSupport
-import org.codehaus.groovy.tools.shell.Shell
-import org.codehaus.groovy.tools.shell.ExitNotification
+import java.util.List;
+
+import org.codehaus.groovy.tools.shell.CommandSupport;
+import org.codehaus.groovy.tools.shell.ExitNotification;
+import org.codehaus.groovy.tools.shell.Shell;
 
 /**
  * The 'exit' command.

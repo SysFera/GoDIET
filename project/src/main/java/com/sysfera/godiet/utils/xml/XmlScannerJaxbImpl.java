@@ -2,6 +2,7 @@ package com.sysfera.godiet.utils.xml;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 
 import javax.xml.XMLConstants;
 import javax.xml.bind.JAXBContext;
@@ -15,6 +16,7 @@ import javax.xml.validation.SchemaFactory;
 
 import org.xml.sax.SAXException;
 
+import com.google.protobuf.TextFormat.ParseException;
 import com.sysfera.godiet.exceptions.XMLParseException;
 import com.sysfera.godiet.model.generated.Configuration;
 import com.sysfera.godiet.model.generated.Diet;
@@ -46,8 +48,10 @@ public class XmlScannerJaxbImpl implements XMLParser {
 			Unmarshaller u = jaxc.createUnmarshaller();
 			SchemaFactory sf = SchemaFactory
 					.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-			Schema schema = sf.newSchema(this.getClass().getResource(
-					GODIET_DIET_SCHEMA_PATH));
+			URL schemaFile = this.getClass().getResource(
+					GODIET_DIET_SCHEMA_PATH);
+			if(schemaFile == null) throw new XMLParseException("Unable to find schema description: "+GODIET_DIET_SCHEMA_PATH);
+			Schema schema = sf.newSchema(schemaFile);
 			u.setSchema(schema);
 
 			Diet diet = (Diet) u.unmarshal(xmlFile);
@@ -74,8 +78,10 @@ public class XmlScannerJaxbImpl implements XMLParser {
 			Unmarshaller u = jaxc.createUnmarshaller();
 			SchemaFactory sf = SchemaFactory
 					.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-			Schema schema = sf.newSchema(this.getClass().getResource(
-					GODIET_PLATFORM_SCHEMA_PATH));
+			URL schemaFile = this.getClass().getResource(
+					GODIET_PLATFORM_SCHEMA_PATH);
+			if(schemaFile == null) throw new XMLParseException("Unable to find schema description: "+GODIET_PLATFORM_SCHEMA_PATH);
+			Schema schema = sf.newSchema(schemaFile);
 			u.setSchema(schema);
 
 			Platform platform = (Platform) u.unmarshal(xmlFile);
@@ -117,8 +123,10 @@ public class XmlScannerJaxbImpl implements XMLParser {
 			Unmarshaller u = jaxc.createUnmarshaller();
 			SchemaFactory sf = SchemaFactory
 					.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-			Schema schema = sf.newSchema(this.getClass().getResource(
-					GODIET_CONFIGURATION_SCHEMA_PATH));
+			URL schemaFile = this.getClass().getResource(
+					GODIET_CONFIGURATION_SCHEMA_PATH);
+			if(schemaFile == null) throw new XMLParseException("Unable to find schema description: "+GODIET_CONFIGURATION_SCHEMA_PATH);
+			Schema schema = sf.newSchema(schemaFile);
 			u.setSchema(schema);
 			Configuration config = (Configuration)u.unmarshal(xmlInput);
 			return config.getGoDietConfiguration();

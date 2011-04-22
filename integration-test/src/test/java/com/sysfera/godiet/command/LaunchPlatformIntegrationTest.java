@@ -44,39 +44,39 @@ public class LaunchPlatformIntegrationTest {
 	public void init() {
 		rm = new ResourcesManager();
 
-		// Loading configuration
-		{
-			String configurationFile = "configuration/configuration.xml";
+		try {
+			// Loading configuration
+			{
+				String configurationFile = "configuration/configuration.xml";
 
-			InputStream inputStream = getClass().getClassLoader()
-					.getResourceAsStream(configurationFile);
-			InitUtil.initConfig(rm, inputStream);
-		}
-		{
-			String platformTestCase = "platform/testbed-platform.xml";
-			InputStream inputStreamPlatform = getClass().getClassLoader()
-					.getResourceAsStream(platformTestCase);
-			InitUtil.initPlatform(rm, inputStreamPlatform);
-		}
-		{
-			// Init RM
-			String testCaseFile = "diet/testbed-diet.xml";
-			InputStream inputStream = getClass().getClassLoader()
-					.getResourceAsStream(testCaseFile);
-			XmlScannerJaxbImpl scanner = new XmlScannerJaxbImpl();
-			LoadXMLDietCommand xmlLoadingCommand = new LoadXMLDietCommand();
-			xmlLoadingCommand.setRm(rm);
-			xmlLoadingCommand.setXmlInput(inputStream);
-			xmlLoadingCommand.setXmlParser(scanner);
-			xmlLoadingCommand.setRemoteAccess(remoteAccess);
+				InputStream inputStream = getClass().getClassLoader()
+						.getResourceAsStream(configurationFile);
+				InitUtil.initConfig(rm, inputStream);
+			}
+			{
+				String platformTestCase = "platform/testbed-platform.xml";
+				InputStream inputStreamPlatform = getClass().getClassLoader()
+						.getResourceAsStream(platformTestCase);
+				InitUtil.initPlatform(rm, inputStreamPlatform);
+			}
+			{
+				// Init RM
+				String testCaseFile = "diet/testbed-diet.xml";
+				InputStream inputStream = getClass().getClassLoader()
+						.getResourceAsStream(testCaseFile);
+				XmlScannerJaxbImpl scanner = new XmlScannerJaxbImpl();
+				LoadXMLDietCommand xmlLoadingCommand = new LoadXMLDietCommand();
+				xmlLoadingCommand.setRm(rm);
+				xmlLoadingCommand.setXmlInput(inputStream);
+				xmlLoadingCommand.setXmlParser(scanner);
+				xmlLoadingCommand.setRemoteAccess(remoteAccess);
 
-			try {
 				xmlLoadingCommand.execute();
 
-			} catch (CommandExecutionException e) {
-				log.error("Test Fail", e);
-				Assert.fail(e.getMessage());
 			}
+		} catch (CommandExecutionException e) {
+			log.error("Test Fail", e);
+			Assert.fail(e.getMessage());
 		}
 		// Real Remote SSH
 
@@ -101,7 +101,6 @@ public class LaunchPlatformIntegrationTest {
 			log.error("unable to load your key");
 		}
 
-
 	}
 
 	/***
@@ -121,7 +120,7 @@ public class LaunchPlatformIntegrationTest {
 		InitForwardersCommand initForwardersCommand = new InitForwardersCommand();
 		initForwardersCommand.setRm(rm);
 		initForwardersCommand.setRemoteAccess(remoteAccess);
-		
+
 		PrepareAgentsCommand prepareAgents = new PrepareAgentsCommand();
 		prepareAgents.setRm(rm);
 
@@ -145,12 +144,7 @@ public class LaunchPlatformIntegrationTest {
 
 			launchForwarders.execute();
 			startAgent.execute();
-			// try {
-			// char c = (char)System.in.read();
-			// } catch (IOException e1) {
-			// // TODO Auto-generated catch block
-			// e1.printStackTrace();
-			// }
+	
 		} catch (CommandExecutionException e) {
 			log.error(e.getMessage());
 			Assert.fail(e.getMessage());

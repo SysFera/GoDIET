@@ -15,9 +15,11 @@
 
 	<command>com.sysfera.godiet.shell.command.ExitCommand</command>
 
-	<command>com.sysfera.godiet.shell.command.LaunchPlatformCommand
-	</command>
-	<command>com.sysfera.godiet.shell.command.LoadCommand</command>
+	<command>com.sysfera.godiet.shell.command.LoadPlatformCommand</command>
+	<command>com.sysfera.godiet.shell.command.LoadDietCommand</command>
 
+	<command>com.sysfera.godiet.shell.command.LaunchCommand</command>
+	<command>com.sysfera.godiet.shell.command.StopCommand</command>
+	<command>com.sysfera.godiet.shell.command.StatusCommand</command>
 </commands>
 

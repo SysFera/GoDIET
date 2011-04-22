@@ -19,6 +19,7 @@ package com.sysfera.godiet.shell
 import java.util.concurrent.Callable
 
 import jline.Terminal
+
 import org.codehaus.groovy.runtime.InvokerHelper
 import org.codehaus.groovy.tools.shell.IO
 import org.codehaus.groovy.tools.shell.util.HelpFormatter
@@ -27,7 +28,6 @@ import org.codehaus.groovy.tools.shell.util.MessageSource
 import org.codehaus.groovy.tools.shell.util.NoExitSecurityManager
 import org.fusesource.jansi.Ansi
 import org.fusesource.jansi.AnsiConsole
-import java.lang.Integer
 /**
  * Main CLI entry-point for <tt>godiesh<</tt>.
  *
