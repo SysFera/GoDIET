@@ -23,6 +23,12 @@
 		<fileSet>
 			<directory>${project.build.outputDirectory}</directory>
 			<outputDirectory>/</outputDirectory>
+
+		</fileSet>
+		<fileSet>
+			<includes>
+				<include>run.sh</include>
+			</includes>
 		</fileSet>
 	</fileSets>
 
