@@ -7,7 +7,6 @@ import org.slf4j.LoggerFactory;
 
 import com.sysfera.godiet.command.Command;
 import com.sysfera.godiet.exceptions.CommandExecutionException;
-import com.sysfera.godiet.exceptions.remote.LaunchException;
 import com.sysfera.godiet.exceptions.remote.PrepareException;
 import com.sysfera.godiet.managers.ResourcesManager;
 import com.sysfera.godiet.model.DietServiceManaged;
@@ -30,9 +29,6 @@ public class PrepareServicesCommand implements Command {
 
 	@Override
 	public void execute() throws CommandExecutionException {
-		log.debug("Enter in "
-				+ Thread.currentThread().getStackTrace()[2].getMethodName()
-				+ " method");
 		if (rm == null) {
 			throw new CommandExecutionException(getClass().getName()
 					+ " not initialized correctly");

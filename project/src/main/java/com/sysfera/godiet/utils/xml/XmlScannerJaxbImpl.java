@@ -16,7 +16,6 @@ import javax.xml.validation.SchemaFactory;
 
 import org.xml.sax.SAXException;
 
-import com.google.protobuf.TextFormat.ParseException;
 import com.sysfera.godiet.exceptions.XMLParseException;
 import com.sysfera.godiet.model.generated.Configuration;
 import com.sysfera.godiet.model.generated.Diet;

@@ -1,10 +1,13 @@
 package com.sysfera.godiet.remote;
 
 import java.io.File;
+import java.util.Set;
 
 import com.sysfera.godiet.exceptions.generics.RemoteAccessException;
 import com.sysfera.godiet.exceptions.remote.AddAuthentificationException;
 import com.sysfera.godiet.exceptions.remote.CheckException;
+import com.sysfera.godiet.exceptions.remote.RemoveAuthentificationException;
+import com.sysfera.godiet.managers.user.SSHKeyManager;
 import com.sysfera.godiet.model.Path;
 
 /**
@@ -47,19 +50,24 @@ public interface RemoteAccess {
 	/**
 	 * Add key in bunch
 	 * 
-	 * @param privKey
-	 *            Private key to add
-	 * @param pubKey
-	 *            Public key associated to private key. Could be null if
-	 * @param passphrase
+	 * @param sshkey ssh key description
 	 * @throws AddAuthentificationException
 	 *             if error when key insertion. Unable to find private key,
 	 *             public key or bad password TODO Check
 	 */
-	public abstract void addItentity(String privKey, String pubKey, String passphrase)
+	public abstract void addItentity(SSHKeyManager sshkey)
 			throws AddAuthentificationException;
 
-	
+	/**
+	 * Remove  key in bunch
+	 * 
+	 * @param sshkey ssh key description
+	 * @throws RemoveAuthentificationException
+	 *             if error when key removing. Unable to find private key,
+	 *             public key or bad password TODO Check
+	 */
+	public abstract void removeItentity(SSHKeyManager sshkey) throws RemoveAuthentificationException;
+
 	/**
 	 * Check the process given by pid is running
 	 * @param pid The pid of process to check

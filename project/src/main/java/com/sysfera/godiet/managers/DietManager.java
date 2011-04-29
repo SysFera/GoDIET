@@ -14,7 +14,7 @@ import com.sysfera.godiet.model.generated.Domain;
 import com.sysfera.godiet.model.generated.OmniNames;
 
 /**
- * Diet platform description.
+ * Diet platform manager.
  * 
  * @author phi
  * 

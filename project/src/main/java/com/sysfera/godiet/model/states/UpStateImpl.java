@@ -60,5 +60,8 @@ public class UpStateImpl implements ResourceState {
 		// TODO : implement check
 		log.error("Check Not yet implemented");
 	}
-
+	@Override
+	public String toString() {
+		return "Up";
+	}
 }

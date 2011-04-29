@@ -35,25 +35,61 @@ import com.sysfera.godiet.shell.GoDietSh
 class StatusCommand
 extends ComplexCommandSupport {
 	StatusCommand(final Shell shell) {
-		super(shell, "status", "s");
+		super(shell, "status", "s")
 		this.functions = [
 			'services',
-			'agents',
-			'seds',
+			'ma',
+			'la',
+			'sed',
 			'all'
 		]
-		;
 	}
 
+	def printStatus = { String elementName, resources ->
+		if(resources.size() == 0) {
+			io.out.println("@|bold No ${elementName}|@")
+			return
+		}
+		io.out.println("")
+		io.out.println("@|bold ${elementName}|@ Status (${resources.size()}) : ")
+		io.out.println("@|bold Label\tStatus|@")
+		io.out.println("---------------------------------------------------------")
+		resources.each{
+			io.out.println "${it.softwareDescription.id}\t${it.state}"
+		}
+	}
 	def do_services = {
 		Diet diet = ((GoDietSh)shell).getDiet()
-		List omniNames = diet.getRm().getDietModel().getOmninames()
-		
+		List omniNames = diet.getRm().getDietModel().omninames
+		printStatus("OmniNames",omniNames)
 	}
 
-	def do_seds = { assert "TODO" }
+	def do_sed = {
+		Diet diet = ((GoDietSh)shell).getDiet()
+		List seds = diet.getRm().getDietModel().seds
+		printStatus("Seds",seds)
+	}
+	def do_forwarders = {
+		Diet diet = ((GoDietSh)shell).getDiet()
+		List forwarders = diet.getRm().getDietModel().forwaders
+		printStatus("Forwarders",forwarders)
+	}
+	def do_ma = {
+		Diet diet = ((GoDietSh)shell).getDiet()
+		List mas = diet.getRm().getDietModel().masterAgents
+		printStatus("Master agents",mas)
+	}
+	def do_la = {
+		Diet diet = ((GoDietSh)shell).getDiet()
+		List las = diet.getRm().getDietModel().localAgents
+		printStatus("Local agents",las)
+	}
+	def do_all = {
 
-	def do_all = { assert "TODO" }
-
-	def do_agents = { assert "TODO" }
+		do_services()
+		do_forwarders()
+		do_ma()
+		do_la()
+		do_sed()
+	}
 }

@@ -1,5 +1,6 @@
 package com.sysfera.godiet.managers;
 
+import com.sysfera.godiet.managers.user.UserManager;
 import com.sysfera.godiet.model.generated.GoDietConfiguration;
 
 /**
@@ -13,14 +14,16 @@ public class ResourcesManager {
 	// Other model representation to help and improve resources access. All
 	// objects are reference of goDiet field
 	private final DietManager dietModel;
-	private  PlatformManager platformModel;
+	private final PlatformManager platformModel;
 	// TODO move this field in configuration manager
 	private final ConfigurationManager godietConfiguration;
-
+	private final UserManager userManager;
+	
 	public ResourcesManager() {
 		this.dietModel = new DietManager();
 		this.platformModel = new PlatformManager();
 		this.godietConfiguration = new ConfigurationManager();
+		this.userManager = new UserManager();
 	}
 
 	public DietManager getDietModel() {
@@ -39,11 +42,9 @@ public class ResourcesManager {
 		this.godietConfiguration.setConfiguration(goDietConfiguration);
 
 	}
-	
-	public void setPlatformModel(PlatformManager platformModel) {
-		this.platformModel = platformModel;
-	}
-	
 
+	public UserManager getUserManager() {
+		return userManager;
+	}
 	
 }

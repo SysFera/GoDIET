@@ -54,8 +54,8 @@ extends ComplexCommandSupport {
 	def do_all = {
 		GoDietSh goDietShell = shell;
 		Diet rm = goDietShell.getDiet();
-		rm.launchAgents();
 		rm.launchServices();
+		rm.launchAgents();
 	}
 }
 

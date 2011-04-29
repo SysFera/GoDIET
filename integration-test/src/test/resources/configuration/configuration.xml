@@ -4,8 +4,13 @@
 	xsi:schemaLocation="http://www.sysfera.com ../Configuration.xsd">
 
 	<goDietConfiguration debug="1" saveStdOut="true"
-		saveStdErr="true" log="true" localNode="testbedVM">
+		saveStdErr="true" log="true" localNode="graal">
 		<localscratch dir="/tmp/SCRATCH_ITEST" />
+		<user>
+			<ssh>
+				<key path="/home/phi/tmp/id_dsa"/>
+			</ssh>
+		</user>
 	</goDietConfiguration>
 
 </godiet:configuration>

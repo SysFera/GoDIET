@@ -13,7 +13,7 @@ import com.sysfera.godiet.exceptions.DietResourceCreationException;
 import com.sysfera.godiet.managers.ResourcesManager;
 import com.sysfera.godiet.model.DietResourceManaged;
 import com.sysfera.godiet.model.SoftwareManager;
-import com.sysfera.godiet.model.factories.ForwardersFactory;
+import com.sysfera.godiet.model.factories.GodietAbstractFactory;
 import com.sysfera.godiet.model.generated.Config;
 import com.sysfera.godiet.model.generated.Forwarder;
 import com.sysfera.godiet.model.generated.Forwarders;
@@ -21,8 +21,6 @@ import com.sysfera.godiet.model.generated.Gateway;
 import com.sysfera.godiet.model.generated.Link;
 import com.sysfera.godiet.model.generated.ObjectFactory;
 import com.sysfera.godiet.model.generated.OmniNames;
-import com.sysfera.godiet.remote.RemoteAccess;
-import com.sysfera.godiet.remote.RemoteConfigurationHelper;
 
 /**
  * 
@@ -35,30 +33,25 @@ import com.sysfera.godiet.remote.RemoteConfigurationHelper;
 public class InitForwardersCommand implements Command {
 	private Logger log = LoggerFactory.getLogger(getClass());
 
-	private RemoteAccess remoteAccess;
 
 	private ResourcesManager rm;
-
+	private GodietAbstractFactory forwFactory;
 	@Override
 	public String getDescription() {
 		return "Add forwarders in data model if needed (In each domains where there are Diet Services Agents and Seds";
 	}
 
+	public void setForwarderFactory(GodietAbstractFactory forwFactory){
+		this.forwFactory = forwFactory;
+	}
 	@Override
 	public void execute() throws CommandExecutionException {
-		log.debug("Enter in "
-				+ Thread.currentThread().getStackTrace()[2].getMethodName()
-				+ " method");
-		if (rm == null || remoteAccess == null) {
+		if (rm == null || forwFactory == null ) {
 			throw new CommandExecutionException(getClass().getName()
 					+ " not initialized correctly");
 		}
-		RemoteConfigurationHelper softwareController = new RemoteConfigurationHelper(
-				remoteAccess, rm.getGodietConfiguration()
-						.getGoDietConfiguration(), rm.getPlatformModel());
+		
 
-		ForwardersFactory forwFactory = new ForwardersFactory(
-				softwareController);
 
 		// Search all domains where a software will be launched.
 		Set<String> domains = new HashSet<String>();
@@ -159,8 +152,5 @@ public class InitForwardersCommand implements Command {
 		return forwarders;
 	}
 
-	public void setRemoteAccess(RemoteAccess remoteAccess) {
-		this.remoteAccess = remoteAccess;
-	}
 
 }

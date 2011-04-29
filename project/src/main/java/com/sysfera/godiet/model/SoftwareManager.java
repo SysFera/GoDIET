@@ -67,5 +67,9 @@ public abstract class SoftwareManager {
 	public void setRunningCommand(String runningCommand) {
 		this.runningCommand = runningCommand;
 	}
+	public String getState()
+	{
+		return stateController.getState().toString();
+	}
 
 }

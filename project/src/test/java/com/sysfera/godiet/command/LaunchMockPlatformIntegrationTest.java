@@ -1,6 +1,7 @@
 package com.sysfera.godiet.command;
 
 import java.io.InputStream;
+import java.net.URL;
 
 import junit.framework.Assert;
 
@@ -21,19 +22,26 @@ import com.sysfera.godiet.command.stop.StopForwardersCommand;
 import com.sysfera.godiet.command.stop.StopServicesCommand;
 import com.sysfera.godiet.command.xml.LoadXMLDietCommand;
 import com.sysfera.godiet.exceptions.CommandExecutionException;
+import com.sysfera.godiet.exceptions.remote.AddAuthentificationException;
 import com.sysfera.godiet.managers.ResourcesManager;
+import com.sysfera.godiet.managers.user.SSHKeyManager;
+import com.sysfera.godiet.model.SoftwareController;
+import com.sysfera.godiet.model.factories.GodietAbstractFactory;
+import com.sysfera.godiet.model.generated.User;
 import com.sysfera.godiet.remote.RemoteAccess;
 import com.sysfera.godiet.remote.RemoteAccessMock;
+import com.sysfera.godiet.remote.RemoteConfigurationHelper;
 import com.sysfera.godiet.utils.xml.XmlScannerJaxbImpl;
 
 public class LaunchMockPlatformIntegrationTest {
 	private Logger log = LoggerFactory.getLogger(getClass());
 	private ResourcesManager rm;
 	RemoteAccess remoteAccess = new RemoteAccessMock();
-
+	GodietAbstractFactory godietAbstractFactory;
 	@Before
 	public void init() {
 		rm = new ResourcesManager();
+		
 		try {
 			// Loading configuration
 			{
@@ -42,6 +50,8 @@ public class LaunchMockPlatformIntegrationTest {
 				InputStream inputStream = getClass().getClassLoader()
 						.getResourceAsStream(configurationFile);
 				XMLLoadingHelper.initConfig(rm, inputStream);
+				this.rm.getUserManager().setRemoteAccessor(remoteAccess);
+		
 			}
 			{
 				String platformTestCase = "platform/testbed-platform.xml";
@@ -59,7 +69,10 @@ public class LaunchMockPlatformIntegrationTest {
 				xmlLoadingCommand.setRm(rm);
 				xmlLoadingCommand.setXmlInput(inputStream);
 				xmlLoadingCommand.setXmlParser(scanner);
-				xmlLoadingCommand.setRemoteAccess(remoteAccess);
+				SoftwareController softwareController = new RemoteConfigurationHelper(remoteAccess, rm.getGodietConfiguration().getGoDietConfiguration(), rm.getPlatformModel());
+				godietAbstractFactory = new GodietAbstractFactory(softwareController);
+				xmlLoadingCommand.setAbstractFactory(godietAbstractFactory);
+
 
 				xmlLoadingCommand.execute();
 
@@ -67,6 +80,21 @@ public class LaunchMockPlatformIntegrationTest {
 		} catch (CommandExecutionException e) {
 			log.error("Test Fail", e);
 			Assert.fail(e.getMessage());
+		}
+		String fakeKey = "fakeuser/testbedKey";
+		URL urlFile = getClass().getClassLoader().getResource(fakeKey);
+		if (urlFile == null || urlFile.getFile().isEmpty())
+			Assert.fail("SSH key not found");
+
+		try {
+			User.Ssh.Key sshDesc = new  User.Ssh.Key();
+			sshDesc.setPath(urlFile.getPath());
+			SSHKeyManager sshkey = new SSHKeyManager(sshDesc);
+			sshkey.setPassword("godiet");
+			this.rm.getUserManager().addManagedSSHKey(new SSHKeyManager(sshDesc));
+			remoteAccess.addItentity(sshkey);
+		} catch (AddAuthentificationException e) {
+			Assert.fail("Unable to load testbed key");
 		}
 
 	}
@@ -87,7 +115,7 @@ public class LaunchMockPlatformIntegrationTest {
 		// Agents commands
 		InitForwardersCommand initForwardersCommand = new InitForwardersCommand();
 		initForwardersCommand.setRm(rm);
-		initForwardersCommand.setRemoteAccess(remoteAccess);
+		initForwardersCommand.setForwarderFactory(godietAbstractFactory);
 		PrepareAgentsCommand prepareAgents = new PrepareAgentsCommand();
 		prepareAgents.setRm(rm);
 

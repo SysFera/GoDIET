@@ -6,6 +6,7 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,16 +22,20 @@ import com.sysfera.godiet.command.stop.StopAgentsCommand;
 import com.sysfera.godiet.command.stop.StopForwardersCommand;
 import com.sysfera.godiet.command.stop.StopServicesCommand;
 import com.sysfera.godiet.exceptions.CommandExecutionException;
-import com.sysfera.godiet.exceptions.remote.AddAuthentificationException;
 import com.sysfera.godiet.managers.ResourcesManager;
-import com.sysfera.godiet.remote.RemoteAccess;
+import com.sysfera.godiet.managers.user.SSHKeyManager;
+import com.sysfera.godiet.model.SoftwareController;
+import com.sysfera.godiet.model.factories.GodietAbstractFactory;
+import com.sysfera.godiet.model.generated.ObjectFactory;
+import com.sysfera.godiet.model.generated.User;
+import com.sysfera.godiet.remote.RemoteConfigurationHelper;
 import com.sysfera.godiet.remote.ssh.ChannelManagerJsch;
 import com.sysfera.godiet.remote.ssh.RemoteAccessJschImpl;
 
 public class Diet {
 	private Logger log = LoggerFactory.getLogger(getClass());
 
-	private RemoteAccess remoteAccess;
+	private GodietAbstractFactory godietAbstractFactory;
 	private ResourcesManager rm;
 	private boolean configLoaded = false;
 	private boolean platfromLoaded = false;
@@ -40,36 +45,28 @@ public class Diet {
 
 	public Diet() {
 		this.rm = new ResourcesManager();
-		RemoteAccessJschImpl remoteJsch =new RemoteAccessJschImpl();
-		remoteJsch.setChannelManager(new ChannelManagerJsch());
-		this.remoteAccess = remoteJsch;
-
-		// Real Remote SSH
-		// TODO SSH Key manager
-		try {
-			remoteAccess
-					.addItentity(
-							"/home/phi/Dev/GoDIET/integration-test/src/test/resources/fakeuser/testbedKey",
-							null, "godiet");
-		} catch (AddAuthentificationException e) {
-			log.error("unable to load tesbted key");
-		}
-		try {
-			// Here add a key to access on testbed
-			remoteAccess.addItentity("/home/phi/tmp/id_dsa", null, "");
-		} catch (AddAuthentificationException e) {
-			log.error("unable to load /home/phi/tmp/id_dsa key");
-		}
-
 	}
 
 	// INIT
-	public void initConfig(URL url) throws CommandExecutionException {
+	/**
+	 * Initialize configuration. Try to load
+	 * ${user.dir}/godiet/configuration.xml. If not found load
+	 * resources/configuration/configuration.xml
+	 * 
+	 */
+	public void initConfig() throws CommandExecutionException {
 		if (configLoaded)
 			new CommandExecutionException("Configuration already loaded");
+		InputStream inputStream = null;
 
-		InputStream inputStream;
+		// TryLoad {user.dir}/godiet/configuration.xml
+		String configFilePath = System.getProperty("user.home")
+				+ "/.godiet/configuration.xml";
 		try {
+			log.debug("Init Config: try to open file url: file:"
+					+ configFilePath);
+			URL url = new URL("file:" + configFilePath);
+
 			File f = null;
 			try {
 				f = new File(url.toURI());
@@ -79,10 +76,48 @@ public class Diet {
 
 			inputStream = new FileInputStream(f);
 		} catch (FileNotFoundException e) {
-			throw new CommandExecutionException("Unable to open file " + url, e);
+			inputStream = getClass().getResourceAsStream(
+			"/configuration/configuration.xml");
+		} catch (Exception e) {
+			log.warn("Unable to open file " + configFilePath, e);
+			inputStream = getClass().getResourceAsStream(
+					"/configuration/configuration.xml");
 		}
+
+		if (inputStream == null) {
+			log.error("Fatal: Unable to load user config file and open default config file");
+			throw new CommandExecutionException("Unable to load configuration");
+		}
+		//TODO: springified this
 		XMLLoadingHelper.initConfig(rm, inputStream);
+		RemoteAccessJschImpl remoteJsch = new RemoteAccessJschImpl();
+		remoteJsch.setChannelManager(new ChannelManagerJsch());
+		this.rm.getUserManager().setRemoteAccessor(remoteJsch);
+		SoftwareController softwareController = new RemoteConfigurationHelper(
+				remoteJsch, rm.getGodietConfiguration()
+						.getGoDietConfiguration(), rm.getPlatformModel());
+		godietAbstractFactory = new GodietAbstractFactory(softwareController);
 		configLoaded = true;
+	}
+
+	public List<SSHKeyManager> getManagedKeys() {
+		return this.rm.getUserManager().getManagedKeys();
+
+	}
+
+	public void registerKey(SSHKeyManager key)
+	{
+		this.rm.getUserManager().registerKey(key);
+	}
+	
+	
+	//TODO: Create factory in godietCore
+	public void addSshKey(String privateKeyPath, String publicKeyPath,String password){
+
+	}
+	public void modifySshKey(SSHKeyManager sshkey, String privateKeyPath, String publicKeyPath,String password){
+		
+		this.rm.getUserManager().modifySSHKey(sshkey,privateKeyPath,publicKeyPath,password);
 	}
 
 	public void initPlatform(URL url) throws CommandExecutionException {
@@ -123,7 +158,7 @@ public class Diet {
 		} catch (FileNotFoundException e) {
 			throw new CommandExecutionException("Unable to open file " + url, e);
 		}
-		XMLLoadingHelper.initDiet(rm, inputStream, remoteAccess);
+		XMLLoadingHelper.initDiet(rm, inputStream, godietAbstractFactory);
 		dietLoaded = true;
 	}
 
@@ -144,14 +179,24 @@ public class Diet {
 		}
 	}
 
+	private boolean forwardersInitialize = false;
+
+	private void initForwarders() throws CommandExecutionException {
+		InitForwardersCommand initForwardersCommand = new InitForwardersCommand();
+		initForwardersCommand.setRm(rm);
+		initForwardersCommand.setForwarderFactory(godietAbstractFactory);
+		initForwardersCommand.execute();
+		forwardersInitialize = true;
+	}
+
 	public void launchAgents() throws CommandExecutionException {
 		if (!servicesLaunched)
 			new CommandExecutionException("Launch diet services first");
 		try {
-			InitForwardersCommand initForwardersCommand = new InitForwardersCommand();
-			initForwardersCommand.setRm(rm);
-			initForwardersCommand.setRemoteAccess(remoteAccess);
 
+			if (forwardersInitialize == false) {
+				initForwarders();
+			}
 			PrepareAgentsCommand prepareAgents = new PrepareAgentsCommand();
 			prepareAgents.setRm(rm);
 
@@ -162,7 +207,6 @@ public class Diet {
 			startAgent.setRm(rm);
 
 			// execute
-			initForwardersCommand.execute();
 
 			prepareAgents.execute();
 
@@ -198,6 +242,10 @@ public class Diet {
 
 	public ResourcesManager getRm() {
 		return rm;
+	}
+
+	public void setRm(ResourcesManager rm) {
+		this.rm = rm;
 	}
 
 }

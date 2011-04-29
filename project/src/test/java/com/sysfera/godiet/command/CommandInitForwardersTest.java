@@ -16,8 +16,11 @@ import com.sysfera.godiet.command.xml.LoadXMLDietCommand;
 import com.sysfera.godiet.exceptions.CommandExecutionException;
 import com.sysfera.godiet.managers.ResourcesManager;
 import com.sysfera.godiet.model.DietResourceManaged;
+import com.sysfera.godiet.model.SoftwareController;
+import com.sysfera.godiet.model.factories.GodietAbstractFactory;
 import com.sysfera.godiet.remote.RemoteAccess;
 import com.sysfera.godiet.remote.RemoteAccessMock;
+import com.sysfera.godiet.remote.RemoteConfigurationHelper;
 import com.sysfera.godiet.utils.xml.XmlScannerJaxbImpl;
 
 public class CommandInitForwardersTest {
@@ -26,7 +29,7 @@ public class CommandInitForwardersTest {
 	private ResourcesManager rm;
 	LoadXMLDietCommand xmlLoadingCommand;
 	RemoteAccess remoteAccess = new RemoteAccessMock();
-
+	GodietAbstractFactory godietAbstractFactory;
 	@Before
 	public void initRM() {
 
@@ -41,11 +44,12 @@ public class CommandInitForwardersTest {
 			Assert.fail();
 
 		}
-
+		SoftwareController softwareController = new RemoteConfigurationHelper(remoteAccess, rm.getGodietConfiguration().getGoDietConfiguration(), rm.getPlatformModel());
+		godietAbstractFactory = new GodietAbstractFactory(softwareController);
 		xmlLoadingCommand = new LoadXMLDietCommand();
 		xmlLoadingCommand.setRm(rm);
 		xmlLoadingCommand.setXmlParser(new XmlScannerJaxbImpl());
-		xmlLoadingCommand.setRemoteAccess(remoteAccess);
+		xmlLoadingCommand.setAbstractFactory(godietAbstractFactory);
 
 	}
 
@@ -69,9 +73,10 @@ public class CommandInitForwardersTest {
 		} catch (CommandExecutionException e) {
 			log.error("Test Fail", e);
 		}
+
 		InitForwardersCommand initForwardersInit = new InitForwardersCommand();
 		initForwardersInit.setRm(rm);
-		initForwardersInit.setRemoteAccess(remoteAccess);
+		initForwardersInit.setForwarderFactory(godietAbstractFactory);
 		try {
 			initForwardersInit.execute();
 			List<DietResourceManaged> forwarders = rm.getDietModel()
@@ -103,7 +108,7 @@ public class CommandInitForwardersTest {
 
 			InitForwardersCommand initForwardersInit = new InitForwardersCommand();
 			initForwardersInit.setRm(rm);
-			initForwardersInit.setRemoteAccess(remoteAccess);
+			initForwardersInit.setForwarderFactory(godietAbstractFactory);
 
 			try {
 				initForwardersInit.execute();

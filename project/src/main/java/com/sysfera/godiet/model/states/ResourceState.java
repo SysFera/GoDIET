@@ -12,5 +12,4 @@ public interface ResourceState {
 	public abstract void stop() throws StopException;
 	public abstract void check();
 	
-	
 }

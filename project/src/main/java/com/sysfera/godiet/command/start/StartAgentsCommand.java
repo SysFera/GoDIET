@@ -8,7 +8,6 @@ import org.slf4j.LoggerFactory;
 import com.sysfera.godiet.command.Command;
 import com.sysfera.godiet.exceptions.CommandExecutionException;
 import com.sysfera.godiet.exceptions.remote.LaunchException;
-import com.sysfera.godiet.exceptions.remote.StopException;
 import com.sysfera.godiet.managers.ResourcesManager;
 import com.sysfera.godiet.model.DietResourceManaged;
 
@@ -32,15 +31,12 @@ public class StartAgentsCommand implements Command {
 
 	@Override
 	public void execute() throws CommandExecutionException {
-		log.debug("Enter in "
-				+ Thread.currentThread().getStackTrace()[2].getMethodName()
-				+ " method");
 		if (rm == null) {
 			throw new CommandExecutionException(getClass().getName()
 					+ " not initialized correctly");
 		}
 		List<DietResourceManaged> mas = rm.getDietModel().getMasterAgents();
-		log.debug("Trying to run  " + mas.size() + " Diet Master Agent");
+		log.debug("Trying to run  " + mas.size() + " Diet master agent(s)");
 		boolean error = false;
 		for (DietResourceManaged ma : mas) {
 			try {
@@ -53,7 +49,7 @@ public class StartAgentsCommand implements Command {
 			}
 		}
 		List<DietResourceManaged> las = rm.getDietModel().getLocalAgents();
-
+		log.debug("Trying to run  " + las.size() + " Diet local agent(s)");
 		for (DietResourceManaged la : las) {
 			try {
 				la.start();
@@ -65,7 +61,7 @@ public class StartAgentsCommand implements Command {
 			}
 		}
 		List<DietResourceManaged> seds = rm.getDietModel().getSeds();
-		log.debug("Trying to start  " + seds.size() + " Sed Agent");
+		log.debug("Trying to start  " + seds.size() + " Diet sed(s)");
 		for (DietResourceManaged sed : seds) {
 			try {
 				sed.start();

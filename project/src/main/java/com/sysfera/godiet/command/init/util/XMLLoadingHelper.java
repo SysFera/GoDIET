@@ -7,7 +7,7 @@ import com.sysfera.godiet.command.xml.LoadXMLDietCommand;
 import com.sysfera.godiet.command.xml.LoadXMLPlatformCommand;
 import com.sysfera.godiet.exceptions.CommandExecutionException;
 import com.sysfera.godiet.managers.ResourcesManager;
-import com.sysfera.godiet.remote.RemoteAccess;
+import com.sysfera.godiet.model.factories.GodietAbstractFactory;
 import com.sysfera.godiet.utils.xml.XMLParser;
 import com.sysfera.godiet.utils.xml.XmlScannerJaxbImpl;
 
@@ -35,12 +35,12 @@ public class XMLLoadingHelper  {
 		xmlLoadingCommand.execute();
 	}
 
-	public static void initDiet(ResourcesManager rm, InputStream inputStream,RemoteAccess remoteAccess) throws CommandExecutionException {
+	public static void initDiet(ResourcesManager rm, InputStream inputStream,GodietAbstractFactory abstractFactory) throws CommandExecutionException {
 		LoadXMLDietCommand xmlLoadingCommand = new LoadXMLDietCommand();
 		xmlLoadingCommand.setXmlParser(scanner);
 		xmlLoadingCommand.setXmlInput(inputStream);
 		xmlLoadingCommand.setRm(rm);
-		xmlLoadingCommand.setRemoteAccess(remoteAccess);
+		xmlLoadingCommand.setAbstractFactory(abstractFactory);
 		xmlLoadingCommand.execute();
 	}
 }

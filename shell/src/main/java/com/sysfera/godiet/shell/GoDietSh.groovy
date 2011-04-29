@@ -18,32 +18,33 @@ package com.sysfera.godiet.shell
 
 import org.codehaus.groovy.tools.shell.Shell
 
-import groovy.lang.Binding;
-import groovy.lang.Closure;
+import groovy.lang.Binding
+import groovy.lang.Closure
 
-import java.io.File;
-import java.util.List;
+import java.io.File
+import java.util.List
 
-import jline.History;
-import jline.Terminal;
+import jline.History
+import jline.Terminal
 
-import org.codehaus.groovy.runtime.InvokerHelper;
-import org.codehaus.groovy.runtime.StackTraceUtils;
-import org.codehaus.groovy.tools.shell.BufferManager;
-import org.codehaus.groovy.tools.shell.ExitNotification;
-import org.codehaus.groovy.tools.shell.IO;
-import org.codehaus.groovy.tools.shell.InteractiveShellRunner;
-import org.codehaus.groovy.tools.shell.Interpreter;
-import org.codehaus.groovy.tools.shell.Parser;
-import org.codehaus.groovy.tools.shell.Shell;
-import org.codehaus.groovy.tools.shell.util.MessageSource;
-import org.codehaus.groovy.tools.shell.util.Preferences;
-import org.codehaus.groovy.tools.shell.util.XmlCommandRegistrar;
-import org.fusesource.jansi.Ansi;
-import org.fusesource.jansi.AnsiConsole;
-import org.fusesource.jansi.AnsiRenderer;
+import org.codehaus.groovy.runtime.InvokerHelper
+import org.codehaus.groovy.runtime.StackTraceUtils
+import org.codehaus.groovy.tools.shell.BufferManager
+import org.codehaus.groovy.tools.shell.ExitNotification
+import org.codehaus.groovy.tools.shell.IO
+import org.codehaus.groovy.tools.shell.InteractiveShellRunner
+import org.codehaus.groovy.tools.shell.Interpreter
+import org.codehaus.groovy.tools.shell.ParseCode
+import org.codehaus.groovy.tools.shell.Parser
+import org.codehaus.groovy.tools.shell.Shell
+import org.codehaus.groovy.tools.shell.util.MessageSource
+import org.codehaus.groovy.tools.shell.util.Preferences
+import org.codehaus.groovy.tools.shell.util.XmlCommandRegistrar
+import org.fusesource.jansi.Ansi
+import org.fusesource.jansi.AnsiConsole
+import org.fusesource.jansi.AnsiRenderer
 
-import com.sysfera.godiet.Diet;
+import com.sysfera.godiet.Diet
 
 /**
  * An interactive shell for evaluating Groovy code from the command-line (aka. groovysh).
@@ -78,7 +79,7 @@ extends Shell {
 
 	History history
 
-	GoDietSh(final ClassLoader classLoader, final Binding binding, final IO io, final Closure registrar) {
+	GoDietSh(final ClassLoader classLoader, final Binding binding, final IO  io, final Closure registrar) {
 		super(io)
 
 		assert classLoader
@@ -91,7 +92,7 @@ extends Shell {
 		registrar.call(this)
 		
 		diet = new Diet();
-		diet.initConfig(new URL( "file:/home/phi/Dev/GoDIET/integration-test/src/test/resources/configuration/configuration.xml"))
+		diet.initConfig()
 	}
 	public 	Diet getDiet() {
 		return diet
@@ -151,46 +152,46 @@ extends Shell {
 				lastResult = result
 			}
 
-//			return result
+			return result
 		}
 
-//		// Otherwise treat the line as Groovy
-//		def current = []
-//		current += buffers.current()
-//
-//		// Append the line to the current buffer
-//		current << line
-//
-//		// Attempt to parse the current buffer
-//		def status = parser.parse(imports + current)
-//
-//		switch (status.code) {
-//			case ParseCode.COMPLETE:
-//				log.debug("Evaluating buffer...")
-//
-//				if (io.verbose) {
-//					displayBuffer(buffer)
-//				}
-//
-//			// Evaluate the current buffer w/imports and dummy statement
-//				def buff = imports + ['true']+ current
-//
-//				lastResult = result = interp.evaluate(buff)
-//				buffers.clearSelected()
-//				break
-//
-//			case ParseCode.INCOMPLETE:
-//			// Save the current buffer so user can build up complex muli-line code blocks
-//				buffers.updateSelected(current)
-//				break
-//
-//			case ParseCode.ERROR:
-//				throw status.cause
-//
-//			default:
-//			// Should never happen
-//				throw new Error("Invalid parse status: $status.code")
-//		}
+		// Otherwise treat the line as Groovy
+		def current = []
+		current += buffers.current()
+
+		// Append the line to the current buffer
+		current << line
+
+		// Attempt to parse the current buffer
+		def status = parser.parse(imports + current)
+
+		switch (status.code) {
+			case ParseCode.COMPLETE:
+				log.debug("Evaluating buffer...")
+
+				if (io.verbose) {
+					displayBuffer(buffer)
+				}
+
+			// Evaluate the current buffer w/imports and dummy statement
+				def buff = imports + ['true']+ current
+
+				lastResult = result = interp.evaluate(buff)
+				buffers.clearSelected()
+				break
+
+			case ParseCode.INCOMPLETE:
+			// Save the current buffer so user can build up complex muli-line code blocks
+				buffers.updateSelected(current)
+				break
+
+			case ParseCode.ERROR:
+				throw status.cause
+
+			default:
+			// Should never happen
+				throw new Error("Invalid parse status: $status.code")
+		}
 
 		return result
 	}
@@ -217,9 +218,9 @@ extends Shell {
 	//
 
 	private String renderPrompt() {
-		def lineNum = formatLineNumber(buffers.current().size())
+		//def lineNum = formatLineNumber(buffers.current().size())
 
-		return AnsiRenderer.render("@|bold godiet:|@${lineNum}@|bold >|@ ")
+		return AnsiRenderer.render("@|bold godiet:>|@ ")
 	}
 
 	/**
@@ -339,7 +340,7 @@ extends Shell {
 	final Closure defaultErrorHook = { Throwable cause ->
 		assert cause != null
 
-		io.err.println("@|bold,red ERROR|@ ${cause.class.name}:")
+		//io.err.println("@|bold,red ERROR|@ ${cause.class.name}:")
 		io.err.println("@|bold,red ${cause.message}|@")
 
 		maybeRecordError(cause)

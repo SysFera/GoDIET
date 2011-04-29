@@ -6,7 +6,6 @@ import org.slf4j.LoggerFactory;
 import com.sysfera.godiet.exceptions.remote.LaunchException;
 import com.sysfera.godiet.exceptions.remote.PrepareException;
 import com.sysfera.godiet.model.SoftwareController;
-import com.sysfera.godiet.remote.RemoteConfigurationHelper;
 
 /**
  * Init State. The remote agent isn't yet bind. Call prepare to state ready.
@@ -56,5 +55,8 @@ public class IncubateStateImpl implements ResourceState {
 	public void check() {
 
 	}
-
+	@Override
+	public String toString() {
+		return "Incubate";
+	}
 }

@@ -36,6 +36,9 @@ public class ErrorStateImpl implements ResourceState {
 	public void prepare() throws PrepareException {
 		throw new PrepareException("In error states");
 	}
-	
+	@Override
+	public String toString() {
+		return "Error";
+	}
 	
 }

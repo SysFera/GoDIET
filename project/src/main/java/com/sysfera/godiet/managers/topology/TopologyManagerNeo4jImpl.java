@@ -26,7 +26,6 @@ import org.slf4j.LoggerFactory;
 import com.sysfera.godiet.exceptions.generics.PathException;
 import com.sysfera.godiet.exceptions.graph.GraphDataException;
 import com.sysfera.godiet.managers.PlatformManager;
-import com.sysfera.godiet.managers.topology.PathManager.PathDesc;
 import com.sysfera.godiet.model.Path;
 import com.sysfera.godiet.model.generated.Domain;
 import com.sysfera.godiet.model.generated.Resource;

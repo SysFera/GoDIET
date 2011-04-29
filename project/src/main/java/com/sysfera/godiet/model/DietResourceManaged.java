@@ -24,7 +24,6 @@ public class DietResourceManaged extends SoftwareManager {
 
 	public DietResourceManaged(SoftwareController softwareController) {
 		super(softwareController);
-		// TODO Auto-generated constructor stub
 	}
 
 	/**
@@ -67,4 +66,6 @@ public class DietResourceManaged extends SoftwareManager {
 	public Software getSoftwareDescription() {
 		return agentManaged;
 	}
+	
+
 }

@@ -6,8 +6,6 @@ import org.slf4j.LoggerFactory;
 import com.sysfera.godiet.exceptions.remote.CheckException;
 import com.sysfera.godiet.exceptions.remote.LaunchException;
 import com.sysfera.godiet.exceptions.remote.PrepareException;
-import com.sysfera.godiet.model.SoftwareController;
-import com.sysfera.godiet.remote.RemoteConfigurationHelper;
 
 /**
  * Error State. Currently no way to leave.
@@ -63,6 +61,10 @@ public class DownStateImpl implements ResourceState {
 	@Override
 	public void prepare() throws PrepareException {
 		throw new PrepareException("In error states");
+	}
+	@Override
+	public String toString() {
+		return "Down";
 	}
 
 }

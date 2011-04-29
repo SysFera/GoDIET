@@ -14,8 +14,11 @@ import com.sysfera.godiet.command.prepare.PrepareAgentsCommand;
 import com.sysfera.godiet.command.xml.LoadXMLDietCommand;
 import com.sysfera.godiet.exceptions.CommandExecutionException;
 import com.sysfera.godiet.managers.ResourcesManager;
+import com.sysfera.godiet.model.SoftwareController;
+import com.sysfera.godiet.model.factories.GodietAbstractFactory;
 import com.sysfera.godiet.remote.RemoteAccess;
 import com.sysfera.godiet.remote.RemoteAccessMock;
+import com.sysfera.godiet.remote.RemoteConfigurationHelper;
 import com.sysfera.godiet.utils.xml.XmlScannerJaxbImpl;
 
 public class CommandPrepareAgentsTest {
@@ -53,7 +56,10 @@ public class CommandPrepareAgentsTest {
 				xmlLoadingCommand.setRm(rm);
 				xmlLoadingCommand.setXmlInput(inputStream);
 				xmlLoadingCommand.setXmlParser(scanner);
-				xmlLoadingCommand.setRemoteAccess(remoteAccess);
+				SoftwareController softwareController = new RemoteConfigurationHelper(remoteAccess, rm.getGodietConfiguration().getGoDietConfiguration(), rm.getPlatformModel());
+				GodietAbstractFactory godietAbstractFactory = new GodietAbstractFactory(softwareController);
+				xmlLoadingCommand.setAbstractFactory(godietAbstractFactory);
+
 
 				xmlLoadingCommand.execute();
 

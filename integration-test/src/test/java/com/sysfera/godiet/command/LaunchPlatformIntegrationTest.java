@@ -27,6 +27,11 @@ import com.sysfera.godiet.command.xml.LoadXMLDietCommand;
 import com.sysfera.godiet.exceptions.CommandExecutionException;
 import com.sysfera.godiet.exceptions.remote.AddAuthentificationException;
 import com.sysfera.godiet.managers.ResourcesManager;
+import com.sysfera.godiet.managers.user.SSHKeyManager;
+import com.sysfera.godiet.model.SoftwareController;
+import com.sysfera.godiet.model.factories.GodietAbstractFactory;
+import com.sysfera.godiet.model.generated.User;
+import com.sysfera.godiet.remote.RemoteConfigurationHelper;
 import com.sysfera.godiet.remote.ssh.RemoteAccessJschImpl;
 import com.sysfera.godiet.utils.xml.XmlScannerJaxbImpl;
 
@@ -39,7 +44,8 @@ public class LaunchPlatformIntegrationTest {
 
 	@Autowired
 	private RemoteAccessJschImpl remoteAccess;
-
+	
+	private GodietAbstractFactory godietAbstractFactory;
 	@Before
 	public void init() {
 		rm = new ResourcesManager();
@@ -52,6 +58,8 @@ public class LaunchPlatformIntegrationTest {
 				InputStream inputStream = getClass().getClassLoader()
 						.getResourceAsStream(configurationFile);
 				InitUtil.initConfig(rm, inputStream);
+				this.rm.getUserManager().setRemoteAccessor(remoteAccess);
+				
 			}
 			{
 				String platformTestCase = "platform/testbed-platform.xml";
@@ -69,7 +77,9 @@ public class LaunchPlatformIntegrationTest {
 				xmlLoadingCommand.setRm(rm);
 				xmlLoadingCommand.setXmlInput(inputStream);
 				xmlLoadingCommand.setXmlParser(scanner);
-				xmlLoadingCommand.setRemoteAccess(remoteAccess);
+				SoftwareController softwareController = new RemoteConfigurationHelper(remoteAccess, rm.getGodietConfiguration().getGoDietConfiguration(), rm.getPlatformModel());
+				godietAbstractFactory = new GodietAbstractFactory(softwareController);
+				xmlLoadingCommand.setAbstractFactory(godietAbstractFactory);
 
 				xmlLoadingCommand.execute();
 
@@ -86,20 +96,18 @@ public class LaunchPlatformIntegrationTest {
 		if (urlFile == null || urlFile.getFile().isEmpty())
 			Assert.fail("SSH key not found");
 
-		if (urlFile == null)
-			Assert.fail("Unable to load ssh key" + fakeKey);
 		try {
-			remoteAccess.addItentity(urlFile.getFile(), null, "godiet");
+			User.Ssh.Key sshDesc = new  User.Ssh.Key();
+			sshDesc.setPath(urlFile.getPath());
+			SSHKeyManager sshkey = new SSHKeyManager(sshDesc);
+			sshkey.setPassword("godiet");
+			this.rm.getUserManager().addManagedSSHKey(new SSHKeyManager(sshDesc));
+			remoteAccess.addItentity(sshkey);
 		} catch (AddAuthentificationException e) {
 			Assert.fail("Unable to load testbed key");
 		}
 
-		try {
-			// Here add a key to access on testbed
-			remoteAccess.addItentity("/home/phi/tmp/id_dsa", null, "");
-		} catch (AddAuthentificationException e) {
-			log.error("unable to load your key");
-		}
+	
 
 	}
 
@@ -116,10 +124,12 @@ public class LaunchPlatformIntegrationTest {
 		StopServicesCommand stopServicesCommand = new StopServicesCommand();
 		stopServicesCommand.setRm(rm);
 
+
+		
 		// Agents commands
 		InitForwardersCommand initForwardersCommand = new InitForwardersCommand();
 		initForwardersCommand.setRm(rm);
-		initForwardersCommand.setRemoteAccess(remoteAccess);
+		initForwardersCommand.setForwarderFactory(godietAbstractFactory);
 
 		PrepareAgentsCommand prepareAgents = new PrepareAgentsCommand();
 		prepareAgents.setRm(rm);

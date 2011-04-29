@@ -15,6 +15,8 @@ import com.jcraft.jsch.ChannelExec;
 import com.jcraft.jsch.JSch;
 import com.sysfera.godiet.exceptions.generics.RemoteAccessException;
 import com.sysfera.godiet.exceptions.remote.AddAuthentificationException;
+import com.sysfera.godiet.exceptions.remote.RemoveAuthentificationException;
+import com.sysfera.godiet.managers.user.SSHKeyManager;
 import com.sysfera.godiet.model.Path;
 import com.sysfera.godiet.remote.RemoteAccess;
 
@@ -283,23 +285,24 @@ public class RemoteAccessJschImpl implements RemoteAccess {
 		return b;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.sysfera.godiet.Utils.RemoteAccess#addKey(java.lang.String,
-	 * java.lang.String, java.lang.String)
-	 */
-	@Override
-	public void addItentity(String privateKey, String publicKey,
-			String passphrase) throws AddAuthentificationException {
 
-		channelManager.addIdentity(privateKey, publicKey, passphrase);
-	}
 
 	// TODO: to improve
-
 	public void debug(boolean activate) {
 		channelManager.debug(activate);
 	}
+
+	@Override
+	public void addItentity(SSHKeyManager sshkey) throws AddAuthentificationException {
+		channelManager.addIdentity(sshkey);
+		
+	}
+
+	@Override
+	public void removeItentity(SSHKeyManager sshkey) throws RemoveAuthentificationException {
+		channelManager.removeIdentity(sshkey);
+		
+	}
+
 
 }

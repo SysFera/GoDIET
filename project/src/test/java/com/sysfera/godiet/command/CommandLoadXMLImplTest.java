@@ -18,9 +18,12 @@ import com.sysfera.godiet.managers.DietManager;
 import com.sysfera.godiet.managers.PlatformManager;
 import com.sysfera.godiet.managers.ResourcesManager;
 import com.sysfera.godiet.model.DietResourceManaged;
+import com.sysfera.godiet.model.SoftwareController;
+import com.sysfera.godiet.model.factories.GodietAbstractFactory;
 import com.sysfera.godiet.model.generated.GoDietConfiguration;
 import com.sysfera.godiet.remote.RemoteAccess;
 import com.sysfera.godiet.remote.RemoteAccessMock;
+import com.sysfera.godiet.remote.RemoteConfigurationHelper;
 import com.sysfera.godiet.utils.xml.XMLParser;
 import com.sysfera.godiet.utils.xml.XmlScannerJaxbImpl;
 
@@ -60,7 +63,10 @@ public class CommandLoadXMLImplTest {
 		LoadXMLDietCommand xmlLoadingCommand = new LoadXMLDietCommand();
 
 		xmlLoadingCommand.setXmlParser(scanner);
-		xmlLoadingCommand.setRemoteAccess(remoteAccess);
+		SoftwareController softwareController = new RemoteConfigurationHelper(remoteAccess, rm.getGodietConfiguration().getGoDietConfiguration(), rm.getPlatformModel());
+		GodietAbstractFactory godietAbstractFactory = new GodietAbstractFactory(softwareController);
+		xmlLoadingCommand.setAbstractFactory(godietAbstractFactory);
+
 		for (String testCaseFile : testCaseFiles) {
 			// Retry with the same config
 			GoDietConfiguration config = rm.getGodietConfiguration()
@@ -113,7 +119,10 @@ public class CommandLoadXMLImplTest {
 			xmlLoadingCommand.setRm(rm);
 			xmlLoadingCommand.setXmlInput(inputStream);
 			xmlLoadingCommand.setXmlParser(scanner);
-			xmlLoadingCommand.setRemoteAccess(remoteAccess);
+			SoftwareController softwareController = new RemoteConfigurationHelper(remoteAccess, rm.getGodietConfiguration().getGoDietConfiguration(), rm.getPlatformModel());
+			GodietAbstractFactory godietAbstractFactory = new GodietAbstractFactory(softwareController);
+			xmlLoadingCommand.setAbstractFactory(godietAbstractFactory);
+
 
 			xmlLoadingCommand.execute();
 			PlatformManager platform = rm.getPlatformModel();
@@ -179,7 +188,10 @@ public class CommandLoadXMLImplTest {
 			xmlLoadingCommand.setRm(rm);
 			xmlLoadingCommand.setXmlInput(inputStream);
 			xmlLoadingCommand.setXmlParser(scanner);
-			xmlLoadingCommand.setRemoteAccess(remoteAccess);
+			SoftwareController softwareController = new RemoteConfigurationHelper(remoteAccess, rm.getGodietConfiguration().getGoDietConfiguration(), rm.getPlatformModel());
+			GodietAbstractFactory godietAbstractFactory = new GodietAbstractFactory(softwareController);
+			xmlLoadingCommand.setAbstractFactory(godietAbstractFactory);
+
 
 			xmlLoadingCommand.execute();
 			PlatformManager platform = rm.getPlatformModel();

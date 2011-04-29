@@ -29,9 +29,6 @@ public class StartServicesCommand implements Command {
 
 	@Override
 	public void execute() throws CommandExecutionException {
-		log.debug("Enter in "
-				+ Thread.currentThread().getStackTrace()[2].getMethodName()
-				+ " method");
 		if (rm == null) {
 			throw new CommandExecutionException(getClass().getName()
 					+ " not initialized correctly");

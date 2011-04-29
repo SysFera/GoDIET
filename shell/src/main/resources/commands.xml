@@ -21,5 +21,6 @@
 	<command>com.sysfera.godiet.shell.command.LaunchCommand</command>
 	<command>com.sysfera.godiet.shell.command.StopCommand</command>
 	<command>com.sysfera.godiet.shell.command.StatusCommand</command>
+	<command>com.sysfera.godiet.shell.command.SSHCommand</command>
 </commands>
 

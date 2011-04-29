@@ -7,7 +7,6 @@ import com.sysfera.godiet.exceptions.remote.CheckException;
 import com.sysfera.godiet.exceptions.remote.LaunchException;
 import com.sysfera.godiet.exceptions.remote.PrepareException;
 import com.sysfera.godiet.model.SoftwareController;
-import com.sysfera.godiet.remote.RemoteConfigurationHelper;
 
 /**
  * 
@@ -74,4 +73,8 @@ public class ReadyStateImpl implements ResourceState {
 	public void check() {
 	}
 
+	@Override
+	public String toString() {
+		return "Ready";
+	}
 }

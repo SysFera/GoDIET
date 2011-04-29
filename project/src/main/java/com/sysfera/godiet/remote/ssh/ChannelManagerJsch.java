@@ -1,8 +1,10 @@
 package com.sysfera.godiet.remote.ssh;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Map;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,6 +16,8 @@ import com.jcraft.jsch.Session;
 import com.jcraft.jsch.UserInfo;
 import com.sysfera.godiet.exceptions.generics.RemoteAccessException;
 import com.sysfera.godiet.exceptions.remote.AddAuthentificationException;
+import com.sysfera.godiet.exceptions.remote.RemoveAuthentificationException;
+import com.sysfera.godiet.managers.user.SSHKeyManager;
 import com.sysfera.godiet.model.Path;
 import com.sysfera.godiet.model.generated.Resource;
 import com.sysfera.godiet.model.generated.Ssh;
@@ -23,6 +27,7 @@ public class ChannelManagerJsch {
 	private Logger log = LoggerFactory.getLogger(getClass());
 	private final JSch jsch;
 	private final UserInfo trustedUI;
+	private Set<SSHKeyManager> keybunch = new HashSet<SSHKeyManager>();
 
 	private final Map<Path, Session> sessions;
 
@@ -69,10 +74,10 @@ public class ChannelManagerJsch {
 			if (hops.size() < 2) {
 				throw new RemoteAccessException(
 						"Path length must be > 2 (source + destination)");
-                        }
+			}
 
 			// Create the session with the last Node
-			Resource  last = null;
+			Resource last = null;
 			try {
 				last = (Resource) hops.toArray()[hops.size() - 1];
 			} catch (ClassCastException e) {
@@ -88,7 +93,7 @@ public class ChannelManagerJsch {
 				lastNodeConfig = last.getDisk().getScp();
 			} else {
 				lastNodeConfig = last.getSsh();
-                        }
+			}
 
 			session = jsch.getSession(lastNodeConfig.getLogin(),
 					lastNodeConfig.getServer(), lastNodeConfig.getPort());
@@ -136,14 +141,12 @@ public class ChannelManagerJsch {
 		if (resources.length < 3) {
 			return; // no need to create proxy. Path contains source and
 					// destination which are in the same domain
-                }
+		}
 		NCProxy lastProxy = null;
 		// i = 0 is the source. Don't create a proxy
 		for (int i = 1; i <= resources.length - 2; i++) {
 			Resource resource = resources[i];
 			Ssh ssh = resource.getSsh();
-
-	
 
 			NCProxy proxy = new NCProxy(ssh.getLogin(), ssh.getServer(),
 					ssh.getPort(), jsch, ui);
@@ -162,61 +165,76 @@ public class ChannelManagerJsch {
 	}
 
 	public void debug(boolean activate) {
-//		if (activate) {
-//			com.jcraft.jsch.Logger jschLog = new com.jcraft.jsch.Logger() {
-//
-//				@Override
-//				public void log(int level, String message) {
-//					switch (level) {
-//					case 0:
-//						log.debug(message);
-//						break;
-//					case 1:
-//						log.info(message);
-//						break;
-//					case 2:
-//						log.warn(message);
-//						break;
-//					case 3:
-//						log.error(message);
-//						break;
-//					case 4:
-//						log.error("FATAL" + message);
-//						break;
-//
-//					default:
-//						break;
-//					}
-//
-//				}
-//
-//				@Override
-//				public boolean isEnabled(int level) {
-//					return true;
-//				}
-//			};
-//			JSch.setLogger(jschLog);
-//		} else
-//			JSch.setLogger(null);
+		// if (activate) {
+		// com.jcraft.jsch.Logger jschLog = new com.jcraft.jsch.Logger() {
+		//
+		// @Override
+		// public void log(int level, String message) {
+		// switch (level) {
+		// case 0:
+		// log.debug(message);
+		// break;
+		// case 1:
+		// log.info(message);
+		// break;
+		// case 2:
+		// log.warn(message);
+		// break;
+		// case 3:
+		// log.error(message);
+		// break;
+		// case 4:
+		// log.error("FATAL" + message);
+		// break;
+		//
+		// default:
+		// break;
+		// }
+		//
+		// }
+		//
+		// @Override
+		// public boolean isEnabled(int level) {
+		// return true;
+		// }
+		// };
+		// JSch.setLogger(jschLog);
+		// } else
+		// JSch.setLogger(null);
 
-		
 	}
 
-	public void addIdentity(String privateKey, String publicKey, String passphrase) throws AddAuthentificationException {
+	public void addIdentity(SSHKeyManager managedKey)
+			throws AddAuthentificationException {
 		try {
-			jsch.addIdentity(privateKey, publicKey, passphrase.getBytes());
+			jsch.addIdentity(managedKey.getPrivKeyPath(), managedKey
+					.getPubKeyPath(), managedKey.getPassword().getBytes());
+			keybunch.add(managedKey);
 		} catch (JSchException e) {
 
 			throw new AddAuthentificationException("Unable to add key", e);
-		} finally {
-			// Give to GC
-			passphrase = null;
 		}
-		
+
 	}
 
 	public JSch getJsch() {
 		return jsch;
 	}
 
+	public Set<SSHKeyManager> getKeyBunch() {
+		return keybunch;
+	}
+
+	public void removeIdentity(SSHKeyManager sshkey) throws RemoveAuthentificationException {
+		if(sshkey == null) {
+			log.error("Try to remove an empty key");
+			return;
+		}
+		try {
+			jsch.removeIdentity(sshkey.getPrivKeyPath());
+			keybunch.remove(sshkey);
+		} catch (JSchException e) {
+			throw new RemoveAuthentificationException("Unable to remove key", e);
+		}	
+	}
 }

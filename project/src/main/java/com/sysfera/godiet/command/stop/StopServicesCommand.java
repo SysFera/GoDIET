@@ -29,15 +29,13 @@ public class StopServicesCommand implements Command {
 
 	@Override
 	public void execute() throws CommandExecutionException {
-		log.debug("Enter in "
-				+ Thread.currentThread().getStackTrace()[2].getMethodName()
-				+ " method");
+
 		if (rm == null) {
 			throw new CommandExecutionException(getClass().getName()
 					+ " not initialized correctly");
 		}
 		List<DietServiceManaged> omniNames = rm.getDietModel().getOmninames();
-		log.debug("Try to stop  " +omniNames.size() + " omniNames");
+		log.debug("Try to stop  " +omniNames.size() + " OmniNames");
 		boolean error = false;
 		for (DietServiceManaged omniName : omniNames) {
 			try {

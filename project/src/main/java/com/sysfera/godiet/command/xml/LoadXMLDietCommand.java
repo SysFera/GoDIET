@@ -13,10 +13,7 @@ import com.sysfera.godiet.exceptions.DietResourceCreationException;
 import com.sysfera.godiet.exceptions.XMLParseException;
 import com.sysfera.godiet.managers.DietManager;
 import com.sysfera.godiet.managers.ResourcesManager;
-import com.sysfera.godiet.model.factories.LocalAgentFactory;
-import com.sysfera.godiet.model.factories.MasterAgentFactory;
-import com.sysfera.godiet.model.factories.OmniNamesFactory;
-import com.sysfera.godiet.model.factories.SedFactory;
+import com.sysfera.godiet.model.factories.GodietAbstractFactory;
 import com.sysfera.godiet.model.generated.Config;
 import com.sysfera.godiet.model.generated.Diet;
 import com.sysfera.godiet.model.generated.DietInfrastructure;
@@ -26,8 +23,6 @@ import com.sysfera.godiet.model.generated.MasterAgent;
 import com.sysfera.godiet.model.generated.OmniNames;
 import com.sysfera.godiet.model.generated.Resource;
 import com.sysfera.godiet.model.generated.Sed;
-import com.sysfera.godiet.remote.RemoteAccess;
-import com.sysfera.godiet.remote.RemoteConfigurationHelper;
 import com.sysfera.godiet.utils.xml.XMLParser;
 
 /**
@@ -45,12 +40,8 @@ public class LoadXMLDietCommand implements Command {
 	private XMLParser xmlScanner;
 	private InputStream xmlInput;
 
-	private MasterAgentFactory maFactory;
-	private LocalAgentFactory laFactory;
-	private SedFactory sedFactory;
-	private OmniNamesFactory omFactory;
+	private GodietAbstractFactory abstractFactory;
 
-	private RemoteAccess remoteAccess;
 
 	@Override
 	public String getDescription() {
@@ -59,27 +50,17 @@ public class LoadXMLDietCommand implements Command {
 
 	@Override
 	public void execute() throws CommandExecutionException {
-		log.debug("Enter in "
-				+ Thread.currentThread().getStackTrace()[2].getMethodName()
-				+ " method");
-		if (rm == null
-				|| rm.getGodietConfiguration().getGoDietConfiguration() == null
-				|| xmlScanner == null || xmlInput == null
-				|| remoteAccess == null) {
+		if (rm == null||
+				abstractFactory == null|| xmlScanner == null || xmlInput == null
+				|| rm.getPlatformModel() == null||rm.getGodietConfiguration()
+				.getGoDietConfiguration() ==null) {
 			throw new CommandExecutionException(getClass().getName()
 					+ " not initialized correctly");
 		}
-		RemoteConfigurationHelper softwareController = new RemoteConfigurationHelper(
-				remoteAccess, rm.getGodietConfiguration()
-						.getGoDietConfiguration());
-		this.maFactory = new MasterAgentFactory(softwareController);
-		this.laFactory = new LocalAgentFactory(softwareController);
-		this.sedFactory = new SedFactory(softwareController);
-		this.omFactory = new OmniNamesFactory(softwareController);
+		
 		try {
 			Diet dietDescription = xmlScanner.buildDietModel(xmlInput);
 			load(rm.getDietModel(), dietDescription);
-			softwareController.setPlatform(rm.getPlatformModel());
 		} catch (IOException e) {
 			throw new CommandExecutionException("XML read error", e);
 		} catch (XMLParseException e) {
@@ -88,6 +69,10 @@ public class LoadXMLDietCommand implements Command {
 			throw new CommandExecutionException("Unable load model", e);
 		}
 
+	}
+	
+	public void setAbstractFactory(GodietAbstractFactory abstractFactory) {
+		this.abstractFactory = abstractFactory;
 	}
 
 	/**
@@ -152,7 +137,7 @@ public class LoadXMLDietCommand implements Command {
 					c.getServer());
 			if(r == null) throw new DietResourceCreationException("Unable to find the physical resource "+c.getServer());
 			c.setServerNode(r);
-			dietManager.addOmniName(omFactory.create(omniName));
+			dietManager.addOmniName(abstractFactory.create(omniName));
 
 		}
 		initMasterAgent(dietManager, dietHierarchy.getMasterAgent());
@@ -182,7 +167,7 @@ public class LoadXMLDietCommand implements Command {
 						.getServerNode().getDomain().getLabel() + ". Master agent id: "+masterAgent.getId());
 
 
-				dietManager.addMasterAgent(maFactory.create(masterAgent,
+				dietManager.addMasterAgent(abstractFactory.create(masterAgent,
 						omniNames));
 				initSeds(dietManager, masterAgent.getSed());
 				initLocalAgents(dietManager, masterAgent.getLocalAgent());
@@ -211,7 +196,7 @@ public class LoadXMLDietCommand implements Command {
 				if(omniNames == null) throw new DietResourceCreationException("Unable to find the omniNames for domain "+localAgent.getConfig()
 						.getServerNode().getDomain().getLabel() + ". LocalAgent id: "+localAgent.getId());
 
-				dietManager.addLocalAgent(laFactory.create(localAgent,
+				dietManager.addLocalAgent(abstractFactory.create(localAgent,
 						omniNames));
 				initSeds(dietManager, localAgent.getSed());
 				initLocalAgents(dietManager, localAgent.getLocalAgent());
@@ -239,15 +224,12 @@ public class LoadXMLDietCommand implements Command {
 				if(omniNames == null) throw new DietResourceCreationException("Unable to find the omniNames for domain "+sed.getConfig()
 						.getServerNode().getDomain().getLabel() + " Sed id: "+sed.getId());
 
-				dietManager.addSed(sedFactory.create(sed, omniNames));
+				dietManager.addSed(abstractFactory.create(sed, omniNames));
 			}
 
 		}
 
 	}
 
-	public void setRemoteAccess(RemoteAccess remoteAccess) {
-		this.remoteAccess = remoteAccess;
-	}
 
 }

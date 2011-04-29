@@ -4,7 +4,6 @@ import com.sysfera.godiet.exceptions.remote.CheckException;
 import com.sysfera.godiet.exceptions.remote.LaunchException;
 import com.sysfera.godiet.exceptions.remote.PrepareException;
 import com.sysfera.godiet.exceptions.remote.StopException;
-import com.sysfera.godiet.remote.RemoteAccess;
 
 public interface SoftwareController {
 
