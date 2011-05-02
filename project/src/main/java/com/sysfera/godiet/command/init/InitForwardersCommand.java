@@ -91,7 +91,7 @@ public class InitForwardersCommand implements Command {
 
 				}
 			}
-			if(error = true ) throw new CommandExecutionException("Error when init forwarders");
+			if(error) throw new CommandExecutionException("Error when init forwarders");
 		}
 
 	}

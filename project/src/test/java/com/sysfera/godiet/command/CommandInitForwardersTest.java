@@ -84,6 +84,7 @@ public class CommandInitForwardersTest {
 			if (forwarders.size() != 6)
 				Assert.fail();
 		} catch (CommandExecutionException e) {
+			e.printStackTrace();
 			Assert.fail(e.getMessage());
 		}
 
