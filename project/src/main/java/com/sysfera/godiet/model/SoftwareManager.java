@@ -1,7 +1,11 @@
 package com.sysfera.godiet.model;
 
+import com.sysfera.godiet.exceptions.remote.LaunchException;
+import com.sysfera.godiet.exceptions.remote.PrepareException;
+import com.sysfera.godiet.exceptions.remote.StopException;
 import com.sysfera.godiet.model.generated.Resource;
 import com.sysfera.godiet.model.generated.Software;
+import com.sysfera.godiet.model.states.ResourceState;
 import com.sysfera.godiet.model.states.StateController;
 
 /**
@@ -14,15 +18,12 @@ import com.sysfera.godiet.model.states.StateController;
 public abstract class SoftwareManager {
 	private String runningCommand;
 
-	
 	private Integer pid;
-	protected final StateController  stateController;
+	protected final StateController stateController;
 
-	
-	
 	public SoftwareManager(SoftwareController softwareController) {
-		
-		stateController = new StateController(this,softwareController);
+
+		stateController = new StateController(this, softwareController);
 
 	}
 
@@ -54,22 +55,43 @@ public abstract class SoftwareManager {
 	/**
 	 * Return the command to run the software on the remote physical resource
 	 * 
-	 * @return the command to run the managed software or null if it doesn't plugged.s
+	 * @return the command to run the managed software or null if it doesn't
+	 *         plugged.s
 	 */
-	public String getRunningCommand(){
+	public String getRunningCommand() {
 		return runningCommand;
 	}
-	
+
 	/**
 	 * TODO: Perhaps code refactor: setRunning may not be null.
-	 * @param runningCommand the command
+	 * 
+	 * @param runningCommand
+	 *            the command
 	 */
 	public void setRunningCommand(String runningCommand) {
 		this.runningCommand = runningCommand;
 	}
-	public String getState()
-	{
+
+	public String getState() {
 		return stateController.getState().toString();
+	}
+
+	public void start() throws LaunchException {
+
+		ResourceState currentState = this.stateController.getState();
+		currentState.start();
+
+	}
+
+	public void prepare() throws PrepareException {
+		ResourceState currentState = this.stateController.getState();
+		currentState.prepare();
+
+	}
+
+	public void stop() throws StopException {
+		ResourceState currentState = this.stateController.getState();
+		currentState.stop();
 	}
 
 }

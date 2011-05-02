@@ -55,7 +55,19 @@ extends ComplexCommandSupport {
 		io.out.println("@|bold Label\tStatus|@")
 		io.out.println("---------------------------------------------------------")
 		resources.each{
-			io.out.println "${it.softwareDescription.id}\t${it.state}"
+			def coloredStatus
+			switch (it.state) {
+				case "Up":
+					coloredStatus =  "@|green ${it.state}|@"
+					break;
+				case "Error":
+					coloredStatus =  "@|BG_RED,BLACK ${it.state}|@"
+					break;
+				default:
+					coloredStatus = "@|BLUE ${it.state}|@"
+					break;
+			}
+			io.out.println "${it.softwareDescription.id}\t${coloredStatus}"
 		}
 	}
 	def do_services = {

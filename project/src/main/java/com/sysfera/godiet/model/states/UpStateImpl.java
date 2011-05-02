@@ -1,8 +1,11 @@
 package com.sysfera.godiet.model.states;
 
+import java.util.Date;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.sysfera.godiet.exceptions.remote.CheckException;
 import com.sysfera.godiet.exceptions.remote.StopException;
 import com.sysfera.godiet.model.SoftwareController;
 
@@ -22,7 +25,7 @@ public class UpStateImpl implements ResourceState {
 
 	public UpStateImpl(StateController stateController) {
 		this.stateController = stateController;
-		this.launcher = stateController.softwareControler;
+		this.launcher = stateController.softwareController;
 	}
 
 	@Override
@@ -40,13 +43,15 @@ public class UpStateImpl implements ResourceState {
 	 * error.
 	 */
 	@Override
-	public void stop() throws StopException{
-		try {
-			launcher.stop(this.stateController.softwareManaged);
-			this.stateController.state = this.stateController.down;
-		} catch (StopException e) {
-			this.stateController.state = this.stateController.error;
-			throw e;
+	public void stop() throws StopException {
+		synchronized (this.stateController.state) {
+			try {
+				launcher.stop(this.stateController.softwareManaged);
+				this.stateController.state = this.stateController.down;
+			} catch (StopException e) {
+				this.stateController.state = this.stateController.error;
+				throw e;
+			}
 		}
 	}
 
@@ -57,9 +62,18 @@ public class UpStateImpl implements ResourceState {
 	 */
 	@Override
 	public void check() {
-		// TODO : implement check
-		log.error("Check Not yet implemented");
+		synchronized (this.stateController.state) {
+			try {
+				launcher.check(this.stateController.softwareManaged);
+			} catch (CheckException e) {
+				this.stateController.state = this.stateController.error;
+				e.addInfo("UPSTATE", "CHECKERROR", "Check failed at "
+						+ (new Date()).getTime());
+			}
+
+		}
 	}
+
 	@Override
 	public String toString() {
 		return "Up";

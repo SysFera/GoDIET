@@ -53,8 +53,8 @@ public class RemoteAccessJschImpl implements RemoteAccess {
 	 * 
 	 * @param command
 	 * @param path
-	 * @return
-	 * @throws RemoteAccessException
+	 * @return Process PID or null if can't get it.
+	 * @throws RemoteAccessException if connection down
 	 */
 	private Integer execute(String command, Path path)
 			throws RemoteAccessException {
@@ -117,7 +117,7 @@ public class RemoteAccessJschImpl implements RemoteAccess {
 		try {
 			pid = Integer.valueOf(sb.toString().trim());
 		} catch (NumberFormatException e) {
-			log.error("Unable to convert the command output to PID ! Output =  "
+			log.warn("Unable to convert the command output to PID. Output =  "
 					+ sb.toString());
 
 		}

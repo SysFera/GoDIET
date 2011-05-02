@@ -62,6 +62,7 @@ public class InitForwardersCommand implements Command {
 					.getServerNode().getDomain().getLabel());
 		}
 		List<Link> links = rm.getPlatformModel().getLinks();
+		boolean error = false;
 		if (links != null) {
 			for (Link link : links) {
 				if (domains.contains(link.getFrom().getDomain().getLabel())
@@ -85,12 +86,12 @@ public class InitForwardersCommand implements Command {
 						rm.getDietModel().addForwarders(forwarderManaged[0],
 								forwarderManaged[1]);
 					} catch (DietResourceCreationException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+						error = true;
 					}
 
 				}
 			}
+			if(error = true ) throw new CommandExecutionException("Error when init forwarders");
 		}
 
 	}

@@ -39,8 +39,7 @@ public class PrepareServicesCommand implements Command {
 			try {
 				omniName.prepare();
 			} catch (PrepareException e) {
-				e.printStackTrace();
-				log.error(e.getMessage());
+				log.error("Error when prepare omniNames: " + omniName.getSoftwareDescription().getId(),e);
 			}
 		}
 	}

@@ -21,7 +21,7 @@ public class IncubateStateImpl implements ResourceState {
 
 	public IncubateStateImpl(StateController stateController) {
 		this.stateController = stateController;
-		this.launcher = stateController.softwareControler;
+		this.launcher = stateController.softwareController;
 	}
 
 	/**
@@ -53,6 +53,7 @@ public class IncubateStateImpl implements ResourceState {
 
 	@Override
 	public void check() {
+	//Nothing to do
 
 	}
 	@Override

@@ -75,15 +75,7 @@ extends CommandSupport {
 		assert diet != null;
 		diet.initPlatform(url)
 	}
-	public static void main(String[] args) {
-		def godsh = new GoDietSh()
-		def tf = new File("/home/phi/Dev/GoDIET/project/src/test/resources/testbed.xm")
-		def locc = new LoadPlatformCommand(godsh)
-		locc.load(tf.toURI().toURL())
-
-		def lpfc = new LaunchCommand(godsh)
-		lpfc.do_services()
-	}
+	
 }
 class LoadDietCommand
 extends CommandSupport {

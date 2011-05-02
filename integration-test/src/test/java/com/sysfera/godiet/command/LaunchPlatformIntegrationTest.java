@@ -44,8 +44,9 @@ public class LaunchPlatformIntegrationTest {
 
 	@Autowired
 	private RemoteAccessJschImpl remoteAccess;
-	
+
 	private GodietAbstractFactory godietAbstractFactory;
+
 	@Before
 	public void init() {
 		rm = new ResourcesManager();
@@ -59,7 +60,7 @@ public class LaunchPlatformIntegrationTest {
 						.getResourceAsStream(configurationFile);
 				InitUtil.initConfig(rm, inputStream);
 				this.rm.getUserManager().setRemoteAccessor(remoteAccess);
-				
+
 			}
 			{
 				String platformTestCase = "platform/testbed-platform.xml";
@@ -77,8 +78,12 @@ public class LaunchPlatformIntegrationTest {
 				xmlLoadingCommand.setRm(rm);
 				xmlLoadingCommand.setXmlInput(inputStream);
 				xmlLoadingCommand.setXmlParser(scanner);
-				SoftwareController softwareController = new RemoteConfigurationHelper(remoteAccess, rm.getGodietConfiguration().getGoDietConfiguration(), rm.getPlatformModel());
-				godietAbstractFactory = new GodietAbstractFactory(softwareController);
+				SoftwareController softwareController = new RemoteConfigurationHelper(
+						remoteAccess, rm.getGodietConfiguration()
+								.getGoDietConfiguration(),
+						rm.getPlatformModel());
+				godietAbstractFactory = new GodietAbstractFactory(
+						softwareController);
 				xmlLoadingCommand.setAbstractFactory(godietAbstractFactory);
 
 				xmlLoadingCommand.execute();
@@ -88,27 +93,31 @@ public class LaunchPlatformIntegrationTest {
 			log.error("Test Fail", e);
 			Assert.fail(e.getMessage());
 		}
-		// Real Remote SSH
 
 		remoteAccess.debug(true);
-		String fakeKey = "fakeuser/testbedKey";
-		URL urlFile = getClass().getClassLoader().getResource(fakeKey);
-		if (urlFile == null || urlFile.getFile().isEmpty())
-			Assert.fail("SSH key not found");
 
-		try {
-			User.Ssh.Key sshDesc = new  User.Ssh.Key();
+		/* Real Remote SSH */
+		{ // Testbed key
+			String fakeKey = "fakeuser/testbedKey";
+			URL urlFile = getClass().getClassLoader().getResource(fakeKey);
+			if (urlFile == null || urlFile.getFile().isEmpty())
+				Assert.fail("SSH key not found");
+			User.Ssh.Key sshDesc = new User.Ssh.Key();
 			sshDesc.setPath(urlFile.getPath());
 			SSHKeyManager sshkey = new SSHKeyManager(sshDesc);
 			sshkey.setPassword("godiet");
-			this.rm.getUserManager().addManagedSSHKey(new SSHKeyManager(sshDesc));
-			remoteAccess.addItentity(sshkey);
-		} catch (AddAuthentificationException e) {
-			Assert.fail("Unable to load testbed key");
+			this.rm.getUserManager().addManagedSSHKey(sshkey);
+			this.rm.getUserManager().registerKey(sshkey);
 		}
-
-	
-
+		{// My temporary local Graal access key
+			User.Ssh.Key mykeyDesc = new User.Ssh.Key();
+			mykeyDesc.setPath("/home/phi/tmp/id_dsa");
+			SSHKeyManager sshkey = new SSHKeyManager(mykeyDesc);
+			sshkey.setPassword("godiet");
+			this.rm.getUserManager().addManagedSSHKey(sshkey);
+			this.rm.getUserManager().registerKey(sshkey);
+		}
+		
 	}
 
 	/***
@@ -124,8 +133,6 @@ public class LaunchPlatformIntegrationTest {
 		StopServicesCommand stopServicesCommand = new StopServicesCommand();
 		stopServicesCommand.setRm(rm);
 
-
-		
 		// Agents commands
 		InitForwardersCommand initForwardersCommand = new InitForwardersCommand();
 		initForwardersCommand.setRm(rm);
@@ -154,7 +161,7 @@ public class LaunchPlatformIntegrationTest {
 
 			launchForwarders.execute();
 			startAgent.execute();
-	
+
 		} catch (CommandExecutionException e) {
 			log.error(e.getMessage());
 			Assert.fail(e.getMessage());

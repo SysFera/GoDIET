@@ -29,9 +29,9 @@ public class DownStateImpl implements ResourceState {
 	@Override
 	public void start() throws LaunchException {
 		try {
-			stateController.softwareControler.launch(this.stateController.softwareManaged);
+			stateController.softwareController.launch(this.stateController.softwareManaged);
 			Thread.sleep(400);
-			stateController.softwareControler.check(this.stateController.softwareManaged);
+			stateController.softwareController.check(this.stateController.softwareManaged);
 			this.stateController.state = this.stateController.up;
 		} catch (LaunchException e) {
 			this.stateController.state = this.stateController.error;
@@ -55,7 +55,7 @@ public class DownStateImpl implements ResourceState {
 
 	@Override
 	public void check() {
-
+		log.warn("Check a "+this+" state resource");
 	}
 
 	@Override

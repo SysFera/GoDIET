@@ -5,7 +5,7 @@
 
 	<goDietConfiguration debug="1" saveStdOut="true"
 		saveStdErr="true" log="true" localNode="graal">
-		<localscratch dir="/tmp/SCRATCH_ITEST" />
+		<localscratch dir="/tmp/godiet" />
 	</goDietConfiguration>
 
 </godiet:configuration>

@@ -18,6 +18,7 @@ import com.sysfera.godiet.command.prepare.PrepareServicesCommand;
 import com.sysfera.godiet.command.start.StartAgentsCommand;
 import com.sysfera.godiet.command.start.StartForwardersCommand;
 import com.sysfera.godiet.command.start.StartServicesCommand;
+import com.sysfera.godiet.command.start.StartSoftwareCommand;
 import com.sysfera.godiet.command.stop.StopAgentsCommand;
 import com.sysfera.godiet.command.stop.StopForwardersCommand;
 import com.sysfera.godiet.command.stop.StopServicesCommand;
@@ -26,8 +27,6 @@ import com.sysfera.godiet.managers.ResourcesManager;
 import com.sysfera.godiet.managers.user.SSHKeyManager;
 import com.sysfera.godiet.model.SoftwareController;
 import com.sysfera.godiet.model.factories.GodietAbstractFactory;
-import com.sysfera.godiet.model.generated.ObjectFactory;
-import com.sysfera.godiet.model.generated.User;
 import com.sysfera.godiet.remote.RemoteConfigurationHelper;
 import com.sysfera.godiet.remote.ssh.ChannelManagerJsch;
 import com.sysfera.godiet.remote.ssh.RemoteAccessJschImpl;
@@ -77,7 +76,7 @@ public class Diet {
 			inputStream = new FileInputStream(f);
 		} catch (FileNotFoundException e) {
 			inputStream = getClass().getResourceAsStream(
-			"/configuration/configuration.xml");
+					"/configuration/configuration.xml");
 		} catch (Exception e) {
 			log.warn("Unable to open file " + configFilePath, e);
 			inputStream = getClass().getResourceAsStream(
@@ -88,7 +87,7 @@ public class Diet {
 			log.error("Fatal: Unable to load user config file and open default config file");
 			throw new CommandExecutionException("Unable to load configuration");
 		}
-		//TODO: springified this
+		// TODO: springified this
 		XMLLoadingHelper.initConfig(rm, inputStream);
 		RemoteAccessJschImpl remoteJsch = new RemoteAccessJschImpl();
 		remoteJsch.setChannelManager(new ChannelManagerJsch());
@@ -105,19 +104,21 @@ public class Diet {
 
 	}
 
-	public void registerKey(SSHKeyManager key)
-	{
+	public void registerKey(SSHKeyManager key) {
 		this.rm.getUserManager().registerKey(key);
 	}
-	
-	
-	//TODO: Create factory in godietCore
-	public void addSshKey(String privateKeyPath, String publicKeyPath,String password){
+
+	// TODO: Create factory in godietCore
+	public void addSshKey(String privateKeyPath, String publicKeyPath,
+			String password) {
 
 	}
-	public void modifySshKey(SSHKeyManager sshkey, String privateKeyPath, String publicKeyPath,String password){
-		
-		this.rm.getUserManager().modifySSHKey(sshkey,privateKeyPath,publicKeyPath,password);
+
+	public void modifySshKey(SSHKeyManager sshkey, String privateKeyPath,
+			String publicKeyPath, String password) {
+
+		this.rm.getUserManager().modifySSHKey(sshkey, privateKeyPath,
+				publicKeyPath, password);
 	}
 
 	public void initPlatform(URL url) throws CommandExecutionException {
@@ -187,6 +188,18 @@ public class Diet {
 		initForwardersCommand.setForwarderFactory(godietAbstractFactory);
 		initForwardersCommand.execute();
 		forwardersInitialize = true;
+	}
+
+	public void relauch(String resourceId) throws CommandExecutionException {
+		// Something must be launched
+		if (!servicesLaunched)
+			new CommandExecutionException("Nothing launched");
+		StartSoftwareCommand sf = new StartSoftwareCommand();
+		sf.setRm(rm);
+		sf.setSoftwareId(resourceId);
+
+		sf.execute();
+
 	}
 
 	public void launchAgents() throws CommandExecutionException {

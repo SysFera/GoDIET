@@ -44,7 +44,6 @@ class SSHCommand extends ComplexCommandSupport {
 		//TODO: modify to never have clear password
 		String password;
 		if(System.getProperty('jline.terminal').equals("jline.UnsupportedTerminal")){
-			//Clear display pass
 			password = io.in.readLine()
 		}else {
 			password = new jline.ConsoleReader().readLine(new Character('*' as char));
@@ -71,11 +70,11 @@ class SSHCommand extends ComplexCommandSupport {
 		io.out.println "Enter private key path"
 		ConsoleReader consoleFileCompletor = new jline.ConsoleReader();
 		consoleFileCompletor.addCompletor(new FileNameCompletor())
-		consoleFileCompletor.prompt =  key.privKeyPath
+		consoleFileCompletor.putString key.privKeyPath
 		String privKeyPath = consoleFileCompletor.readLine()
 
 		io.out.println "Enter public key path "
-		consoleFileCompletor.prompt =  key.pubKeyPath
+		consoleFileCompletor.putString("${privKeyPath}.pub")
 		String pubkeyPath = consoleFileCompletor.readLine()
 		String password = askPassword()
 		key.sshDesc.path = privKeyPath
@@ -89,10 +88,9 @@ class SSHCommand extends ComplexCommandSupport {
 		assert it.size() == 1 , 'Init key need one argument'
 		def argument = it.head()
 		if(argument.isInteger()) argument = argument as Integer
-		io.println("arg : ${it}")
 		def keys = ((GoDietSh)shell).getDiet().managedKeys
 		def lastIndexKeys = keys.size()-1
-		
+
 		switch (argument) {
 			case 'all':
 				keys.each{ modifyKeyForm(it) }
@@ -114,18 +112,32 @@ class SSHCommand extends ComplexCommandSupport {
 			return
 		}
 		io.out.println("@|bold ${keys.size()} key Loaded|@ : ")
+
+
+
+
 		io.out.println("@|bold Key Number\tPublic key path\t\tStatus|@")
 		io.out.println("---------------------------------------------------------")
 
 		keys.eachWithIndex { obj, i ->
-			io.out.println "${i}\t${obj.pubKeyPath}\t${obj.state}"
+			def coloredStatus
+			switch (obj.state) {
+				case Status.LOADED:
+					coloredStatus =  "@|green ${obj.state}|@"
+					break;
+				default:
+					coloredStatus = "@|red ${obj.state}|@"	
+					break;
+			}
+			io.out.println "${i}\t${obj.pubKeyPath}\t${coloredStatus}"
+
 		}
 	}
 
 	def do_initpasswords = {
 		Set<SSHKeyManager> keys = ((GoDietSh)shell).getDiet().managedKeys
 		keys.each { SSHKeyManager key ->
-			//	if(${it.state} == Status.TYPE)
+			io.out.println("${key.pubKeyPath}");
 			if(key.state == Status.PASSWORDNOTSET) {
 				String password = askPassword()
 				((GoDietSh)shell).getDiet().modifySshKey(key,key.privKeyPath,key.pubKeyPath,password)

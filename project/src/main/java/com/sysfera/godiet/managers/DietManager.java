@@ -102,11 +102,13 @@ public class DietManager {
 	 * @param forwarder
 	 * @throws DietResourceCreationException
 	 */
-	public void addForwarders(DietResourceManaged forwarderClient,DietResourceManaged forwarderServer){
-//		DietResourceManaged[] managedForwarders = forwFactory.create(forwarder);
-//		if (managedForwarders.length != 2) {
-//			throw new DietResourceCreationException("TODO: What the fuck");
-//		}
+	public void addForwarders(DietResourceManaged forwarderClient,
+			DietResourceManaged forwarderServer) {
+		// DietResourceManaged[] managedForwarders =
+		// forwFactory.create(forwarder);
+		// if (managedForwarders.length != 2) {
+		// throw new DietResourceCreationException("TODO: What the fuck");
+		// }
 		this.forwaders.add(forwarderClient);
 		this.forwaders.add(forwarderServer);
 	}
@@ -115,7 +117,7 @@ public class DietManager {
 	 * @param omniNames
 	 * @throws DietResourceCreationException
 	 */
-	public void addOmniName(DietServiceManaged omniName){
+	public void addOmniName(DietServiceManaged omniName) {
 		this.omninames.add(omniName);
 	}
 
@@ -126,7 +128,9 @@ public class DietManager {
 	 * @return A list of all softwares managed by godiet
 	 */
 	public List<SoftwareManager> getAllManagedSoftware() {
-		List<SoftwareManager> softwaresManaged = new ArrayList<SoftwareManager>();
+		List<SoftwareManager> softwaresManaged = new ArrayList<SoftwareManager>(
+				forwaders.size() + localAgents.size() + masterAgents.size()
+						+ seds.size() + omninames.size());
 		softwaresManaged.addAll(forwaders);
 		softwaresManaged.addAll(localAgents);
 		softwaresManaged.addAll(masterAgents);
@@ -153,6 +157,23 @@ public class DietManager {
 		}
 		log.error("Unable to find a known omniName for domain: "
 				+ domain.getLabel());
+		return null;
+	}
+
+	/**
+	 * Search the Software managed given is id
+	 * @param id the Id of software
+	 * @return the managed software or null if doesn't exist
+	 */
+	public SoftwareManager getManagedSoftware(String id)
+	{
+		List<SoftwareManager> softwaresManaged = getAllManagedSoftware();
+		for (SoftwareManager softwareManager : softwaresManaged) {
+			if(softwareManager.getSoftwareDescription().getId().equals(id))
+			{
+				return softwareManager;
+			}
+		}
 		return null;
 	}
 }

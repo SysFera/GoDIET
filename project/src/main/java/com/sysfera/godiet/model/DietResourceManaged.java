@@ -3,12 +3,8 @@ package com.sysfera.godiet.model;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.sysfera.godiet.exceptions.remote.LaunchException;
-import com.sysfera.godiet.exceptions.remote.PrepareException;
-import com.sysfera.godiet.exceptions.remote.StopException;
 import com.sysfera.godiet.model.generated.Resource;
 import com.sysfera.godiet.model.generated.Software;
-import com.sysfera.godiet.model.states.ResourceState;
 
 /**
  * Use to manage and control all DIET elements (SeD, MA, LA, MA_DAG)
@@ -44,23 +40,6 @@ public class DietResourceManaged extends SoftwareManager {
 		}
 	}
 
-	public void start() throws LaunchException {
-
-		ResourceState currentState = this.stateController.getState();
-		currentState.start();
-
-	}
-
-	public void prepare() throws PrepareException {
-		ResourceState currentState = this.stateController.getState();
-		currentState.prepare();
-
-	}
-
-	public void stop() throws StopException {
-		ResourceState currentState = this.stateController.getState();
-		currentState.stop();
-	}
 
 	@Override
 	public Software getSoftwareDescription() {

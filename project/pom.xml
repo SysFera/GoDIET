@@ -1,19 +1,19 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>com.sysfera</groupId>
-	<artifactId>goDiet</artifactId>
-	<version>0.0.9-SNAPSHOT</version>
-	<properties>
-		<spring.graph.version>1.0.0.M2</spring.graph.version>
-	</properties>
-
 	<parent>
 		<groupId>com.sysfera</groupId>
 		<artifactId>goDiet-parent</artifactId>
 		<version>0.0.9-SNAPSHOT</version>
 
 	</parent>
+	<artifactId>goDiet</artifactId>
+	<packaging>jar</packaging>
+	<properties>
+		<spring.graph.version>1.0.0.M2</spring.graph.version>
+	</properties>
+
+
 
 	<dependencies>
 

@@ -19,12 +19,12 @@ import com.sysfera.godiet.model.SoftwareController;
 public class ReadyStateImpl implements ResourceState {
 	private Logger log = LoggerFactory.getLogger(getClass());
 
-	private final SoftwareController launcher;
+	private final SoftwareController softwareController;
 	private final StateController stateController;
 
 	public ReadyStateImpl(StateController stateController) {
 		this.stateController = stateController;
-		launcher = stateController.softwareControler;
+		softwareController = stateController.softwareController;
 	}
 
 	@Override
@@ -40,9 +40,9 @@ public class ReadyStateImpl implements ResourceState {
 	@Override
 	public void start() throws LaunchException {
 		try {
-			launcher.launch(this.stateController.softwareManaged);
+			softwareController.launch(this.stateController.softwareManaged);
 			Thread.sleep(400);
-			launcher.check(this.stateController.softwareManaged);
+			softwareController.check(this.stateController.softwareManaged);
 			this.stateController.state = this.stateController.up;
 		} catch (LaunchException e) {
 			this.stateController.state = this.stateController.error;
@@ -71,6 +71,7 @@ public class ReadyStateImpl implements ResourceState {
 
 	@Override
 	public void check() {
+		
 	}
 
 	@Override

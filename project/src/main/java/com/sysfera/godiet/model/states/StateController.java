@@ -22,23 +22,31 @@ public class StateController {
 	// Down by default
 	ResourceState state;
 
-	final SoftwareController softwareControler;
-	
 	// Error reason
 	Throwable errorCause = null;
 
-	public StateController(SoftwareManager agent,SoftwareController softwareController) {
+	final SoftwareController softwareController;
+
+	// default check periodicity
+	private final static int periodicity = 5000;
+	private final Thread checker;
+	public StateController(SoftwareManager agent,
+			SoftwareController softwareController) {
 		this.softwareManaged = agent;
-		this.softwareControler = softwareController;
+		this.softwareController = softwareController;
 		this.down = new IncubateStateImpl(this);
 		this.up = new UpStateImpl(this);
 		this.error = new ErrorStateImpl(this);
 		this.ready = new ReadyStateImpl(this);
-
+		
 		// Down
 		this.state = down;
 		
-		
+		//Start state checker
+		Checker ch= new  Checker(periodicity);
+		this.checker =new Thread(ch);
+		this.checker.start();
+
 	}
 
 	/**
@@ -66,5 +74,33 @@ public class StateController {
 
 	public ResourceState getState() {
 		return state;
+	}
+
+	public void interruptChecker()
+	{
+		this.checker.interrupt();
+	}
+	class Checker implements Runnable {
+		private final int periodicity;
+
+		public Checker(int periodicity) {
+			this.periodicity = periodicity;
+		}
+
+		public void run() {
+
+			while (!Thread.interrupted()) {
+				try {
+					Thread.sleep(periodicity);
+					synchronized (state) {
+						state.check();
+					}
+				} catch (InterruptedException e) {
+					log.warn("Checking thread "
+							+ softwareManaged.getSoftwareDescription().getId()
+							+ " was interrupted");
+				}
+			}
+		}
 	}
 }
