@@ -1,0 +1,315 @@
+%****************************************************************************%
+%* DIET User's Manual deploying chapter file                                *%
+%*                                                                          *%
+%*  Author(s):                                                              *%
+%*    - Holly DAIL (Holly.Dail@ens-lyon.fr)                                 *%
+%*    - Raphael BOLZE (Raphael.Bolze@ens-lyon.fr)                           *%
+%*    - Eddy CARON (Eddy Caron@ens-lyon.fr)                                 *%
+%*    - Philippe COMBES (Philippe.Combes@ens-lyon.fr)                       *%
+%*    - Benjamin DEPARDON (Benjamin.Depardon@ens-lyon.fr)                   *%
+%*                                                                          *%
+%* $LICENSE$                                                                *%
+%****************************************************************************%
+%* $Id: deploy.tex,v 1.27 2011/05/02 10:01:43 bdepardo Exp $
+%* $Log: deploy.tex,v $
+%* Revision 1.27  2011/05/02 10:01:43  bdepardo
+%* Corrected a few typos.
+%* Renamed "round-robin" scheduler into "least recently used" scheduler as this
+%* is closer to the behavior of this scheduler.
+%*
+%* Revision 1.26  2010/09/19 10:35:46  bdepardo
+%* Added a section on how to choose the shape of the hierarchy
+%*
+%* Revision 1.25  2010/03/29 21:18:17  ecaron
+%* Update GoDIET commands
+%*
+%* Revision 1.24  2010/02/25 08:05:27  ycaniou
+%* e.g -> Use macro
+%* Typo + ispell
+%*
+%* Revision 1.23  2010/02/25 06:45:38  ycaniou
+%* Add local variables
+%*
+%* Revision 1.22  2010/01/21 14:05:58  bdepardo
+%* DIET -> \diet
+%* SeD -> \sed
+%* GoDIET -> \godiet
+%*
+%* Revision 1.21  2008/07/16 23:02:48  ecaron
+%* Fixe the problem with too long list of hosts
+%*
+%* Revision 1.20  2008/03/04 16:12:37  bdepardo
+%* Added a link to the file examples/commented.xml for GoDIET.
+%*
+%* Revision 1.19  2006/11/29 16:55:49  dloureir
+%* minor corrections
+%*
+%* Revision 1.18  2006/05/12 12:12:32  sdahan
+%* Add some documentation about multi-MA
+%*
+%* Bug fix:
+%*  - segfault when the neighbours configuration line was empty
+%*  - deadlock when a MA create a link on itself
+%*
+%* Revision 1.17  2005/07/13 07:56:15  hdail
+%* Corrected error in xml example and added console instructions to GoDIET section.
+%*
+%* Revision 1.16  2005/07/12 21:44:28  hdail
+%* - Correcting small problems throughout
+%* - Modified deployment chapter to have a real section for deploying via GoDIET
+%* - Adding short xml example without the comments to make a figure in GoDIET
+%*   section.
+%*
+%* Revision 1.15  2005/06/28 15:53:02  hdail
+%* Completed corrections for config file examples and text explaining launch of
+%* each component.
+%*
+%* Revision 1.14  2005/06/28 13:57:55  hdail
+%* Described GoDIET and updating section on launching by hand.
+%*
+%* Revision 1.13  2005/06/24 14:27:07  hdail
+%* Correcting english problems & updating descriptions that are no longer true.
+%*
+%* Revision 1.12  2005/06/14 08:26:32  ecaron
+%* Deployment section should introduce GoDIET (Fixme for Holly)
+%*
+%* Revision 1.11  2005/05/29 13:51:22  ycaniou
+%* Moved the section concerning FAST from description to a new chapter about FAST
+%* and performances prediction.
+%* Moved the section about convertors in the FAST chapter.
+%* Modified the small introduction in chapter 1.
+%* The rest of the changes are purely in the format of .tex files.
+%*
+%* Revision 1.10  2004/10/25 08:59:56  sdahan
+%* add the multi-MA documentation
+%*
+%* Revision 1.9  2004/09/28 07:03:39  rbolze
+%* remove useAsyncAPI parameter
+%*
+%* Revision 1.8  2004/07/12 08:33:58  rbolze
+%* explain how to copy cfgs file in install_dir/etc directory and correct my english
+%****************************************************************************%
+
+\chapter{Deploying a \diet platform}
+\label{ch:deploying}
+
+Deployment is the process of launching a \diet platform including agents and
+servers.  For \diet, this process includes writing configuration files for each
+element and launching the elements in the correct hierarchical order. There are
+three primary ways to deploy \diet.
+
+Launching \textbf{by hand} is a reasonable way to deploy \diet for small-scale
+testing and verification. This chapter explains the  necessary services, how to
+write \diet configuration files, and in what order \diet elements should be
+launched.  See Section~\ref{sec:deployBasics} for details.
+
+\textbf{\godiet} is a Java-based tool for automatic \diet deployment that
+manages configuration file creation, staging of files, launch of elements,
+monitoring and reporting on launch success, and process cleanup when the \diet
+deployment is no longer needed.   See  Section~\ref{sec:deployGoDIET} for
+details.
+
+\textbf{Writing your own scripts} is a surprisingly popular approach.  This
+approach often looks easy initially, but can sometimes take much, much longer
+than you predict as there are many complexities to manage.  Learn \godiet -- it
+will save you time!
+
+
+
+\section{Deployment basics}
+\label{sec:deployBasics}
+
+
+\section{\godiet}
+\label{sec:deployGoDIET}
+
+\godiet is a Java-based tool for automatic \diet deployment that manages
+configuration file creation, staging of files, launch of elements, monitoring
+and reporting on launch success, and process cleanup when the \diet deployment
+is no longer needed~\cite{CDa05}. The user of \godiet describes the desired
+deployment in an XML file including all needed external services (\eg omniNames
+and LogService); the desired hierarchical organization of agents and servers is
+expressed directly using the hierarchical organization of XML. The user also
+defines all machines available for the deployment, disk scratch space available
+at each site for storage of configuration files, and which machines share the
+same disk to avoid unecessary copies. \godiet is extremely useful for large
+deployments (\eg more than 5 elements) and for experiments where one needs to
+deploy and shut-down multiple deployments to test different
+configurations. Note that debugging deployment problems when using \godiet can
+be difficult, especially if you don't fully understand the role of each element
+you are launching. If you have trouble identifying the problem, read the rest
+of this chapter in full and try launching key elements of your deployment by
+hand. \godiet is available for download on the
+web\footnote{http://graal.ens-lyon.fr/DIET/godiet.html}.
+
+An example input XML file is shown in Figure~\ref{fig:godietXml}; see
+\cite{CDa05} for a full explanation of all entries in the XML. You can also
+have a look at the fully commented XML example file provided in the \godiet
+distribution under examples/commented.xml, each option is explained. To launch
+\godiet for the simple example XML file provided in the \godiet distribution
+under examples/example1.xml, run:
+
+\begin{verbatim}
+~ > java -jar GoDIET-x.x.x.jar example1.xml
+XmlScanner constructor
+Parsing xml file: example1.xml
+GoDIET>
+\end{verbatim}
+
+\godiet reads the XML file and then enters an interactive console mode. In this
+mode you have a number of options:
+
+\begin{verbatim}
+GoDIET> help
+The following commands are available:
+   launch:       launch entire DIET platform
+   launch_check: launch entire DIET platform then check its status
+   relaunch:     kill the current platform and launch entire DIET platform once again
+   stop:         kill entire DIET platform using kill pid
+   status:       print run status of each DIET component
+   history:      print history of commands executed
+   help:         print this message
+   check:        check the platform status
+   stop_check:   stop the platform status then check its status before exit
+   exit:         exit GoDIET, do not change running platform.
+\end{verbatim}
+
+We will now launch this example; note that this example is intentionally very
+simple with all components running locally to provide initial familiarity with
+the \godiet run procedure. Deployment with \godiet is especially useful  when
+launching components on multiple remote machines.
+
+\begin{verbatim}
+GoDIET> launch
+* Launching DIET platform at Wed Jul 13 09:57:03 CEST 2005
+
+Local scratch directory ready:
+        /home/hdail/tmp/scratch_godiet
+
+** Launching element OmniNames on localHost
+Writing config file omniORB4.cfg
+Staging file omniORB4.cfg to localDisk
+Executing element OmniNames on resource localHost
+Waiting for 3 seconds after service launch
+
+** Launching element MA_0 on localHost
+Writing config file MA_0.cfg
+Staging file MA_0.cfg to localDisk
+Executing element MA_0 on resource localHost
+Waiting for 2 seconds after launch without log service feedback
+
+** Launching element LA_0 on localHost
+Writing config file LA_0.cfg
+Staging file LA_0.cfg to localDisk
+Executing element LA_0 on resource localHost
+Waiting for 2 seconds after launch without log service feedback
+
+** Launching element SeD_0 on localHost
+Writing config file SeD_0.cfg
+Staging file SeD_0.cfg to localDisk
+Executing element SeD_0 on resource localHost
+Waiting for 2 seconds after launch without log service feedback
+* DIET launch done at Wed Jul 13 09:57:14 CEST 2005 [time= 11.0 sec]
+\end{verbatim}
+
+The \texttt{status} command will print out the run-time status of all launched
+components. The \texttt{LaunchState} reports whether \godiet observed any
+errors during the launch itself. When the user requests the launch of
+LogService in the input XML file, \godiet can connect to the LogService  after
+launching it to obtain the state of launched components; when available, this
+state is reported in the \texttt{LogState} column.
+
+\begin{verbatim}
+GoDIET> status
+Status   Element   LaunchState   LogState   Resource     PID
+         OmniNames running       none       localHost    1232
+         MA_0      running       none       localHost    1262
+         LA_0      running       none       localHost    1296
+         SeD_0     running       none       localHost    1329
+\end{verbatim}
+
+Finally, when you are done with your \diet deployment you should always run
+\texttt{stop}. To clean-up each element, \godiet runs a \texttt{kill} operation
+on the appropriate host using the stored PID of that element.
+
+\begin{verbatim}
+GoDIET> stop
+
+* Stopping DIET platform at Wed Jul 13 10:05:42 CEST 2005
+Trying to stop element SeD_0
+Trying to stop element LA_0
+Trying to stop element MA_0
+Trying to stop element OmniNames
+
+* DIET platform stopped at Wed Jul 13 10:05:43 CEST 2005[time= 0.0 sec]
+* Exiting GoDIET. Bye.
+\end{verbatim}
+
+\begin{figure}[p]
+\input{xml_example.tex}.
+\caption{Example XML input file for \godiet.\label{fig:godietXml}}
+\end{figure}
+
+One of the main problem when writing a \godiet XML input file is to be compliant
+with the dtd. A good tool to validate a \godiet file before using \godiet is
+\textbf{xmllint}. This tool exist on most platforms and with the following
+command:
+\begin{verbatim}
+$ xmllint your_xml_file --dtdvalid path_to_GoDIET.dtd -noout
+\end{verbatim}
+you will see the different lines where there is problem and a clear description
+of why your XML file is not compliant.
+
+\clearpage
+
+\section{Shape of the hierarchy}
+
+A recurrent question people ask when first using \diet, is \emph{how should my
+  hierarchy look like?} There is unfortunately no universal answer to
+this. The shape highly depends on the performances you want \diet to
+attain. The performance metric that we often use to characterize the
+performance of \diet is the \emph{throughput} the clients get, \ie the number
+of serviced requests per time unit. 
+
+Several heuristics have been proposed to determine the shape of the hierarchy
+based on the users' requirements. We can distinguish two main studies. The
+first one focused on deploying a single service in a \diet
+hierarchy~\cite{InProceedingsCaron.CCD_08,InProceedingsCaron.CCL_04}. The shape
+of the best hierarchy on a fully homogeneous platform is a \emph{Complete
+Spanning d-ary tree} (CSD tree). The second study focused on deploying several
+services alongside in a single hierarchy. Heuristics based on linear
+programming and genetic algorithm have been proposed for different kinds of
+platform~\cite{CARON:2010:INRIA-00490406:1,CARON:2010:INRIA-00456045:3}.
+
+Even though the above mentioned studies can provide good, if not the best,
+deployments, they heavily rely on modelizations and benchmarks of \diet and the
+services. This process can be quite long. Thus, we propose in this section a
+simple but somehow efficient way of deploying a hopefully ``good'' hierarchy.
+(Note that if you do not care about performances, a simple star
+graph should be enough, \ie an MA and all your \seds directly connected to it.)
+Here are a few general remarks on \diet hierarchies:
+\begin{itemize}
+\item The more computations your service needs, the more powerful server you
+  should choose to put a \sed on.
+\item Scheduling performances of agents depends on the number of children they
+  have, as well as on the number of services each of the child knows. An agent
+  will be more efficient when all its children know one and the same
+  service. Thus it is a good idea to group all \seds having the same
+  characteristics under a common agent.
+\item The services declared by an agent to its parent is the union of all
+  services present in its underlying hierarchy.
+\item It is usually a good idea to group all \diet elements having the same
+  services and present on a given cluster under a common agent.
+\item There is usually no need for too many levels of agents.
+\item If you suspect that an agent does not schedule the requests fast enough,
+  and that it is overloaded, then add two (or more) agents under this agent,
+  and divide the previous children between these new agents.
+\end{itemize}
+
+
+%%% Local Variables:
+%%% mode: latex
+%%% ispell-local-dictionary: "american"
+%%% mode: flyspell
+%%% fill-column: 79
+%%% End:
