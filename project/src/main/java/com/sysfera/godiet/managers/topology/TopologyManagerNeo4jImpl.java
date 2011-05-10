@@ -41,7 +41,7 @@ public class TopologyManagerNeo4jImpl implements TopologyManager {
 
 	private Logger log = LoggerFactory.getLogger(getClass());
 	private PathManager pathManager;
-	private static final String DB_PATH = "neo4j-shortest-path";
+	private static final String DB_PATH = "topo-db";
 	// private static final String DOMAINNAME_KEY = "domainname";
 	private static final String RESOURCE_KEY = "resource";
 	private static RelationshipType KNOWS = DynamicRelationshipType
