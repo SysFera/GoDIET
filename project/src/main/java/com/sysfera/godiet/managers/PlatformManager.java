@@ -23,7 +23,7 @@ import com.sysfera.godiet.model.generated.Resource;
 
 /**
  * Physical infrastructure description
- * 
+ * TODO: check the unique id resource (like dietReousceid in DietManager)
  * @author phi
  * 
  */
@@ -101,6 +101,7 @@ public class PlatformManager {
 		}
 		this.links.addAll(links);
 	}
+	
 
 	public void addFrontends(List<Fronted> frontends) {
 		if (fronteds == null) {

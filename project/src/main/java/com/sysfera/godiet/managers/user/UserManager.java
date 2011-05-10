@@ -52,6 +52,7 @@ public class UserManager {
 				remoteAccessor.addItentity(key);
 				key.state = Status.LOADED;
 			} catch (AddAuthentificationException e) {
+				log.error(e.getMessage(),e);
 				key.state = Status.ERROR;
 				key.errorCause = e;
 			}
@@ -99,8 +100,8 @@ public class UserManager {
 	 * @param privKayPath
 	 * @param password
 	 */
-	public void modifySSHKey(SSHKeyManager key, String pubkeyPath,
-			String privKeyPath, String password) {
+	public void modifySSHKey(SSHKeyManager key, String privKeyPath ,
+			String pubkeyPath, String password) {
 		if (!managedKeys.contains(key))
 			return;
 		if (key.state == Status.LOADED) {

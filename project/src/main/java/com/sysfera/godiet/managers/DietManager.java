@@ -1,7 +1,9 @@
 package com.sysfera.godiet.managers;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,6 +30,9 @@ public class DietManager {
 	private final List<DietServiceManaged> omninames;
 	private final List<DietResourceManaged> forwaders;
 
+	// Transient list to store all id registers
+	private final Set<String> dietResourceId;
+
 	public DietManager() {
 		this.masterAgents = new ArrayList<DietResourceManaged>();
 		this.localAgents = new ArrayList<DietResourceManaged>();
@@ -35,6 +40,7 @@ public class DietManager {
 		this.omninames = new ArrayList<DietServiceManaged>();
 		this.forwaders = new ArrayList<DietResourceManaged>();
 
+		this.dietResourceId = new HashSet<String>();
 	}
 
 	/**
@@ -76,23 +82,38 @@ public class DietManager {
 	/**
 	 * 
 	 * @param sedDiet
+	 * @throws DietResourceCreationException 
 	 */
-	public void addSed(DietResourceManaged sedDiet) {
+	public void addSed(DietResourceManaged sedDiet) throws DietResourceCreationException {
+		String id = sedDiet.getSoftwareDescription().getId();
+		if (dietResourceId.contains(id))
+			throw new DietResourceCreationException(id + " already registred");
+		dietResourceId.add(id);
 		this.seds.add(sedDiet);
 
 	}
 
 	/**
 	 * @param dietResource
+	 * @throws DietResourceCreationException 
 	 */
-	public void addLocalAgent(DietResourceManaged localAgentManaged) {
+	public void addLocalAgent(DietResourceManaged localAgentManaged) throws DietResourceCreationException {
+		String id = localAgentManaged.getSoftwareDescription().getId();
+		if (dietResourceId.contains(id))
+			throw new DietResourceCreationException(id + " already registred");
+		dietResourceId.add(id);
 		this.localAgents.add(localAgentManaged);
 	}
 
 	/**
 	 * @param dietResource
+	 * @throws DietResourceCreationException 
 	 */
-	public void addMasterAgent(DietResourceManaged masterAgentManaged) {
+	public void addMasterAgent(DietResourceManaged masterAgentManaged) throws DietResourceCreationException {
+		String id = masterAgentManaged.getSoftwareDescription().getId();
+		if (dietResourceId.contains(id))
+			throw new DietResourceCreationException(id + " already registred");
+		dietResourceId.add(id);
 		this.masterAgents.add(masterAgentManaged);
 
 	}
@@ -103,7 +124,14 @@ public class DietManager {
 	 * @throws DietResourceCreationException
 	 */
 	public void addForwarders(DietResourceManaged forwarderClient,
-			DietResourceManaged forwarderServer) {
+			DietResourceManaged forwarderServer) throws DietResourceCreationException {
+		String idC = forwarderClient.getSoftwareDescription().getId();
+		String idS = forwarderServer.getSoftwareDescription().getId();
+
+		if (dietResourceId.contains(idC) || dietResourceId.contains(idS))
+			throw new DietResourceCreationException(idC + " or " + idS + " already registred");
+		dietResourceId.add(idC);
+		dietResourceId.add(idS);
 		// DietResourceManaged[] managedForwarders =
 		// forwFactory.create(forwarder);
 		// if (managedForwarders.length != 2) {
@@ -117,7 +145,11 @@ public class DietManager {
 	 * @param omniNames
 	 * @throws DietResourceCreationException
 	 */
-	public void addOmniName(DietServiceManaged omniName) {
+	public void addOmniName(DietServiceManaged omniName) throws DietResourceCreationException {
+		String id = omniName.getSoftwareDescription().getId();
+		if (dietResourceId.contains(id))
+			throw new DietResourceCreationException(id + " already registred");
+		dietResourceId.add(id);
 		this.omninames.add(omniName);
 	}
 
@@ -162,16 +194,31 @@ public class DietManager {
 
 	/**
 	 * Search the Software managed given is id
-	 * @param id the Id of software
+	 * 
+	 * @param id
+	 *            the Id of software
 	 * @return the managed software or null if doesn't exist
 	 */
-	public SoftwareManager getManagedSoftware(String id)
-	{
+	public SoftwareManager getManagedSoftware(String id) {
 		List<SoftwareManager> softwaresManaged = getAllManagedSoftware();
 		for (SoftwareManager softwareManager : softwaresManaged) {
-			if(softwareManager.getSoftwareDescription().getId().equals(id))
-			{
+			if (softwareManager.getSoftwareDescription().getId().equals(id)) {
 				return softwareManager;
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * Search the Managed domain given a domain description
+	 * 
+	 * @param domain
+	 * @return
+	 */
+	public DietResourceManaged getManagedOmniName(Domain domain) {
+		for (DietResourceManaged manageOmni : omninames) {
+			if (manageOmni.getPluggedOn().getDomain().equals(domain)) {
+				return manageOmni;
 			}
 		}
 		return null;
