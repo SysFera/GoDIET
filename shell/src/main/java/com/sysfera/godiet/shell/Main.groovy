@@ -47,6 +47,7 @@ class Main
     private static final MessageSource messages = new MessageSource(Main.class)
 
     static void main(final String[] args) {
+		
         IO io = new IO()
         Logger.io = io
 
@@ -120,7 +121,6 @@ class Main
                 io.err.println()
                 io.err.println('@|red WARNING:|@ Abnormal JVM shutdown detected')
             }
-
             io.flush()
         }
         // Boot up the shell... :-)

@@ -116,7 +116,7 @@ class SSHCommand extends ComplexCommandSupport {
 
 
 
-		io.out.println("@|bold Key Number\tPublic key path\t\tStatus|@")
+		io.out.println("@|bold Key\tStatus\tPublic key path|@")
 		io.out.println("---------------------------------------------------------")
 
 		keys.eachWithIndex { obj, i ->
@@ -129,7 +129,7 @@ class SSHCommand extends ComplexCommandSupport {
 					coloredStatus = "@|red ${obj.state}|@"	
 					break;
 			}
-			io.out.println "${i}\t${obj.pubKeyPath}\t${coloredStatus}"
+			io.out.println "${i}\t${coloredStatus}\t${obj.pubKeyPath}"
 
 		}
 	}

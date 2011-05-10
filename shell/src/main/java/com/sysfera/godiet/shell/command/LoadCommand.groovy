@@ -75,7 +75,6 @@ extends CommandSupport {
 		assert diet != null;
 		diet.initPlatform(url)
 	}
-	
 }
 class LoadDietCommand
 extends CommandSupport {
@@ -125,5 +124,13 @@ extends CommandSupport {
 		Diet diet = ((GoDietSh)shell).getDiet()
 		assert diet != null;
 		diet.initDiet(url)
+
+		diet.initForwarders();
+		Integer forwardersSize = diet.getRm().dietModel.forwaders.size
+		if(forwardersSize == 0) {
+			io.out.println 'No DIET forwarders loaded'
+		} else {
+			io.out.println("${forwardersSize} forwarders created")
+		}
 	}
 }

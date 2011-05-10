@@ -12,7 +12,7 @@
 	<xsl:template match="domain">
 		subgraph cluster<xsl:value-of select="@label" /> {
 		node [fontsize=10,shape=none,image="/home/phi/Dev/GoDIET/shell/src/test/resources/platform/fig/node.png"];
-		color=blue
+		color=grey
 		
 		<xsl:apply-templates />
 		label = "<xsl:value-of select="@label" />";

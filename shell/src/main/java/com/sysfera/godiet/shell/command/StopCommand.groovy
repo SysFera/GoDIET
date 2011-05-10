@@ -1,25 +1,15 @@
-/*
- * Copyright 2003-2007 the original author or authors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package com.sysfera.godiet.shell.command
 
+import org.codehaus.groovy.runtime.MethodClosure
 import org.codehaus.groovy.tools.shell.ComplexCommandSupport
 import org.codehaus.groovy.tools.shell.Shell
+import org.codehaus.groovy.tools.shell.util.Preferences
 
-import com.sysfera.godiet.Diet
+import com.sysfera.godiet.Diet;
+import com.sysfera.godiet.exceptions.remote.StopException;
+import com.sysfera.godiet.managers.ResourcesManager
+import com.sysfera.godiet.model.SoftwareManager;
+import com.sysfera.godiet.model.states.ResourceState.State;
 import com.sysfera.godiet.shell.GoDietSh
 
 
@@ -30,31 +20,90 @@ import com.sysfera.godiet.shell.GoDietSh
  * @author phi
  */
 class StopCommand
-    extends ComplexCommandSupport
-{
-    StopCommand(final Shell shell) {
+extends ComplexCommandSupport {
+	StopCommand(final Shell shell) {
 		super(shell, "stop", "st");
-       this.functions = ['services','agents','all'] ;
-    }
-
+		this.functions = [
+			'software',
+			'services',
+			'agents',
+			'seds',
+			'all',
+		];
+	}
 
 	def do_services = {
 		GoDietSh goDietShell = shell;
-		Diet rm = goDietShell.getDiet();
-		rm.stopServices();
+		ResourcesManager rm = goDietShell.getDiet().getRm();
+		List<SoftwareManager> services = rm.dietModel.omninames
+		stopSoftwares(services)
 	}
 
-	def do_agents = {
+	private stopSoftware(SoftwareManager soft) {
+		io.print("Stop ${soft.softwareDescription.id}")
+		soft.stop();
+		io.println(" Done")
+	}
+
+	private stopSoftwares(List<SoftwareManager> softwares) {
+		softwares.each { stopSoftware(it) }
+	}
+	private stopMa() {
 		GoDietSh goDietShell = shell;
-		Diet rm = goDietShell.getDiet();
-		rm.stopAgents();
+		ResourcesManager rm = goDietShell.getDiet().getRm();
+		List<SoftwareManager> mas = rm.dietModel.masterAgents
+		stopSoftwares(mas)
+	}
+	private stopLa() {
+		GoDietSh goDietShell = shell;
+		ResourcesManager rm = goDietShell.getDiet().getRm();
+		List<SoftwareManager> la = rm.dietModel.localAgents
+		stopSoftwares(la)
+	}
+	private stopForwarders() {
+		GoDietSh goDietShell = shell;
+		ResourcesManager rm = goDietShell.getDiet().getRm();
+		List<SoftwareManager> forwarders = rm.dietModel.forwarders
+		stopSoftwares(forwarders)
+	}
+
+	private stopSeds() {
+		GoDietSh goDietShell = shell;
+		ResourcesManager rm = goDietShell.getDiet().getRm();
+		List<SoftwareManager> seds = rm.dietModel.seds
+		stopSoftwares(seds)
+	}
+	def do_agents = {
+		try{
+			stopForwarders();
+			stopMa();
+			stopLa();
+		}catch(StopException e) {
+			io.err.println("Stop error")
+		}
+	}
+	def do_seds = {
+		try{
+			stopSeds();
+		}catch(StopException e) {
+			io.err.println("Stop error")
+		}
 	}
 
 	def do_all = {
 		GoDietSh goDietShell = shell;
 		Diet rm = goDietShell.getDiet();
-		rm.stopAgents();
 		rm.stopServices();
+		rm.stopAgents();
+	}
+
+	def do_software = { arg ->
+		assert arg.size() == 1 , 'Command stop software requires at least one argument : the software id'
+		String argument = arg.head()
+
+		GoDietSh goDietShell = shell;
+		Diet rm = goDietShell.getDiet();
+		rm.stopSoftware(arg)
 	}
 }
 

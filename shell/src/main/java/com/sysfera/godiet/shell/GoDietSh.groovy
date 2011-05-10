@@ -93,6 +93,8 @@ extends Shell {
 		
 		diet = new Diet();
 		diet.initConfig()
+		log.debug("Godiet shell started")
+		
 	}
 	public 	Diet getDiet() {
 		return diet
@@ -315,7 +317,7 @@ extends Shell {
 
 		if (showLastResult) {
 			// Need to use String.valueOf() here to avoid icky exceptions causes by GString coercion
-			io.out.println("@|bold ===>|@ ${String.valueOf(result)}")
+		//	io.out.println("@|bold ===>|@ ${String.valueOf(result)}")
 		}
 	}
 
@@ -349,38 +351,38 @@ extends Shell {
 			// If we have debug enabled then skip the fancy bits below
 			log.debug(cause)
 		}
-		else {
-			boolean sanitize = Preferences.sanitizeStackTrace
-
-			// Sanitize the stack trace unless we are inverbose mode, or the user has request otherwise
-			if (!io.verbose && sanitize) {
-				cause = StackTraceUtils.deepSanitize(cause);
-			}
-
-			def trace = cause.stackTrace
-
-			def buff = new StringBuffer()
-
-			for (e in trace) {
-				buff << "        @|bold at|@ ${e.className}.${e.methodName} (@|bold "
-
-				buff << (e.nativeMethod ? 'Native Method' :
-						(e.fileName != null && e.lineNumber != -1 ? "${e.fileName}:${e.lineNumber}" :
-						(e.fileName != null ? e.fileName : 'Unknown Source')))
-
-				buff << '|@)'
-
-				io.err.println(buff)
-
-				buff.setLength(0) // Reset the buffer
-
-				// Stop the trace once we find the root of the evaluated script
-				if (e.className == Interpreter.SCRIPT_FILENAME && e.methodName == 'run') {
-					io.err.println('        @|bold ...|@')
-					break
-				}
-			}
-		}
+//		else {
+//			boolean sanitize = Preferences.sanitizeStackTrace
+//
+//			// Sanitize the stack trace unless we are inverbose mode, or the user has request otherwise
+//			if (!io.verbose && sanitize) {
+//				cause = StackTraceUtils.deepSanitize(cause);
+//			}
+//
+//			def trace = cause.stackTrace
+//
+//			def buff = new StringBuffer()
+//
+//			for (e in trace) {
+//				buff << "        @|bold at|@ ${e.className}.${e.methodName} (@|bold "
+//
+//				buff << (e.nativeMethod ? 'Native Method' :
+//						(e.fileName != null && e.lineNumber != -1 ? "${e.fileName}:${e.lineNumber}" :
+//						(e.fileName != null ? e.fileName : 'Unknown Source')))
+//
+//				buff << '|@)'
+//
+//				io.err.println(buff)
+//
+//				buff.setLength(0) // Reset the buffer
+//
+//				// Stop the trace once we find the root of the evaluated script
+//				if (e.className == Interpreter.SCRIPT_FILENAME && e.methodName == 'run') {
+//					io.err.println('        @|bold ...|@')
+//					break
+//				}
+//			}
+//		}
 	}
 
 	Closure errorHook = defaultErrorHook

@@ -18,15 +18,27 @@ import com.sysfera.godiet.command.prepare.PrepareServicesCommand;
 import com.sysfera.godiet.command.start.StartAgentsCommand;
 import com.sysfera.godiet.command.start.StartForwardersCommand;
 import com.sysfera.godiet.command.start.StartServicesCommand;
-import com.sysfera.godiet.command.start.StartSoftwareCommand;
 import com.sysfera.godiet.command.stop.StopAgentsCommand;
 import com.sysfera.godiet.command.stop.StopForwardersCommand;
 import com.sysfera.godiet.command.stop.StopServicesCommand;
 import com.sysfera.godiet.exceptions.CommandExecutionException;
+import com.sysfera.godiet.exceptions.remote.LaunchException;
+import com.sysfera.godiet.exceptions.remote.PrepareException;
+import com.sysfera.godiet.exceptions.remote.StopException;
+import com.sysfera.godiet.managers.DietManager;
 import com.sysfera.godiet.managers.ResourcesManager;
 import com.sysfera.godiet.managers.user.SSHKeyManager;
+import com.sysfera.godiet.model.DietResourceManaged;
 import com.sysfera.godiet.model.SoftwareController;
+import com.sysfera.godiet.model.SoftwareManager;
 import com.sysfera.godiet.model.factories.GodietAbstractFactory;
+import com.sysfera.godiet.model.states.ResourceState;
+import com.sysfera.godiet.model.states.ResourceState.State;
+import com.sysfera.godiet.model.validators.ForwarderRuntimeValidatorImpl;
+import com.sysfera.godiet.model.validators.LocalAgentRuntimeValidatorImpl;
+import com.sysfera.godiet.model.validators.MasterAgentRuntimeValidatorImpl;
+import com.sysfera.godiet.model.validators.OmniNamesRuntimeValidatorImpl;
+import com.sysfera.godiet.model.validators.SedRuntimeValidatorImpl;
 import com.sysfera.godiet.remote.RemoteConfigurationHelper;
 import com.sysfera.godiet.remote.ssh.ChannelManagerJsch;
 import com.sysfera.godiet.remote.ssh.RemoteAccessJschImpl;
@@ -95,7 +107,14 @@ public class Diet {
 		SoftwareController softwareController = new RemoteConfigurationHelper(
 				remoteJsch, rm.getGodietConfiguration()
 						.getGoDietConfiguration(), rm.getPlatformModel());
-		godietAbstractFactory = new GodietAbstractFactory(softwareController);
+		DietManager dietModel = rm.getDietModel();
+		godietAbstractFactory = new GodietAbstractFactory(softwareController,
+				new ForwarderRuntimeValidatorImpl(dietModel),
+				new MasterAgentRuntimeValidatorImpl(dietModel),
+				new LocalAgentRuntimeValidatorImpl(dietModel),
+				new SedRuntimeValidatorImpl(dietModel),
+				new OmniNamesRuntimeValidatorImpl(dietModel));
+
 		configLoaded = true;
 	}
 
@@ -106,12 +125,6 @@ public class Diet {
 
 	public void registerKey(SSHKeyManager key) {
 		this.rm.getUserManager().registerKey(key);
-	}
-
-	// TODO: Create factory in godietCore
-	public void addSshKey(String privateKeyPath, String publicKeyPath,
-			String password) {
-
 	}
 
 	public void modifySshKey(SSHKeyManager sshkey, String privateKeyPath,
@@ -182,34 +195,36 @@ public class Diet {
 
 	private boolean forwardersInitialize = false;
 
-	private void initForwarders() throws CommandExecutionException {
-		InitForwardersCommand initForwardersCommand = new InitForwardersCommand();
-		initForwardersCommand.setRm(rm);
-		initForwardersCommand.setForwarderFactory(godietAbstractFactory);
-		initForwardersCommand.execute();
-		forwardersInitialize = true;
+	public void initForwarders() throws CommandExecutionException {
+		if (forwardersInitialize == false) {
+			InitForwardersCommand initForwardersCommand = new InitForwardersCommand();
+			initForwardersCommand.setRm(rm);
+			initForwardersCommand.setForwarderFactory(godietAbstractFactory);
+			initForwardersCommand.execute();
+
+			forwardersInitialize = true;
+		}
 	}
 
-	public void relauch(String resourceId) throws CommandExecutionException {
-		// Something must be launched
-		if (!servicesLaunched)
-			new CommandExecutionException("Nothing launched");
-		StartSoftwareCommand sf = new StartSoftwareCommand();
-		sf.setRm(rm);
-		sf.setSoftwareId(resourceId);
+	//
+	// public void relauch(String resourceId) throws CommandExecutionException {
+	// // Something must be launched
+	// if (!servicesLaunched)
+	// new CommandExecutionException("Nothing launched");
+	// StartSoftwareCommand sf = new StartSoftwareCommand();
+	// sf.setRm(rm);
+	// sf.setSoftwareId(resourceId);
+	//
+	// sf.execute();
+	//
+	// }
 
-		sf.execute();
-
-	}
 
 	public void launchAgents() throws CommandExecutionException {
 		if (!servicesLaunched)
 			new CommandExecutionException("Launch diet services first");
 		try {
 
-			if (forwardersInitialize == false) {
-				initForwarders();
-			}
 			PrepareAgentsCommand prepareAgents = new PrepareAgentsCommand();
 			prepareAgents.setRm(rm);
 
@@ -251,6 +266,17 @@ public class Diet {
 		stopServicesCommand.setRm(rm);
 		stopServicesCommand.execute();
 		servicesLaunched = false;
+	}
+
+	public void stopSoftware(String softwareId) throws PrepareException,
+			StopException, CommandExecutionException {
+
+		SoftwareManager software = this.rm.getDietModel().getManagedSoftware(
+				softwareId);
+		if (software == null)
+			throw new CommandExecutionException("Unable to find " + softwareId);
+
+		software.stop();
 	}
 
 	public ResourcesManager getRm() {

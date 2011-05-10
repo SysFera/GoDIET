@@ -1,3 +1,4 @@
+
 /*
  * Copyright 2003-2007 the original author or authors.
  *
@@ -23,7 +24,10 @@ import org.codehaus.groovy.tools.shell.util.Preferences
 
 import com.sysfera.godiet.Diet;
 import com.sysfera.godiet.managers.ResourcesManager
+import com.sysfera.godiet.model.states.ResourceState;
+import com.sysfera.godiet.model.states.ResourceState.State;
 import com.sysfera.godiet.shell.GoDietSh
+import java.text.SimpleDateFormat;
 
 
 /**
@@ -34,6 +38,7 @@ import com.sysfera.godiet.shell.GoDietSh
  */
 class StatusCommand
 extends ComplexCommandSupport {
+	private static final  SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
 	StatusCommand(final Shell shell) {
 		super(shell, "status", "s")
 		this.functions = [
@@ -47,27 +52,41 @@ extends ComplexCommandSupport {
 
 	def printStatus = { String elementName, resources ->
 		if(resources.size() == 0) {
-			io.out.println("@|bold No ${elementName}|@")
+			io.out.println("\n@|bold No ${elementName}|@")
 			return
 		}
 		io.out.println("")
 		io.out.println("@|bold ${elementName}|@ Status (${resources.size()}) : ")
-		io.out.println("@|bold Label\tStatus|@")
+		io.out.println("@|bold Label\t\tStatus\t\tSince\t\tPlugged\t\tCause|@")
 		io.out.println("---------------------------------------------------------")
-		resources.each{
-			def coloredStatus
-			switch (it.state) {
-				case "Up":
-					coloredStatus =  "@|green ${it.state}|@"
-					break;
-				case "Error":
-					coloredStatus =  "@|BG_RED,BLACK ${it.state}|@"
-					break;
-				default:
-					coloredStatus = "@|BLUE ${it.state}|@"
-					break;
+		try{
+			resources.each{
+				try{
+					def coloredStatus
+					String cause ='-'
+					String since = sdf.format(it.stateController.lastTransition)
+					switch (it.state.status) {
+						case State.UP:
+							coloredStatus =  "@|green ${it.state.status}|@"
+							break;
+						case State.DOWN:
+							coloredStatus =  "@|yellow ${it.state.status}|@"
+							break;
+						case State.ERROR:
+							coloredStatus =  "@|BG_RED,BLACK ${it.state.status}|@"
+							cause = it.stateController.errorCause.message
+							break;
+						default:
+							coloredStatus = "@|BLUE ${it.state.status}|@"
+							break;
+					}
+					io.out.println "${it.softwareDescription.id}\t${coloredStatus}\t${since}\t${it.pluggedOn.id}\t${cause}"
+				}catch (Exception e) {
+					io.err.println("Status ${it.softwareDescription.id} printing error",e)
+				}
 			}
-			io.out.println "${it.softwareDescription.id}\t${coloredStatus}"
+		}catch (Exception e) {
+			io.err.println("Status ${it.softwareDescription.id} printing error",e)
 		}
 	}
 	def do_services = {
@@ -97,7 +116,6 @@ extends ComplexCommandSupport {
 		printStatus("Local agents",las)
 	}
 	def do_all = {
-
 		do_services()
 		do_forwarders()
 		do_ma()
