@@ -25,10 +25,29 @@
 			<outputDirectory>/</outputDirectory>
 
 		</fileSet>
+		<!-- Embedding launching scripts -->
 		<fileSet>
 			<includes>
 				<include>run.sh</include>
 			</includes>
+		</fileSet>
+		<!-- Embedding PDF -->
+		<fileSet>
+			<directory>${project.basedir}/../doc</directory>
+			<includes>
+				<include>*.pdf</include>
+			</includes>
+			<outputDirectory>/doc</outputDirectory>
+		</fileSet>
+		<!-- Embedding samples -->
+		<fileSet>
+			<directory>${project.basedir}/../doc/rsrc</directory>
+			<includes>
+				<include>godiet-configuration.xml</include>
+				<include>godiet-infrastructure.xml</include>
+				<include>godiet-platform.xml</include>
+			</includes>
+			<outputDirectory>/examples</outputDirectory>
 		</fileSet>
 	</fileSets>
 
