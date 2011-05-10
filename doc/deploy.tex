@@ -122,7 +122,7 @@ will save you time!
 
 \section{\godiet}
 \label{sec:deployGoDIET}
-%Quickstart
+
 %%Description
 \godiet is an cross-platform tool that helps you automate ad-hoc deployment and
 management procedures for \diet infrastructure. It manages
@@ -142,10 +142,10 @@ physical infrastructure. The mains features are:
   \caption{Design principle of \godiet.\label{fig:GODIETDesign}}
 \end{figure}
 
-\subsection{Quickstart}
-For hurry people.
 
-\subsubsection{Installing GoDiet}
+
+
+\subsection{Installing GoDiet}
 
 The following operating systems are known to support GoDiet:
 \begin{itemize}
@@ -153,31 +153,45 @@ The following operating systems are known to support GoDiet:
     \item Mac OS X 10.4 or later
 \end{itemize}
 
-You need to have the Sun Java 6 or openJDK6 installed. All operating system with Java 6 must support 
+You need to have the Sun Java 6 or OpenJDK6 installed. All operating system with Java 6 must support 
 First download \godiet on the project website\footnote{http://graal.ens-lyon.fr/DIET/godiet.html}.
 
  Extract the archive just and launch run.bat or run.sh script.
 You need to load your physical platform on which will \godiet will
 running. This platform must be describe in a XML file based on
-\it{Platform.xsd} grammar. You can find an simple file in the example directory 
+\textit{Platform.xsd} grammar. You can find an simple file in the example directory 
 
+\subsection{Godiet input}
 
-
-%%Platform Diet
-The user of \godiet could describes the desired
-deployment in an XML file including all needed external services (\eg omniNames
-and LogService); the desired hierarchical organization of agents and servers is
-expressed directly using the hierarchical organization of XML. 
+\godiet needs input data to work.  Currently the 
+\subsubsection{Infrastructure}
+\label{GODIETInfrastructureDesc}
 %%Physical platform
 The user also defines all machines available for the deployment, disk scratch
 space available at each site for storage of configuration files, and which
 machines share the same disk to avoid unecessary copies. 
 
-%% Note that debugging deployment problems when using \godiet can
-%% be difficult, especially if you don't fully understand the role of each element
-%% you are launching. If you have trouble identifying the problem, read the rest
-%% of this chapter in full and try launching key elements of your deployment by
-%% hand.
+\subsubsection{Diet platform}
+\label{GODIETPlatformDesc}
+%%Platform Diet
+The user of \godiet could describes the desired
+deployment in an XML file including all needed external services (\eg omniNames
+and LogService); the desired hierarchical organization of agents and servers is
+expressed directly using the hierarchical organization of XML. 
+
+\subsection{Godiet commands}
+
+\subsubsection{Help}
+
+\subsubsection{SSH}
+
+\subsubsection{Load}
+
+\subsubsection{Start & Stop}
+
+\subsubsection{Status}
+
+\subsubsection{Draw}
 
 An example input XML file is shown in Figure~\ref{fig:godietXml}; see
 \cite{CDa05} for a full explanation of all entries in the XML. You can also
@@ -298,55 +312,3 @@ you will see the different lines where there is problem and a clear description
 of why your XML file is not compliant.
 
 \clearpage
-
-\section{Shape of the hierarchy}
-
-A recurrent question people ask when first using \diet, is \emph{how should my
-  hierarchy look like?} There is unfortunately no universal answer to
-this. The shape highly depends on the performances you want \diet to
-attain. The performance metric that we often use to characterize the
-performance of \diet is the \emph{throughput} the clients get, \ie the number
-of serviced requests per time unit. 
-
-Several heuristics have been proposed to determine the shape of the hierarchy
-based on the users' requirements. We can distinguish two main studies. The
-first one focused on deploying a single service in a \diet
-hierarchy~\cite{InProceedingsCaron.CCD_08,InProceedingsCaron.CCL_04}. The shape
-of the best hierarchy on a fully homogeneous platform is a \emph{Complete
-Spanning d-ary tree} (CSD tree). The second study focused on deploying several
-services alongside in a single hierarchy. Heuristics based on linear
-programming and genetic algorithm have been proposed for different kinds of
-platform~\cite{CARON:2010:INRIA-00490406:1,CARON:2010:INRIA-00456045:3}.
-
-Even though the above mentioned studies can provide good, if not the best,
-deployments, they heavily rely on modelizations and benchmarks of \diet and the
-services. This process can be quite long. Thus, we propose in this section a
-simple but somehow efficient way of deploying a hopefully ``good'' hierarchy.
-(Note that if you do not care about performances, a simple star
-graph should be enough, \ie an MA and all your \seds directly connected to it.)
-Here are a few general remarks on \diet hierarchies:
-\begin{itemize}
-\item The more computations your service needs, the more powerful server you
-  should choose to put a \sed on.
-\item Scheduling performances of agents depends on the number of children they
-  have, as well as on the number of services each of the child knows. An agent
-  will be more efficient when all its children know one and the same
-  service. Thus it is a good idea to group all \seds having the same
-  characteristics under a common agent.
-\item The services declared by an agent to its parent is the union of all
-  services present in its underlying hierarchy.
-\item It is usually a good idea to group all \diet elements having the same
-  services and present on a given cluster under a common agent.
-\item There is usually no need for too many levels of agents.
-\item If you suspect that an agent does not schedule the requests fast enough,
-  and that it is overloaded, then add two (or more) agents under this agent,
-  and divide the previous children between these new agents.
-\end{itemize}
-
-
-%%% Local Variables:
-%%% mode: latex
-%%% ispell-local-dictionary: "american"
-%%% mode: flyspell
-%%% fill-column: 79
-%%% End:

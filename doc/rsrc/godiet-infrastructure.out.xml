@@ -1,0 +1,84 @@
+
+		digraph G {
+		
+	
+	
+		
+		subgraph clusterDomain1 {
+		node [fontsize=10,shape=none,image="/home/phi/Dev/GoDIET/shell/src/test/resources/platform/fig/node.png"];
+		color=grey
+		
+		
+			
+				
+				
+			
+
+			Node1->G1 [dir="both"]
+		
+	
+			G1 [shape=none,image="/home/phi/Dev/GoDIET/shell/src/test/resources/platform/fig/gateway.png"];
+		
+
+	
+		
+		label = "Domain1";
+		}
+	
+		
+		subgraph clusterDomain2 {
+		node [fontsize=10,shape=none,image="/home/phi/Dev/GoDIET/shell/src/test/resources/platform/fig/node.png"];
+		color=grey
+		
+		
+			
+				
+				
+			
+
+			Node2->G2 [dir="both"]
+		
+	
+			Node3->G2 [dir="both"]
+		
+	
+			G2 [shape=none,image="/home/phi/Dev/GoDIET/shell/src/test/resources/platform/fig/gateway.png"];
+		
+
+	
+		
+		label = "Domain2";
+		}
+	
+		
+		subgraph clusterDomain3 {
+		node [fontsize=10,shape=none,image="/home/phi/Dev/GoDIET/shell/src/test/resources/platform/fig/node.png"];
+		color=grey
+		
+		
+			
+				
+				
+			
+			Node4->G3 [dir="both"]
+		
+	
+			Node5->G3 [dir="both"]
+		
+	
+			G3 [shape=none,image="/home/phi/Dev/GoDIET/shell/src/test/resources/platform/fig/gateway.png"];
+		
+
+	
+		
+		label = "Domain3";
+		}
+	
+
+		G1->G2
+		G2->G3
+		G3->G1
+	
+
+		}
+	
