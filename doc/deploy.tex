@@ -138,14 +138,14 @@ physical infrastructure. The mains features are:
 \end{itemize}
 \begin{figure}[h]
   \centering
-  \includegraphics[width=16cm]{fig/schemaPhilippe}
+  \includegraphics[width=12cm]{fig/schemaPhilippe}
   \caption{Design principle of \godiet.\label{fig:GODIETDesign}}
 \end{figure}
 
 
 
 
-\subsection{Installing GoDiet}
+\subsection{Installing \godiet}
 
 The following operating systems are known to support GoDiet:
 \begin{itemize}
@@ -161,9 +161,13 @@ You need to load your physical platform on which will \godiet will
 running. This platform must be describe in a XML file based on
 \textit{Platform.xsd} grammar. You can find an simple file in the example directory 
 
-\subsection{Godiet input}
+\subsection{\godiet setup}
 
-\godiet needs input data to work.  Currently the 
+Avnt de pouvoir utiliser \godiet 
+\subsubsection{Configuration}
+
+
+
 \subsubsection{Infrastructure}
 \label{GODIETInfrastructureDesc}
 %%Physical platform
@@ -179,19 +183,33 @@ deployment in an XML file including all needed external services (\eg omniNames
 and LogService); the desired hierarchical organization of agents and servers is
 expressed directly using the hierarchical organization of XML. 
 
-\subsection{Godiet commands}
+\subsection{Godiet shell}
 
-\subsubsection{Help}
+Completion historique coloration syntaxique
+le fichier de configuration est chargé automatiquement depuis le répertoire home/.godiet. 
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=12cm]{fig/1-startup}
+  \caption{\godiet shell startup.\label{fig:GODIETShell}}
+\end{figure}
 
-\subsubsection{SSH}
+\subsubsection{Help command}
 
-\subsubsection{Load}
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=12cm]{fig/2-helpcommand}
+  \caption{The help command.\label{fig:GODIETHelp}}
+\end{figure}
 
-\subsubsection{Start & Stop}
+\subsubsection{SSH command}
+\label{GODIETSSHCommand}
+\subsubsection{Load command}
 
-\subsubsection{Status}
+\subsubsection{Start \& Stop commands}
 
-\subsubsection{Draw}
+\subsubsection{Status command}
+
+\subsubsection{Draw command}
 
 An example input XML file is shown in Figure~\ref{fig:godietXml}; see
 \cite{CDa05} for a full explanation of all entries in the XML. You can also
