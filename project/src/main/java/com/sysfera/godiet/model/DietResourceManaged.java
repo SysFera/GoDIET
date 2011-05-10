@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 
 import com.sysfera.godiet.model.generated.Resource;
 import com.sysfera.godiet.model.generated.Software;
+import com.sysfera.godiet.model.validators.RuntimeValidator;
 
 /**
  * Use to manage and control all DIET elements (SeD, MA, LA, MA_DAG)
@@ -18,8 +19,8 @@ public class DietResourceManaged extends SoftwareManager {
 	// Agent description
 	private Software agentManaged;
 
-	public DietResourceManaged(SoftwareController softwareController) {
-		super(softwareController);
+	public DietResourceManaged(SoftwareController softwareController,RuntimeValidator validator) {
+		super(softwareController,validator);
 	}
 
 	/**

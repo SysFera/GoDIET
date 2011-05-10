@@ -32,9 +32,9 @@ public class IncubateStateImpl implements ResourceState {
 	public void prepare() throws PrepareException {
 		try {
 			launcher.configure(this.stateController.softwareManaged);
-			this.stateController.state = this.stateController.ready;
+			this.stateController.toReady();
 		} catch (PrepareException e) {
-			this.stateController.state = this.stateController.error;
+			this.stateController.toError();
 			this.stateController.errorCause = e;
 
 			throw e;
@@ -56,8 +56,11 @@ public class IncubateStateImpl implements ResourceState {
 	//Nothing to do
 
 	}
+
 	@Override
-	public String toString() {
-		return "Incubate";
+	public State getStatus() {
+		return State.INCUBATE;
 	}
+	
+	
 }

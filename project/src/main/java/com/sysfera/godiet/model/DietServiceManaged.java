@@ -3,6 +3,8 @@
  */
 package com.sysfera.godiet.model;
 
+import com.sysfera.godiet.model.validators.RuntimeValidator;
+
 
 /**
  * Use to manage and control all DIET services (OmniNames ...)
@@ -12,8 +14,8 @@ package com.sysfera.godiet.model;
  */
 public class DietServiceManaged extends DietResourceManaged {
 
-	public DietServiceManaged(SoftwareController softwareController) {
-		super(softwareController);
+	public DietServiceManaged(SoftwareController softwareController,RuntimeValidator validator) {
+		super(softwareController,validator);
 	}
 
 }

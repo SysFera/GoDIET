@@ -1,5 +1,6 @@
 package com.sysfera.godiet.model.states;
 
+import java.util.Calendar;
 import java.util.Date;
 
 import org.slf4j.Logger;
@@ -8,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import com.sysfera.godiet.exceptions.remote.CheckException;
 import com.sysfera.godiet.exceptions.remote.StopException;
 import com.sysfera.godiet.model.SoftwareController;
+import com.sysfera.godiet.model.validators.RuntimeValidator;
 
 /**
  * The remote agent is running. Call Stop to stop remote agent and down state
@@ -22,9 +24,12 @@ public class UpStateImpl implements ResourceState {
 
 	private final SoftwareController launcher;
 	private final StateController stateController;
+	private final RuntimeValidator validator;
 
 	public UpStateImpl(StateController stateController) {
 		this.stateController = stateController;
+		this.validator = stateController.validator;
+
 		this.launcher = stateController.softwareController;
 	}
 
@@ -44,12 +49,14 @@ public class UpStateImpl implements ResourceState {
 	 */
 	@Override
 	public void stop() throws StopException {
-		synchronized (this.stateController.state) {
+		synchronized (this.stateController.getState())  {
 			try {
+				validator.wantStop(stateController.softwareManaged);
+
 				launcher.stop(this.stateController.softwareManaged);
-				this.stateController.state = this.stateController.down;
+				this.stateController.toDown();
 			} catch (StopException e) {
-				this.stateController.state = this.stateController.error;
+				this.stateController.toError();
 				throw e;
 			}
 		}
@@ -62,11 +69,11 @@ public class UpStateImpl implements ResourceState {
 	 */
 	@Override
 	public void check() {
-		synchronized (this.stateController.state) {
+		synchronized (this.stateController.getState()) {
 			try {
 				launcher.check(this.stateController.softwareManaged);
 			} catch (CheckException e) {
-				this.stateController.state = this.stateController.error;
+				this.stateController.toError();
 				e.addInfo("UPSTATE", "CHECKERROR", "Check failed at "
 						+ (new Date()).getTime());
 			}
@@ -74,8 +81,10 @@ public class UpStateImpl implements ResourceState {
 		}
 	}
 
+
+
 	@Override
-	public String toString() {
-		return "Up";
+	public State getStatus() {
+		return State.UP;
 	}
 }

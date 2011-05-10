@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 import com.sysfera.godiet.exceptions.remote.CheckException;
 import com.sysfera.godiet.exceptions.remote.LaunchException;
 import com.sysfera.godiet.exceptions.remote.PrepareException;
+import com.sysfera.godiet.model.validators.RuntimeValidator;
 
 /**
  * Error State. Currently no way to leave.
@@ -17,8 +18,10 @@ public class DownStateImpl implements ResourceState {
 	private Logger log = LoggerFactory.getLogger(getClass());
 
 	private final StateController stateController;
-
+	private final RuntimeValidator validator;
+	
 	public DownStateImpl(StateController stateController) {
+		this.validator = stateController.validator;
 		this.stateController = stateController;
 	}
 
@@ -29,19 +32,20 @@ public class DownStateImpl implements ResourceState {
 	@Override
 	public void start() throws LaunchException {
 		try {
+			validator.wantLaunch(stateController.softwareManaged);
 			stateController.softwareController.launch(this.stateController.softwareManaged);
 			Thread.sleep(400);
 			stateController.softwareController.check(this.stateController.softwareManaged);
-			this.stateController.state = this.stateController.up;
+			this.stateController.toUp();
 		} catch (LaunchException e) {
-			this.stateController.state = this.stateController.error;
+			this.stateController.toError();
 			throw e;
 		} catch (InterruptedException e) {
-			this.stateController.state = this.stateController.error;
+			this.stateController.toError();
 			throw new LaunchException(
 					"Fatal. Thread.sleep have been interrupted", e);
 		} catch (CheckException e) {
-			this.stateController.state = this.stateController.error;
+			this.stateController.toError();
 			throw new LaunchException(
 					"The check start failed. Couldn't be sure that the process is up",
 					e);
@@ -60,11 +64,14 @@ public class DownStateImpl implements ResourceState {
 
 	@Override
 	public void prepare() throws PrepareException {
-		throw new PrepareException("In error states");
+		throw new PrepareException("In down states");
 	}
+
+
+
 	@Override
-	public String toString() {
-		return "Down";
+	public State getStatus() {
+		return State.DOWN;
 	}
 
 }

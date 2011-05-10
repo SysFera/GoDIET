@@ -1,13 +1,18 @@
 package com.sysfera.godiet.model.states;
 
+import java.util.Calendar;
+import java.util.Date;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.sysfera.godiet.model.SoftwareController;
 import com.sysfera.godiet.model.SoftwareManager;
+import com.sysfera.godiet.model.validators.RuntimeValidator;
 
 /**
- * Main class of State Design Pattern Currently five State
+ * Main class of State Design Pattern Currently five State Incubate, Ready, Up,
+ * Down,Error
  * 
  * @author phi
  */
@@ -15,80 +20,152 @@ public class StateController {
 	private Logger log = LoggerFactory.getLogger(getClass());
 
 	final SoftwareManager softwareManaged;
-	final ReadyStateImpl ready;
-	final IncubateStateImpl down;
-	final UpStateImpl up;
-	final ErrorStateImpl error;
+	private final ReadyStateImpl ready;
+	private final DownStateImpl down;
+	private final IncubateStateImpl incubate;
+	private final UpStateImpl up;
+	private final ErrorStateImpl error;
 	// Down by default
-	ResourceState state;
+	private ResourceState state;
 
 	// Error reason
 	Throwable errorCause = null;
 
+	// Do the concrete action
 	final SoftwareController softwareController;
 
+	// store the date of the last state transition
+	private Date lastTransition;
+
+	// Runtime validator
+	final RuntimeValidator validator;
 	// default check periodicity
 	private final static int periodicity = 5000;
 	private final Thread checker;
+
 	public StateController(SoftwareManager agent,
-			SoftwareController softwareController) {
+			SoftwareController softwareController,RuntimeValidator validator) {
+		this.validator = validator;
 		this.softwareManaged = agent;
 		this.softwareController = softwareController;
-		this.down = new IncubateStateImpl(this);
+		this.incubate = new IncubateStateImpl(this);
+
+		this.down = new DownStateImpl(this);
 		this.up = new UpStateImpl(this);
 		this.error = new ErrorStateImpl(this);
+		
 		this.ready = new ReadyStateImpl(this);
-		
+	
+		this.lastTransition = Calendar.getInstance().getTime();
+
+		// Start state checker
+		Checker ch = new Checker(periodicity);
+		this.checker = new Thread(ch);
 		// Down
-		this.state = down;
-		
-		//Start state checker
-		Checker ch= new  Checker(periodicity);
-		this.checker =new Thread(ch);
-		this.checker.start();
+		toIncubate();
+	
 
 	}
 
+	private void startChecking()
+	{
+		this.checker.start();
+	}
+	private void stopChecking()
+	{
+		this.checker.interrupt();
+	}
+	void toIncubate()
+	{
+		stopChecking();
+		errorCause = null;
+		this.softwareManaged.setPid(null);
+		this.lastTransition = Calendar.getInstance()
+		.getTime();
+		this.state = incubate;
+	}
+	void toDown()
+	{
+		stopChecking();
+		errorCause = null;
+		this.softwareManaged.setPid(null);
+		this.lastTransition = Calendar.getInstance()
+		.getTime();
+		this.state = down;
+	}
+	void toUp()
+	{
+		errorCause = null;
+		this.lastTransition = Calendar.getInstance()
+		.getTime();
+		this.state = up;
+		startChecking();
+
+	}
+	void toReady()
+	{
+		errorCause = null;
+		this.lastTransition = Calendar.getInstance()
+		.getTime();
+		this.state = ready;
+	}
+	void toError()
+	{
+		this.lastTransition = Calendar.getInstance()
+		.getTime();
+		this.state = error;
+	}
+	
 	/**
 	 * Return the error cause if the resource are in ErrorState
 	 * 
 	 * @return Error
 	 */
 	public Throwable getErrorCause() {
-		if (errorCause != null && !(state instanceof ErrorStateImpl)) {
-			log.error("FATAL: the resource is in "
-					+ state.getClass().getCanonicalName()
-					+ " state and have the errorCause set with"
-					+ errorCause.getClass().getCanonicalName());
-			return null;
-		}
-		if (errorCause == null && (state instanceof ErrorStateImpl)) {
-			log.error("FATAL: the resource is in Error state and with errorCause = null");
-		}
 		return errorCause;
 	}
 
-	public boolean isRunning() {
-		return (state instanceof UpStateImpl);
-	}
-
+	/**
+	 * 
+	 * Return the current state Use with carefully. State is periodically
+	 * checked and could be change in independent thread
+	 * 
+	 * @return ResourceState. The state
+	 */
 	public ResourceState getState() {
 		return state;
 	}
 
-	public void interruptChecker()
-	{
+	public void interruptChecker() {
 		this.checker.interrupt();
 	}
+
+	/**
+	 * Return the Date of the last transition
+	 * 
+	 * @author phi
+	 * 
+	 */
+	public Date getLastTransition() {
+		return lastTransition;
+	}
+
+	/*
+	 * Thread which call periodically state.check
+	 */
 	class Checker implements Runnable {
 		private final int periodicity;
 
 		public Checker(int periodicity) {
 			this.periodicity = periodicity;
+
 		}
 
 		public void run() {
-
+			if (softwareManaged.getSoftwareDescription() != null
+					&& softwareManaged.getSoftwareDescription().getId() != null)
+				Thread.currentThread().setName(
+						softwareManaged.getSoftwareDescription().getId());
 			while (!Thread.interrupted()) {
 				try {
 					Thread.sleep(periodicity);
@@ -96,9 +173,10 @@ public class StateController {
 						state.check();
 					}
 				} catch (InterruptedException e) {
-					log.warn("Checking thread "
+					log.debug("Checking thread "
 							+ softwareManaged.getSoftwareDescription().getId()
 							+ " was interrupted");
+					break;
 				}
 			}
 		}

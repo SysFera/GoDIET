@@ -7,6 +7,7 @@ import com.sysfera.godiet.model.generated.Resource;
 import com.sysfera.godiet.model.generated.Software;
 import com.sysfera.godiet.model.states.ResourceState;
 import com.sysfera.godiet.model.states.StateController;
+import com.sysfera.godiet.model.validators.RuntimeValidator;
 
 /**
  * 
@@ -21,9 +22,9 @@ public abstract class SoftwareManager {
 	private Integer pid;
 	protected final StateController stateController;
 
-	public SoftwareManager(SoftwareController softwareController) {
+	public SoftwareManager(SoftwareController softwareController,RuntimeValidator validator) {
 
-		stateController = new StateController(this, softwareController);
+		stateController = new StateController(this, softwareController,validator);
 
 	}
 
@@ -72,8 +73,12 @@ public abstract class SoftwareManager {
 		this.runningCommand = runningCommand;
 	}
 
-	public String getState() {
-		return stateController.getState().toString();
+	/**
+	 * Use carrefully: could be modify in indenpendant thread
+	 * @return
+	 */
+	public ResourceState getState() {
+		return stateController.getState();
 	}
 
 	public void start() throws LaunchException {

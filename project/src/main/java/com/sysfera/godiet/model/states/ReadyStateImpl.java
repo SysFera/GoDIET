@@ -7,10 +7,11 @@ import com.sysfera.godiet.exceptions.remote.CheckException;
 import com.sysfera.godiet.exceptions.remote.LaunchException;
 import com.sysfera.godiet.exceptions.remote.PrepareException;
 import com.sysfera.godiet.model.SoftwareController;
+import com.sysfera.godiet.model.validators.RuntimeValidator;
 
 /**
  * 
- * The remote agent is ready to be start. Call start to Up State Call stop to
+ * The remote agent is ready to be start. Call start to Up State. Call stop to
  * Down State
  * 
  * @author phi
@@ -21,9 +22,10 @@ public class ReadyStateImpl implements ResourceState {
 
 	private final SoftwareController softwareController;
 	private final StateController stateController;
-
+	private final RuntimeValidator validator;
 	public ReadyStateImpl(StateController stateController) {
 		this.stateController = stateController;
+		this.validator = stateController.validator;
 		softwareController = stateController.softwareController;
 	}
 
@@ -40,19 +42,24 @@ public class ReadyStateImpl implements ResourceState {
 	@Override
 	public void start() throws LaunchException {
 		try {
+			validator.wantLaunch(stateController.softwareManaged);
+
 			softwareController.launch(this.stateController.softwareManaged);
 			Thread.sleep(400);
 			softwareController.check(this.stateController.softwareManaged);
-			this.stateController.state = this.stateController.up;
+			this.stateController.toUp();
 		} catch (LaunchException e) {
-			this.stateController.state = this.stateController.error;
+			this.stateController.toError();
+			this.stateController.errorCause = e;
 			throw e;
 		} catch (InterruptedException e) {
-			this.stateController.state = this.stateController.error;
+			this.stateController.toError();
+			this.stateController.errorCause = e;
 			throw new LaunchException(
 					"Fatal. Thread.sleep have been interrupted", e);
 		} catch (CheckException e) {
-			this.stateController.state = this.stateController.error;
+			this.stateController.errorCause = e;
+			this.stateController.toError();
 			throw new LaunchException(
 					"The check start failed. Couldn't be sure that the process is up",
 					e);
@@ -65,7 +72,6 @@ public class ReadyStateImpl implements ResourceState {
 	 */
 	@Override
 	public void stop() {
-		this.stateController.state = this.stateController.down;
 
 	}
 
@@ -74,8 +80,9 @@ public class ReadyStateImpl implements ResourceState {
 		
 	}
 
+
 	@Override
-	public String toString() {
-		return "Ready";
+	public State getStatus() {
+		return State.READY;
 	}
 }
