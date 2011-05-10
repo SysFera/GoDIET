@@ -116,9 +116,6 @@ will save you time!
 
 
 
-\section{Deployment basics}
-\label{sec:deployBasics}
-
 
 \section{\godiet}
 \label{sec:deployGoDIET}
@@ -138,11 +135,9 @@ physical infrastructure. The mains features are:
 \end{itemize}
 \begin{figure}[h]
   \centering
-  \includegraphics[width=12cm]{fig/schemaPhilippe}
+  \includegraphics[width=10cm]{fig/schemaPhilippe}
   \caption{Design principle of \godiet.\label{fig:GODIETDesign}}
 \end{figure}
-
-
 
 
 \subsection{Installing \godiet}
@@ -158,12 +153,13 @@ First download \godiet on the project website\footnote{http://graal.ens-lyon.fr/
 
  Extract the archive just and launch run.bat or run.sh script.
 You need to load your physical platform on which will \godiet will
-running. This platform must be describe in a XML file based on
-\textit{Platform.xsd} grammar. You can find an simple file in the example directory 
+running. 
+% This platform must be describe in a XML file based on \textit{Platform.xsd} grammar. You can find an simple file in the example directory 
 
 \subsection{\godiet setup}
 
-Avnt de pouvoir utiliser \godiet 
+Avant de pouvoir utiliser \godiet, vous devez créer trois fichiers 
+
 \subsubsection{Configuration}
 
 
@@ -171,9 +167,16 @@ Avnt de pouvoir utiliser \godiet
 \subsubsection{Infrastructure}
 \label{GODIETInfrastructureDesc}
 %%Physical platform
-The user also defines all machines available for the deployment, disk scratch
+\godiet needs to have the description of infrastructure on which \diet will be running.
+
+ disk scratch
 space available at each site for storage of configuration files, and which
 machines share the same disk to avoid unecessary copies. 
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=15cm]{fig/godiet-infrastructure}
+  \caption{Three domains infrastructure representation example.\label{fig:GODIETInfrastructure}}
+\end{figure}
 
 \subsubsection{Diet platform}
 \label{GODIETPlatformDesc}
@@ -186,7 +189,7 @@ expressed directly using the hierarchical organization of XML.
 \subsection{Godiet shell}
 
 Completion historique coloration syntaxique
-le fichier de configuration est chargÃ© automatiquement depuis le rÃ©pertoire home/.godiet. 
+le fichier de configuration est chargé automatiquement depuis le répertoire home/.godiet. 
 \begin{figure}[h]
   \centering
   \includegraphics[width=12cm]{fig/1-startup}
@@ -205,9 +208,34 @@ le fichier de configuration est chargÃ© automatiquement depuis le rÃ©pertoire ho
 \label{GODIETSSHCommand}
 \subsubsection{Load command}
 
+calcule et création automatique des Forwarders
 \subsubsection{Start \& Stop commands}
 
 \subsubsection{Status command}
+Status command options:
+\begin{itemize}
+\item \textbf{ma}: Display the masters agents status
+\item \textbf{la}:  Display the locals agents status
+\item \textbf{seds}: Display the servers daemons status
+\item \textbf{all}: Display all diet softwares status
+\end{itemize}
+
+La commande status affiche sous forme de tableau l'état des éléments gérés pas  \godiet. Un exemple d'execution est affiché sur la figure \ref{fig:GODIETStatus}.
+De gauche à droite les informations affichés sont: 
+\begin{itemize}
+\item Le nom du logiciel comme décrit dans le fichier de description d'infrastructure
+\item Son état et depuis  quand il s'y trouve.
+\item La machine sur laquelle le logiciel va être executé ou est actuellement executé (selon son état) 
+\item Son 
+\end{itemize} 
+
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=12cm]{fig/6-StatusWithErrUpIncubate}
+  \caption{The 'status all' command.\label{fig:GODIETStatus}}
+\end{figure}
+
 
 \subsubsection{Draw command}
 

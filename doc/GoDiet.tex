@@ -1,79 +1,9 @@
 %****************************************************************************%
-%* DIET User's Manual main file                                             *%
+%* Sysfera dev tools and methods                                             *%
 %*                                                                          *%
-%*  Author(s):                                                              *%
-%*    - Philippe COMBES (Philippe.Combes@ens-lyon.fr)                       *%
 %*                                                                          *%
 %* $LICENSE$                                                                *%
 %****************************************************************************%
-%* $Id: UsersManual.tex,v 1.67 2011/05/03 12:44:15 bdepardo Exp $
-%* $Log: UsersManual.tex,v $
-%* Revision 1.67  2011/05/03 12:44:15  bdepardo
-%* Updated copyright
-%*
-%* Revision 1.66  2011/05/02 10:01:43  bdepardo
-%* Corrected a few typos.
-%* Renamed "round-robin" scheduler into "least recently used" scheduler as this
-%* is closer to the behavior of this scheduler.
-%*
-%* Revision 1.65  2011/01/12 00:44:05  ecaron
-%* Update DIET version
-%*
-%* Revision 1.64  2010/09/14 17:07:30  bdepardo
-%* Users FAQ
-%*
-%* Revision 1.63  2010/09/10 13:05:29  bdepardo
-%* Typos
-%*
-%* Revision 1.62  2010/09/10 07:36:45  glemahec
-%* DIET forwarders documentation
-%*
-%* Revision 1.61  2010/07/07 15:10:52  amuresan
-%* Added Cloud entry for the UsersGuide and ProgrammersGuide.
-%*
-%* Revision 1.60  2010/03/31 02:40:21  ycaniou
-%* Compilation (additional package required)
-%*
-%* Revision 1.59  2010/03/29 20:58:29  ecaron
-%* Update date and revision number
-%*
-%* Revision 1.58  2010/02/25 08:55:43  ycaniou
-%* Add a couple of macro like \seddiet \sedj (differs from \sed$_\diet$ which
-%*   adds a space)
-%* Changed *.tex accordingly
-%*
-%* Revision 1.57  2010/02/25 07:15:57  ycaniou
-%* DAGDA -> macro + sc
-%* Add info logs à dagda.tex
-%* Formatage document + ispell
-%*
-%* Revision 1.56  2010/02/25 06:45:38  ycaniou
-%* Add local variables
-%*
-%* Revision 1.55  2010/02/25 06:38:15  ycaniou
-%* Add local variable
-%* + Ispell
-%* + eg, NES etc. -> \eg..
-%* Version of supported GCC updated
-%* + formatage .tex
-%*
-%* Revision 1.54  2010/02/25 06:07:08  ycaniou
-%* PSE et NES sans textsc
-%*
-%* Revision 1.53  2010/01/21 14:05:58  bdepardo
-%* DIET -> \diet
-%* SeD -> \sed
-%* GoDIET -> \godiet
-%*
-%* Revision 1.52  2009/10/26 07:23:07  bdepardo
-%* Added chapter on dynamic hierarchy management.
-%*
-%* Revision 1.51  2009/09/08 13:46:34  bdepardo
-%* Added appendix.
-%* Currently the page layout is broken in the appendix.
-%*
-%* Revision 1.50  2008/07/16 23:56:09  ecaron
-%* Date for the UsereManual 2.3
 %****************************************************************************%
 \documentclass[12pt,a4paper]{book}
 %\makeatletter
@@ -113,7 +43,7 @@
     pdfproducer = {PDFLaTeX}}
 
 
-%\usepackage[french]{babel}
+\usepackage[french]{babel}
 \usepackage[T1]{fontenc}
 \usepackage[latin1]{inputenc}
 %\usepackage{multicol}
@@ -128,9 +58,8 @@
 
 \usepackage{pifont} % for \ding{52} dagda
 
-\newsavebox{\logobox}
-\sbox{\logobox}{\includegraphics[scale=0.4]{fig/logo_DIET}}
-\newcommand{\logo}{\usebox{\logobox}}
+
+
 
 %%%%
 
@@ -141,7 +70,7 @@
 %%%%
 
 %%%%
-\renewcommand{\title}{DIET User's Manual}
+
 %%%%
 
 \pagestyle{fancyplain}
@@ -149,9 +78,9 @@
 % \lhead[\fancyplain{\title}{\title}]
 %       {\fancyplain{\title}{\title}}
 \chead{}
-\rhead[\fancyplain{\logo}{\logo}]{\fancyplain{\logo}{\logo}}
 
-\lfoot[\fancyplain{\scriptsize{\copyright} ~INRIA, ENS-Lyon, UCBL, CNRS, SysFera}{\scriptsize{\copyright} ~INRIA, ENS-Lyon, UCBL, CNRS, SysFera}]{\fancyplain{\scriptsize{\copyright} ~INRIA, ENS-Lyon, UCBL, CNRS, SysFera}{\scriptsize{\copyright} ~INRIA, ENS-Lyon, UCBL, CNRS, SysFera}}
+
+\lfoot[\fancyplain{\scriptsize{\copyright} ~SysFera}{\scriptsize{\copyright} ~SysFera}]{\fancyplain{\scriptsize{\copyright} ~SysFera}{\scriptsize{\copyright} ~SysFera}}
 \cfoot[\fancyplain{}{}]{\fancyplain{}{}}
 \rfoot[\fancyplain{Page~\thepage}{Page~\thepage}]
       {\fancyplain{Page~\thepage}{Page~\thepage}}
@@ -210,34 +139,14 @@
 \vspace*{3cm}
 \vspace*{3cm}
 
-\begin{center}
-\includegraphics[scale=.5]{fig/logo_DIET_big}\\[2ex]
-\textbf{\Huge USER'S MANUAL\\[2ex]}
-\end{center}
-
 \vfill
 
 \noindent
 \small{
 \begin{tabular}{ll}
   \textbf{VERSION}  & \dietversion\\
-  \textbf{DATE}     & April 2010\\
-  \textbf{PROJECT MANAGER}  & Fr\'ed\'eric \textsc{Desprez}.\\
-  \textbf{EDITORIAL STAFF}  & Yves \textsc{Caniou}, Eddy \textsc{Caron} and David ~\textsc{Loureiro}.\\
-  \textbf{AUTHORS STAFF}    & 
-\begin{minipage}[t]{12cm}
-  Abdelkader \textsc{Amar}, Rapha\"el \textsc{Bolze}, \'Eric
-  \textsc{Boix}, Yves \textsc{Caniou}, Eddy \textsc{Caron}, Pushpinder
-  Kaur \textsc{Chouhan}, Philippe ~\textsc{Combes}, Sylvain
-  \textsc{Dahan}, Holly \textsc{Dail}, Bruno \textsc{Delfabro}, Benjamin
-  \textsc{Depardon}, Peter
-  \textsc{Frauenkron}, Georg \textsc{Hoesch}, Benjamin \textsc{Isnard},
-  Mathieu \textsc{Jan}, Jean-Yves \textsc{L'Excellent}, Gaël \textsc{Le
-    Mahec}, Christophe \textsc{Pera}, Cyrille \textsc{Pontvieux}, Alan
-  \textsc{Su}, C\'edric \textsc{Tedeschi}, and Antoine
-  \textsc{Vernois}.
-\end{minipage} \\
-  \textbf{Copyright}& INRIA, ENS-Lyon, UCBL
+  \textbf{DATE}     & Mai 2011\\
+  \textbf{Copyright}& SysFera
 \end{tabular}\\
 }
 
@@ -258,196 +167,18 @@
 % Introduction
 %
 %\newpage
-\addcontentsline{toc}{chapter}{Introduction}
-\chapter*{Introduction}
 
 % \href{mailto:mail@exemple.com}{Mon mail} % Lien email
 % \href{http://exemple.com}{Mon site web}  % Lien web
 % \href{fichier.pdf}{Mon fichier}          % Lien vers un fichier
 %\Acrobatmenu{FullScreen}{Plein écran}    % Plein écran/fenêtré
 
-Resource management is one of the key issues for the development of
-efficient Grid environments. Several approaches co-exist in today's
-middleware platforms. The granularity of computation (or communication) and 
-dependencies between computations can have a great influence on the
-software choices.
+%
+% Platform Integration
+%
 
-The first approach provides the user with a uniform view of
-resources. This is the case of GLOBUS~\cite{Globus} which provides
-transparent MPI communications (with MPICH-G2) between distant nodes
-but does not manage load balancing issues between these nodes. It's
-the user's task to develop a code that will take into account the
-heterogeneity of the target architecture. Grid extensions to
-classical batch processing provide an alternative approach with
-projects like Condor-G~\cite{Condor} or Sun
-GridEngine~\cite{SunGridEngine}. Finally, peer-to-peer~\cite{Oram01}
-or Global computing~\cite{germain01global} can be used for fine
-grain and loosely coupled applications.
 
-A second approach provides a semi-transparent access to computing
-servers by submitting jobs to servers offering specific
-computational services. This model is known
-as the Application Service Provider (ASP) model where providers offer,
-not necessarily for free, computing resources (hardware and software)
-to clients in the same way as Internet providers offer network
-resources to clients. The programming granularity of this model is
-rather coarse. One of the advantages of this approach is that end
-users do not need to be experts in parallel programming to benefit
-from high performance parallel programs and computers. This model is
-closely related to the classical Remote Procedure Call (RPC)
-paradigm. On a Grid platform, RPC (or
-GridRPC~\cite{MNS+00,NMSDLC02}) offers easy access to available
-resources from a Web browser, a Problem Solving Environment (\pse), or a
-simple client program written in C, Fortran, or Java.  It also
-provides more transparency by hiding the selection and allocation of
-computing resources. We favor this second approach.
-
-In a Grid context, this approach requires the implementation of
-middleware to facilitate client access to remote resources. In the ASP
-approach, a common way for clients to ask for resources to solve their
-problem is to submit a request to the middleware. The middleware will
-find the most appropriate server that will solve the problem on behalf
-of the client using a specific software. Several environments, usually
-called Network Enabled Servers (\nes), have developed such a paradigm:
-NetSolve~\cite{nug}, Ninf~\cite{NSS99}, NEOS~\cite{FMM00},
-OmniRPC~\cite{SHTS01}, and more recently \diet developed in the
-\textsc{Graal} project. A common feature of these environments is that
-they are built on top of five components: clients, servers, databases,
-monitors and schedulers. Clients solve computational requests on
-servers found by the \nes. The \nes schedules the requests on the
-different servers using performance information obtained by monitors
-and stored in a database.
-
-\diet stands for Distributed Interactive Engineering Toolbox. It is a
-toolbox for easily developing Application Service Provider systems on
-Grid platforms, based on the Client/Agent/Server scheme. Agents are
-the schedulers of this toolbox. In \diet, user requests are served via
-RPC.
-
-\diet follows the GridRPC API defined within the Open Grid
-Forum~\cite{GridRPC}.
-
-%
-% A DIET platform
-%
-%\newpage
-%\input{description.tex}
-
-%
-% Installing
-%
-%\newpage
-%\input{install.tex}
-
-%
-% DIET data
-%
-%%\newpage
-%\input{data.tex}
-
-%
-% Building a client program
-%
-%\newpage
-%\input{client.tex}
-
-% Building a server application
-%
-%\newpage
-%\input{server.tex}
-
-%
-% Parallel and Batch submission in DIET
-%
-%\newpage
-%\input{batch.tex}
-
-%
-% Cloud system
-%
-%\newpage
-%\input{cloud.tex}
-
-%
-% Scheduling in DIET
-%
-%\newpage
-%\input{plugin.tex}
-
-%
-% Preformances prediction
-%
-%\newpage
-%\input{prediction.tex}
-
-%
-% Deploying a DIET platform
-%
-\newpage
 \input{deploy.tex}
-
-
-%
-% DIET Vizualisation
-%
-%\newpage
-%\input{dashboard.tex}
-
-%
-% Multi-MA extension
-%
-%\newpage
-%\input{multima.tex}
-
-%
-% P2P extension
-%
-%\newpage
-%\input{jxta.tex}
-
-%
-% JuxMem extension
-%
-%\newpage
-%\input{juxmem.tex}
-
-%
-% Workflow support
-%
-%\newpage
-%\input{workflow.tex}
-
-%
-% DAGDA
-%
-%\newpage
-%\input{dagda.tex}
-
-%
-% Dynamic hierarchy
-%
-%\newpage
-%\input{dynamic.tex}
-
-%
-% DIET forwarders
-%
-%\newpage
-%\input{forwarder.tex}
-
-%
-% Appendix
-%
-%\newpage
-\appendix
-%\input{appendix.tex}
-
-%%%%
-% BIBLIO
-%%%%
-
-\bibliographystyle{plain}
-\bibliography{UsersManual}
 
 \end{document}
 

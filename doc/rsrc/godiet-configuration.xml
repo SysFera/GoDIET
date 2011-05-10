@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<godiet:configuration xmlns:godiet="http://www.sysfera.com"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.sysfera.com ../Configuration.xsd">
+
+	<goDietConfiguration localNode="node1">
+		<localscratch dir="/tmp/scratch_godiet" />
+		<user>
+			<ssh>
+				<key path="/home/.ssh/id_dsa"/>
+				<key path="/home/.ssh/admin_cluster2"/>
+			</ssh>
+		</user>
+	</goDietConfiguration>
+
+</godiet:configuration>
