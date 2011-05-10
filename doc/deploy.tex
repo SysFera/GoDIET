@@ -127,10 +127,10 @@ configuration file creation, staging of files, launch of elements, monitoring
 and reporting.  \godiet is extremely useful for large deployments on a complex
 physical infrastructure. The mains features are:
 \begin{itemize}
-  \item Complete command line interface.
-  \item Distributed command execution via SSH.
-  \item Real time monitoring applications state.
-  \item Complex physical infrastructure management with firewall and multiple
+  \item complete command line interface;
+  \item distributed command execution via SSH;
+  \item real time monitoring applications state;
+  \item complex physical infrastructure management with firewall and multiple
     network lan.
 \end{itemize}
 \begin{figure}[h]
@@ -144,38 +144,85 @@ physical infrastructure. The mains features are:
 
 The following operating systems are known to support GoDiet:
 \begin{itemize}
-    \item Linux: Most recent distributions are likely to work
-    \item Mac OS X 10.4 or later
+    \item Linux: most recent distributions are likely to work;
+    \item Mac OS X 10.4 or later.
 \end{itemize}
 
-You need to have the Sun Java 6 or OpenJDK6 installed. All operating system with Java 6 must support 
-First download \godiet on the project website\footnote{http://graal.ens-lyon.fr/DIET/godiet.html}.
-
- Extract the archive just and launch run.bat or run.sh script.
-You need to load your physical platform on which will \godiet will
-running. 
+You need to have the Sun Java 6 or OpenJDK6 installed.
+Download \godiet on the project website\footnote{http://graal.ens-lyon.fr/DIET/godiet.html}.
+Extract the archive just and launch run.bat or run.sh script.
+You need to load your physical platform on which will \godiet will running. 
 % This platform must be describe in a XML file based on \textit{Platform.xsd} grammar. You can find an simple file in the example directory 
 
 \subsection{\godiet setup}
 
-Avant de pouvoir utiliser \godiet, vous devez créer trois fichiers 
+Avant de pouvoir utiliser \godiet, vous devez créer un fichier de configuration, un fichier d'infrastructure, et un fichier de déploiement de votre plateforme Diet.
+Ces fichiers sont au format XML et doivent repecter une grammaire, respectivemment Configuration.xsd, Infrastructure.xsd et Diet.xsd.
+Des examples de fichiers se trouvent dans le répertoire examples du projet. 
 
 \subsubsection{Configuration}
 
+%Important fields
+Dans ce fichier doit être obligatoirement setter depuis quel noeud de l'infrastructure est lancé \godiet. En effet, il est \textbf{obligatoire} de lancer \godiet depuis une ressource
+décrite dans le fichier d'infrastructure\ref{GODIETInfrastrctureDescription}
+\ref{GODIETSSHCommand}
 
+
+%Load
+Par défaut \godiet cherche le fichier dans le répertoire \verb+${HOME}/.godiet/configuration.xml+. Si ce fichier est absent il charge un fichier par défaut qui ne spécifie pas de clef ssh et dont l'hôte source à pour nom \verb+local+ (et votre description d'infrastructure devra déclarer une resource du nom \verb+local+).
+
+%Layout
+General configuration description layout (some parts are omitted):
+\begin{verbatim}
+<configuration schema="Configuration.xsd">
+<goDietConfiguration localNode="local">
+<localscratch dir="/tmp/scratch_godiet" />
+  <user>
+	<ssh>
+		<key path="/home/.ssh/id_dsa"/>
+		<key path="/home/.ssh/admin_cluster2"/>
+	</ssh>
+   </user>
+</goDietConfiguration>
+\end{verbatim}
 
 \subsubsection{Infrastructure}
-\label{GODIETInfrastructureDesc}
-%%Physical platform
-\godiet needs to have the description of infrastructure on which \diet will be running.
+\label{GODIETInfrastructureDescription}
+
+\godiet needs to have the description of infrastructure on which \diet will be running. Cette description doit être fait dans un fichier au format XML qui listera
+tous les éléments physiques 
 
  disk scratch
 space available at each site for storage of configuration files, and which
 machines share the same disk to avoid unecessary copies. 
+
+
+General infrastructure description layout:
+\begin{verbatim}
+<infrastructure schema="Infrastructure.xsd">
+ <domain id="idDomain1">
+ ..
+    <storage id="idStorage">..</storage>
+    <node id="idNode">..</node>
+    <gateway id="idGateway1">..</gateway>
+
+ </domain id="idDomain2">
+ ..
+   <gateway id="idGateway2"/>
+ ..
+ </domain>
+ <link from="idGateway1" to="idGateway2"/>
+</infrastructure>
+\end{verbatim}
+
+Un domaine définit un ensemble de machines qui peuvent communiquer directement (au sens IP). Dans le cas où des machines sont séparer par un dispositif
+de filtrage (mur en feu ou autres), il faut les décrire dans deux domaines différents et \godiet s'occupera d'instancier automatiquement les forwarders
+indispensables aux communications \diet.
+
 \begin{figure}[h]
   \centering
   \includegraphics[width=15cm]{fig/godiet-infrastructure}
-  \caption{Three domains infrastructure representation example.\label{fig:GODIETInfrastructure}}
+  \caption{Three domains infrastructure representation example (godiet-\label{fig:GODIETInfrastructure}}
 \end{figure}
 
 \subsubsection{Diet platform}
@@ -206,7 +253,8 @@ le fichier de configuration est chargé automatiquement depuis le répertoire home
 
 \subsubsection{SSH command}
 \label{GODIETSSHCommand}
-\subsubsection{Load command}
+\subsubsection{Load commands}
+LoadInfrastructure permet de charger un fichier de description d'infrastructure
 
 calcule et création automatique des Forwarders
 \subsubsection{Start \& Stop commands}
@@ -223,10 +271,10 @@ Status command options:
 La commande status affiche sous forme de tableau l'état des éléments gérés pas  \godiet. Un exemple d'execution est affiché sur la figure \ref{fig:GODIETStatus}.
 De gauche à droite les informations affichés sont: 
 \begin{itemize}
-\item Le nom du logiciel comme décrit dans le fichier de description d'infrastructure
+\item Le nom du logiciel comme décrit dans le fichier de description d'infrastructure.
 \item Son état et depuis  quand il s'y trouve.
-\item La machine sur laquelle le logiciel va être executé ou est actuellement executé (selon son état) 
-\item Son 
+\item La machine sur laquelle le logiciel va être executé ou est actuellement executé (selon son état).
+\item Le message d'information dans le cas où la ressource est dans l'état erreur.
 \end{itemize} 
 
 
@@ -238,123 +286,129 @@ De gauche à droite les informations affichés sont:
 
 
 \subsubsection{Draw command}
+Draw command options:
+\begin{itemize}
+  \item \textbf{infrastructure}: Draw the infrastructure
+  \item \textbf{platform}: Draw the platform infrastructure
+\end{itemize}
+Génère un fichier au format Dot. La figure\ref{fig:GODIETInfrastructure} est le resultat de  généré avec cette commande 
 
-An example input XML file is shown in Figure~\ref{fig:godietXml}; see
-\cite{CDa05} for a full explanation of all entries in the XML. You can also
-have a look at the fully commented XML example file provided in the \godiet
-distribution under examples/commented.xml, each option is explained. To launch
-\godiet for the simple example XML file provided in the \godiet distribution
-under examples/example1.xml, run:
-
-\begin{verbatim}
-~ > java -jar GoDIET-x.x.x.jar example1.xml
-XmlScanner constructor
-Parsing xml file: example1.xml
-GoDIET>
-\end{verbatim}
-
-\godiet reads the XML file and then enters an interactive console mode. In this
-mode you have a number of options:
+% An example input XML file is shown in Figure~\ref{fig:godietXml}; see
+%% \cite{CDa05} for a full explanation of all entries in the XML. You can also
+%% have a look at the fully commented XML example file provided in the \godiet
+%% distribution under examples/commented.xml, each option is explained. To launch
+%% \godiet for the simple example XML file provided in the \godiet distribution
+%% under examples/example1.xml, run:
 
 %% \begin{verbatim}
-%% GoDIET> help
-%% The following commands are available:
-%%    launch:       launch entire DIET platform
-%%    launch_check: launch entire DIET platform then check its status
-%%    relaunch:     kill the current platform and launch entire DIET platform once again
-%%    stop:         kill entire DIET platform using kill pid
-%%    status:       print run status of each DIET component
-%%    history:      print history of commands executed
-%%    help:         print this message
-%%    check:        check the platform status
-%%    stop_check:   stop the platform status then check its status before exit
-%%    exit:         exit GoDIET, do not change running platform.
+%% ~ > java -jar GoDIET-x.x.x.jar example1.xml
+%% XmlScanner constructor
+%% Parsing xml file: example1.xml
+%% GoDIET>
 %% \end{verbatim}
 
-We will now launch this example; note that this example is intentionally very
-simple with all components running locally to provide initial familiarity with
-the \godiet run procedure. Deployment with \godiet is especially useful  when
-launching components on multiple remote machines.
+%% \godiet reads the XML file and then enters an interactive console mode. In this
+%% mode you have a number of options:
 
-\begin{verbatim}
-GoDIET> launch
-* Launching DIET platform at Wed Jul 13 09:57:03 CEST 2005
+%% %% \begin{verbatim}
+%% %% GoDIET> help
+%% %% The following commands are available:
+%% %%    launch:       launch entire DIET platform
+%% %%    launch_check: launch entire DIET platform then check its status
+%% %%    relaunch:     kill the current platform and launch entire DIET platform once again
+%% %%    stop:         kill entire DIET platform using kill pid
+%% %%    status:       print run status of each DIET component
+%% %%    history:      print history of commands executed
+%% %%    help:         print this message
+%% %%    check:        check the platform status
+%% %%    stop_check:   stop the platform status then check its status before exit
+%% %%    exit:         exit GoDIET, do not change running platform.
+%% %% \end{verbatim}
 
-Local scratch directory ready:
-        /home/hdail/tmp/scratch_godiet
+%% We will now launch this example; note that this example is intentionally very
+%% simple with all components running locally to provide initial familiarity with
+%% the \godiet run procedure. Deployment with \godiet is especially useful  when
+%% launching components on multiple remote machines.
 
-** Launching element OmniNames on localHost
-Writing config file omniORB4.cfg
-Staging file omniORB4.cfg to localDisk
-Executing element OmniNames on resource localHost
-Waiting for 3 seconds after service launch
+%% \begin{verbatim}
+%% GoDIET> launch
+%% * Launching DIET platform at Wed Jul 13 09:57:03 CEST 2005
 
-** Launching element MA_0 on localHost
-Writing config file MA_0.cfg
-Staging file MA_0.cfg to localDisk
-Executing element MA_0 on resource localHost
-Waiting for 2 seconds after launch without log service feedback
+%% Local scratch directory ready:
+%%         /home/hdail/tmp/scratch_godiet
 
-** Launching element LA_0 on localHost
-Writing config file LA_0.cfg
-Staging file LA_0.cfg to localDisk
-Executing element LA_0 on resource localHost
-Waiting for 2 seconds after launch without log service feedback
+%% ** Launching element OmniNames on localHost
+%% Writing config file omniORB4.cfg
+%% Staging file omniORB4.cfg to localDisk
+%% Executing element OmniNames on resource localHost
+%% Waiting for 3 seconds after service launch
 
-** Launching element SeD_0 on localHost
-Writing config file SeD_0.cfg
-Staging file SeD_0.cfg to localDisk
-Executing element SeD_0 on resource localHost
-Waiting for 2 seconds after launch without log service feedback
-* DIET launch done at Wed Jul 13 09:57:14 CEST 2005 [time= 11.0 sec]
-\end{verbatim}
+%% ** Launching element MA_0 on localHost
+%% Writing config file MA_0.cfg
+%% Staging file MA_0.cfg to localDisk
+%% Executing element MA_0 on resource localHost
+%% Waiting for 2 seconds after launch without log service feedback
 
-The \texttt{status} command will print out the run-time status of all launched
-components. The \texttt{LaunchState} reports whether \godiet observed any
-errors during the launch itself. When the user requests the launch of
-LogService in the input XML file, \godiet can connect to the LogService  after
-launching it to obtain the state of launched components; when available, this
-state is reported in the \texttt{LogState} column.
+%% ** Launching element LA_0 on localHost
+%% Writing config file LA_0.cfg
+%% Staging file LA_0.cfg to localDisk
+%% Executing element LA_0 on resource localHost
+%% Waiting for 2 seconds after launch without log service feedback
 
-\begin{verbatim}
-GoDIET> status
-Status   Element   LaunchState   LogState   Resource     PID
-         OmniNames running       none       localHost    1232
-         MA_0      running       none       localHost    1262
-         LA_0      running       none       localHost    1296
-         SeD_0     running       none       localHost    1329
-\end{verbatim}
+%% ** Launching element SeD_0 on localHost
+%% Writing config file SeD_0.cfg
+%% Staging file SeD_0.cfg to localDisk
+%% Executing element SeD_0 on resource localHost
+%% Waiting for 2 seconds after launch without log service feedback
+%% * DIET launch done at Wed Jul 13 09:57:14 CEST 2005 [time= 11.0 sec]
+%% \end{verbatim}
 
-Finally, when you are done with your \diet deployment you should always run
-\texttt{stop}. To clean-up each element, \godiet runs a \texttt{kill} operation
-on the appropriate host using the stored PID of that element.
+%% The \texttt{status} command will print out the run-time status of all launched
+%% components. The \texttt{LaunchState} reports whether \godiet observed any
+%% errors during the launch itself. When the user requests the launch of
+%% LogService in the input XML file, \godiet can connect to the LogService  after
+%% launching it to obtain the state of launched components; when available, this
+%% state is reported in the \texttt{LogState} column.
 
-\begin{verbatim}
-GoDIET> stop
+%% \begin{verbatim}
+%% GoDIET> status
+%% Status   Element   LaunchState   LogState   Resource     PID
+%%          OmniNames running       none       localHost    1232
+%%          MA_0      running       none       localHost    1262
+%%          LA_0      running       none       localHost    1296
+%%          SeD_0     running       none       localHost    1329
+%% \end{verbatim}
 
-* Stopping DIET platform at Wed Jul 13 10:05:42 CEST 2005
-Trying to stop element SeD_0
-Trying to stop element LA_0
-Trying to stop element MA_0
-Trying to stop element OmniNames
+%% Finally, when you are done with your \diet deployment you should always run
+%% \texttt{stop}. To clean-up each element, \godiet runs a \texttt{kill} operation
+%% on the appropriate host using the stored PID of that element.
 
-* DIET platform stopped at Wed Jul 13 10:05:43 CEST 2005[time= 0.0 sec]
-* Exiting GoDIET. Bye.
-\end{verbatim}
+%% \begin{verbatim}
+%% GoDIET> stop
 
-\begin{figure}[p]
-\input{xml_example.tex}.
-\caption{Example XML input file for \godiet.\label{fig:godietXml}}
-\end{figure}
+%% * Stopping DIET platform at Wed Jul 13 10:05:42 CEST 2005
+%% Trying to stop element SeD_0
+%% Trying to stop element LA_0
+%% Trying to stop element MA_0
+%% Trying to stop element OmniNames
 
-One of the main problem when writing a \godiet XML input file is to be compliant
-with the dtd. A good tool to validate a \godiet file before using \godiet is
-\textbf{xmllint}. This tool exist on most platforms and with the following
-command:
-\begin{verbatim}
-$ xmllint your_xml_file --dtdvalid path_to_GoDIET.dtd -noout
-\end{verbatim}
-you will see the different lines where there is problem and a clear description
-of why your XML file is not compliant.
+%% * DIET platform stopped at Wed Jul 13 10:05:43 CEST 2005[time= 0.0 sec]
+%% * Exiting GoDIET. Bye.
+%% \end{verbatim}
+
+%% \begin{figure}[p]
+%% \input{xml_example.tex}.
+%% \caption{Example XML input file for \godiet.\label{fig:godietXml}}
+%% \end{figure}
+
+%% One of the main problem when writing a \godiet XML input file is to be compliant
+%% with the dtd. A good tool to validate a \godiet file before using \godiet is
+%% \textbf{xmllint}. This tool exist on most platforms and with the following
+%% command:
+%% \begin{verbatim}
+%% $ xmllint your_xml_file --dtdvalid path_to_GoDIET.dtd -noout
+%% \end{verbatim}
+%% you will see the different lines where there is problem and a clear description
+%% of why your XML file is not compliant.
 
 \clearpage
