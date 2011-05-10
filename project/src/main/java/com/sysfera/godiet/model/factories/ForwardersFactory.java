@@ -11,6 +11,7 @@ import com.sysfera.godiet.model.generated.OmniNames;
 import com.sysfera.godiet.model.generated.Options;
 import com.sysfera.godiet.model.generated.Options.Option;
 import com.sysfera.godiet.model.utils.ResourceUtil;
+import com.sysfera.godiet.model.validators.RuntimeValidator;
 
 /**
  * Managed Forwarder factory
@@ -21,6 +22,8 @@ import com.sysfera.godiet.model.utils.ResourceUtil;
 public class ForwardersFactory {
 
 	private final SoftwareController softwareController;
+
+	private final RuntimeValidator forwarderValidator;
 
 	public static enum ForwarderType {
 		CLIENT("CLIENT"), SERVER("SERVER");
@@ -34,8 +37,9 @@ public class ForwardersFactory {
 
 
 
-	public ForwardersFactory(SoftwareController softwareController) {
+	public ForwardersFactory(SoftwareController softwareController,RuntimeValidator forwarderValidator) {
 		this.softwareController = softwareController;
+		this.forwarderValidator = forwarderValidator;
 	}
 	
 
@@ -54,8 +58,8 @@ public class ForwardersFactory {
 			throws DietResourceCreationException {
 
 		DietResourceManaged[] forwardersManager = new DietResourceManaged[2];
-		DietResourceManaged clientForwarderManager = new DietResourceManaged(softwareController);
-		DietResourceManaged serverForwarderManager = new DietResourceManaged(softwareController);
+		DietResourceManaged clientForwarderManager = new DietResourceManaged(softwareController,forwarderValidator);
+		DietResourceManaged serverForwarderManager = new DietResourceManaged(softwareController,forwarderValidator);
 
 		clientForwarderManager.setManagedSoftware(forwarders.getClient());
 		serverForwarderManager.setManagedSoftware(forwarders.getServer());

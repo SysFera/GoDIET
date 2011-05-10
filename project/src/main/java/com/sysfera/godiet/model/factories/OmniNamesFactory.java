@@ -10,6 +10,7 @@ import com.sysfera.godiet.model.generated.Options;
 import com.sysfera.godiet.model.generated.Options.Option;
 import com.sysfera.godiet.model.generated.Resource;
 import com.sysfera.godiet.model.generated.Software;
+import com.sysfera.godiet.model.validators.RuntimeValidator;
 
 /**
  * Managed OmniNames factory
@@ -20,9 +21,11 @@ import com.sysfera.godiet.model.generated.Software;
 public class OmniNamesFactory {
 
 	private final SoftwareController softwareController;
+	private final RuntimeValidator validator;
 
-	public OmniNamesFactory(SoftwareController softwareController) {
+	public OmniNamesFactory(SoftwareController softwareController, RuntimeValidator omniNamesValidator) {
 		this.softwareController = softwareController;
+		this.validator = omniNamesValidator;
 	}
 
 	/**
@@ -36,7 +39,7 @@ public class OmniNamesFactory {
 	 */
 	public DietServiceManaged create(OmniNames omniNamesDescription)
 			throws DietResourceCreationException {
-		DietServiceManaged omniNamesManaged = new DietServiceManaged(softwareController);
+		DietServiceManaged omniNamesManaged = new DietServiceManaged(softwareController,validator);
 
 		omniNamesManaged.setManagedSoftware(omniNamesDescription);
 		settingConfigurationOptions(omniNamesManaged);

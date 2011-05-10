@@ -7,6 +7,7 @@ import com.sysfera.godiet.model.generated.OmniNames;
 import com.sysfera.godiet.model.generated.Options;
 import com.sysfera.godiet.model.generated.Options.Option;
 import com.sysfera.godiet.model.generated.Sed;
+import com.sysfera.godiet.model.validators.RuntimeValidator;
 
 
 /**
@@ -17,8 +18,10 @@ import com.sysfera.godiet.model.generated.Sed;
 public class SedFactory {
 	
 	private final SoftwareController softwareController;
-	public SedFactory(SoftwareController softwareController) {
+	private final RuntimeValidator validator;
+	public SedFactory(SoftwareController softwareController, RuntimeValidator sedValidator) {
 		this.softwareController = softwareController;
+		this.validator = sedValidator;
 	}
 
 	/**
@@ -29,7 +32,7 @@ public class SedFactory {
 	 */
 	public DietResourceManaged create(Sed sedDescription,OmniNames omniNames)
 	{
-		DietResourceManaged sedManaged = new DietResourceManaged(softwareController);
+		DietResourceManaged sedManaged = new DietResourceManaged(softwareController,validator);
 		sedManaged.setManagedSoftware(sedDescription);
 	
 

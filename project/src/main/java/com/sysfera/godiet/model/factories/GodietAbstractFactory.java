@@ -9,6 +9,7 @@ import com.sysfera.godiet.model.generated.LocalAgent;
 import com.sysfera.godiet.model.generated.MasterAgent;
 import com.sysfera.godiet.model.generated.OmniNames;
 import com.sysfera.godiet.model.generated.Sed;
+import com.sysfera.godiet.model.validators.RuntimeValidator;
 
 public class GodietAbstractFactory {
 
@@ -18,12 +19,21 @@ public class GodietAbstractFactory {
 	private final MasterAgentFactory masterAgentFactory;
 	private final SedFactory sedFactory;
 
-	public GodietAbstractFactory(SoftwareController softwareController) {
-		this.forwardersFactory = new ForwardersFactory(softwareController);
-		this.localAgentFactory = new LocalAgentFactory(softwareController);
-		this.masterAgentFactory = new MasterAgentFactory(softwareController);
-		this.sedFactory = new SedFactory(softwareController);
-		this.omniNamesFactory = new OmniNamesFactory(softwareController);
+
+
+	public GodietAbstractFactory(SoftwareController softwareController,
+			RuntimeValidator forwardersValidator, RuntimeValidator maValidator,
+			RuntimeValidator laValidator, RuntimeValidator sedValidator,
+			RuntimeValidator omniNamesValidator) {
+		this.forwardersFactory = new ForwardersFactory(softwareController,
+				forwardersValidator);
+		this.localAgentFactory = new LocalAgentFactory(softwareController,
+				laValidator);
+		this.masterAgentFactory = new MasterAgentFactory(softwareController,
+				maValidator);
+		this.sedFactory = new SedFactory(softwareController, sedValidator);
+		this.omniNamesFactory = new OmniNamesFactory(softwareController,
+				omniNamesValidator);
 	}
 
 	public DietResourceManaged[] create(Forwarders forwarders,
@@ -43,7 +53,7 @@ public class GodietAbstractFactory {
 		return masterAgentFactory.create(masterAgentDescription, omniNames);
 	}
 
-	//TODO: Why no throws ?
+	// TODO: Why no throws ?
 	public DietResourceManaged create(Sed sedDescription, OmniNames omniNames) {
 		return sedFactory.create(sedDescription, omniNames);
 	}

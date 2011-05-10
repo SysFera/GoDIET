@@ -5,6 +5,7 @@ import com.sysfera.godiet.model.DietResourceManaged;
 import com.sysfera.godiet.model.SoftwareController;
 import com.sysfera.godiet.model.generated.MasterAgent;
 import com.sysfera.godiet.model.generated.OmniNames;
+import com.sysfera.godiet.model.validators.RuntimeValidator;
 
 
 /**
@@ -15,9 +16,10 @@ import com.sysfera.godiet.model.generated.OmniNames;
  */
 public class MasterAgentFactory {
 	private final SoftwareController softwareController;
-
-	public MasterAgentFactory(SoftwareController softwareController) {
+	private final RuntimeValidator validator;
+	public MasterAgentFactory(SoftwareController softwareController,RuntimeValidator maValidator) {
 		this.softwareController = softwareController;
+		this.validator = maValidator;
 	}
 
 	/**
@@ -29,7 +31,7 @@ public class MasterAgentFactory {
 	 */
 	public DietResourceManaged create(MasterAgent masterAgentDescription,OmniNames omniNames) throws DietResourceCreationException
 	{
-		DietResourceManaged MAManaged = new DietResourceManaged(softwareController);
+		DietResourceManaged MAManaged = new DietResourceManaged(softwareController, validator);
 		MAManaged.setManagedSoftware(masterAgentDescription);
 		AgentFactoryUtil.settingConfigurationOptions(MAManaged,"DIET_MASTER_AGENT");
 		AgentFactoryUtil.settingRunningCommand(omniNames,MAManaged);
