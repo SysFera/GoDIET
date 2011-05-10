@@ -4,6 +4,7 @@
 	xsi:schemaLocation="http://www.sysfera.com ../Platform.xsd">
 	<infrastructure>
 		<domain label="DomainSysfera">
+		
 			<storage label="fake">
 				<scratch dir="/tmp/fake" />
 				<scp server="fake" login="fake" />

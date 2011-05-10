@@ -134,7 +134,7 @@ public class Diet {
 				publicKeyPath, password);
 	}
 
-	public void initPlatform(URL url) throws CommandExecutionException {
+	public void initInfrastructure(URL url) throws CommandExecutionException {
 		if (!configLoaded)
 			new CommandExecutionException("Godiet not correctly configured");
 		InputStream inputStream;

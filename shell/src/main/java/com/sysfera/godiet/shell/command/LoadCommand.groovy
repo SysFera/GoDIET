@@ -21,10 +21,10 @@ import com.sysfera.godiet.utils.xml.XmlScannerJaxbImpl
  * Inspired by LoadCommand.groovy shell (Jason Dillon)
  *
  */
-class LoadPlatformCommand
+class LoadInfrastructureCommand
 extends CommandSupport {
-	LoadPlatformCommand(final Shell shell) {
-		super(shell, 'loadPlatform', 'lp')
+	LoadInfrastructureCommand(final Shell shell) {
+		super(shell, 'loadInfrastructure', 'li')
 	}
 
 	protected List createCompletors() {
@@ -73,7 +73,7 @@ extends CommandSupport {
 
 		Diet diet = ((GoDietSh)shell).getDiet()
 		assert diet != null;
-		diet.initPlatform(url)
+		diet.initInfrastructure(url)
 	}
 }
 class LoadDietCommand

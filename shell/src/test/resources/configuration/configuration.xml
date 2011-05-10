@@ -4,7 +4,7 @@
 	xsi:schemaLocation="http://www.sysfera.com ../Configuration.xsd">
 
 	<goDietConfiguration debug="1" saveStdOut="true"
-		saveStdErr="true" log="true" localNode="graal">
+		saveStdErr="true" log="true" localNode="local">
 		<localscratch dir="/tmp/godiet" />
 	</goDietConfiguration>
 

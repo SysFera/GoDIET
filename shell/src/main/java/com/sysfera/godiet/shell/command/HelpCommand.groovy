@@ -96,7 +96,7 @@ class HelpCommand
         }
         
         io.out.println()
-        io.out.println('For information about @|green Godiet|@, visit:') // TODO: i18n
+        io.out.println('For information about @|green GoDiet|@, visit:') // TODO: i18n
         io.out.println('    @|cyan http://www.sysfera.com|@ ') // FIXME: parsing freaks out if end tok is at the last char...
         io.out.println()
 

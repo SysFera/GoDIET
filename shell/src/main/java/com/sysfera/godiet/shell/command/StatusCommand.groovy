@@ -24,6 +24,7 @@ import org.codehaus.groovy.tools.shell.util.Preferences
 
 import com.sysfera.godiet.Diet;
 import com.sysfera.godiet.managers.ResourcesManager
+import com.sysfera.godiet.model.generated.Software;
 import com.sysfera.godiet.model.states.ResourceState;
 import com.sysfera.godiet.model.states.ResourceState.State;
 import com.sysfera.godiet.shell.GoDietSh
@@ -60,35 +61,36 @@ extends ComplexCommandSupport {
 		io.out.println("@|bold Label\t\tStatus\t\tSince\t\tPlugged\t\tCause|@")
 		io.out.println("---------------------------------------------------------")
 		try{
-			resources.each{
+			for (Software resource : resources) {
 				try{
 					def coloredStatus
 					String cause ='-'
-					String since = sdf.format(it.stateController.lastTransition)
-					switch (it.state.status) {
+					String since = sdf.format(resource.stateController.lastTransition)
+					switch (resource.state.status) {
 						case State.UP:
-							coloredStatus =  "@|green ${it.state.status}|@"
+							coloredStatus =  "@|green ${resource.state.status}|@"
 							break;
 						case State.DOWN:
-							coloredStatus =  "@|yellow ${it.state.status}|@"
+							coloredStatus =  "@|yellow ${resource.state.status}|@"
 							break;
 						case State.ERROR:
-							coloredStatus =  "@|BG_RED,BLACK ${it.state.status}|@"
-							cause = it.stateController.errorCause.message
+							coloredStatus =  "@|BG_RED,BLACK ${resource.state.status}|@"
+							cause = resource.stateController.errorCause.message
 							break;
 						default:
-							coloredStatus = "@|BLUE ${it.state.status}|@"
+							coloredStatus = "@|BLUE ${resource.state.status}|@"
 							break;
 					}
-					io.out.println "${it.softwareDescription.id}\t${coloredStatus}\t${since}\t${it.pluggedOn.id}\t${cause}"
+					io.out.println "${resource.softwareDescription.id}\t${coloredStatus}\t${since}\t${resource.pluggedOn.id}\t${cause}"
 				}catch (Exception e) {
-					io.err.println("Status ${it.softwareDescription.id} printing error",e)
+					io.err.println("Status ${resource.softwareDescription.id} printing error",e)
 				}
 			}
 		}catch (Exception e) {
-			io.err.println("Status ${it.softwareDescription.id} printing error",e)
+			io.err.println("Status ${resource.softwareDescription.id} printing error",e)
 		}
 	}
+
 	def do_services = {
 		Diet diet = ((GoDietSh)shell).getDiet()
 		List omniNames = diet.getRm().getDietModel().omninames
