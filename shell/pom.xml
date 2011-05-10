@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>com.sysfera</groupId>
 		<artifactId>goDiet-parent</artifactId>
-		<version>0.0.9-SNAPSHOT</version>
+		<version>2.7.BETA-SNAPSHOT</version>
 
 	</parent>
 	<artifactId>shell</artifactId>
@@ -32,7 +32,7 @@
 		<dependency>
 			<groupId>com.sysfera</groupId>
 			<artifactId>goDiet</artifactId>
-			<version>0.0.9-SNAPSHOT</version>
+			<version>2.7.BETA-SNAPSHOT</version>
 		</dependency>
 
 		<dependency>
@@ -51,7 +51,11 @@
 			<artifactId>jline</artifactId>
 			<version>0.9.94</version>
 		</dependency>
-
+	<!--For Ctrl-c management (piped) 	<dependency>
+			<groupId>org.sonatype.gshell</groupId>
+			<artifactId>gshell-io</artifactId>
+			<version>2.4</version>
+		</dependency> -->
 	</dependencies>
 
 	<build>
