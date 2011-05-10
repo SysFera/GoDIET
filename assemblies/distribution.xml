@@ -39,6 +39,17 @@
 			</includes>
 			<outputDirectory>/doc</outputDirectory>
 		</fileSet>
+		<!-- Embedding XSD -->
+		<fileSet>
+			<directory>${project.basedir}/../shell/src/main/resources</directory>
+			<includes>
+				<include>GoDietNG.xsd</include>
+				<include>Configuration.xsd</include>
+				<include>Diet.xsd</include>
+				<include>Platform.xsd</include>
+			</includes>
+			<outputDirectory>/</outputDirectory>
+		</fileSet>
 		<!-- Embedding samples -->
 		<fileSet>
 			<directory>${project.basedir}/../doc/rsrc</directory>
@@ -49,6 +60,7 @@
 			</includes>
 			<outputDirectory>/examples</outputDirectory>
 		</fileSet>
+
 	</fileSets>
 
 </assembly>
