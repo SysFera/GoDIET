@@ -23,11 +23,17 @@ import com.sysfera.godiet.command.stop.StopServicesCommand;
 import com.sysfera.godiet.command.xml.LoadXMLDietCommand;
 import com.sysfera.godiet.exceptions.CommandExecutionException;
 import com.sysfera.godiet.exceptions.remote.AddAuthentificationException;
+import com.sysfera.godiet.managers.DietManager;
 import com.sysfera.godiet.managers.ResourcesManager;
 import com.sysfera.godiet.managers.user.SSHKeyManager;
 import com.sysfera.godiet.model.SoftwareController;
 import com.sysfera.godiet.model.factories.GodietAbstractFactory;
 import com.sysfera.godiet.model.generated.User;
+import com.sysfera.godiet.model.validators.ForwarderRuntimeValidatorImpl;
+import com.sysfera.godiet.model.validators.LocalAgentRuntimeValidatorImpl;
+import com.sysfera.godiet.model.validators.MasterAgentRuntimeValidatorImpl;
+import com.sysfera.godiet.model.validators.OmniNamesRuntimeValidatorImpl;
+import com.sysfera.godiet.model.validators.SedRuntimeValidatorImpl;
 import com.sysfera.godiet.remote.RemoteAccess;
 import com.sysfera.godiet.remote.RemoteAccessMock;
 import com.sysfera.godiet.remote.RemoteConfigurationHelper;
@@ -70,7 +76,13 @@ public class LaunchMockPlatformIntegrationTest {
 				xmlLoadingCommand.setXmlInput(inputStream);
 				xmlLoadingCommand.setXmlParser(scanner);
 				SoftwareController softwareController = new RemoteConfigurationHelper(remoteAccess, rm.getGodietConfiguration().getGoDietConfiguration(), rm.getPlatformModel());
-				godietAbstractFactory = new GodietAbstractFactory(softwareController);
+				DietManager dietModel = rm.getDietModel();
+				godietAbstractFactory = new GodietAbstractFactory(softwareController,
+						new ForwarderRuntimeValidatorImpl(dietModel),
+						new MasterAgentRuntimeValidatorImpl(dietModel),
+						new LocalAgentRuntimeValidatorImpl(dietModel),
+						new SedRuntimeValidatorImpl(dietModel),
+						new OmniNamesRuntimeValidatorImpl(dietModel));
 				xmlLoadingCommand.setAbstractFactory(godietAbstractFactory);
 
 

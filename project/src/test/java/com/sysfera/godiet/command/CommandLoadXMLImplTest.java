@@ -21,6 +21,11 @@ import com.sysfera.godiet.model.DietResourceManaged;
 import com.sysfera.godiet.model.SoftwareController;
 import com.sysfera.godiet.model.factories.GodietAbstractFactory;
 import com.sysfera.godiet.model.generated.GoDietConfiguration;
+import com.sysfera.godiet.model.validators.ForwarderRuntimeValidatorImpl;
+import com.sysfera.godiet.model.validators.LocalAgentRuntimeValidatorImpl;
+import com.sysfera.godiet.model.validators.MasterAgentRuntimeValidatorImpl;
+import com.sysfera.godiet.model.validators.OmniNamesRuntimeValidatorImpl;
+import com.sysfera.godiet.model.validators.SedRuntimeValidatorImpl;
 import com.sysfera.godiet.remote.RemoteAccess;
 import com.sysfera.godiet.remote.RemoteAccessMock;
 import com.sysfera.godiet.remote.RemoteConfigurationHelper;
@@ -64,7 +69,14 @@ public class CommandLoadXMLImplTest {
 
 		xmlLoadingCommand.setXmlParser(scanner);
 		SoftwareController softwareController = new RemoteConfigurationHelper(remoteAccess, rm.getGodietConfiguration().getGoDietConfiguration(), rm.getPlatformModel());
-		GodietAbstractFactory godietAbstractFactory = new GodietAbstractFactory(softwareController);
+		DietManager dietModel = rm.getDietModel();
+		GodietAbstractFactory godietAbstractFactory = new GodietAbstractFactory(softwareController,
+				new ForwarderRuntimeValidatorImpl(dietModel),
+				new MasterAgentRuntimeValidatorImpl(dietModel),
+				new LocalAgentRuntimeValidatorImpl(dietModel),
+				new SedRuntimeValidatorImpl(dietModel),
+				new OmniNamesRuntimeValidatorImpl(dietModel));
+
 		xmlLoadingCommand.setAbstractFactory(godietAbstractFactory);
 
 		for (String testCaseFile : testCaseFiles) {
@@ -120,7 +132,14 @@ public class CommandLoadXMLImplTest {
 			xmlLoadingCommand.setXmlInput(inputStream);
 			xmlLoadingCommand.setXmlParser(scanner);
 			SoftwareController softwareController = new RemoteConfigurationHelper(remoteAccess, rm.getGodietConfiguration().getGoDietConfiguration(), rm.getPlatformModel());
-			GodietAbstractFactory godietAbstractFactory = new GodietAbstractFactory(softwareController);
+			DietManager dietModel = rm.getDietModel();
+		GodietAbstractFactory godietAbstractFactory = new GodietAbstractFactory(softwareController,
+				new ForwarderRuntimeValidatorImpl(dietModel),
+				new MasterAgentRuntimeValidatorImpl(dietModel),
+				new LocalAgentRuntimeValidatorImpl(dietModel),
+				new SedRuntimeValidatorImpl(dietModel),
+				new OmniNamesRuntimeValidatorImpl(dietModel));
+
 			xmlLoadingCommand.setAbstractFactory(godietAbstractFactory);
 
 
@@ -189,7 +208,14 @@ public class CommandLoadXMLImplTest {
 			xmlLoadingCommand.setXmlInput(inputStream);
 			xmlLoadingCommand.setXmlParser(scanner);
 			SoftwareController softwareController = new RemoteConfigurationHelper(remoteAccess, rm.getGodietConfiguration().getGoDietConfiguration(), rm.getPlatformModel());
-			GodietAbstractFactory godietAbstractFactory = new GodietAbstractFactory(softwareController);
+			DietManager dietModel = rm.getDietModel();
+		GodietAbstractFactory godietAbstractFactory = new GodietAbstractFactory(softwareController,
+				new ForwarderRuntimeValidatorImpl(dietModel),
+				new MasterAgentRuntimeValidatorImpl(dietModel),
+				new LocalAgentRuntimeValidatorImpl(dietModel),
+				new SedRuntimeValidatorImpl(dietModel),
+				new OmniNamesRuntimeValidatorImpl(dietModel));
+
 			xmlLoadingCommand.setAbstractFactory(godietAbstractFactory);
 
 

@@ -4,13 +4,13 @@
 	xsi:schemaLocation="http://www.sysfera.com ../Diet.xsd">
 
 	<dietServices>
-		<omniNames id="omniNamesDomain1">
+		<omniNames id="omniNames1">
 			<config server="Node1" remoteBinary="omniNames" />
 		</omniNames>
-		<omniNames id="omniNamesDomain2">
+		<omniNames id="omniNames2">
 			<config server="Node2" remoteBinary="omniNames" />
 		</omniNames>
-		<omniNames id="omniNamesDomain3">
+		<omniNames id="omniNames3">
 			<config server="Node4" remoteBinary="omniNames" />
 		</omniNames>
 	</dietServices>
