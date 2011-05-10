@@ -14,6 +14,7 @@ import com.sysfera.godiet.command.init.util.XMLLoadingHelper;
 import com.sysfera.godiet.command.xml.LoadXMLDietCommand;
 import com.sysfera.godiet.exceptions.CommandExecutionException;
 import com.sysfera.godiet.exceptions.generics.PathException;
+import com.sysfera.godiet.managers.DietManager;
 import com.sysfera.godiet.managers.PlatformManager;
 import com.sysfera.godiet.managers.ResourcesManager;
 import com.sysfera.godiet.model.Path;
@@ -21,6 +22,11 @@ import com.sysfera.godiet.model.SoftwareController;
 import com.sysfera.godiet.model.factories.GodietAbstractFactory;
 import com.sysfera.godiet.model.generated.Node;
 import com.sysfera.godiet.model.generated.Resource;
+import com.sysfera.godiet.model.validators.ForwarderRuntimeValidatorImpl;
+import com.sysfera.godiet.model.validators.LocalAgentRuntimeValidatorImpl;
+import com.sysfera.godiet.model.validators.MasterAgentRuntimeValidatorImpl;
+import com.sysfera.godiet.model.validators.OmniNamesRuntimeValidatorImpl;
+import com.sysfera.godiet.model.validators.SedRuntimeValidatorImpl;
 import com.sysfera.godiet.remote.RemoteAccess;
 import com.sysfera.godiet.remote.RemoteAccessMock;
 import com.sysfera.godiet.remote.RemoteConfigurationHelper;
@@ -59,8 +65,19 @@ public class TopologyManagerTest {
 				xmlLoadingCommand.setRm(rm);
 				xmlLoadingCommand.setXmlInput(inputStream);
 				xmlLoadingCommand.setXmlParser(scanner);
-				SoftwareController softwareController = new RemoteConfigurationHelper(remoteAccess, rm.getGodietConfiguration().getGoDietConfiguration(), rm.getPlatformModel());
-				GodietAbstractFactory godietAbstractFactory = new GodietAbstractFactory(softwareController);
+				SoftwareController softwareController = new RemoteConfigurationHelper(
+						remoteAccess, rm.getGodietConfiguration()
+								.getGoDietConfiguration(),
+						rm.getPlatformModel());
+				DietManager dietModel = rm.getDietModel();
+				GodietAbstractFactory godietAbstractFactory = new GodietAbstractFactory(
+						softwareController, new ForwarderRuntimeValidatorImpl(
+								dietModel),
+						new MasterAgentRuntimeValidatorImpl(dietModel),
+						new LocalAgentRuntimeValidatorImpl(dietModel),
+						new SedRuntimeValidatorImpl(dietModel),
+						new OmniNamesRuntimeValidatorImpl(dietModel));
+
 				xmlLoadingCommand.setAbstractFactory(godietAbstractFactory);
 
 				xmlLoadingCommand.execute();
