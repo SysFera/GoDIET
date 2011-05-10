@@ -27,7 +27,7 @@ public class SedRuntimeValidatorImpl extends RuntimeValidator {
 		SoftwareManager managedParent = dietManager.getManagedSoftware(sed.getSoftwareDescription().getParent().getId());
 		ResourceState parentMaState = managedParent.getState();
 		synchronized (parentMaState) {
-			if (!parentMaState.getState().equals(State.UP)) {
+			if (!parentMaState.getStatus().equals(State.UP)) {
 				throw new LaunchException("Could not start"
 						+ sed.getSoftwareDescription().getId() + ". Start "
 						+ managedParent.getSoftwareDescription().getId()

@@ -28,7 +28,7 @@ public class LocalAgentRuntimeValidatorImpl extends RuntimeValidator {
 				.getSoftwareDescription().getParent().getId());
 		ResourceState parentMaState = parentMa.getState();
 		synchronized (parentMaState) {
-			if (!parentMaState.getState().equals(State.UP)) {
+			if (!parentMaState.getStatus().equals(State.UP)) {
 				throw new LaunchException("Could not start"
 						+ ma.getSoftwareDescription().getId() + ". Start "
 						+ parentMa.getSoftwareDescription().getId()

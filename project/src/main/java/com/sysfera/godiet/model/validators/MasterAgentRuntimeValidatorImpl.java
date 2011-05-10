@@ -36,7 +36,7 @@ public class MasterAgentRuntimeValidatorImpl extends RuntimeValidator {
 
 		ResourceState omniNameState = omniNamesManaged.getState();
 
-		if (!omniNameState.getState().equals(State.UP))
+		if (!omniNameState.getStatus().equals(State.UP))
 		{
 			throw new LaunchException("Could not start"
 					+ ma.getSoftwareDescription().getId() + ". Start "
