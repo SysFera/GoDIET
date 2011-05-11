@@ -151,7 +151,7 @@ public class RemoteAccessJschImpl implements RemoteAccess {
 		Integer result = execute(checkCommand, path);
 		if (result.intValue() == 0 || result.intValue() == 1) {
 			if (result.intValue() == 1) {
-				throw new RemoteAccessException("Process doesn't running");
+				throw new RemoteAccessException("Process isn't running");
                         }
 		} else {
 			throw new RemoteAccessException("Unable to check if " + "sds"

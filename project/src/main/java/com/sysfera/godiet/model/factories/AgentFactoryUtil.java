@@ -1,13 +1,16 @@
 package com.sysfera.godiet.model.factories;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.sysfera.godiet.exceptions.DietResourceCreationException;
 import com.sysfera.godiet.model.DietResourceManaged;
 import com.sysfera.godiet.model.SoftwareManager;
+import com.sysfera.godiet.model.generated.Env;
 import com.sysfera.godiet.model.generated.ObjectFactory;
 import com.sysfera.godiet.model.generated.OmniNames;
 import com.sysfera.godiet.model.generated.Options;
+import com.sysfera.godiet.model.generated.Var;
 import com.sysfera.godiet.model.generated.Options.Option;
 import com.sysfera.godiet.model.generated.Parameters;
 import com.sysfera.godiet.model.generated.Software;
@@ -63,8 +66,9 @@ public class AgentFactoryUtil {
 	/**
 	 * PATH={phyNode.getEnv(Path)}:$PATH
 	 * OMNIORB_CONFIG={phyNode.scratchdir}/{omninames.id}.cfg nohup
-	 * {AgentBinaryName} -c {phyNode.scratchDir}/{AgentName}.cfg [agentParameters]>
-	 * {phyNode.scratchdir}/{AgentName}.out 2> {phyNode.scratchdir}/{AgentName}.err &
+	 * {AgentBinaryName} -c {phyNode.scratchDir}/{AgentName}.cfg
+	 * [agentParameters]> {phyNode.scratchdir}/{AgentName}.out 2>
+	 * {phyNode.scratchdir}/{AgentName}.err &
 	 * 
 	 * @param softManaged
 	 * 
@@ -75,10 +79,18 @@ public class AgentFactoryUtil {
 		String scratchDir = softManaged.getPluggedOn().getDisk().getScratch()
 				.getDir();
 		Software agenteDescription = softManaged.getSoftwareDescription();
-		// Env PATH
-		String envPath = ResourceUtil.getEnvValue(softManaged.getPluggedOn(),
-				"PATH");
-		command += "PATH=" + envPath + ":$PATH ";
+		
+		//Add all environment node
+		Env env = softManaged.getPluggedOn().getEnv();
+		if(env != null) {
+			List<Var> vars = env.getVar();
+			if(vars != null)
+			{
+				for (Var var : vars) {
+					command+= " " + var.getName() +"=" +var.getValue()+" "; 
+				}
+			}
+		}
 		// find the OmniOrbConfig file on the remote host to set OmniOrb.cfg
 		String omniOrbconfig = "OMNIORB_CONFIG=" + scratchDir + "/"
 				+ omniName.getId() + ".cfg";
@@ -87,12 +99,17 @@ public class AgentFactoryUtil {
 		// nohup {binaryName}
 		command += "nohup " + agenteDescription.getConfig().getRemoteBinary()
 				+ " ";
+
+		// FIXME: Pour VISNNU: le lien vers fichier de config de DIET est cache
+		// dans leur fichier de conifg
+		// --config-file //TODO: add -c or --config-file when the command line
+		// will be specified (DIetV3)
+		if (!agenteDescription.getId().equals("UMS")
+				&& !agenteDescription.getId().equals("TMS")) {
+			command += scratchDir + "/" + agenteDescription.getId() + ".cfg ";
+		}
 		
-		// --config-file //TODO: add -c or --config-file when the command line will be specified (DIetV3)
-		command +=  scratchDir + "/" + agenteDescription.getId()
-				+ ".cfg ";
-		
-		//[agentParameters]
+		// [agentParameters]
 		List<Parameters> parameters = agenteDescription.getParameters();
 		for (Parameters parameter : parameters) {
 			command += parameter.getString() + " ";

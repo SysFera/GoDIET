@@ -19,12 +19,11 @@ public class DownStateImpl implements ResourceState {
 
 	private final StateController stateController;
 	private final RuntimeValidator validator;
-	
+
 	public DownStateImpl(StateController stateController) {
 		this.validator = stateController.validator;
 		this.stateController = stateController;
 	}
-
 
 	/**
 	 * Relaunch the software
@@ -33,9 +32,11 @@ public class DownStateImpl implements ResourceState {
 	public void start() throws LaunchException {
 		try {
 			validator.wantLaunch(stateController.softwareManaged);
-			stateController.softwareController.launch(this.stateController.softwareManaged);
+			stateController.softwareController
+					.launch(this.stateController.softwareManaged);
 			Thread.sleep(400);
-			stateController.softwareController.check(this.stateController.softwareManaged);
+			stateController.softwareController
+					.check(this.stateController.softwareManaged);
 			this.stateController.toUp();
 		} catch (LaunchException e) {
 			this.stateController.toError();
@@ -59,15 +60,16 @@ public class DownStateImpl implements ResourceState {
 
 	@Override
 	public void check() {
-		log.warn("Check a "+this+" state resource");
+		log.warn("Check a " + this + " state resource");
 	}
 
 	@Override
 	public void prepare() throws PrepareException {
-		throw new PrepareException("In down states");
+		log.warn("Try to prepare a DOWN state resource "
+				+ stateController.softwareManaged.getSoftwareDescription()
+						.getId());
+		
 	}
-
-
 
 	@Override
 	public State getStatus() {

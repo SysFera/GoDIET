@@ -1,5 +1,6 @@
 package com.sysfera.godiet.model.utils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.sysfera.godiet.model.generated.Resource;
@@ -22,5 +23,16 @@ public class ResourceUtil {
 			}
 		}
 		return null;
+	}
+	public static List<String> getAllEnvValue(final Resource node)
+	{
+		List<String> args = new ArrayList<String>();
+		if(node.getEnv() == null) return args;
+		List<Var> vars = node.getEnv().getVar();
+		for (Var var : vars) {
+			args.add(var.getValue());
+		}
+		
+		return args;
 	}
 }

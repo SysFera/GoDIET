@@ -1,15 +1,20 @@
 package com.sysfera.godiet.model.factories;
 
+import java.util.List;
+
 import com.sysfera.godiet.exceptions.DietResourceCreationException;
 import com.sysfera.godiet.model.DietServiceManaged;
 import com.sysfera.godiet.model.SoftwareController;
 import com.sysfera.godiet.model.SoftwareManager;
+import com.sysfera.godiet.model.generated.Env;
 import com.sysfera.godiet.model.generated.ObjectFactory;
 import com.sysfera.godiet.model.generated.OmniNames;
 import com.sysfera.godiet.model.generated.Options;
+import com.sysfera.godiet.model.generated.Var;
 import com.sysfera.godiet.model.generated.Options.Option;
 import com.sysfera.godiet.model.generated.Resource;
 import com.sysfera.godiet.model.generated.Software;
+import com.sysfera.godiet.model.utils.ResourceUtil;
 import com.sysfera.godiet.model.validators.RuntimeValidator;
 
 /**
@@ -61,6 +66,18 @@ public class OmniNamesFactory {
 		String command = "";
 		String scratchDir = softManaged.getPluggedOn().getDisk().getScratch()
 				.getDir();
+		//Add all environment node
+		Env env = softManaged.getPluggedOn().getEnv();
+		if(env != null) {
+			List<Var> vars = env.getVar();
+			if(vars != null)
+			{
+				for (Var var : vars) {
+					command+= " " + var.getName() +"=" +var.getValue()+" "; 
+				}
+			}
+		}
+		
 		Software softwareDescription = softManaged.getSoftwareDescription();
 		command += "OMNINAMES_LOGDIR=" + scratchDir + "/";
 		command += " ";
