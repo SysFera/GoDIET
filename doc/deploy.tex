@@ -178,32 +178,37 @@ General configuration description layout (some parts are omitted):
 <goDietConfiguration localNode="local">
 <localscratch dir="/tmp/scratch_godiet" />
   <user>
-	<ssh>
-		<key path="/home/.ssh/id_dsa"/>
-		<key path="/home/.ssh/admin_cluster2"/>
-	</ssh>
-   </user>
+     <ssh>
+       <key path="/home/.ssh/id_dsa"/>
+       <key path="/home/.ssh/admin_cluster2"/>
+     </ssh>
+  </user>
 </goDietConfiguration>
 \end{verbatim}
 
 \subsubsection{Infrastructure}
 \label{GODIETInfrastructureDescription}
 
-\godiet needs to have the description of infrastructure on which \diet will be running. Cette description doit être fait dans un fichier au format XML qui listera
-tous les éléments physiques 
+\godiet needs to have the description of infrastructure on which \diet will be running. Cette description doit être fait dans un fichier au format XML. Il listera
+tous les éléments physiques indispensables au fonctionnement et au déploiement de \diet.
 
- disk scratch
-space available at each site for storage of configuration files, and which
-machines share the same disk to avoid unecessary copies. 
+Les principaux éléments sont:
+\begin{itemize}
+\item \textbf{Domain}: définit un ensemble d'élements (node ou gateway) qui peuvent communiquer directement en utilisant le protocole d'échange de \diet (i.e CORBA). Dans le cas où des machines sont séparer par un dispositif de filtrage (mur en feu ou autres), il faut les décrire dans deux domaines différents.
+\item \textbf{Storage}: définit un espace de stockage distant.
+\item \textbf{Node}: définit une machine physique sur laquelle sera executé les logiciels, typiquement les \seds et les agents.
+\item \textbf{Gateway}: définit une passerelle réseau. Elle permette de créer les interconnections entre les différents domaines.
+\item \textbf{Link}: Définit un lien directionel par lequel deux passerelles pourront communiquer grâce au protocole SSH.
+\end{itemize}
 
-
+\vsep{1cm}
 General infrastructure description layout:
 \begin{verbatim}
 <infrastructure schema="Infrastructure.xsd">
  <domain id="idDomain1">
  ..
     <storage id="idStorage">..</storage>
-    <node id="idNode">..</node>
+    <node id="idNode" storageRefId="idStorage">..</node>
     <gateway id="idGateway1">..</gateway>
 
  </domain id="idDomain2">
@@ -215,14 +220,11 @@ General infrastructure description layout:
 </infrastructure>
 \end{verbatim}
 
-Un domaine définit un ensemble de machines qui peuvent communiquer directement (au sens IP). Dans le cas où des machines sont séparer par un dispositif
-de filtrage (mur en feu ou autres), il faut les décrire dans deux domaines différents et \godiet s'occupera d'instancier automatiquement les forwarders
-indispensables aux communications \diet.
 
 \begin{figure}[h]
   \centering
   \includegraphics[width=15cm]{fig/godiet-infrastructure}
-  \caption{Three domains infrastructure representation example (godiet-\label{fig:GODIETInfrastructure}}
+  \caption{Three domains infrastructure representation example\label{fig:GODIETInfrastructure}}
 \end{figure}
 
 \subsubsection{Diet platform}
@@ -237,11 +239,23 @@ expressed directly using the hierarchical organization of XML.
 
 Completion historique coloration syntaxique
 le fichier de configuration est chargé automatiquement depuis le répertoire home/.godiet. 
+
+
 \begin{figure}[h]
   \centering
   \includegraphics[width=12cm]{fig/1-startup}
   \caption{\godiet shell startup.\label{fig:GODIETShell}}
 \end{figure}
+
+\subsubsection{Quickstart}
+
+Créer votre fichier \verb+${HOME}/.godiet/configuration.xml+
+Charger votre description d'infrastructure\ref{GODIETInfrastructureDescription}
+Charger votre description de plate-forme \diet\ref{GODIETPlatformDesc}
+Démarrer et arrêter vos composants\ref{GODIETCommandStartStop}
+
+That's all folks!
+
 
 \subsubsection{Help command}
 
@@ -258,6 +272,19 @@ LoadInfrastructure permet de charger un fichier de description d'infrastructure
 
 calcule et création automatique des Forwarders
 \subsubsection{Start \& Stop commands}
+\label{GODIETCommandStartStop}
+
+\verb+start+ command 
+Start command options:
+\begin{itemize}
+\item \textbf{software} SoftwareName: Start one software given his name.
+\item \textbf{services}: Start all services
+\item \textbf{agents}:  Start all agents
+\item \textbf{seds}: Start all seds
+\item \textbf{all}: Start all softwares register
+\end{itemize}
+\verb+stop+ command takes the same parameters.
+
 
 \subsubsection{Status command}
 Status command options:
@@ -277,6 +304,14 @@ De gauche à droite les informations affichés sont:
 \item Le message d'information dans le cas où la ressource est dans l'état erreur.
 \end{itemize} 
 
+Les différents états possibles sont
+\begin{itemize}
+\item \textbf{Incubate}: The component is correctly loaded in \godiet.
+\item \textbf{Ready}: The configurations file are created in the local scratch directory and component is ready to start.
+\item \textbf{Up}: The component is Up. His state is periodically checked.
+\item \textbf{Down}: The componenent is Down. Typically if \godiet user call stop on this component.
+\item \textbf{Error}:  Could appears if there is an error in the description, if the  
+\end{itemize}
 
 \begin{figure}[h]
   \centering
@@ -291,7 +326,7 @@ Draw command options:
   \item \textbf{infrastructure}: Draw the infrastructure
   \item \textbf{platform}: Draw the platform infrastructure
 \end{itemize}
-Génère un fichier au format Dot. La figure\ref{fig:GODIETInfrastructure} est le resultat de  généré avec cette commande 
+Génère un fichier au format Dot. La figure\ref{fig:GODIETInfrastructure} est le résultat de son éxecution sur l'infrastructure décrite dans le fichier \verb+godiet-infrastructure.xml+
 
 % An example input XML file is shown in Figure~\ref{fig:godietXml}; see
 %% \cite{CDa05} for a full explanation of all entries in the XML. You can also
