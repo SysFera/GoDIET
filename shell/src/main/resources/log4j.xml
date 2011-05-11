@@ -18,6 +18,15 @@
 
 
 	</appender>
+	<appender name="fileall" class="org.apache.log4j.FileAppender">
+		<param name="File" value="godiet-all.log" />
+
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%-4r [%t] %-5p %c %x - %m%n" />
+		</layout>
+
+
+	</appender>
 	<category name="com.sysfera.godiet.remote.RemoteConfigurationHelper">
 
 		<priority value="INFO" />
