@@ -11,14 +11,15 @@
 <!-- $Id: commands.xml 12257 2008-05-04 08:51:41Z user57 $ -->
 
 <commands>
+	
+ 	<command>com.sysfera.godiet.shell.command.ExitCommand</command>
+	 <command>com.sysfera.godiet.shell.command.LoadInfrastructureCommand</command>
 	<command>com.sysfera.godiet.shell.command.HelpCommand</command>
-	<command>com.sysfera.godiet.shell.command.ExitCommand</command>
-	<command>com.sysfera.godiet.shell.command.LoadInfrastructureCommand</command>
 	<command>com.sysfera.godiet.shell.command.LoadDietCommand</command>
 	<command>com.sysfera.godiet.shell.command.LaunchCommand</command>
 	<command>com.sysfera.godiet.shell.command.StopCommand</command>
 	<command>com.sysfera.godiet.shell.command.StatusCommand</command>
 	<command>com.sysfera.godiet.shell.command.SSHCommand</command>
-	<command>com.sysfera.godiet.shell.command.DrawCommand</command>
+	<!--  <command>com.sysfera.godiet.shell.command.DrawCommand</command>-->
 </commands>
 
