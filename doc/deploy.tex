@@ -123,9 +123,7 @@ will save you time!
 %%Description
 \godiet is an cross-platform tool that helps you automate ad-hoc deployment and
 management procedures for \diet infrastructure. It manages
-configuration file creation, staging of files, launch of elements, monitoring
-and reporting.  \godiet is extremely useful for large deployments on a complex
-physical infrastructure. The mains features are:
+configuration file creation, staging of files, launch of software components, monitoring and reporting.  \godiet is extremely useful for large deployments on a complex physical infrastructure. The mains features are:
 \begin{itemize}
   \item complete command line interface;
   \item distributed command execution via SSH;
@@ -150,28 +148,43 @@ The following operating systems are known to support GoDiet:
 
 You need to have the Sun Java 6 or OpenJDK6 installed.
 Download \godiet on the project website\footnote{http://graal.ens-lyon.fr/DIET/godiet.html}.
-Extract the archive just and launch run.bat or run.sh script.
-You need to load your physical platform on which will \godiet will running. 
+Check that run.sh script works. You must have something on the figure\ref{fig:GODIETShell}
+
 % This platform must be describe in a XML file based on \textit{Platform.xsd} grammar. You can find an simple file in the example directory 
+
+\subsection{Quickstart}
+The four steps for hurry people
+\begin{itemize}
+\item create your \godiet configuration file in \verb+${HOME}/.godiet/configuration.xml+\ref{GODIETConfiguration}. It contains remote connection informations;
+\item create your infrastructure description file\ref{GODIETInfrastructureDescription}. It describes your computes nodes, gateways and storages;
+\item create your \diet platform description file\ref{GODIETPlatformDesc}. It describes all the \diet elements (agents and seds) that you want to deploy and manage;
+\item Run \godiet shell\ref{GODIET}.
+\end{itemize}
+
+That's all folks!
 
 \subsection{\godiet setup}
 
-Avant de pouvoir utiliser \godiet, vous devez créer un fichier de configuration, un fichier d'infrastructure, et un fichier de déploiement de votre plateforme Diet.
-Ces fichiers sont au format XML et doivent repecter une grammaire, respectivemment Configuration.xsd, Infrastructure.xsd et Diet.xsd.
-Des examples de fichiers se trouvent dans le répertoire examples du projet. 
+Before using \godiet, you need to create three files: one to describe \godiet configuration, one which describe your infrastructure and one which contains your \diet description.
+This files uses an XML-format that each conforms repectively to the  Configuration.xsd, Infrastructure.xsd and Diet.xsd grammar (provide with \godiet). 
+Sample files are provided in the \verb+examples+ directory. 
 
 \subsubsection{Configuration}
+\label{GODIETConfiguration}
 
-%Important fields
-Dans ce fichier doit être obligatoirement setter depuis quel noeud de l'infrastructure est lancé \godiet. En effet, il est \textbf{obligatoire} de lancer \godiet depuis une ressource
-décrite dans le fichier d'infrastructure\ref{GODIETInfrastrctureDescription}
-\ref{GODIETSSHCommand}
+This file aggregate informations about the local node from where \godiet is launch. It contains information about user authentification too.
+\godiet looks in the \verb+${HOME}/.godiet/configuration.xml+ directory by default.
 
+\vspace{1cm}
+The mains elements are:
+\begin{itemize}
+\item \textbf{localNode}: the node's name from godiet host. This name must be present the infrastructure description; 
+\item \textbf{localscratch}: The working directory where \godiet store his own temporary files;
+\item \textbf{keys}: The paths of yours private ssh keys  which are loaded at \godiet startup. You can give the public key path too. \godiet try to load a file with the same name than the private key ended by \verb+.pub+.
+ See \verb+ssh initkeys+ command\ref{GODIETSSHCommand} to initialize passwords if your keys are encrypted (i.e need a passphrase).
+\end{itemize}
 
-%Load
-Par défaut \godiet cherche le fichier dans le répertoire \verb+${HOME}/.godiet/configuration.xml+. Si ce fichier est absent il charge un fichier par défaut qui ne spécifie pas de clef ssh et dont l'hôte source à pour nom \verb+local+ (et votre description d'infrastructure devra déclarer une resource du nom \verb+local+).
-
-%Layout
+\vspace{1cm}
 General configuration description layout (some parts are omitted):
 \begin{verbatim}
 <configuration schema="Configuration.xsd">
@@ -189,20 +202,22 @@ General configuration description layout (some parts are omitted):
 \subsubsection{Infrastructure}
 \label{GODIETInfrastructureDescription}
 
-\godiet needs to have the description of infrastructure on which \diet will be running. Cette description doit être fait dans un fichier au format XML. Il listera
-tous les éléments physiques indispensables au fonctionnement et au déploiement de \diet.
+\godiet needs to have the description of infrastructure  \diet will be running. 
 
-Les principaux éléments sont:
+\vspace{1cm}
+You can find full options list in \verb+Infrastructure.xsd+ grammar file. You can look in the \verb+examples+ directory too.
+The most important fields are:
 \begin{itemize}
-\item \textbf{Domain}: définit un ensemble d'élements (node ou gateway) qui peuvent communiquer directement en utilisant le protocole d'échange de \diet (i.e CORBA). Dans le cas où des machines sont séparer par un dispositif de filtrage (mur en feu ou autres), il faut les décrire dans deux domaines différents.
-\item \textbf{Storage}: définit un espace de stockage distant.
-\item \textbf{Node}: définit une machine physique sur laquelle sera executé les logiciels, typiquement les \seds et les agents.
-\item \textbf{Gateway}: définit une passerelle réseau. Elle permette de créer les interconnections entre les différents domaines.
+\item \textbf{Domain}: aggregate a set of infrastructure elements (nodes, gateways, storages) which are be able to communicate with \diet's exchange protocol (i.e CORBA). Typically elements separated with firewall and/or a router  must be describe in separate domains.
+\item \textbf{Storage}: Describe a remote disk access.
+\item \textbf{Node}: Decribe a computing node where agents or seds will be running
+\item \textbf{Gateway}: Describe an access point for a domain. The link or  Elle permette de créer les interconnections entre les différents domaines.
 \item \textbf{Link}: Définit un lien directionel par lequel deux passerelles pourront communiquer grâce au protocole SSH.
 \end{itemize}
 
-\vsep{1cm}
-General infrastructure description layout:
+\vspace{1cm}
+
+General infrastructure description layout (details are omitted):
 \begin{verbatim}
 <infrastructure schema="Infrastructure.xsd">
  <domain id="idDomain1">
@@ -229,17 +244,14 @@ General infrastructure description layout:
 
 \subsubsection{Diet platform}
 \label{GODIETPlatformDesc}
-%%Platform Diet
-The user of \godiet could describes the desired
-deployment in an XML file including all needed external services (\eg omniNames
-and LogService); the desired hierarchical organization of agents and servers is
-expressed directly using the hierarchical organization of XML. 
+
+The user of \godiet could describes the desired deployment in an XML file including all needed external services (\eg omniNames and LogService); the desired hierarchical organization of agents and servers is expressed directly using the hierarchical organization of XML. 
+
 
 \subsection{Godiet shell}
+\label{GODIETShell}
 
-Completion historique coloration syntaxique
-le fichier de configuration est chargé automatiquement depuis le répertoire home/.godiet. 
-
+\godiet shell is the interface to manage your \diet platform. It includes facilities features like syntax highlighting, command completions and history commands. After executing run script you will have a prompt like on the figure \ref{fig:GODIETShell}
 
 \begin{figure}[h]
   \centering
@@ -247,17 +259,9 @@ le fichier de configuration est chargé automatiquement depuis le répertoire home
   \caption{\godiet shell startup.\label{fig:GODIETShell}}
 \end{figure}
 
-\subsubsection{Quickstart}
-
-Créer votre fichier \verb+${HOME}/.godiet/configuration.xml+
-Charger votre description d'infrastructure\ref{GODIETInfrastructureDescription}
-Charger votre description de plate-forme \diet\ref{GODIETPlatformDesc}
-Démarrer et arrêter vos composants\ref{GODIETCommandStartStop}
-
-That's all folks!
-
 
 \subsubsection{Help command}
+
 
 \begin{figure}[h]
   \centering
@@ -267,23 +271,40 @@ That's all folks!
 
 \subsubsection{SSH command}
 \label{GODIETSSHCommand}
+\begin{itemize}
+\item \textbf{initpasswords}: Allow you to intialize ssh key's passphrase loaded from configuration file;
+\item \textbf{addkey}: Register a new key;
+\item \textbf{modifykey n}: Modify a key that already registred;
+\item \textbf{status}: Display the keys status. Could be PASSWORDNOTSET,PRIVATEKEYERROR,PUBKEYERROR or LOADED. 
+
+\end{itemize}
+
 \subsubsection{Load commands}
-LoadInfrastructure permet de charger un fichier de description d'infrastructure
+
+\verb+loadInfrastructure+ command to load an infrastructure description\ref{GODIETInfrastructureDescription}
+\verb+loadDiet+ command se to load an \ref{GODIETInfrastructureDescription}
+
 
 calcule et création automatique des Forwarders
+
+
 \subsubsection{Start \& Stop commands}
 \label{GODIETCommandStartStop}
+
 
 \verb+start+ command 
 Start command options:
 \begin{itemize}
-\item \textbf{software} SoftwareName: Start one software given his name.
+\item \textbf{software} name: Start one software given his name.
 \item \textbf{services}: Start all services
 \item \textbf{agents}:  Start all agents
 \item \textbf{seds}: Start all seds
-\item \textbf{all}: Start all softwares register
+\item \textbf{all}: Start all softwares components
 \end{itemize}
-\verb+stop+ command takes the same parameters.
+
+\vspace{0.5cm}
+
+\verb+stop+ command have same parameters.
 
 
 \subsubsection{Status command}
@@ -304,6 +325,7 @@ De gauche à droite les informations affichés sont:
 \item Le message d'information dans le cas où la ressource est dans l'état erreur.
 \end{itemize} 
 
+\vspace{1cm}
 Les différents états possibles sont
 \begin{itemize}
 \item \textbf{Incubate}: The component is correctly loaded in \godiet.
@@ -320,14 +342,17 @@ Les différents états possibles sont
 \end{figure}
 
 
-\subsubsection{Draw command}
-Draw command options:
-\begin{itemize}
-  \item \textbf{infrastructure}: Draw the infrastructure
-  \item \textbf{platform}: Draw the platform infrastructure
-\end{itemize}
-Génère un fichier au format Dot. La figure\ref{fig:GODIETInfrastructure} est le résultat de son éxecution sur l'infrastructure décrite dans le fichier \verb+godiet-infrastructure.xml+
 
+%% \subsubsection{Draw command}
+%% Draw command options:
+%% \begin{itemize}
+%%   \item \textbf{infrastructure}: Draw the infrastructure
+%%   \item \textbf{platform}: Draw the platform infrastructure
+%% \end{itemize}
+%% Génère un fichier au format Dot. La figure\ref{fig:GODIETInfrastructure} est le résultat de son éxecution sur l'infrastructure décrite dans le fichier \verb+godiet-infrastructure.xml+
+
+\subsubsection{Debugging \& Gestion des erreurs}
+parler des fichiers de log et des messages d'erreurs.
 % An example input XML file is shown in Figure~\ref{fig:godietXml}; see
 %% \cite{CDa05} for a full explanation of all entries in the XML. You can also
 %% have a look at the fully commented XML example file provided in the \godiet
