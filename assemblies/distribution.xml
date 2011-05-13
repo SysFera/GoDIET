@@ -60,7 +60,21 @@
 			</includes>
 			<outputDirectory>/examples</outputDirectory>
 		</fileSet>
-
+		<!-- Embedding VISHNU samples -->
+		<fileSet>
+			<directory>${project.basedir}/../project/src/test/resources/diet</directory>
+			<includes>
+				<include>localhost-vishnu-platform.xml</include>
+			</includes>
+			<outputDirectory>/vishnu</outputDirectory>
+		</fileSet>
+		<fileSet>
+			<directory>${project.basedir}/../project/src/test/resources/platform</directory>
+			<includes>
+				<include>localhost-infrastructure.xml</include>
+			</includes>
+			<outputDirectory>/vishnu</outputDirectory>
+		</fileSet>
 	</fileSets>
 
 </assembly>

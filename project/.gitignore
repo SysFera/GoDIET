@@ -4,6 +4,7 @@ GoDIET.log.out
 
 
 
+topo-db/
 neo4j-shortest-path/
 .settings
 .classpath

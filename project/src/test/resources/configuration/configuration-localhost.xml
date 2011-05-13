@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<godiet:configuration xmlns:godiet="http://www.sysfera.com"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.sysfera.com ../Configuration.xsd">
+	<goDietConfiguration debug="1" saveStdOut="true"
+		saveStdErr="true" log="true" localNode="local">
+		<localscratch dir="/tmp/sc_godiet" />
+		<user>
+			<ssh>
+				<key path="/home/phi/.ssh/id" />
+			</ssh>
+		</user>
+	</goDietConfiguration>
+</godiet:configuration>

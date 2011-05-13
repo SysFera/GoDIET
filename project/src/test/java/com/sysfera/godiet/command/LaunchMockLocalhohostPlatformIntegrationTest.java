@@ -39,7 +39,7 @@ import com.sysfera.godiet.remote.RemoteAccessMock;
 import com.sysfera.godiet.remote.RemoteConfigurationHelper;
 import com.sysfera.godiet.utils.xml.XmlScannerJaxbImpl;
 
-public class LaunchMockPlatformIntegrationTest {
+public class LaunchMockLocalhohostPlatformIntegrationTest {
 	private Logger log = LoggerFactory.getLogger(getClass());
 	private ResourcesManager rm;
 	RemoteAccess remoteAccess = new RemoteAccessMock();
@@ -51,7 +51,7 @@ public class LaunchMockPlatformIntegrationTest {
 		try {
 			// Loading configuration
 			{
-				String configurationFile = "configuration/configuration-localhost.xml";
+				String configurationFile = "configuration/configuration.xml";
 
 				InputStream inputStream = getClass().getClassLoader()
 						.getResourceAsStream(configurationFile);
@@ -60,14 +60,14 @@ public class LaunchMockPlatformIntegrationTest {
 		
 			}
 			{
-				String platformTestCase = "platform/localhost-infrastructure.xml";
+				String platformTestCase = "platform/testbed-platform.xml";
 				InputStream inputStreamPlatform = getClass().getClassLoader()
 						.getResourceAsStream(platformTestCase);
 				XMLLoadingHelper.initPlatform(rm, inputStreamPlatform);
 			}
 			{
 				// Init RM
-				String testCaseFile = "diet/localhost-diet.xml";
+				String testCaseFile = "diet/testbed-diet.xml";
 				InputStream inputStream = getClass().getClassLoader()
 						.getResourceAsStream(testCaseFile);
 				XmlScannerJaxbImpl scanner = new XmlScannerJaxbImpl();

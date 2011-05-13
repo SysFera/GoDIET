@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<godiet:platform xmlns:godiet="http://www.sysfera.com"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.sysfera.com ../Platform.xsd">
+	<infrastructure>
+		<domain label="DomainLocalhost">
+			<storage label="localhd">
+				<scratch dir="/tmp/scratch_runtime" />
+				<scp login="daouda" server="127.0.0.1"/>
+			</storage>
+			<node disk="localhd" id="local">
+				<ssh login="daouda" server="127.0.0.1" />
+			</node>
+
+		</domain>
+
+	</infrastructure>
+</godiet:platform>

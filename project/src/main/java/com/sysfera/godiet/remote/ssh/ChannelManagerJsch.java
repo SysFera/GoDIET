@@ -71,10 +71,11 @@ public class ChannelManagerJsch {
 		if (session == null) {
 
 			LinkedHashSet<? extends Resource> hops = path.getPath();
-			if (hops.size() < 2) {
-				throw new RemoteAccessException(
-						"Path length must be > 2 (source + destination)");
-			}
+			//FIXME : handle localhost
+//			if (hops.size() < 2) {
+//				throw new RemoteAccessException(
+//						"Path length must be > 2 (source + destination)");
+//			}
 
 			// Create the session with the last Node
 			Resource last = null;
