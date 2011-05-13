@@ -10,7 +10,7 @@
 	</dietServices>
 
 	<dietInfrastructure>
-		<masterAgent id="MA1">
+		<masterAgent id="MA0">
 			<config server="local" remoteBinary="dietAgent" />
 
 			<sed id="UMS">
