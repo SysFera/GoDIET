@@ -75,30 +75,68 @@
 		<name>Sysfera</name>
 		<url>http://www.sysfera.com</url>
 	</organization>
+	<scm>
+		<developerConnection>scm:git:file:/home/GIT/SysFera/repositories/GoDIET.git</developerConnection>
+	</scm>
 	<build>
-<pluginManagement>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>2.3.2</version>
-				<configuration>
-					<source>1.6</source>
-					<target>1.6</target>
-				</configuration>
-			</plugin>
-			<plugin>
-				<artifactId>maven-assembly-plugin</artifactId>
-				<version>2.2.1</version>
-				<configuration>
-					<descriptors>
-						<descriptor>assemblies/distribution.xml</descriptor>
-					</descriptors>
-				</configuration>
-			</plugin>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.codehaus.mojo</groupId>
+					<artifactId>maven-buildnumber-plugin</artifactId>
+					<version>0.9.6</version>
+					<executions>
+						<execution>
+							<phase>validate</phase>
+							<goals>
+								<goal>create</goal>
+							</goals>
+						</execution>
+					</executions>
+					<configuration>
+						<doCheck>true</doCheck>
+						<doUpdate>true</doUpdate>
+					</configuration>
+				</plugin>
 
-		</plugins>
-</pluginManagement>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-jar-plugin</artifactId>
+					<version>2.3.1</version>
+					<configuration>
+						<archive>
+							<manifest>
+								<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+							</manifest>
+							<manifestEntries>
+								<Implementation-Build>${buildNumber}</Implementation-Build>
+							</manifestEntries>
+						</archive>
+					</configuration>
+				</plugin>
+
+
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<version>2.3.2</version>
+					<configuration>
+						<source>1.6</source>
+						<target>1.6</target>
+					</configuration>
+				</plugin>
+				<plugin>
+					<artifactId>maven-assembly-plugin</artifactId>
+					<version>2.2.1</version>
+					<configuration>
+						<descriptors>
+							<descriptor>assemblies/distribution.xml</descriptor>
+						</descriptors>
+					</configuration>
+				</plugin>
+
+			</plugins>
+		</pluginManagement>
 
 	</build>
 
