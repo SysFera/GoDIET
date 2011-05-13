@@ -3,16 +3,14 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.sysfera.com ../Platform.xsd">
 	<infrastructure>
-		<domain label="DomainSysfera">
-			<storage label="daoudaDisk">
+		<domain label="DomainLocal">
+			<storage label="localHD">
 				<scratch dir="/tmp/godiet_scratch/" />
-				<scp server="192.168.1.25" login="traore" />
+				<scp server="127.0.0.1" login="traore" />
 			</storage>
-			<node id="myLaptop" disk="daoudaDisk" >
-				<ssh login="phi" server="192.168.1.15" />
-			</node>
-			<node id="daoudaMachina" disk="daoudaDisk" >
-				<ssh login="traore" server="192.168.1.25" />
+		
+			<node id="local" disk="localHD" >
+				<ssh login="traore" server="127.0.0.1" />
 				<env>
 					<var name="PATH"
 						value="/home/traore/OMNIORB-INSTALL/install/bin/:/usr/local/bin:/home/traore/VishnuProject/vishnu/TMS/build/bin:$PATH" />
