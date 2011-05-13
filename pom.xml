@@ -133,7 +133,6 @@
 				<version>1.0</version>
 			</plugin>
 		</plugins>
-
 	</build>
 
 	<repositories>
