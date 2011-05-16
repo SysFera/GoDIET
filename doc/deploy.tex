@@ -156,7 +156,7 @@ The four steps for people in a hurry:
 \begin{itemize}
 \item create your \godiet configuration file in \verb+${HOME}/.godiet/configuration.xml+~\ref{GODIETConfiguration}. It contains information for remote connection;
 \item create your infrastructure description file~\ref{GODIETInfrastructureDescription}. It describes your compute nodes, gateways and storage nodes;
-\item create your \diet platform description file~\ref{GODIETPlatformDesc}. It describes all the \diet elements (agents and SeDs) that you want to deploy and manage;
+\item create your \diet platform description file~\ref{GODIETPlatform}. It describes all the \diet elements (agents and SeDs) that you want to deploy and manage;
 \item run the \godiet shell~\ref{GODIET}.
 \end{itemize}
 And that's it!
@@ -203,6 +203,7 @@ General layout of the configuration description (some parts are omitted):
 
 \vspace{1cm}
 You can find the full list of options in the \verb+Infrastructure.xsd+ grammar file. You can also look in the \verb+examples+ directory.
+
 The most important fields are:
 \begin{itemize}
 \item \textbf{Domain}: aggregates a set of infrastructure elements (nodes, gateways, storage) which are able to communicate with \diet's exchange protocol (i.e., CORBA). Typically, elements separated by a firewall and/or a router must be described in separate domains;
@@ -240,26 +241,35 @@ General layout of the infrastructure description (details are omitted):
 \end{figure}
 
 \subsubsection{DIET-platform.xml}
-\label{GODIETPlatformDesc}
+\label{GODIETPlatform}
 
 A \godiet user can describe the desired deployment in an XML file including all the external services needed (\eg omniNames and LogService). The desired hierarchical organization of agents and servers is expressed directly using the hierarchical organization of XML. 
 
 
 The most important fields are:
 \begin{itemize}
-\item \textbf{dietServices}: List all services 
-\item \textbf{dietArchitecture}:
+\item \textbf{dietServices}: lists your \diet services, such as omniNames and LogCentral;
+\item \textbf{dietArchitecture}: lists your \diet hierarchy, with all your agents and SeDs. 
 \end{itemize}
 
 \vspace{1cm}
 
-General layout of the infrastructure description (details are omitted):
+General layout of the \diet platform description (details are omitted):
 \begin{verbatim}
-<dietPlatform>
+<dietPlatform schema="Diet.xsd">
   <dietServices>
-
+    <omniNames id="omniNames1" server="refIdNode"/>
   </dietServices>
   <dietArchitecture>
+     <ma id="ma1" server="refIdNode1">
+       <la id="la1" server="refIdNode1">
+          ..
+          <sed id="sed1" server="refIdNode2"/>
+          ..
+       </la>
+       ...
+     </ma>
+     <ma id="ma2" server="refIdNode3">..</ma>
   </dietArchitecture>
 <dietPlatform>
 \end{verbatim}
@@ -268,16 +278,22 @@ General layout of the infrastructure description (details are omitted):
 \subsection{Godiet shell}
 \label{GODIETShell}
 
-\godiet shell is the interface to manage your \diet platform. It includes facilities features like syntax highlighting, command completions and history commands. After executing run script you will have a prompt like on the figure~\ref{fig:GODIETShell}
+\godiet shell is the interface to manage and monitor your \diet platform. It includes features such as syntax highlighting, command completion and command history.
+To use it, simply execute the script run.sh. You will obtain a prompt like in figure~\ref{fig:GODIETShell}
 
 \begin{figure}[h]
   \centering
   \includegraphics[width=12cm]{fig/1-startup}
-  \caption{\godiet shell startup.\label{fig:GODIETShell}}
-\end{figure}
+  \caption{\godiet shell prompt.\label{fig:GODIETShell}}
+\end{figure} 
 
-\subsubsection{Help command}
+\subsubsection{The help command}
 
+Displays the help message. By default, lists all the commands and short information about them. It gives contextual help when followed by a command name.
+
+\begin{itemize}
+  \item \textbf{command}: gives help on the command.
+\end{itemize}
 
 \begin{figure}[h]
   \centering
@@ -285,206 +301,81 @@ General layout of the infrastructure description (details are omitted):
   \caption{The help command.\label{fig:GODIETHelp}}
 \end{figure}
 
-\subsubsection{SSH command}
+\subsubsection{The ssh command}
 \label{GODIETSSHCommand}
-\begin{itemize}
-\item \textbf{initpasswords}: Allow you to intialize ssh key's passphrase loaded from configuration file;
-\item \textbf{addkey}: Register a new key;
-\item \textbf{modifykey n}: Modify a key that already registred;
-\item \textbf{status}: Display the keys status. Could be PASSWORDNOTSET,PRIVATEKEYERROR,PUBKEYERROR or LOADED. 
 
+The \verb+ssh+ command takes the following arguments:
+
+\begin{itemize}
+\item \textbf{initpasswords}: to intialize the SSH key's passphrase loaded from the configuration file;
+\item \textbf{addkey}: to register a new key;
+\item \textbf{modifykey n}: to modify a key that has already been registred;
+\item \textbf{status}: to display the key's status. Could be PASSWORDNOTSET, PRIVATEKEYERROR, PUBKEYERROR or LOADED.
 \end{itemize}
 
-\subsubsection{Load commands}
+\subsubsection{The loadInfrastructure command}
+Loads an infrastructure description file~\ref{GODIETInfrastructureDescription}.
 
-\verb+loadInfrastructure+ command to load an infrastructure description~\ref{GODIETInfrastructureDescription}
-\verb+loadDiet+ command se to load an \ref{GODIETInfrastructureDescription}
+\begin{itemize}
+  \item \textbf{filename}: loads an infrastructure from the specified XML file.
+\end{itemize}
 
+\subsubsection{The loadDiet command}
+Loads the \diet platform description~\ref{GODIETPlatform}. When the loading is complete, \godiet automatically computes and creates all the \diet forwarders needed. These \diet forwarders are mandatory when your platform is deployed on several domains. For more details, please refer to the \diet documentation.
 
-calcule et création automatique des Forwarders
+\begin{itemize}
+  \item \textbf{filename}: loads a \diet platform from the specified XML file.
+\end{itemize}
 
-
-\subsubsection{Start \& Stop commands}
+\subsubsection{The start \& stop commands}
 \label{GODIETCommandStartStop}
 
-
-\verb+start+ command 
-Start command options:
+The \verb+start+ and \verb+stop+ commands both take the same arguments:
 \begin{itemize}
-\item \textbf{software} name: Start one software given his name.
-\item \textbf{services}: Start all services
-\item \textbf{agents}:  Start all agents
-\item \textbf{seds}: Start all seds
-\item \textbf{all}: Start all softwares components
+ \item \textbf{software} \emph{name}: starts/stops software \emph{name}.
+ \item \textbf{services}: starts/stops all services;
+ \item \textbf{agents}: starts/stops all agents;
+ \item \textbf{seds}: starts/stops all seds;
+ \item \textbf{all}: starts/stops all software components;
 \end{itemize}
 
-\vspace{0.5cm}
+\subsubsection{The status command}
 
-\verb+stop+ command have same parameters.
-
-
-\subsubsection{Status command}
-Status command options:
+The command displays the status of the \diet platform's software components. It takes the following arguments:
 \begin{itemize}
-\item \textbf{ma}: Display the masters agents status
-\item \textbf{la}:  Display the locals agents status
-\item \textbf{seds}: Display the servers daemons status
-\item \textbf{all}: Display all diet softwares status
+\item \textbf{ma}: displays the status of the master agents;
+\item \textbf{la}: displays the status of the local agents;
+\item \textbf{seds}: displays the status of the server daemons;
+\item \textbf{all}: displays the status of all the managed software components.
 \end{itemize}
+\vspace{1cm}
 
-La commande status affiche sous forme de tableau l'état des éléments gérés pas  \godiet. Un exemple d'execution est affiché sur la figure \ref{fig:GODIETStatus}.
-De gauche à droite les informations affichés sont: 
+%TODO bouger ca dans une section dediee au modele
+The \verb+status+ command displays the software components managed by \godiet as a table. Figure~\ref{fig:GODIETStatus} shows an output exemple of this command's execution.
+The information is:
 \begin{itemize}
-\item Le nom du logiciel comme décrit dans le fichier de description d'infrastructure.
-\item Son état et depuis  quand il s'y trouve.
-\item La machine sur laquelle le logiciel va être executé ou est actuellement executé (selon son état).
-\item Le message d'information dans le cas où la ressource est dans l'état erreur.
+\item \textbf{Label}: the name of the component, as described in the \diet platform description;
+\item \textbf{Status}: the status of the component;
+\item \textbf{Since}: the date since when the component has been in this status;
+\item \textbf{Plugged}: the infrastructure resource it is or will be running on (depending on its state);
+\item \textbf{Cause}: an information message, in case of error.
 \end{itemize} 
 
 \vspace{1cm}
-Les différents états possibles sont
+The possible states of a component are:
 \begin{itemize}
-\item \textbf{Incubate}: The component is correctly loaded in \godiet.
-\item \textbf{Ready}: The configurations file are created in the local scratch directory and component is ready to start.
-\item \textbf{Up}: The component is Up. His state is periodically checked.
-\item \textbf{Down}: The componenent is Down. Typically if \godiet user call stop on this component.
-\item \textbf{Error}:  Could appears if there is an error in the description, if the  
+ \item \textbf{Incubate}: the component is correctly loaded in \godiet;
+ \item \textbf{Ready}: the configuration files are created in the local scratch directory and the component is ready to start;
+ \item \textbf{Up}: the component is running. Its state is periodically checked;
+ \item \textbf{Down}: the componenent is down. Typically, if the \godiet user has used the \verb+stop+ command on this component;
+ \item \textbf{Error}: appears when the component is not running (unable to launch or crashed) or if it is unreacheable. The cause is displayed in the Cause row of the information table.  
 \end{itemize}
 
 \begin{figure}[h]
   \centering
   \includegraphics[width=12cm]{fig/6-StatusWithErrUpIncubate}
-  \caption{The 'status all' command.\label{fig:GODIETStatus}}
+  \caption{The status command.\label{fig:GODIETStatus}}
 \end{figure}
 
-
-
-%% \subsubsection{Draw command}
-%% Draw command options:
-%% \begin{itemize}
-%%   \item \textbf{infrastructure}: Draw the infrastructure
-%%   \item \textbf{platform}: Draw the platform infrastructure
-%% \end{itemize}
-%% Génère un fichier au format Dot. La figure\ref{fig:GODIETInfrastructure} est le résultat de son éxecution sur l'infrastructure décrite dans le fichier \verb+godiet-infrastructure.xml+
-
-\subsubsection{Debugging \& Gestion des erreurs}
-parler des fichiers de log et des messages d'erreurs.
-% An example input XML file is shown in Figure~\ref{fig:godietXml}; see
-%% \cite{CDa05} for a full explanation of all entries in the XML. You can also
-%% have a look at the fully commented XML example file provided in the \godiet
-%% distribution under examples/commented.xml, each option is explained. To launch
-%% \godiet for the simple example XML file provided in the \godiet distribution
-%% under examples/example1.xml, run:
-
-%% \begin{verbatim}
-%% ~ > java -jar GoDIET-x.x.x.jar example1.xml
-%% XmlScanner constructor
-%% Parsing xml file: example1.xml
-%% GoDIET>
-%% \end{verbatim}
-
-%% \godiet reads the XML file and then enters an interactive console mode. In this
-%% mode you have a number of options:
-
-%% %% \begin{verbatim}
-%% %% GoDIET> help
-%% %% The following commands are available:
-%% %%    launch:       launch entire DIET platform
-%% %%    launch_check: launch entire DIET platform then check its status
-%% %%    relaunch:     kill the current platform and launch entire DIET platform once again
-%% %%    stop:         kill entire DIET platform using kill pid
-%% %%    status:       print run status of each DIET component
-%% %%    history:      print history of commands executed
-%% %%    help:         print this message
-%% %%    check:        check the platform status
-%% %%    stop_check:   stop the platform status then check its status before exit
-%% %%    exit:         exit GoDIET, do not change running platform.
-%% %% \end{verbatim}
-
-%% We will now launch this example; note that this example is intentionally very
-%% simple with all components running locally to provide initial familiarity with
-%% the \godiet run procedure. Deployment with \godiet is especially useful  when
-%% launching components on multiple remote machines.
-
-%% \begin{verbatim}
-%% GoDIET> launch
-%% * Launching DIET platform at Wed Jul 13 09:57:03 CEST 2005
-
-%% Local scratch directory ready:
-%%         /home/hdail/tmp/scratch_godiet
-
-%% ** Launching element OmniNames on localHost
-%% Writing config file omniORB4.cfg
-%% Staging file omniORB4.cfg to localDisk
-%% Executing element OmniNames on resource localHost
-%% Waiting for 3 seconds after service launch
-
-%% ** Launching element MA_0 on localHost
-%% Writing config file MA_0.cfg
-%% Staging file MA_0.cfg to localDisk
-%% Executing element MA_0 on resource localHost
-%% Waiting for 2 seconds after launch without log service feedback
-
-%% ** Launching element LA_0 on localHost
-%% Writing config file LA_0.cfg
-%% Staging file LA_0.cfg to localDisk
-%% Executing element LA_0 on resource localHost
-%% Waiting for 2 seconds after launch without log service feedback
-
-%% ** Launching element SeD_0 on localHost
-%% Writing config file SeD_0.cfg
-%% Staging file SeD_0.cfg to localDisk
-%% Executing element SeD_0 on resource localHost
-%% Waiting for 2 seconds after launch without log service feedback
-%% * DIET launch done at Wed Jul 13 09:57:14 CEST 2005 [time= 11.0 sec]
-%% \end{verbatim}
-
-%% The \texttt{status} command will print out the run-time status of all launched
-%% components. The \texttt{LaunchState} reports whether \godiet observed any
-%% errors during the launch itself. When the user requests the launch of
-%% LogService in the input XML file, \godiet can connect to the LogService  after
-%% launching it to obtain the state of launched components; when available, this
-%% state is reported in the \texttt{LogState} column.
-
-%% \begin{verbatim}
-%% GoDIET> status
-%% Status   Element   LaunchState   LogState   Resource     PID
-%%          OmniNames running       none       localHost    1232
-%%          MA_0      running       none       localHost    1262
-%%          LA_0      running       none       localHost    1296
-%%          SeD_0     running       none       localHost    1329
-%% \end{verbatim}
-
-%% Finally, when you are done with your \diet deployment you should always run
-%% \texttt{stop}. To clean-up each element, \godiet runs a \texttt{kill} operation
-%% on the appropriate host using the stored PID of that element.
-
-%% \begin{verbatim}
-%% GoDIET> stop
-
-%% * Stopping DIET platform at Wed Jul 13 10:05:42 CEST 2005
-%% Trying to stop element SeD_0
-%% Trying to stop element LA_0
-%% Trying to stop element MA_0
-%% Trying to stop element OmniNames
-
-%% * DIET platform stopped at Wed Jul 13 10:05:43 CEST 2005[time= 0.0 sec]
-%% * Exiting GoDIET. Bye.
-%% \end{verbatim}
-
-%% \begin{figure}[p]
-%% \input{xml_example.tex}.
-%% \caption{Example XML input file for \godiet.\label{fig:godietXml}}
-%% \end{figure}
-
-%% One of the main problem when writing a \godiet XML input file is to be compliant
-%% with the dtd. A good tool to validate a \godiet file before using \godiet is
-%% \textbf{xmllint}. This tool exist on most platforms and with the following
-%% command:
-%% \begin{verbatim}
-%% $ xmllint your_xml_file --dtdvalid path_to_GoDIET.dtd -noout
-%% \end{verbatim}
-%% you will see the different lines where there is problem and a clear description
-%% of why your XML file is not compliant.
-
-\clearpage
+% \subsubsection{Debugging \& Gestion des erreurs}
+% parler des fichiers de log et des messages d'erreurs.
