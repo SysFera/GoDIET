@@ -84,7 +84,21 @@
 				<plugin>
 					<groupId>org.codehaus.mojo</groupId>
 					<artifactId>maven-buildnumber-plugin</artifactId>
+
 					<version>1.0</version>
+
+					<executions>
+						<execution>
+							<phase>validate</phase>
+							<goals>
+								<goal>create</goal>
+							</goals>
+						</execution>
+					</executions>
+					<configuration>
+						<doCheck>true</doCheck>
+						<doUpdate>true</doUpdate>
+					</configuration>
 				</plugin>
 
 				<plugin>
@@ -125,6 +139,7 @@
 
 			</plugins>
 
+
 		</pluginManagement>
 		<plugins>
 			<plugin>
@@ -133,6 +148,9 @@
 				<version>1.0</version>
 			</plugin>
 		</plugins>
+
+		
+
 	</build>
 
 	<repositories>

@@ -207,7 +207,7 @@ The most important fields are:
 \begin{itemize}
 \item \textbf{Domain}: aggregates a set of infrastructure elements (nodes, gateways, storage) which are able to communicate with \diet's exchange protocol (i.e., CORBA). Typically, elements separated by a firewall and/or a router must be described in separate domains;
 \item \textbf{Storage}: describes a remote disk access;
-\item \textbf{Node}: describe a computing node where agents or SeDs will be running;
+\item \textbf{Node}: describe a computing node where agents or SeDs will be running. It could be either a physical or virtual machine;
 \item \textbf{Gateway}: describes an access point for a domain.
 \item \textbf{Link}: defines a directional link through which two gateways can communicate, using SSH.
 \end{itemize}
@@ -245,6 +245,26 @@ General layout of the infrastructure description (details are omitted):
 A \godiet user can describe the desired deployment in an XML file including all the external services needed (\eg omniNames and LogService). The desired hierarchical organization of agents and servers is expressed directly using the hierarchical organization of XML. 
 
 
+The most important fields are:
+\begin{itemize}
+\item \textbf{dietServices}: List all services 
+\item \textbf{dietArchitecture}:
+\end{itemize}
+
+\vspace{1cm}
+
+General layout of the infrastructure description (details are omitted):
+\begin{verbatim}
+<dietPlatform>
+  <dietServices>
+
+  </dietServices>
+  <dietArchitecture>
+  </dietArchitecture>
+<dietPlatform>
+\end{verbatim}
+
+
 \subsection{Godiet shell}
 \label{GODIETShell}
 
@@ -255,7 +275,6 @@ A \godiet user can describe the desired deployment in an XML file including all 
   \includegraphics[width=12cm]{fig/1-startup}
   \caption{\godiet shell startup.\label{fig:GODIETShell}}
 \end{figure}
-
 
 \subsubsection{Help command}
 

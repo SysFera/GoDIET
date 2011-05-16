@@ -7,6 +7,7 @@ import org.codehaus.groovy.tools.shell.util.Preferences
 
 import com.sysfera.godiet.Diet;
 import com.sysfera.godiet.managers.ResourcesManager
+import com.sysfera.godiet.model.SoftwareManager;
 import com.sysfera.godiet.model.generated.Software;
 import com.sysfera.godiet.model.states.ResourceState;
 import com.sysfera.godiet.model.states.ResourceState.State;
@@ -34,7 +35,7 @@ extends ComplexCommandSupport {
 		]
 	}
 
-	def printStatus = { String elementName, resources ->
+	private printStatus(String elementName, List<SoftwareManager> resources) {
 		if(resources.size() == 0) {
 			io.out.println("\n@|bold No ${elementName}|@")
 			return

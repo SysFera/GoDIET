@@ -210,7 +210,7 @@ extends Shell {
 
 		buffer.eachWithIndex { line, index ->
 			def lineNum = formatLineNumber(index)
-
+			
 			io.out.println(" ${lineNum}@|bold >|@ $line")
 		}
 	}
@@ -222,7 +222,8 @@ extends Shell {
 	private String renderPrompt() {
 		//def lineNum = formatLineNumber(buffers.current().size())
 
-		return AnsiRenderer.render("@|bold godiet:>|@ ")
+		def localnode = diet.rm.godietConfiguration.goDietConfiguration.localNode
+		return AnsiRenderer.render("@|bold godiet@${localnode}:>|@ ")
 	}
 
 	/**
