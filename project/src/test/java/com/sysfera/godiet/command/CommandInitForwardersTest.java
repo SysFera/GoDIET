@@ -5,6 +5,7 @@ import java.util.List;
 
 import junit.framework.Assert;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -69,6 +70,12 @@ public class CommandInitForwardersTest {
 
 	}
 
+	@After
+	public void after()
+	{
+		this.rm.getPlatformModel().destroy();
+	}
+	
 	@Test
 	public void testCommandInitForwarder1() {
 

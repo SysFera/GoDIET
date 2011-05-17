@@ -52,6 +52,16 @@ public class PlatformManager {
 		this.resources = new HashMap<String, Resource>();
 	}
 
+	
+	/*
+	 * TODO: Workaround to resolve the release of Neo4j's base at each Test. Resolve when use IOC Spring or new graph implementation
+	 * 
+	 */
+	public void destroy()
+	{
+		if(topologyManager instanceof TopologyManagerNeo4jImpl)
+			((TopologyManagerNeo4jImpl)topologyManager).destroy();
+	}
 	/**
 	 * 
 	 * @return the list nodes

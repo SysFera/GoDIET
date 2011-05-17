@@ -356,4 +356,10 @@ public class TopologyManagerNeo4jImpl implements TopologyManager {
 		}
 	}
 
+	public void destroy() {
+		indexService.shutdown();
+		graphDb.shutdown();
+		
+	}
+
 }
