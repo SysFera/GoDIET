@@ -33,7 +33,7 @@ public class XmlScannerJaxbImpl implements XMLParser {
 
 	private final static String GODIET_CONFIGURATION_SCHEMA_PATH = "/Configuration.xsd";
 	private final static String GODIET_DIET_SCHEMA_PATH = "/Diet.xsd";
-	private final static String GODIET_PLATFORM_SCHEMA_PATH = "/Platform.xsd";
+	private final static String GODIET_PLATFORM_SCHEMA_PATH = "/Infrastructure.xsd";
 	private final static String MODEL_PACKAGE_NAME = "com.sysfera.godiet.model.generated";
 
 	/**

@@ -79,7 +79,7 @@ public class CommandInitForwardersTest {
 	@Test
 	public void testCommandInitForwarder1() {
 
-		String platformTestCase = "platform/3D-5N-3G-3L.xml";
+		String platformTestCase = "infrastructure/3D-5N-3G-3L.xml";
 		InputStream inputStreamPlatform = getClass().getClassLoader()
 				.getResourceAsStream(platformTestCase);
 		try {
@@ -117,7 +117,7 @@ public class CommandInitForwardersTest {
 	public void testCommandInitForwarder2() {
 
 		try {
-			String platformTestCase = "platform/testbed-platform.xml";
+			String platformTestCase = "infrastructure/testbed-platform.xml";
 			InputStream inputStreamPlatform = getClass().getClassLoader()
 					.getResourceAsStream(platformTestCase);
 			XMLLoadingHelper.initPlatform(rm, inputStreamPlatform);

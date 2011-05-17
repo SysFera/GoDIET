@@ -69,7 +69,7 @@ public class LaunchPlatformIntegrationTest {
 
 			}
 			{
-				String platformTestCase = "platform/testbed-platform.xml";
+				String platformTestCase = "infrastructure/testbed-platform.xml";
 				InputStream inputStreamPlatform = getClass().getClassLoader()
 						.getResourceAsStream(platformTestCase);
 				InitUtil.initPlatform(rm, inputStreamPlatform);

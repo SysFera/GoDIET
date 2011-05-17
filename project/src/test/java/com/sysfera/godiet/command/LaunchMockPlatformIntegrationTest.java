@@ -60,7 +60,7 @@ public class LaunchMockPlatformIntegrationTest {
 		
 			}
 			{
-				String platformTestCase = "platform/localhost-infrastructure.xml";
+				String platformTestCase = "infrastructure/localhost-infrastructure.xml";
 				InputStream inputStreamPlatform = getClass().getClassLoader()
 						.getResourceAsStream(platformTestCase);
 				XMLLoadingHelper.initPlatform(rm, inputStreamPlatform);

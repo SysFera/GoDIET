@@ -50,7 +50,7 @@ public class TopologyManagerTest {
 				XMLLoadingHelper.initConfig(rm, inputStream);
 			}
 			{
-				String platformTestCase = "platform/6D-10N-7G-3L.xml";
+				String platformTestCase = "infrastructure/6D-10N-7G-3L.xml";
 				InputStream inputStreamPlatform = getClass().getClassLoader()
 						.getResourceAsStream(platformTestCase);
 				XMLLoadingHelper.initPlatform(rm, inputStreamPlatform);

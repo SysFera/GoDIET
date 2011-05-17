@@ -61,7 +61,7 @@ public class CommandLoadXMLImplTest {
 		List<String> testCaseFiles = Arrays.asList(new String[] {
 				"diet/2MA-1LA-6SED.xml", "diet/1MA-3LA-10SED.xml",
 				"diet/1MA-3SED.xml", });
-		String platfomCaseFiles = "platform/3D-5N-3G-3L.xml";
+		String platfomCaseFiles = "infrastructure/3D-5N-3G-3L.xml";
 
 		XMLParser scanner = new XmlScannerJaxbImpl();
 
@@ -116,7 +116,7 @@ public class CommandLoadXMLImplTest {
 
 		try {
 			{
-				String platformTestCase = "platform/3D-5N-3G-3L.xml";
+				String platformTestCase = "infrastructure/3D-5N-3G-3L.xml";
 				InputStream inputStreamPlatform = getClass().getClassLoader()
 						.getResourceAsStream(platformTestCase);
 				XMLLoadingHelper.initPlatform(rm, inputStreamPlatform);
@@ -193,7 +193,7 @@ public class CommandLoadXMLImplTest {
 
 		try {
 			{
-				String platformTestCase = "platform/3D-5N-3G-3L.xml";
+				String platformTestCase = "infrastructure/3D-5N-3G-3L.xml";
 				InputStream inputStreamPlatform = getClass().getClassLoader()
 						.getResourceAsStream(platformTestCase);
 				XMLLoadingHelper.initPlatform(rm, inputStreamPlatform);
