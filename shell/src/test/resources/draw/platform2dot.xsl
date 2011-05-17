@@ -8,29 +8,52 @@
 		<xsl:apply-templates />
 		}
 	</xsl:template>
-
-	<xsl:template match="domain">
-		subgraph cluster<xsl:value-of select="@label" /> {
-		node [fontsize=10,shape=none,image="/home/phi/Dev/GoDIET/shell/src/test/resources/platform/fig/node.png"];
+	<!-- SERVICES -->
+	<xsl:template match="dietServices">
+		subgraph clusterServices {
+		node [fontsize=10,shape=circle];
 		color=grey
-		
+
 		<xsl:apply-templates />
-		label = "<xsl:value-of select="@label" />";
+		label = "Services";
 		}
 	</xsl:template>
 
-	<xsl:template match="node">
-	
-		<xsl:value-of select="@id" />-><xsl:value-of select="following-sibling::gateway/@id" /> [dir="both"]
-		
-	</xsl:template>
-	<xsl:template match="link">
-		<xsl:value-of select="@from" />-><xsl:value-of select="@to" />
-	</xsl:template>
-	<xsl:template match="gateway">
-		<xsl:value-of select="@id" /> [shape=none,image="/home/phi/Dev/GoDIET/shell/src/test/resources/platform/fig/gateway.png"];
-		
+	<xsl:template match="omniNames">
+
+		<xsl:value-of select="@id" />
+		->
+		<xsl:value-of select="child::config/@server" />
 
 	</xsl:template>
-	
+
+
+	<!-- Infras -->
+	<xsl:template match="dietInfrastructure">
+		subgraph clusterdietInfrastructure {
+		node [fontsize=10,shape=ellipse];
+		color=grey
+
+		<xsl:apply-templates />
+		label = "Platform";
+		}
+	</xsl:template>
+	<xsl:template match="masterAgent">
+		<xsl:value-of select="@id" />
+		->
+		<xsl:value-of select="child::config/@server" />
+		<xsl:apply-templates />
+
+	</xsl:template>
+	<xsl:template match="localAgent">
+		<xsl:value-of select="@id" />
+		->
+		<xsl:value-of select="child::config/@server" />
+
+	</xsl:template>
+	<xsl:template match="sed">
+		<xsl:value-of select="@id" />
+		->
+		<xsl:value-of select="child::config/@server" />
+	</xsl:template>
 </xsl:stylesheet>
