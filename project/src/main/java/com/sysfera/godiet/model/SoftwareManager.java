@@ -81,20 +81,20 @@ public abstract class SoftwareManager {
 		return stateController.getState();
 	}
 
-	public void start() throws LaunchException {
+	public synchronized void start() throws LaunchException {
 
 		ResourceState currentState = this.stateController.getState();
 		currentState.start();
 
 	}
 
-	public void prepare() throws PrepareException {
+	public synchronized void prepare() throws PrepareException {
 		ResourceState currentState = this.stateController.getState();
 		currentState.prepare();
 
 	}
 
-	public void stop() throws StopException {
+	public synchronized void stop() throws StopException {
 		ResourceState currentState = this.stateController.getState();
 		currentState.stop();
 	}
