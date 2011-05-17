@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.sysfera</groupId>
 	<artifactId>goDiet-parent</artifactId>
-	<version>2.7.BETA-SNAPSHOT</version>
+	<version>2.7.NEWINFRAMODEL-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<modules>
 		<module>project</module>
