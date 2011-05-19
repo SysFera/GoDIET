@@ -59,7 +59,9 @@ extends ComplexCommandSupport {
 							break;
 						case State.ERROR:
 							coloredStatus =  "@|BG_RED,BLACK ${resource.state.status}|@"
-							cause = resource.stateController.errorCause.message
+							if(resource.stateController.errorCause !=null && resource.stateController.errorCause.message!=null)
+								cause = resource.stateController.errorCause.message
+							else cause = "Not yet managed"
 							break;
 						default:
 							coloredStatus = "@|BLUE ${resource.state.status}|@"

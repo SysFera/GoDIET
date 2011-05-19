@@ -11,48 +11,42 @@
 	</appender>
 	<appender name="file" class="org.apache.log4j.FileAppender">
 		<param name="File" value="godiet.log" />
-
 		<layout class="org.apache.log4j.PatternLayout">
 			<param name="ConversionPattern" value="%-4r [%t] %-5p %c %x - %m%n" />
 		</layout>
-
-
 	</appender>
 	<appender name="fileall" class="org.apache.log4j.FileAppender">
 		<param name="File" value="godiet-all.log" />
-
 		<layout class="org.apache.log4j.PatternLayout">
 			<param name="ConversionPattern" value="%-4r [%t] %-5p %c %x - %m%n" />
 		</layout>
-
-
 	</appender>
 	<category name="com.sysfera.godiet.remote.RemoteConfigurationHelper">
-
 		<priority value="INFO" />
-
 		<appender-ref ref="file" />
-
 	</category>
 	<category name="com.sysfera.godiet.remote.ssh.RemoteAccessJschImpl">
-
 		<priority value="INFO" />
-
 		<appender-ref ref="file" />
-
 	</category>
-	<category name="com.sysfera.godiet.managers.topology.TopologyManagerNeo4jImpl">
 
+	<category
+		name="com.sysfera.godiet.managers.topology.TopologyManagerNeo4jImpl">
 		<priority value="INFO" />
-
 		<appender-ref ref="file" />
-
+	</category>
+	<category
+		name="com.sysfera.godiet.model.states.StateController">
+		<priority value="INFO" />
+		<appender-ref ref="file" />
 	</category>
 	
 	<root>
 		<priority value="DEBUG" />
 		<appender-ref ref="console" />
+		<appender-ref ref="fileall" />
 		<appender-ref ref="file" />
+
 	</root>
 
 </log4j:configuration>

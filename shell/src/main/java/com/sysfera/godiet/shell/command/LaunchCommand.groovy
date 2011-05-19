@@ -8,7 +8,9 @@ import org.codehaus.groovy.tools.shell.util.Preferences
 import com.sysfera.godiet.Diet;
 import com.sysfera.godiet.exceptions.remote.LaunchException;
 import com.sysfera.godiet.managers.ResourcesManager
+import com.sysfera.godiet.model.DietResourceManaged;
 import com.sysfera.godiet.model.SoftwareManager;
+import com.sysfera.godiet.model.generated.Forwarder;
 import com.sysfera.godiet.model.states.ResourceState.State;
 import com.sysfera.godiet.shell.GoDietSh
 
@@ -70,12 +72,48 @@ extends ComplexCommandSupport {
 		List<SoftwareManager> la = rm.dietModel.localAgents
 		launchSoftwares(la)
 	}
+
+
 	private launchForwarders() {
 		GoDietSh goDietShell = shell;
 		ResourcesManager rm = goDietShell.getDiet().getRm();
 		List<SoftwareManager> forwarders = rm.dietModel.forwarders
-		launchSoftwares(forwarders)
+
+		boolean error = false;
+		for (DietResourceManaged forwarder : forwarders) {
+			try {
+				Forwarder forwarderDescription = (Forwarder) forwarder
+						.getSoftwareDescription();
+				if (forwarderDescription.getType().equals("SERVER")) {
+					launchSoftware(forwarder)
+				}
+			} catch (LaunchException e) {
+				io.err.println("Unable to run Forwarder "
+						+ forwarder.getSoftwareDescription().getId());
+				error = true;
+			}
+		}
+
+		if(error == true) {
+			io.err.println("Abort forwarders deployement");
+			return;
+		}
+		try {
+			for (DietResourceManaged forwarder : forwarders) {
+
+				Forwarder forwarderDescription = (Forwarder) forwarder
+						.getSoftwareDescription();
+				if (forwarderDescription.getType().equals("CLIENT")) {
+					launchSoftware(forwarder)
+				}
+			}
+		} catch (LaunchException e) {
+			io.err.println("Unable to run Forwarder "
+					+ forwarder.getSoftwareDescription().getId());
+			io.err.println("Abort forwarders deployement");
+		}
 	}
+
 
 	private launchSeds() {
 		GoDietSh goDietShell = shell;
@@ -104,7 +142,6 @@ extends ComplexCommandSupport {
 		GoDietSh goDietShell = shell;
 		Diet rm = goDietShell.getDiet();
 		rm.launchServices();
-		rm.launchAgents();
 	}
 
 	def do_software = { arg ->

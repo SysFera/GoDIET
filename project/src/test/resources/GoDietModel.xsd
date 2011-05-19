@@ -6,7 +6,7 @@
 
 
 
-	
+
 
 
 
@@ -69,6 +69,16 @@
 		<xs:sequence>
 			<xs:element name="domain" type="domain" maxOccurs="unbounded">
 			</xs:element>
+			<xs:sequence>
+				<xs:element name="storage" type="storage" minOccurs="0"
+					maxOccurs="unbounded" />
+				<xs:element name="node" type="node" minOccurs="0"
+					maxOccurs="unbounded" />
+				<xs:element name="cluster" type="cluster" minOccurs="0"
+					maxOccurs="unbounded" />
+				<xs:element name="gateway" type="gateway" minOccurs="0"
+					maxOccurs="unbounded" />
+			</xs:sequence>
 			<xs:element name="link" type="link" minOccurs="0"
 				maxOccurs="unbounded" />
 		</xs:sequence>
@@ -103,16 +113,7 @@
 				each others (complete TCP/IP visibility). It could contain storage,
 				node, cluster and gateway</xs:documentation>
 		</xs:annotation>
-		<xs:sequence>
-			<xs:element name="storage" type="storage" minOccurs="0"
-				maxOccurs="unbounded" />
-			<xs:element name="node" type="node" minOccurs="0"
-				maxOccurs="unbounded" />
-			<xs:element name="cluster" type="cluster" minOccurs="0"
-				maxOccurs="unbounded" />
-			<xs:element name="gateway" type="gateway" minOccurs="0"
-				maxOccurs="unbounded" />
-		</xs:sequence>
+
 		<xs:attribute name="label" type="xs:ID" />
 	</xs:complexType>
 
@@ -148,7 +149,7 @@
 				DietAgent</xs:documentation>
 		</xs:annotation>
 		<xs:sequence>
-			<xs:element name="ssh" type="ssh" />
+			<xs:element name="ssh" type="ssh" maxOccurs="unbounded"/>
 			<xs:element name="env" type="env" minOccurs="0" maxOccurs="1" />
 			<xs:element name="endPoint" type="endPoint" minOccurs="0"
 				maxOccurs="1" />
@@ -198,10 +199,11 @@
 
 
 	<xs:complexType name="ssh">
+		<xs:attribute name="domain" type="xs:string" use="required" />
 		<xs:attribute name="server" type="xs:string" use="required" />
 		<xs:attribute name="login" type="xs:string" use="required" />
 		<xs:attribute name="port" type="portType" default="22">
-
+		
 		</xs:attribute>
 	</xs:complexType>
 

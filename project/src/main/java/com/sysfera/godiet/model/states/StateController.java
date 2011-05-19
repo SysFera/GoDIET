@@ -44,7 +44,7 @@ public class StateController {
 	private final Thread checker;
 
 	public StateController(SoftwareManager agent,
-			SoftwareController softwareController,RuntimeValidator validator) {
+			SoftwareController softwareController, RuntimeValidator validator) {
 		this.validator = validator;
 		this.softwareManaged = agent;
 		this.softwareController = softwareController;
@@ -53,9 +53,9 @@ public class StateController {
 		this.down = new DownStateImpl(this);
 		this.up = new UpStateImpl(this);
 		this.error = new ErrorStateImpl(this);
-		
+
 		this.ready = new ReadyStateImpl(this);
-	
+
 		this.lastTransition = Calendar.getInstance().getTime();
 
 		// Start state checker
@@ -63,59 +63,58 @@ public class StateController {
 		this.checker = new Thread(ch);
 		// Down
 		toIncubate();
-	
 
 	}
 
-	private void startChecking()
-	{
-		this.checker.start();
+	private void startChecking() {
+		try {
+			this.checker.start();
+			log.info("Checking start for " + this.checker.getName());
+		} catch (IllegalThreadStateException e) {
+			log.error("Try to start a running thread");
+		}
 	}
-	private void stopChecking()
-	{
+
+	private void stopChecking() {
+		log.info("Checking stop for " + this.checker.getName());
 		this.checker.interrupt();
 	}
-	void toIncubate()
-	{
+
+	void toIncubate() {
 		stopChecking();
 		errorCause = null;
 		this.softwareManaged.setPid(null);
-		this.lastTransition = Calendar.getInstance()
-		.getTime();
+		this.lastTransition = Calendar.getInstance().getTime();
 		this.state = incubate;
 	}
-	void toDown()
-	{
+
+	void toDown() {
 		stopChecking();
 		errorCause = null;
 		this.softwareManaged.setPid(null);
-		this.lastTransition = Calendar.getInstance()
-		.getTime();
+		this.lastTransition = Calendar.getInstance().getTime();
 		this.state = down;
 	}
-	void toUp()
-	{
+
+	void toUp() {
 		errorCause = null;
-		this.lastTransition = Calendar.getInstance()
-		.getTime();
+		this.lastTransition = Calendar.getInstance().getTime();
 		this.state = up;
 		startChecking();
 
 	}
-	void toReady()
-	{
+
+	void toReady() {
 		errorCause = null;
-		this.lastTransition = Calendar.getInstance()
-		.getTime();
+		this.lastTransition = Calendar.getInstance().getTime();
 		this.state = ready;
 	}
-	void toError()
-	{
-		this.lastTransition = Calendar.getInstance()
-		.getTime();
+
+	void toError() {
+		this.lastTransition = Calendar.getInstance().getTime();
 		this.state = error;
 	}
-	
+
 	/**
 	 * Return the error cause if the resource are in ErrorState
 	 * 
@@ -166,11 +165,15 @@ public class StateController {
 					&& softwareManaged.getSoftwareDescription().getId() != null)
 				Thread.currentThread().setName(
 						softwareManaged.getSoftwareDescription().getId());
+			log.debug("Checking thread start: " + softwareManaged.getSoftwareDescription().getId() ); 
 			while (!Thread.interrupted()) {
 				try {
+					
+
 					Thread.sleep(periodicity);
 					synchronized (state) {
 						state.check();
+						log.debug("State: " + state.getStatus() ); 
 					}
 				} catch (InterruptedException e) {
 					log.debug("Checking thread "
