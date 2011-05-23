@@ -3,13 +3,13 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.sysfera.com ../Infrastructure.xsd">
 	<infrastructure id="SysferaPlatform" label="Sysfera infrastructure">
-		<domain label="DomainSysferaLB" />
-		<domain label="DomainEnsDMZ" />
-		<domain label="DomainTestBed" />
-		<domain label="Domain1" />
-		<domain label="Domain2" />
-		<domain label="Domain3" />
-		<domain label="CommonDomain123" />
+		<domain id="DomainSysferaLB" />
+		<domain id="DomainEnsDMZ" />
+		<domain id="DomainTestBed" />
+		<domain id="Domain1" />
+		<domain id="Domain2" />
+		<domain id="Domain3" />
+		<domain id="CommonDomain123" />
 
 		<!-- Domain Sysfera -->
 		<storage label="fake">
@@ -120,7 +120,7 @@
 			</env>
 		</node>
 
-		<link fromDomain="DomainSysferaLB" to="graal" accessref="graalsshext" />
+		<link fromDomain="DomainSysferaLB" to="graal" accessref="graalsshext"></link>
 		<link from="graal" to="testbedVM" accessref="VMForwardPort" />
 
 	</infrastructure>

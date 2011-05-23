@@ -20,6 +20,7 @@ import com.sysfera.godiet.model.generated.DietInfrastructure;
 import com.sysfera.godiet.model.generated.DietServices;
 import com.sysfera.godiet.model.generated.LocalAgent;
 import com.sysfera.godiet.model.generated.MasterAgent;
+import com.sysfera.godiet.model.generated.Node;
 import com.sysfera.godiet.model.generated.OmniNames;
 import com.sysfera.godiet.model.generated.Resource;
 import com.sysfera.godiet.model.generated.Sed;
@@ -157,14 +158,14 @@ public class LoadXMLDietCommand implements Command {
 		if (masterAgents != null) {
 			for (MasterAgent masterAgent : masterAgents) {
 				Config c = masterAgent.getConfig();
-				Resource r = this.rm.getPlatformModel().getResource(
-						c.getServer());
+				Node r = this.rm.getPlatformModel().getResource(
+						c.getServer().getId());
 				if(r == null) throw new DietResourceCreationException("Unable to find the physical resource "+c.getServer());
-				c.setServerNode(r);
+				c.setServer(r);
 				OmniNames omniNames = dietManager.getOmniName(masterAgent
-						.getConfig().getServerNode().getDomain());
+						.getConfig().getServer().getDomain());
 				if(omniNames == null) throw new DietResourceCreationException("Unable to find the omniNames for domain "+masterAgent.getConfig()
-						.getServerNode().getDomain().getLabel() + ". Master agent id: "+masterAgent.getId());
+						.getServer().getDomain().getLabel() + ". Master agent id: "+masterAgent.getId());
 
 
 				dietManager.addMasterAgent(abstractFactory.create(masterAgent,

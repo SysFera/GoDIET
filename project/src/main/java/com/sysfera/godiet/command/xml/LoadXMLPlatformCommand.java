@@ -49,7 +49,7 @@ public class LoadXMLPlatformCommand implements Command {
 
 		try {
 			Platform platformDescription = xmlScanner
-					.buildPlatformModel(xmlInput);
+					.buildInfrastructureModel(xmlInput);
 			initPlatform(platformDescription.getInfrastructure());
 		} catch (IOException e) {
 			throw new CommandExecutionException("XML read error", e);

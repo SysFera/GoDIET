@@ -5,11 +5,11 @@
 	<xs:include schemaLocation="GoDietModel.xsd" />
 
 
-	<xs:element name="diet">
+	<xs:element name="dietPlatform">
 		<xs:complexType>
 			<xs:sequence>
 				<xs:element name="dietServices" type="dietServices" />
-				<xs:element name="dietInfrastructure" type="dietInfrastructure" />
+				<xs:element name="dietHierarchy" type="dietInfrastructure" />
 			</xs:sequence>
 		</xs:complexType>
 	</xs:element>

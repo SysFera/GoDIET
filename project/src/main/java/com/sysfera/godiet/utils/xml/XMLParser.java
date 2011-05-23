@@ -36,6 +36,6 @@ public interface XMLParser {
 	 * @throws IOException
 	 * @throws XMLParseException
 	 */
-	public Platform buildPlatformModel(InputStream xmlFile) throws IOException,
+	public Platform buildInfrastructureModel(InputStream xmlFile) throws IOException,
 			XMLParseException;
 }

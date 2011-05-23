@@ -16,7 +16,6 @@ import com.sysfera.godiet.model.Path;
 import com.sysfera.godiet.model.generated.Cluster;
 import com.sysfera.godiet.model.generated.Domain;
 import com.sysfera.godiet.model.generated.Fronted;
-import com.sysfera.godiet.model.generated.Gateway;
 import com.sysfera.godiet.model.generated.Link;
 import com.sysfera.godiet.model.generated.Node;
 import com.sysfera.godiet.model.generated.Resource;
@@ -31,11 +30,10 @@ public class PlatformManager {
 	private Logger log = LoggerFactory.getLogger(getClass());
 
 	// Reference all nodes,gateways, fronted by is id.
-	private final Map<String, Resource> resources;
+	private final Map<String, Node> resources;
 	// All nodes platform (even cluster node)
 	private final List<Node> nodes;
 	private final List<Cluster> clusters;
-	private final List<Gateway> gateways;
 	private final List<Fronted> fronteds;
 	private final List<Link> links;
 	private final List<Domain> domains;
@@ -46,10 +44,9 @@ public class PlatformManager {
 		this.domains = new ArrayList<Domain>();
 		this.nodes = new ArrayList<Node>();
 		this.clusters = new ArrayList<Cluster>();
-		this.gateways = new ArrayList<Gateway>();
 		this.fronteds = new ArrayList<Fronted>();
 		this.links = new ArrayList<Link>();
-		this.resources = new HashMap<String, Resource>();
+		this.resources = new HashMap<String, Node>();
 	}
 
 	
@@ -77,12 +74,6 @@ public class PlatformManager {
 		return clusters;
 	}
 
-	/**
-	 * @return the gateways
-	 */
-	public List<Gateway> getGateways() {
-		return gateways;
-	}
 
 	/**
 	 * @return the frontends
@@ -142,17 +133,18 @@ public class PlatformManager {
 
 	}
 
-	public void addGateways(List<Gateway> gateways) {
-		if (gateways == null) {
-			log.warn("Try to add empty list of gateways");
-			return;
-		}
-		for (Gateway gateway : gateways) {
-			this.resources.put(gateway.getId(), gateway);
-		}
-		this.gateways.addAll(gateways);
-
-	}
+	//TODO : replace
+//	public void addGateways(List<Gateway> gateways) {
+//		if (gateways == null) {
+//			log.warn("Try to add empty list of gateways");
+//			return;
+//		}
+//		for (Gateway gateway : gateways) {
+//			this.resources.put(gateway.getId(), gateway);
+//		}
+//		this.gateways.addAll(gateways);
+//
+//	}
 
 	public void addDomains(List<Domain> domains) {
 		this.domains.addAll(domains);
@@ -182,11 +174,11 @@ public class PlatformManager {
 	// la description
 
 	/**
-	 * 
+	 * TODO: Change name to getNode
 	 * @param resourceId
 	 * @return Resource given is id
 	 */
-	public Resource getResource(String resourceId) {
+	public  Node getResource(String resourceId) {
 		return resources.get(resourceId);
 	}
 }

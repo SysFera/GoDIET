@@ -12,7 +12,7 @@
 
 	<xsl:template match="domain">
 
-		"<xsl:value-of select="@label"/>" [fontsize=10,shape=ellipse];
+		"<xsl:value-of select="@id"/>" [fontsize=10,shape=ellipse];
 	
 	</xsl:template>
 	
@@ -27,14 +27,6 @@
 	
 	
 	<xsl:template match="//link[@fromDomain]">
-		<!-- 	<xsl:variable name="currentFromDomain" select="@fromDomain"/>
-			<xsl:variable name="currentTo" select="@to"/>
-		 	<xsl:for-each select="//node">
-		 		<xsl:if test="ssh/@domain = $currentFromDomain">
-		 			"<xsl:value-of select="@id"/>"->"<xsl:value-of select="$currentTo"/>"
-		 		</xsl:if>
-		 	</xsl:for-each>
-	 -->
 	 	"<xsl:value-of select="@fromDomain"/>"->"<xsl:value-of select="@to"/>" [color=".7 .3 1.0"];
 	</xsl:template>
 	<xsl:template match="//link[@from]">
@@ -43,8 +35,7 @@
 		
 		
 		<xsl:template match="//link[@toDomain]">
-	
 	 	"<xsl:value-of select="@from"/>"->"<xsl:value-of select="@toDomain"/>" [color=".7 .3 1.0"];
 	</xsl:template>
 
-	</xsl:stylesheet>
+</xsl:stylesheet>

@@ -4,12 +4,6 @@
 	elementFormDefault="unqualified" xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
 	jaxb:version="2.0">
 
-
-
-	
-
-
-
 	<xs:complexType name="goDietConfiguration">
 		<xs:sequence>
 			<xs:element name="localscratch" type="scratch">
@@ -66,34 +60,56 @@
 			<xs:documentation>Physical infrastructure description
 			</xs:documentation>
 		</xs:annotation>
-		<xs:sequence>
-			<xs:element name="domain" type="domain" maxOccurs="unbounded">
-			</xs:element>
-			<xs:element name="link" type="link" minOccurs="0"
-				maxOccurs="unbounded" />
-		</xs:sequence>
+		<xs:choice minOccurs="0" maxOccurs="unbounded">
+			<xs:element name="domain" type="domain" />
+			<xs:element name="storage" type="storage" />
+			<xs:element name="node" type="node" />
+			<xs:element name="cluster" type="cluster" />
+
+
+			<xs:element name="link" type="link" minOccurs="0" />
+
+
+
+		</xs:choice>
+		<xs:attribute name="id" type="xs:ID" />
+		<xs:attribute name="label" type="xs:string" />
+
+
 	</xs:complexType>
 
 
 	<xs:complexType name="link">
-		<xs:attribute name="from" type="xs:IDREF" use="required">
+		<xs:attribute name="fromDomain" type="xs:IDREF">
 			<xs:annotation>
 				<xs:appinfo>
 					<jaxb:property>
-						<jaxb:baseType name="Gateway" />
+						<jaxb:baseType name="Domain" />
 					</jaxb:property>
 				</xs:appinfo>
 			</xs:annotation>
 		</xs:attribute>
+		<xs:attribute name="from" type="xs:IDREF">
+			<xs:annotation>
+				<xs:appinfo>
+					<jaxb:property>
+						<jaxb:baseType name="Node" />
+					</jaxb:property>
+				</xs:appinfo>
+			</xs:annotation>
+		</xs:attribute>
+
 		<xs:attribute name="to" type="xs:IDREF" use="required">
 			<xs:annotation>
 				<xs:appinfo>
 					<jaxb:property>
-						<jaxb:baseType name="Gateway" />
+						<jaxb:baseType name="Node" />
 					</jaxb:property>
 				</xs:appinfo>
 			</xs:annotation>
 		</xs:attribute>
+		<xs:attribute name="accessref" type="xs:IDREF" use="required" />
+
 	</xs:complexType>
 
 
@@ -103,17 +119,8 @@
 				each others (complete TCP/IP visibility). It could contain storage,
 				node, cluster and gateway</xs:documentation>
 		</xs:annotation>
-		<xs:sequence>
-			<xs:element name="storage" type="storage" minOccurs="0"
-				maxOccurs="unbounded" />
-			<xs:element name="node" type="node" minOccurs="0"
-				maxOccurs="unbounded" />
-			<xs:element name="cluster" type="cluster" minOccurs="0"
-				maxOccurs="unbounded" />
-			<xs:element name="gateway" type="gateway" minOccurs="0"
-				maxOccurs="unbounded" />
-		</xs:sequence>
-		<xs:attribute name="label" type="xs:ID" />
+
+		<xs:attribute name="id" type="xs:ID" />
 	</xs:complexType>
 
 
@@ -122,7 +129,7 @@
 
 	<xs:complexType name="fronted">
 		<xs:complexContent>
-			<xs:extension base="gateway"></xs:extension>
+			<xs:extension base="resource"></xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
 
@@ -133,7 +140,7 @@
 		</xs:annotation>
 		<xs:sequence>
 			<xs:element name="scratch" type="scratch" />
-			<xs:element name="scp" type="ssh" />
+			<xs:element name="scp" type="ssh" maxOccurs="unbounded" />
 		</xs:sequence>
 		<xs:attribute name="label" type="xs:ID" use="required" />
 	</xs:complexType>
@@ -148,7 +155,7 @@
 				DietAgent</xs:documentation>
 		</xs:annotation>
 		<xs:sequence>
-			<xs:element name="ssh" type="ssh" />
+			<xs:element name="ssh" type="ssh" maxOccurs="unbounded" />
 			<xs:element name="env" type="env" minOccurs="0" maxOccurs="1" />
 			<xs:element name="endPoint" type="endPoint" minOccurs="0"
 				maxOccurs="1" />
@@ -166,11 +173,7 @@
 	</xs:complexType>
 
 
-	<xs:complexType name="gateway">
-		<xs:complexContent>
-			<xs:extension base="node" />
-		</xs:complexContent>
-	</xs:complexType>
+
 
 	<xs:complexType name="node">
 		<xs:complexContent>
@@ -198,6 +201,8 @@
 
 
 	<xs:complexType name="ssh">
+		<xs:attribute name="id" type="xs:ID" use="optional" />
+		<xs:attribute name="domain" type="xs:IDREF" use="required" />
 		<xs:attribute name="server" type="xs:string" use="required" />
 		<xs:attribute name="login" type="xs:string" use="required" />
 		<xs:attribute name="port" type="portType" default="22">
@@ -376,7 +381,8 @@
 	<xs:complexType name="forwarder">
 		<xs:annotation>
 			<xs:documentation>A Diet Forwarder is a way to encapsulate all
-				communication between two domains. You need to specify on which node
+				communication between two domains. You need to specify on which
+				node
 				(could be a gateway, fronted) you want to instantiate.
 			</xs:documentation>
 		</xs:annotation>

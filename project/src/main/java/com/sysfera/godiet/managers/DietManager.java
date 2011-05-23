@@ -181,14 +181,14 @@ public class DietManager {
 	public OmniNames getOmniName(Domain domain) {
 
 		for (DietServiceManaged omniName : omninames) {
-			if (omniName.getPluggedOn().getDomain().getLabel()
-					.equals(domain.getLabel())) {
+			if (omniName.getPluggedOn().getDomain().getId()
+					.equals(domain.getId())) {
 				return (OmniNames) omniName.getSoftwareDescription();
 			}
 
 		}
 		log.error("Unable to find a known omniName for domain: "
-				+ domain.getLabel());
+				+ domain.getId());
 		return null;
 	}
 
@@ -213,7 +213,7 @@ public class DietManager {
 	 * Search the Managed domain given a domain description
 	 * 
 	 * @param domain
-	 * @return
+	 * @return null if doesn't exist
 	 */
 	public DietResourceManaged getManagedOmniName(Domain domain) {
 		for (DietResourceManaged manageOmni : omninames) {

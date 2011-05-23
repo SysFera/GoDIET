@@ -69,7 +69,7 @@ public class XmlScannerJaxbImpl implements XMLParser {
 
 
 	@Override
-	final public Platform buildPlatformModel(InputStream xmlFile)
+	final public Platform buildInfrastructureModel(InputStream xmlFile)
 			throws IOException, XMLParseException {
 
 		try {

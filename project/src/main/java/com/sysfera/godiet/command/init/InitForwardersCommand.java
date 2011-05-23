@@ -17,7 +17,7 @@ import com.sysfera.godiet.model.factories.GodietAbstractFactory;
 import com.sysfera.godiet.model.generated.Config;
 import com.sysfera.godiet.model.generated.Forwarder;
 import com.sysfera.godiet.model.generated.Forwarders;
-import com.sysfera.godiet.model.generated.Gateway;
+
 import com.sysfera.godiet.model.generated.Link;
 import com.sysfera.godiet.model.generated.ObjectFactory;
 import com.sysfera.godiet.model.generated.OmniNames;
