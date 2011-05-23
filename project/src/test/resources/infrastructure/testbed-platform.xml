@@ -2,7 +2,7 @@
 <godiet:platform xmlns:godiet="http://www.sysfera.com"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.sysfera.com ../Infrastructure.xsd">
-	<infrastructure>
+	<infrastructure id="SysferaPlatform" label="Sysfera infrastructure">
 		<domain label="DomainSysferaLB" />
 		<domain label="DomainEnsDMZ" />
 		<domain label="DomainTestBed" />
@@ -18,20 +18,36 @@
 		</storage>
 
 
-		<node id="myLaptop" disk="fake">
-			<ssh " domain="DomainSysferaLB" login="pmartinez" server="192.168.1.13" />
+
+		<node id="phi-laptop" disk="fake">
+			<ssh domain="DomainSysferaLB" login="phi" server="192.168.1.13" />
+		</node>
+
+		<node id="daouda-machina" disk="fake">
+			<ssh domain="DomainSysferaLB" login="traore" server="192.168.1.14" />
+		</node>
+
+		<node id="god-computer" disk="fake">
+			<ssh domain="DomainSysferaLB" login="paco" server="192.168.1.15" />
+		</node>
+
+		<node id="miaou" disk="fake">
+			<ssh domain="DomainSysferaLB" login="kev" server="192.168.1.16" />
 		</node>
 
 
 		<!-- Domain ENS DMZ -->
 		<node id="graal" disk="fake">
-			<ssh domain="DomainEnsDMZ" login="pmartinez" server="140.77.166.19" />
+			<ssh id="graalsshext" domain="DomainEnsDMZ" login="pmartinez"
+				server="140.77.166.19" />
 		</node>
 
 		<!-- Domain Testbed -->
 		<node id="testbedVM" disk="fake">
-			<ssh domain="DomainTestb" login="godiet" server="140.77.166.19"
-				port="40022" />
+			<ssh id="VMForwardPort" domain="DomainTestBed" login="godiet"
+				server="140.77.166.19" port="40022" />
+			<ssh domain="Domain1" login="godiet"
+				server="192.168.1.254" port="22" />
 		</node>
 
 
@@ -104,15 +120,8 @@
 			</env>
 		</node>
 
+		<link fromDomain="DomainSysferaLB" to="graal" accessref="graalsshext" />
+		<link from="graal" to="testbedVM" accessref="VMForwardPort" />
 
-
-
-		<link fromDomain="DomainSysferaLB" to="graal" accessref="" />
-		<link from="graalGW" to="testbedVMGW" />
-		<link from="testbedVMGW" to="G1" />
-
-		<link from="G1" to="G2" />
-		<link from="G2" to="G3" />
-		<link from="G3" to="G1" />
 	</infrastructure>
 </godiet:platform>
