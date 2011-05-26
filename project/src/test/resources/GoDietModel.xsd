@@ -4,6 +4,9 @@
 	elementFormDefault="unqualified" xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
 	jaxb:version="2.0">
 
+
+
+
 	<xs:complexType name="goDietConfiguration">
 		<xs:sequence>
 			<xs:element name="localscratch" type="scratch">
@@ -60,21 +63,19 @@
 			<xs:documentation>Physical infrastructure description
 			</xs:documentation>
 		</xs:annotation>
-		<xs:choice minOccurs="0" maxOccurs="unbounded">
-			<xs:element name="domain" type="domain" />
-			<xs:element name="storage" type="storage" />
-			<xs:element name="node" type="node" />
-			<xs:element name="cluster" type="cluster" />
+		<xs:sequence>
+			<xs:element name="domain" type="domain" minOccurs="1"
+				maxOccurs="unbounded" />
+			<xs:element name="node" type="node" minOccurs="0"
+				maxOccurs="unbounded" />
+			<xs:element name="cluster" type="cluster" minOccurs="0"
+				maxOccurs="unbounded" />
+			<xs:element name="link" type="link" minOccurs="0"
+				maxOccurs="unbounded" />
+		</xs:sequence>
 
-
-			<xs:element name="link" type="link" minOccurs="0" />
-
-
-
-		</xs:choice>
 		<xs:attribute name="id" type="xs:ID" />
 		<xs:attribute name="label" type="xs:string" />
-
 
 	</xs:complexType>
 
@@ -116,8 +117,9 @@
 	<xs:complexType name="domain">
 		<xs:annotation>
 			<xs:documentation>Domain contains resources which could communicate
-				each others (complete TCP/IP visibility). It could contain storage,
-				node, cluster and gateway</xs:documentation>
+				each others (complete TCP/IP visibility). It could contain
+				node,
+				cluster</xs:documentation>
 		</xs:annotation>
 
 		<xs:attribute name="id" type="xs:ID" />
@@ -129,21 +131,10 @@
 
 	<xs:complexType name="fronted">
 		<xs:complexContent>
-			<xs:extension base="resource"></xs:extension>
+			<xs:extension base="node"></xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
 
-	<xs:complexType name="storage">
-		<xs:annotation>
-			<xs:documentation>Remote storage access. Typically to upload agent's
-				configuration files.</xs:documentation>
-		</xs:annotation>
-		<xs:sequence>
-			<xs:element name="scratch" type="scratch" />
-			<xs:element name="scp" type="ssh" maxOccurs="unbounded" />
-		</xs:sequence>
-		<xs:attribute name="label" type="xs:ID" use="required" />
-	</xs:complexType>
 
 	<xs:complexType name="scratch">
 		<xs:attribute name="dir" type="xs:string" use="required" />
@@ -159,16 +150,9 @@
 			<xs:element name="env" type="env" minOccurs="0" maxOccurs="1" />
 			<xs:element name="endPoint" type="endPoint" minOccurs="0"
 				maxOccurs="1" />
+			<xs:element name="scratch" type="scratch" />
 		</xs:sequence>
-		<xs:attribute name="disk" type="xs:IDREF" use="required">
-			<xs:annotation>
-				<xs:appinfo>
-					<jaxb:property>
-						<jaxb:baseType name="Storage" />
-					</jaxb:property>
-				</xs:appinfo>
-			</xs:annotation>
-		</xs:attribute>
+
 		<xs:attribute name="id" type="xs:ID" use="required" />
 	</xs:complexType>
 
@@ -177,7 +161,7 @@
 
 	<xs:complexType name="node">
 		<xs:complexContent>
-			<xs:extension base="resource" />
+			<xs:extension base="resource"/>
 		</xs:complexContent>
 	</xs:complexType>
 
@@ -188,7 +172,7 @@
 				<xs:annotation>
 					<xs:documentation>Required. Node access to a cluster.
 						could have
-						more than 1 fronted. @see Gateway
+						more than 1 fronted.
 					</xs:documentation>
 				</xs:annotation>
 			</xs:element>
@@ -202,7 +186,15 @@
 
 	<xs:complexType name="ssh">
 		<xs:attribute name="id" type="xs:ID" use="optional" />
-		<xs:attribute name="domain" type="xs:IDREF" use="required" />
+		<xs:attribute name="domain" type="xs:IDREF" use="required">
+			<xs:annotation>
+				<xs:appinfo>
+					<jaxb:property>
+						<jaxb:baseType name="Domain" />
+					</jaxb:property>
+				</xs:appinfo>
+			</xs:annotation>
+		</xs:attribute>
 		<xs:attribute name="server" type="xs:string" use="required" />
 		<xs:attribute name="login" type="xs:string" use="required" />
 		<xs:attribute name="port" type="portType" default="22">
@@ -280,8 +272,15 @@
 		</xs:sequence>
 	</xs:complexType>
 
+	<xs:complexType name="dietPlatform">
+		<xs:sequence>
+			<xs:element name="services" type="dietServices" />
+			<xs:element name="hierarchy" type="dietHierarchy" />
+		</xs:sequence>
+	</xs:complexType>
 
-	<xs:complexType name="dietInfrastructure">
+
+	<xs:complexType name="dietHierarchy">
 		<xs:annotation>
 			<xs:documentation>The root level of diet infrastructure description.
 			</xs:documentation>
@@ -383,7 +382,7 @@
 			<xs:documentation>A Diet Forwarder is a way to encapsulate all
 				communication between two domains. You need to specify on which
 				node
-				(could be a gateway, fronted) you want to instantiate.
+				you want to instantiate.
 			</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
@@ -406,15 +405,7 @@
 
 	<xs:complexType name="config">
 		<xs:attribute name="remoteBinary" type="xs:string" use="required" />
-		<xs:attribute name="server" type="xs:string" use="required">
-			<xs:annotation>
-				<xs:appinfo>
-					<jaxb:property>
-						<jaxb:baseType name="Node" />
-					</jaxb:property>
-				</xs:appinfo>
-			</xs:annotation>
-		</xs:attribute>
+		<xs:attribute name="server" type="xs:string" use="required" />
 	</xs:complexType>
 
 	<xs:complexType name="parameters">

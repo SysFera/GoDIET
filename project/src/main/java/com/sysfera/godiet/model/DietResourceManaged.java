@@ -3,6 +3,7 @@ package com.sysfera.godiet.model;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.sysfera.godiet.model.generated.OmniNames;
 import com.sysfera.godiet.model.generated.Resource;
 import com.sysfera.godiet.model.generated.Software;
 import com.sysfera.godiet.model.validators.RuntimeValidator;
@@ -13,39 +14,18 @@ import com.sysfera.godiet.model.validators.RuntimeValidator;
  * @author phi
  * 
  */
-public class DietResourceManaged extends SoftwareManager {
+public class DietResourceManaged<T extends Software> extends SoftwareManager<T> {
 	private Logger log = LoggerFactory.getLogger(getClass());
 
-	// Agent description
-	private Software agentManaged;
+	private DietServiceManaged<OmniNames> omniNames;
 
-	public DietResourceManaged(SoftwareController softwareController,RuntimeValidator validator) {
-		super(softwareController,validator);
+	public DietResourceManaged(Resource pluggedOn, SoftwareController softwareController,
+			RuntimeValidator<DietResourceManaged<T>> validator, DietServiceManaged<OmniNames> omniNames) {
+		super(pluggedOn, softwareController, validator);
 	}
 
-	/**
-	 * Set the agent to manage.
-	 * 
-	 * @param dietAgent
-	 */
-	public void setManagedSoftware(Software dietAgent) {
-		this.agentManaged = dietAgent;
+	public DietServiceManaged<OmniNames> getOmniNames() {
+		return this.omniNames;
 	}
-
-	@Override
-	public Resource getPluggedOn() {
-		if (agentManaged != null) {
-			return agentManaged.getConfig().getServer();
-		} else {
-			return null;
-		}
-	}
-
-
-	@Override
-	public Software getSoftwareDescription() {
-		return agentManaged;
-	}
-	
 
 }

@@ -14,15 +14,18 @@ public class ResourcesManager {
 	// Other model representation to help and improve resources access. All
 	// objects are reference of goDiet field
 	private final DietManager dietModel;
-	private final PlatformManager platformModel;
+	private final InfrastructureManager infrastructureModel;
+	private final DomainsManager domainManager;
 	// TODO move this field in configuration manager
 	private final ConfigurationManager godietConfiguration;
 	private final UserManager userManager;
 	
 	public ResourcesManager() {
-		this.dietModel = new DietManager();
-		this.platformModel = new PlatformManager();
+		this.domainManager = new DomainsManager();
+		this.dietModel = new DietManager(domainManager);
+		this.infrastructureModel = new InfrastructureManager();
 		this.godietConfiguration = new ConfigurationManager();
+		
 		this.userManager = new UserManager();
 	}
 
@@ -30,8 +33,8 @@ public class ResourcesManager {
 		return dietModel;
 	}
 
-	public PlatformManager getPlatformModel() {
-		return platformModel;
+	public InfrastructureManager getInfrastructureModel() {
+		return infrastructureModel;
 	}
 
 	public ConfigurationManager getGodietConfiguration() {

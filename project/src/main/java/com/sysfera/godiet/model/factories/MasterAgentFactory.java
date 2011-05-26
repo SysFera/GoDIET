@@ -2,8 +2,10 @@ package com.sysfera.godiet.model.factories;
 
 import com.sysfera.godiet.exceptions.DietResourceCreationException;
 import com.sysfera.godiet.model.DietResourceManaged;
+import com.sysfera.godiet.model.DietServiceManaged;
 import com.sysfera.godiet.model.SoftwareController;
 import com.sysfera.godiet.model.generated.MasterAgent;
+import com.sysfera.godiet.model.generated.Node;
 import com.sysfera.godiet.model.generated.OmniNames;
 import com.sysfera.godiet.model.validators.RuntimeValidator;
 
@@ -16,8 +18,8 @@ import com.sysfera.godiet.model.validators.RuntimeValidator;
  */
 public class MasterAgentFactory {
 	private final SoftwareController softwareController;
-	private final RuntimeValidator validator;
-	public MasterAgentFactory(SoftwareController softwareController,RuntimeValidator maValidator) {
+	private final RuntimeValidator<DietResourceManaged<MasterAgent>> validator;
+	public MasterAgentFactory(SoftwareController softwareController,RuntimeValidator<DietResourceManaged<MasterAgent>> maValidator) {
 		this.softwareController = softwareController;
 		this.validator = maValidator;
 	}
@@ -29,12 +31,12 @@ public class MasterAgentFactory {
 	 * @return The managed MasterAgent
 	 * @throws DietResourceCreationException 
 	 */
-	public DietResourceManaged create(MasterAgent masterAgentDescription,OmniNames omniNames) throws DietResourceCreationException
+	public DietResourceManaged<MasterAgent> create(MasterAgent masterAgentDescription,Node pluggedOn,DietServiceManaged<OmniNames> omniNames) throws DietResourceCreationException
 	{
-		DietResourceManaged MAManaged = new DietResourceManaged(softwareController, validator);
-		MAManaged.setManagedSoftware(masterAgentDescription);
+		DietResourceManaged<MasterAgent> MAManaged = new DietResourceManaged<MasterAgent>(pluggedOn, softwareController, validator,omniNames);
+		MAManaged.setSoftwareDescription(masterAgentDescription);
 		AgentFactoryUtil.settingConfigurationOptions(MAManaged,"DIET_MASTER_AGENT");
-		AgentFactoryUtil.settingRunningCommand(omniNames,MAManaged);
+		AgentFactoryUtil.settingRunningCommand(omniNames.getSoftwareDescription(),MAManaged);
 		return MAManaged;
 	}
 	

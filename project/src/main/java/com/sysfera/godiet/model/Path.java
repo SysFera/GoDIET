@@ -3,6 +3,7 @@ package com.sysfera.godiet.model;
 import java.util.LinkedHashSet;
 
 import com.sysfera.godiet.model.generated.Resource;
+import com.sysfera.godiet.model.generated.Ssh;
 
 /**
  * Represent a path 
@@ -11,15 +12,18 @@ import com.sysfera.godiet.model.generated.Resource;
  */
 public class Path {
 
+	class LinkPath{
+		
+	}
 	
-	//TODO: #1 Change resource to RemoteNode (ie ssh) 
-	private LinkedHashSet<? extends Resource>  path;
+	
+	private LinkedHashSet<Ssh>  path;
 
-	public void setPath(LinkedHashSet<? extends Resource>  path) {
+	public void setPath(LinkedHashSet<Ssh>  path) {
 		this.path = path;
 	}
 	
-	public LinkedHashSet<? extends Resource> getPath() {
+	public LinkedHashSet<Ssh> getPath() {
 		return path;
 	}
 

@@ -12,11 +12,8 @@ import com.sysfera.godiet.exceptions.CommandExecutionException;
 import com.sysfera.godiet.exceptions.XMLParseException;
 import com.sysfera.godiet.exceptions.graph.GraphDataException;
 import com.sysfera.godiet.managers.ResourcesManager;
-import com.sysfera.godiet.model.generated.Cluster;
 import com.sysfera.godiet.model.generated.Domain;
 import com.sysfera.godiet.model.generated.Infrastructure;
-import com.sysfera.godiet.model.generated.Link;
-import com.sysfera.godiet.model.generated.Platform;
 import com.sysfera.godiet.utils.xml.XMLParser;
 
 /**
@@ -27,7 +24,7 @@ import com.sysfera.godiet.utils.xml.XMLParser;
  * @author phi
  * 
  */
-public class LoadXMLPlatformCommand implements Command {
+public class LoadXMLInfrastructureCommand implements Command {
 	private Logger log = LoggerFactory.getLogger(getClass());
 
 	private ResourcesManager rm;
@@ -41,16 +38,15 @@ public class LoadXMLPlatformCommand implements Command {
 
 	@Override
 	public void execute() throws CommandExecutionException {
-		if (rm == null
-				|| xmlScanner == null || xmlInput == null) {
+		if (rm == null || xmlScanner == null || xmlInput == null) {
 			throw new CommandExecutionException(getClass().getName()
 					+ " not initialized correctly");
 		}
 
 		try {
-			Platform platformDescription = xmlScanner
+			Infrastructure infraDescription = xmlScanner
 					.buildInfrastructureModel(xmlInput);
-			initPlatform(platformDescription.getInfrastructure());
+			initInfrastructureModel(infraDescription);
 		} catch (IOException e) {
 			throw new CommandExecutionException("XML read error", e);
 		} catch (XMLParseException e) {
@@ -93,34 +89,16 @@ public class LoadXMLPlatformCommand implements Command {
 	 * @param infrastructure
 	 * @throws CommandExecutionException
 	 */
-	private void initPlatform(Infrastructure infrastructure)
+	private void initInfrastructureModel(Infrastructure infrastructure)
 			throws CommandExecutionException {
 		List<Domain> domains = infrastructure.getDomain();
-		this.rm.getPlatformModel().addDomains(domains);
-		if (domains != null) {
-			for (Domain domain : domains) {
-				this.rm.getPlatformModel().addGateways(domain.getGateway());
-				this.rm.getPlatformModel().addNodes(domain.getNode());
-				List<Cluster> clusters = domain.getCluster();
-				this.rm.getPlatformModel().addClusters(clusters);
-				if (clusters != null) {
-					for (Cluster cluster : clusters) {
-						this.rm.getPlatformModel().addNodes(
-								cluster.getComputingNode());
-						this.rm.getPlatformModel().addFrontends(
-								cluster.getFronted());
-					}
-				}
-			}
-		}
-
-		List<Link> links = infrastructure.getLink();
+		this.rm.getInfrastructureModel().addDomains(domains);
+		this.rm.getInfrastructureModel().addNodes(infrastructure.getNode());
+		this.rm.getInfrastructureModel().addClusters(infrastructure.getCluster());
 		try {
-			this.rm.getPlatformModel().addLinks(links);
+			this.rm.getInfrastructureModel().addLinks(infrastructure.getLink());
 		} catch (GraphDataException e) {
-
-			throw new CommandExecutionException(
-					"Unable to add links. Error in the model description", e);
+			throw new CommandExecutionException("Unable to initialize infrastructure",e);
 		}
 	}
 

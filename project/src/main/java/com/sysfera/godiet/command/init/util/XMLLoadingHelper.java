@@ -4,7 +4,7 @@ import java.io.InputStream;
 
 import com.sysfera.godiet.command.xml.LoadXMLConfigurationCommand;
 import com.sysfera.godiet.command.xml.LoadXMLDietCommand;
-import com.sysfera.godiet.command.xml.LoadXMLPlatformCommand;
+import com.sysfera.godiet.command.xml.LoadXMLInfrastructureCommand;
 import com.sysfera.godiet.exceptions.CommandExecutionException;
 import com.sysfera.godiet.managers.ResourcesManager;
 import com.sysfera.godiet.model.factories.GodietAbstractFactory;
@@ -26,8 +26,8 @@ public class XMLLoadingHelper  {
 
 	}
 
-	public static void initPlatform(ResourcesManager rm, InputStream inputStream) throws CommandExecutionException {
-		LoadXMLPlatformCommand xmlLoadingCommand = new LoadXMLPlatformCommand();
+	public static void initInfrastructure(ResourcesManager rm, InputStream inputStream) throws CommandExecutionException {
+		LoadXMLInfrastructureCommand xmlLoadingCommand = new LoadXMLInfrastructureCommand();
 
 		xmlLoadingCommand.setXmlParser(scanner);
 		xmlLoadingCommand.setXmlInput(inputStream);

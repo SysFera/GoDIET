@@ -19,7 +19,6 @@ import com.sysfera.godiet.exceptions.remote.AddAuthentificationException;
 import com.sysfera.godiet.exceptions.remote.RemoveAuthentificationException;
 import com.sysfera.godiet.managers.user.SSHKeyManager;
 import com.sysfera.godiet.model.Path;
-import com.sysfera.godiet.model.generated.Resource;
 import com.sysfera.godiet.model.generated.Ssh;
 
 public class ChannelManagerJsch {
@@ -70,7 +69,7 @@ public class ChannelManagerJsch {
 
 		if (session == null) {
 
-			LinkedHashSet<? extends Resource> hops = path.getPath();
+			LinkedHashSet<Ssh> hops = path.getPath();
 			//FIXME : handle localhost
 //			if (hops.size() < 2) {
 //				throw new RemoteAccessException(
@@ -78,9 +77,9 @@ public class ChannelManagerJsch {
 //			}
 
 			// Create the session with the last Node
-			Resource last = null;
+			Ssh last = null;
 			try {
-				last = (Resource) hops.toArray()[hops.size() - 1];
+				last = (Ssh) hops.toArray()[hops.size() - 1];
 			} catch (ClassCastException e) {
 				// TODO: Remove when the model will be stable
 				throw new RemoteAccessException(
@@ -88,16 +87,10 @@ public class ChannelManagerJsch {
 								+ hops.toArray()[hops.size() - 1].getClass()
 										.getCanonicalName());
 			}
-			Ssh lastNodeConfig = null;
+			
 
-			if (isDisk) {
-				lastNodeConfig = last.getDisk().getScp();
-			} else {
-				lastNodeConfig = last.getSsh();
-			}
-
-			session = jsch.getSession(lastNodeConfig.getLogin(),
-					lastNodeConfig.getServer(), lastNodeConfig.getPort());
+			session = jsch.getSession(last.getLogin(),
+					last.getServer(), last.getPort());
 			session.setUserInfo(trustedUI);
 			initProxiesPath(hops, session, trustedUI);
 
@@ -133,11 +126,11 @@ public class ChannelManagerJsch {
 	 * @throws JSchException
 	 * @throws RemoteAccessException
 	 */
-	private void initProxiesPath(LinkedHashSet<? extends Resource> hops,
+	private void initProxiesPath(LinkedHashSet<Ssh> hops,
 			Session session, UserInfo ui) throws JSchException,
 			RemoteAccessException {
 
-		Resource[] resources = hops.toArray(new Resource[0]);
+		Ssh[] resources = hops.toArray(new Ssh[0]);
 		log.debug("hopsSize: " + resources.length);
 		if (resources.length < 3) {
 			return; // no need to create proxy. Path contains source and
@@ -146,8 +139,8 @@ public class ChannelManagerJsch {
 		NCProxy lastProxy = null;
 		// i = 0 is the source. Don't create a proxy
 		for (int i = 1; i <= resources.length - 2; i++) {
-			Resource resource = resources[i];
-			Ssh ssh = resource.getSsh();
+			
+			Ssh ssh = resources[i];
 
 			NCProxy proxy = new NCProxy(ssh.getLogin(), ssh.getServer(),
 					ssh.getPort(), jsch, ui);

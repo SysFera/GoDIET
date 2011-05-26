@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<godiet:diet xmlns:godiet="http://www.sysfera.com"
+<godiet:dietPlatform xmlns:godiet="http://www.sysfera.com"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.sysfera.com ../Diet.xsd">
-	<dietServices>
+	<services>
 		<omniNames id="omniNamesDomain1">
 			<config server="Node1" remoteBinary="omniNames" />
 		</omniNames>
@@ -12,10 +12,10 @@
 		<omniNames id="omniNamesDomain3">
 			<config server="Node4" remoteBinary="omniNames" />
 		</omniNames>
-	</dietServices>
+	</services>
 
-	<dietInfrastructure>
-		<masterAgent  id="MA1">
+	<hierarchy>
+		<masterAgent id="MA1">
 			<config server="Node1" remoteBinary="dietAgent" />
 
 			<sed id="sed1">
@@ -31,15 +31,15 @@
 				<parameters string="T" />
 			</sed>
 		</masterAgent>
-			<masterAgent  id="MA2">
+		<masterAgent id="MA2">
 			<config server="Node1" remoteBinary="dietAgent" />
 			<localAgent id="LA1">
-			<config server="Node1" remoteBinary="dietAgent" />
+				<config server="Node1" remoteBinary="dietAgent" />
 
-			<sed id="sed4">
-				<config server="Node2" remoteBinary="dmat_manips_server" />
-				<parameters string="T" />
-			</sed>
+				<sed id="sed4">
+					<config server="Node2" remoteBinary="dmat_manips_server" />
+					<parameters string="T" />
+				</sed>
 			</localAgent>
 			<sed id="sed5">
 				<config server="Node3" remoteBinary="dmat_manips_server" />
@@ -50,5 +50,5 @@
 				<parameters string="T" />
 			</sed>
 		</masterAgent>
-	</dietInfrastructure>
-</godiet:diet>
+	</hierarchy>
+</godiet:dietPlatform>

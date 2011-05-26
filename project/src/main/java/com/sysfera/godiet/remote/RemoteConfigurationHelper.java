@@ -16,7 +16,7 @@ import com.sysfera.godiet.exceptions.remote.CheckException;
 import com.sysfera.godiet.exceptions.remote.LaunchException;
 import com.sysfera.godiet.exceptions.remote.PrepareException;
 import com.sysfera.godiet.exceptions.remote.StopException;
-import com.sysfera.godiet.managers.PlatformManager;
+import com.sysfera.godiet.managers.InfrastructureManager;
 import com.sysfera.godiet.model.Path;
 import com.sysfera.godiet.model.SoftwareController;
 import com.sysfera.godiet.model.SoftwareManager;
@@ -38,11 +38,11 @@ public class RemoteConfigurationHelper implements SoftwareController {
 
 	private final RemoteAccess remoteAccess;
 	private final GoDietConfiguration configuration;
-	private final PlatformManager platform;
+	private final InfrastructureManager platform;
 
 		
 	public RemoteConfigurationHelper(RemoteAccess remoteAccess,
-			GoDietConfiguration configuration, PlatformManager platform) {
+			GoDietConfiguration configuration, InfrastructureManager platform) {
 		if (remoteAccess == null || configuration == null || platform == null) {
 			log.error("Unable to create remote controller. One of constructor argument is null");
 			throw new IllegalArgumentException(
@@ -100,7 +100,7 @@ public class RemoteConfigurationHelper implements SoftwareController {
 		try {
 			// Create Remote Directory
 			// TODO: Do that in a init platform method
-			command = "mkdir -p " + remoteNode.getDisk().getScratch().getDir();
+			command = "mkdir -p " + remoteNode.getScratch().getDir();
 			remoteAccess.launch(command, path);
 
 			// Create local config file
@@ -108,7 +108,7 @@ public class RemoteConfigurationHelper implements SoftwareController {
 			File file = createConfigFile(resource);
 
 			// Copy file on remote host
-			remoteAccess.copy(file, remoteNode.getDisk().getScratch().getDir(),
+			remoteAccess.copy(file, remoteNode.getScratch().getDir(),
 					path);
 		} catch (RemoteAccessException e) {
 			log.error("Unable to configure "

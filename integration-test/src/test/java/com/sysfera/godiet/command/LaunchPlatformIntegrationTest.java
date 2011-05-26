@@ -87,7 +87,7 @@ public class LaunchPlatformIntegrationTest {
 				SoftwareController softwareController = new RemoteConfigurationHelper(
 						remoteAccess, rm.getGodietConfiguration()
 								.getGoDietConfiguration(),
-						rm.getPlatformModel());
+						rm.getInfrastructureModel());
 				DietManager dietModel = rm.getDietModel();
 				 godietAbstractFactory = new GodietAbstractFactory(softwareController,
 						new ForwarderRuntimeValidatorImpl(dietModel),

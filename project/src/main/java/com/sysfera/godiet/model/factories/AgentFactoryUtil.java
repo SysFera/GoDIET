@@ -76,7 +76,7 @@ public class AgentFactoryUtil {
 	protected static void settingRunningCommand(final OmniNames omniName,
 			final SoftwareManager softManaged) {
 		String command = "";
-		String scratchDir = softManaged.getPluggedOn().getDisk().getScratch()
+		String scratchDir = softManaged.getPluggedOn().getScratch()
 				.getDir();
 		Software agenteDescription = softManaged.getSoftwareDescription();
 		

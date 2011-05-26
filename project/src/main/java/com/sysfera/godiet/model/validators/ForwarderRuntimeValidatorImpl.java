@@ -3,7 +3,8 @@ package com.sysfera.godiet.model.validators;
 import com.sysfera.godiet.exceptions.remote.LaunchException;
 import com.sysfera.godiet.exceptions.remote.StopException;
 import com.sysfera.godiet.managers.DietManager;
-import com.sysfera.godiet.model.SoftwareManager;
+import com.sysfera.godiet.model.DietResourceManaged;
+import com.sysfera.godiet.model.generated.Forwarder;
 
 /**
  * Forwarders Runtime Validation
@@ -11,7 +12,7 @@ import com.sysfera.godiet.model.SoftwareManager;
  * @author phi
  * 
  */
-public class ForwarderRuntimeValidatorImpl extends RuntimeValidator {
+public class ForwarderRuntimeValidatorImpl extends RuntimeValidator<DietResourceManaged<Forwarder>> {
 
 	public ForwarderRuntimeValidatorImpl(DietManager dietManager) {
 		super(dietManager);
@@ -21,13 +22,13 @@ public class ForwarderRuntimeValidatorImpl extends RuntimeValidator {
 	 * TODO: note: take care about forwarder type:CLIENT or SERVER 
 	 */
 	@Override
-	public void wantLaunch(SoftwareManager ma) throws LaunchException {
+	public void wantLaunch(DietResourceManaged<Forwarder> ma) throws LaunchException {
 	
 	}
 
 	//TODO: check if childs ( la,sed ) currently running
 	@Override
-	public void wantStop(SoftwareManager managedResource) throws StopException {
+	public void wantStop(DietResourceManaged<Forwarder> managedResource) throws StopException {
 
 	}
 

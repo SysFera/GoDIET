@@ -11,9 +11,10 @@ import com.sysfera.godiet.command.Command;
 import com.sysfera.godiet.exceptions.CommandExecutionException;
 import com.sysfera.godiet.exceptions.generics.PathException;
 import com.sysfera.godiet.managers.DietManager;
-import com.sysfera.godiet.managers.PlatformManager;
+import com.sysfera.godiet.managers.InfrastructureManager;
 import com.sysfera.godiet.model.SoftwareManager;
 import com.sysfera.godiet.model.generated.Resource;
+import com.sysfera.godiet.model.generated.Software;
 
 /**
  * First check if all the resources concerned by diet deployment are
@@ -26,7 +27,7 @@ import com.sysfera.godiet.model.generated.Resource;
 public class CheckConnectivityCommand implements Command {
 	private Logger log = LoggerFactory.getLogger(getClass());
 
-	private PlatformManager platform;
+	private InfrastructureManager platform;
 	private DietManager diet;
 
 	private Resource fromResource;
@@ -54,9 +55,9 @@ public class CheckConnectivityCommand implements Command {
 	void pexecute() throws CommandExecutionException {
 		// Get all resources concerned by the diet deployment
 		Set<Resource> concernedResources = new HashSet<Resource>();
-		List<SoftwareManager> dietResourcesManaged = this.diet
+		List<SoftwareManager<? extends Software>> dietResourcesManaged = this.diet
 				.getAllManagedSoftware();
-		for (SoftwareManager softwareManaged : dietResourcesManaged) {
+		for (SoftwareManager<? extends Software> softwareManaged : dietResourcesManaged) {
 			concernedResources.add(softwareManaged.getPluggedOn());
 		}
 		//Check if a path exist with all concerned resources
@@ -79,7 +80,7 @@ public class CheckConnectivityCommand implements Command {
 	 * 
 	 * @param platform
 	 */
-	public void setPlatform(PlatformManager platform) {
+	public void setPlatform(InfrastructureManager platform) {
 		this.platform = platform;
 	}
 

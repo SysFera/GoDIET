@@ -4,7 +4,9 @@ import com.sysfera.godiet.exceptions.remote.LaunchException;
 import com.sysfera.godiet.exceptions.remote.StopException;
 import com.sysfera.godiet.managers.DietManager;
 import com.sysfera.godiet.model.DietResourceManaged;
-import com.sysfera.godiet.model.SoftwareManager;
+import com.sysfera.godiet.model.DietServiceManaged;
+import com.sysfera.godiet.model.generated.MasterAgent;
+import com.sysfera.godiet.model.generated.OmniNames;
 import com.sysfera.godiet.model.states.ResourceState;
 import com.sysfera.godiet.model.states.ResourceState.State;
 /**
@@ -12,7 +14,7 @@ import com.sysfera.godiet.model.states.ResourceState.State;
  * @author phi
  *
  */
-public class MasterAgentRuntimeValidatorImpl extends RuntimeValidator {
+public class MasterAgentRuntimeValidatorImpl extends RuntimeValidator<DietResourceManaged<MasterAgent>> {
 
 	public MasterAgentRuntimeValidatorImpl(DietManager dietManager) {
 		super(dietManager);
@@ -22,10 +24,9 @@ public class MasterAgentRuntimeValidatorImpl extends RuntimeValidator {
 	 * Check if the OmniNames running
 	 */
 	@Override
-	public void wantLaunch(SoftwareManager ma) throws LaunchException {
+	public void wantLaunch(DietResourceManaged<MasterAgent> ma) throws LaunchException {
 		// get the omniNames
-		DietResourceManaged omniNamesManaged = dietManager
-				.getManagedOmniName(ma.getPluggedOn().getDomain());
+		DietServiceManaged<OmniNames> omniNamesManaged = ma.getOmniNames();
 		
 		//Could never happen
 		if (omniNamesManaged == null) {
@@ -45,9 +46,12 @@ public class MasterAgentRuntimeValidatorImpl extends RuntimeValidator {
 		}
 	}
 
+
 	@Override
-	public void wantStop(SoftwareManager managedResource) throws StopException {
-	
+	public void wantStop(DietResourceManaged<MasterAgent> managedResource)
+			throws StopException {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

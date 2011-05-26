@@ -10,8 +10,6 @@ import org.slf4j.LoggerFactory;
 
 import com.sysfera.godiet.exceptions.generics.PathException;
 import com.sysfera.godiet.exceptions.graph.GraphDataException;
-import com.sysfera.godiet.managers.topology.TopologyManager;
-import com.sysfera.godiet.managers.topology.TopologyManagerNeo4jImpl;
 import com.sysfera.godiet.model.Path;
 import com.sysfera.godiet.model.generated.Cluster;
 import com.sysfera.godiet.model.generated.Domain;
@@ -26,7 +24,7 @@ import com.sysfera.godiet.model.generated.Resource;
  * @author phi
  * 
  */
-public class PlatformManager {
+public class InfrastructureManager {
 	private Logger log = LoggerFactory.getLogger(getClass());
 
 	// Reference all nodes,gateways, fronted by is id.
@@ -37,10 +35,11 @@ public class PlatformManager {
 	private final List<Fronted> fronteds;
 	private final List<Link> links;
 	private final List<Domain> domains;
-	private final TopologyManager topologyManager;
+	//FIXME:
+//	private final TopologyManager topologyManager;
 
-	public PlatformManager() {
-		this.topologyManager = new TopologyManagerNeo4jImpl(this);
+	public InfrastructureManager() {
+	//	this.topologyManager = new TopologyManagerNeo4jImpl(this);
 		this.domains = new ArrayList<Domain>();
 		this.nodes = new ArrayList<Node>();
 		this.clusters = new ArrayList<Cluster>();
@@ -56,8 +55,8 @@ public class PlatformManager {
 	 */
 	public void destroy()
 	{
-		if(topologyManager instanceof TopologyManagerNeo4jImpl)
-			((TopologyManagerNeo4jImpl)topologyManager).destroy();
+//		if(topologyManager instanceof TopologyManagerNeo4jImpl)
+//			((TopologyManagerNeo4jImpl)topologyManager).destroy();
 	}
 	/**
 	 * 
@@ -98,7 +97,7 @@ public class PlatformManager {
 
 	public void addLinks(List<Link> links) throws GraphDataException {
 		for (Link link : links) {
-			topologyManager.addLink(link.getFrom(), link.getTo());
+	//		topologyManager.addLink(link.getFrom(), link.getTo());
 		}
 		this.links.addAll(links);
 	}
@@ -166,7 +165,9 @@ public class PlatformManager {
 		if (from == null || to == null) {
 			throw new PathException("Try to find path between null argument");
                 }
-		return topologyManager.findPath(from, to);
+	//	return topologyManager.findPath(from, to);
+		new IllegalAccessError("Need to be implemented");
+		return null;
 	}
 
 	// TODO : Path findpath(FromDomain, ToNode); Le lancement de la config se
@@ -178,7 +179,7 @@ public class PlatformManager {
 	 * @param resourceId
 	 * @return Resource given is id
 	 */
-	public  Node getResource(String resourceId) {
+	public Node getResource(String resourceId) {
 		return resources.get(resourceId);
 	}
 }

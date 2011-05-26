@@ -7,14 +7,14 @@ import com.sysfera.godiet.model.DietServiceManaged;
 import com.sysfera.godiet.model.SoftwareController;
 import com.sysfera.godiet.model.SoftwareManager;
 import com.sysfera.godiet.model.generated.Env;
+import com.sysfera.godiet.model.generated.Node;
 import com.sysfera.godiet.model.generated.ObjectFactory;
 import com.sysfera.godiet.model.generated.OmniNames;
 import com.sysfera.godiet.model.generated.Options;
-import com.sysfera.godiet.model.generated.Var;
 import com.sysfera.godiet.model.generated.Options.Option;
 import com.sysfera.godiet.model.generated.Resource;
 import com.sysfera.godiet.model.generated.Software;
-import com.sysfera.godiet.model.utils.ResourceUtil;
+import com.sysfera.godiet.model.generated.Var;
 import com.sysfera.godiet.model.validators.RuntimeValidator;
 
 /**
@@ -26,9 +26,9 @@ import com.sysfera.godiet.model.validators.RuntimeValidator;
 public class OmniNamesFactory {
 
 	private final SoftwareController softwareController;
-	private final RuntimeValidator validator;
+	private final RuntimeValidator<DietServiceManaged<OmniNames>> validator;
 
-	public OmniNamesFactory(SoftwareController softwareController, RuntimeValidator omniNamesValidator) {
+	public OmniNamesFactory(SoftwareController softwareController, RuntimeValidator<DietServiceManaged<OmniNames>> omniNamesValidator) {
 		this.softwareController = softwareController;
 		this.validator = omniNamesValidator;
 	}
@@ -42,11 +42,11 @@ public class OmniNamesFactory {
 	 * @throws DietResourceCreationException
 	 *             if resource not plugged
 	 */
-	public DietServiceManaged create(OmniNames omniNamesDescription)
+	public DietServiceManaged<OmniNames> create(OmniNames omniNamesDescription,Node pluggedOn)
 			throws DietResourceCreationException {
-		DietServiceManaged omniNamesManaged = new DietServiceManaged(softwareController,validator);
+		DietServiceManaged<OmniNames> omniNamesManaged = new DietServiceManaged<OmniNames>(pluggedOn,softwareController,validator);
 
-		omniNamesManaged.setManagedSoftware(omniNamesDescription);
+		omniNamesManaged.setSoftwareDescription(omniNamesDescription);
 		settingConfigurationOptions(omniNamesManaged);
 		settingOmniNamesRunningCommand(omniNamesManaged);
 		return omniNamesManaged;
@@ -62,9 +62,9 @@ public class OmniNamesFactory {
 	 * @param softManaged
 	 * 
 	 */
-	private void settingOmniNamesRunningCommand(SoftwareManager softManaged) {
+	private void settingOmniNamesRunningCommand(SoftwareManager<OmniNames> softManaged) {
 		String command = "";
-		String scratchDir = softManaged.getPluggedOn().getDisk().getScratch()
+		String scratchDir = softManaged.getPluggedOn().getScratch()
 				.getDir();
 		//Add all environment node
 		Env env = softManaged.getPluggedOn().getEnv();
@@ -101,7 +101,7 @@ public class OmniNamesFactory {
 	 * @throws DietResourceCreationException
 	 *             if resource not plugged
 	 */
-	private void settingConfigurationOptions(DietServiceManaged omniNamesManaged)
+	private void settingConfigurationOptions(DietServiceManaged<OmniNames> omniNamesManaged)
 			throws DietResourceCreationException {
 		Resource plugged = omniNamesManaged.getPluggedOn();
 		if (plugged == null) {
@@ -116,9 +116,9 @@ public class OmniNamesFactory {
 		Option nameService = factory.createOptionsOption();
 		nameService.setKey("InitRef");
 		nameService.setValue("NameService=corbaname::"
-				+ plugged.getSsh().getServer()
+			//FIXME:	+ plugged.getSsh().getServer()
 				+ ":"
-				+ ((OmniNames) omniNamesManaged.getSoftwareDescription())
+				+  omniNamesManaged.getSoftwareDescription()
 						.getPort());
 		Option supportBootstrapAgent = factory.createOptionsOption();
 		supportBootstrapAgent.setKey("supportBootstrapAgent");

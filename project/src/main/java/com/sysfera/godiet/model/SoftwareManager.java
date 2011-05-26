@@ -16,14 +16,18 @@ import com.sysfera.godiet.model.validators.RuntimeValidator;
  * @author phi
  * 
  */
-public abstract class SoftwareManager {
+public abstract class SoftwareManager<T extends Software> {
 	private String runningCommand;
 
+	// Software description
+	private T softwareDescription;
+	private final Resource pluggedOn;
+	
 	private Integer pid;
 	protected final StateController stateController;
 
-	public SoftwareManager(SoftwareController softwareController,RuntimeValidator validator) {
-
+	public SoftwareManager(Resource pluggedOn, SoftwareController softwareController,RuntimeValidator<? extends SoftwareManager<T>> validator) {
+		this.pluggedOn = pluggedOn;
 		stateController = new StateController(this, softwareController,validator);
 
 	}
@@ -33,7 +37,13 @@ public abstract class SoftwareManager {
 	 * 
 	 * @return the pluggedOn or null otherwise
 	 */
-	public abstract Resource getPluggedOn();
+	public Resource getPluggedOn() {
+		if (softwareDescription != null) {
+			return pluggedOn;
+		} else {
+			return null;
+		}
+	}
 
 	/**
 	 * 
@@ -43,8 +53,11 @@ public abstract class SoftwareManager {
 		return stateController;
 	}
 
-	public abstract Software getSoftwareDescription();
 
+	
+	public T getSoftwareDescription() {
+		return softwareDescription;
+	}
 	public void setPid(Integer pid) {
 		this.pid = pid;
 	}
@@ -98,5 +111,15 @@ public abstract class SoftwareManager {
 		ResourceState currentState = this.stateController.getState();
 		currentState.stop();
 	}
+	/**
+	 * Set the agent to manage.
+	 * 
+	 * @param description
+	 */
+	public void setSoftwareDescription(T description) {
+		this.softwareDescription = description;
+	}
+
+
 
 }

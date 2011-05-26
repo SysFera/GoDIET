@@ -106,7 +106,7 @@ public class Diet {
 		this.rm.getUserManager().setRemoteAccessor(remoteJsch);
 		SoftwareController softwareController = new RemoteConfigurationHelper(
 				remoteJsch, rm.getGodietConfiguration()
-						.getGoDietConfiguration(), rm.getPlatformModel());
+						.getGoDietConfiguration(), rm.getInfrastructureModel());
 		DietManager dietModel = rm.getDietModel();
 		godietAbstractFactory = new GodietAbstractFactory(softwareController,
 				new ForwarderRuntimeValidatorImpl(dietModel),
@@ -150,7 +150,7 @@ public class Diet {
 		} catch (FileNotFoundException e) {
 			throw new CommandExecutionException("Unable to open file " + url, e);
 		}
-		XMLLoadingHelper.initPlatform(rm, inputStream);
+		XMLLoadingHelper.initInfrastructure(rm, inputStream);
 		platfromLoaded = true;
 	}
 

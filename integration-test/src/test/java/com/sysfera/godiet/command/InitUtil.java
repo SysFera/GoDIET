@@ -5,7 +5,7 @@ import java.io.InputStream;
 import junit.framework.Assert;
 
 import com.sysfera.godiet.command.xml.LoadXMLConfigurationCommand;
-import com.sysfera.godiet.command.xml.LoadXMLPlatformCommand;
+import com.sysfera.godiet.command.xml.LoadXMLInfrastructureCommand;
 import com.sysfera.godiet.exceptions.CommandExecutionException;
 import com.sysfera.godiet.managers.ResourcesManager;
 import com.sysfera.godiet.utils.xml.XMLParser;
@@ -33,7 +33,7 @@ public class InitUtil {
 	
 	public static void initPlatform(ResourcesManager rm, InputStream inputStream)
 	{
-		LoadXMLPlatformCommand xmlLoadingCommand = new LoadXMLPlatformCommand();
+		LoadXMLInfrastructureCommand xmlLoadingCommand = new LoadXMLInfrastructureCommand();
 
 		xmlLoadingCommand.setXmlParser(scanner);
 		try {
