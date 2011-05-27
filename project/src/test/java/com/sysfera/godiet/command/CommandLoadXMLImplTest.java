@@ -59,9 +59,9 @@ public class CommandLoadXMLImplTest {
 	@Test
 	public void testCommand() {
 		List<String> testCaseFiles = Arrays.asList(new String[] {
-				//"diet/2MA-1LA-6SED.xml", 
+				"diet/2MA-1LA-6SED.xml", 
 				"diet/1MA-3LA-10SED.xml",
-				//"diet/1MA-3SED.xml"
+				"diet/1MA-3SED.xml"
 				});
 		String infraCaseFiles = "infrastructure/3D-5N-3G-3L.xml";
 	
@@ -135,7 +135,7 @@ public class CommandLoadXMLImplTest {
 			xmlLoadingCommand.setXmlParser(scanner);
 			SoftwareController softwareController = new RemoteConfigurationHelper(remoteAccess, rm.getGodietConfiguration().getGoDietConfiguration(), rm.getInfrastructureModel());
 			DietManager dietModel = rm.getDietModel();
-		GodietAbstractFactory godietAbstractFactory = new GodietAbstractFactory(softwareController,
+			GodietAbstractFactory godietAbstractFactory = new GodietAbstractFactory(softwareController,
 				new ForwarderRuntimeValidatorImpl(dietModel),
 				new MasterAgentRuntimeValidatorImpl(dietModel),
 				new LocalAgentRuntimeValidatorImpl(dietModel),

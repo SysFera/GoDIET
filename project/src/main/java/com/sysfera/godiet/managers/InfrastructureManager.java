@@ -166,8 +166,8 @@ public class InfrastructureManager {
 			throw new PathException("Try to find path between null argument");
                 }
 	//	return topologyManager.findPath(from, to);
-		new IllegalAccessError("Need to be implemented");
-		return null;
+		throw new IllegalAccessError("Topology Manager not yet implemented");
+		//return null;
 	}
 
 	// TODO : Path findpath(FromDomain, ToNode); Le lancement de la config se
