@@ -40,7 +40,7 @@ public class StateController {
 	// Runtime validator
 	final RuntimeValidator validator;
 	// default check periodicity
-	private final static int periodicity = 5000;
+	private final static int PERIODICITY = 5000;
 	private final Thread checker;
 
 	public StateController(SoftwareManager agent,
@@ -59,7 +59,7 @@ public class StateController {
 		this.lastTransition = Calendar.getInstance().getTime();
 
 		// Start state checker
-		Checker ch = new Checker(periodicity);
+		Checker ch = new Checker(PERIODICITY);
 		this.checker = new Thread(ch);
 		// Down
 		toIncubate();
