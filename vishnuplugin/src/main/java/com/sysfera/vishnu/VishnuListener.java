@@ -21,17 +21,18 @@ public class VishnuListener implements Runnable {
 	private int periodicity = 4000;
 	private ListProcessesStub currentProcesses;
 	private final GoVishnuPlugin goVishnu;
-	
+	private boolean stopPolling = false;
 	public VishnuListener(GoVishnuPlugin goVishnu) {
 		this.goVishnu = goVishnu;
 		currentProcesses = new ListProcessesStub();
 	}
+
 	// Vishnu Session
 	private String sessionID;
 
-	
 	/**
 	 * Change periodicity checking. Default is 4000ms
+	 * 
 	 * @param periodicity
 	 */
 	public void setPeriodicity(int periodicity) {
@@ -39,38 +40,57 @@ public class VishnuListener implements Runnable {
 	}
 	
 	/**
+	 * Stop the polling thread
+	 * @param stopPolling
+	 */
+	public void setStopPolling(boolean stopPolling) {
+		this.stopPolling = stopPolling;
+	}
+	/**
 	 * Polling seds modification managed by vishnu ims sed.
 	 */
 	@Override
 	public void run() {
 		Thread.currentThread().setName("Vishnu Listener");
 		log.debug("Vishnu listening start");
-		do {
+
+		boolean end = false;
+
+		do{
 			try {
-				checkStatus();
-				Thread.sleep(periodicity);
+				// traitement
+
+				synchronized (this) {
+					checkStatus();
+					Thread.sleep(periodicity);
+					end = this.stopPolling;
+				}
 			} catch (InterruptedException e) {
-				log.debug("Vishnu listening stopped");
-				break;
+					log.error("FATAL: VishnuListener have been interrupted. Data could be in an incoherent state",e);
 			}
-		}while (!Thread.interrupted());
+		
+		}while (!end) ;
+
+	
 	}
 
 	/**
 	 * 
-	 * Algo: Pull processes from Vishnu API. Get news processes:
-	 * currentprocesses INTER (currentProcess UNION pulledProcesses) Currently
-	 * considering process UP if VISHNU return it.
-	 * 
+S
 	 * 
 	 */
 	private void checkStatus() {
-		ListProcessesStub pulledProcesses = VISHNU_IMSStub.getProcesses(sessionID,null);
-		
+		ListProcessesStub pulledProcesses = VISHNU_IMSStub.getProcesses(
+				sessionID, null);
+
 		@SuppressWarnings("unchecked")
-		List<ProcessIF> newProcesses = ListUtils.subtract(pulledProcesses.getProcesses(), currentProcesses.getProcesses());
+		List<ProcessIF> newProcesses = ListUtils
+				.subtract(pulledProcesses.getProcesses(),
+						currentProcesses.getProcesses());
 		@SuppressWarnings("unchecked")
-		List<ProcessIF> deletedProcesses = ListUtils.subtract(currentProcesses.getProcesses(),pulledProcesses.getProcesses());
+		List<ProcessIF> deletedProcesses = ListUtils
+				.subtract(currentProcesses.getProcesses(),
+						pulledProcesses.getProcesses());
 		for (ProcessIF processIF : newProcesses) {
 			goVishnu.newSedNotification(processIF);
 		}

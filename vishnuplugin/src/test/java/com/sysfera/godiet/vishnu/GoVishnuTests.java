@@ -84,9 +84,8 @@ public class GoVishnuTests {
 		vishnuPlugin.init(0);
 		
 		
-		Thread.yield();
-	
 		vishnuPlugin.stopListener();
+		vishnuPlugin.waitProperExit();
 		Assert.assertEquals(5,dm.getSeds().size());
 		Assert.assertNotNull(dm.getManagedSoftware("diet_1_1"));
 		Assert.assertNotNull(dm.getManagedSoftware("diet_1_2"));
@@ -99,7 +98,7 @@ public class GoVishnuTests {
 	}
 	
 	/**
-	 * Simulate a removed resource
+	 * Simulate a removed resource. Restart polling 
 	 */
 	@Test
 	public void test2()
@@ -111,14 +110,16 @@ public class GoVishnuTests {
 		ProcessIF procesRemoved = new ProcessStubImpl();
 		procesRemoved.setDietId("diet_2_1");
 		VISHNU_IMSStub.getProcesses("fake", null).getProcesses().remove(procesRemoved);
-		try {
-			Thread.sleep(100);
-		} catch (InterruptedException e) {
-			Assert.fail("Test thread interrupted." + e.getMessage());
-		}
+
+		vishnuPlugin.stopListener();
+		vishnuPlugin.waitProperExit();
+		
+		
 		Assert.assertEquals(4,dm.getSeds().size());
 		Assert.assertNull(dm.getManagedSoftware("diet_2_1"));
 		
-		vishnuPlugin.stopListener();
+		//Restart 
+		vishnuPlugin.init(0);
+
 	}
 }

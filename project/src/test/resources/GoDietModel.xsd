@@ -202,9 +202,9 @@
 		<xs:attribute name="domain" type="xs:string" use="required" />
 		<xs:attribute name="server" type="xs:string" use="required" />
 		<xs:attribute name="login" type="xs:string" use="required" />
-		<xs:attribute name="port" type="portType" default="22">
+		<xs:attribute name="port" type="portType" default="22"/>
+		<xs:attribute name="id" type="xs:ID" />
 		
-		</xs:attribute>
 	</xs:complexType>
 
 	<xs:complexType name="env">

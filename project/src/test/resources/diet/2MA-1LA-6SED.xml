@@ -47,7 +47,7 @@
 			</sed>
 			<sed id="sed6">
 				<config server="Node4" remoteBinary="dmat_manips_server" />
-				<parameters string="T" dest="commandLine|configfile|both"/>
+				<parameters string="T"/><!--    dest="commandLine|configfile|both"/> -->
 			</sed>
 		</masterAgent>
 	</dietInfrastructure>

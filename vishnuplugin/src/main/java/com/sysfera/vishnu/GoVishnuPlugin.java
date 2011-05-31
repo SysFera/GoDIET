@@ -50,7 +50,7 @@ public class GoVishnuPlugin {
 	}
 
 	public void stopListener() {
-		vishnuListenerThread.interrupt();
+		vishnuListener.setStopPolling(true);
 	}
 
 	/**
@@ -76,6 +76,7 @@ public class GoVishnuPlugin {
 			drmanaged.prepare();
 			drmanaged.start();
 		} catch (DietResourceCreationException e) {
+			//TODO: if already created, change manager
 			log.error(
 					"Unable to add software in manager " + process.getDietId(),
 					e);
@@ -112,6 +113,16 @@ public class GoVishnuPlugin {
 		}
 		log.error(process.getDietId() + " expected to be register.");
 
+	}
+
+	public void waitProperExit() {
+		
+		try {
+			log.debug("Waiting polling thread proper exit");
+			vishnuListenerThread.join();
+		} catch (InterruptedException e) {
+			log.error("FATAL. Waiting vishnu's polling thread exit failed ",e);
+		}
 	}
 
 }
