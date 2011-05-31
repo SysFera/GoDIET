@@ -92,10 +92,11 @@ public class LoadXMLInfrastructureCommand implements Command {
 	private void initInfrastructureModel(Infrastructure infrastructure)
 			throws CommandExecutionException {
 		List<Domain> domains = infrastructure.getDomain();
+		try {
 		this.rm.getInfrastructureModel().addDomains(domains);
 		this.rm.getInfrastructureModel().addNodes(infrastructure.getNode());
-		this.rm.getInfrastructureModel().addClusters(infrastructure.getCluster());
-		try {
+		//FIXME this.rm.getInfrastructureModel().addClusters(infrastructure.getCluster());
+	
 			this.rm.getInfrastructureModel().addLinks(infrastructure.getLink());
 		} catch (GraphDataException e) {
 			throw new CommandExecutionException("Unable to initialize infrastructure",e);
