@@ -10,6 +10,8 @@ import org.slf4j.LoggerFactory;
 
 import com.sysfera.godiet.exceptions.generics.PathException;
 import com.sysfera.godiet.exceptions.graph.GraphDataException;
+import com.sysfera.godiet.managers.topology.TopologyManager;
+import com.sysfera.godiet.managers.topology.TopologyManagerGSImpl;
 import com.sysfera.godiet.model.Path;
 import com.sysfera.godiet.model.generated.Cluster;
 import com.sysfera.godiet.model.generated.Domain;
@@ -29,6 +31,7 @@ public class InfrastructureManager {
 
 	// Reference all nodes,gateways, fronted by is id.
 	private final Map<String, Node> resources;
+	// voir dossier bureau GoDiet pour old version de ce fichier java.
 	// All nodes platform (even cluster node)
 	private final List<Node> nodes;
 	private final List<Cluster> clusters;
@@ -36,10 +39,11 @@ public class InfrastructureManager {
 	private final List<Link> links;
 	private final List<Domain> domains;
 	//FIXME:
-//	private final TopologyManager topologyManager;
+	private final TopologyManager topologyManager;
 
 	public InfrastructureManager() {
 	//	this.topologyManager = new TopologyManagerNeo4jImpl(this);
+		this.topologyManager = new TopologyManagerGSImpl();
 		this.domains = new ArrayList<Domain>();
 		this.nodes = new ArrayList<Node>();
 		this.clusters = new ArrayList<Cluster>();
@@ -48,16 +52,6 @@ public class InfrastructureManager {
 		this.resources = new HashMap<String, Node>();
 	}
 
-	
-	/*
-	 * TODO: Workaround to resolve the release of Neo4j's base at each Test. Resolve when use IOC Spring or new graph implementation
-	 * 
-	 */
-	public void destroy()
-	{
-//		if(topologyManager instanceof TopologyManagerNeo4jImpl)
-//			((TopologyManagerNeo4jImpl)topologyManager).destroy();
-	}
 	/**
 	 * 
 	 * @return the list nodes
@@ -65,7 +59,7 @@ public class InfrastructureManager {
 	public List<Node> getNodes() {
 		return nodes;
 	}
-
+	
 	/**
 	 * @return the clusters
 	 */
@@ -96,56 +90,37 @@ public class InfrastructureManager {
 	}
 
 	public void addLinks(List<Link> links) throws GraphDataException {
+		if (links == null) {
+			log.warn("Try to add empty list of links");
+			return;
+		}
 		for (Link link : links) {
-	//		topologyManager.addLink(link.getFrom(), link.getTo());
+			topologyManager.addLink(link);
 		}
 		this.links.addAll(links);
 	}
-	
 
-	public void addFrontends(List<Fronted> frontends) {
-		if (fronteds == null) {
-			log.warn("Try to add empty list of fronteds");
-			return;
-		}
-		for (Fronted fronted : frontends) {
-			resources.put(fronted.getId(), fronted);
-		}
-		this.fronteds.addAll(frontends);
-
-	}
-
-	public void addNodes(List<Node> computingNodes) {
+	public void addNodes(List<Node> computingNodes) throws GraphDataException {
 		if (computingNodes == null) {
 			log.warn("Try to add empty list of nodes");
 			return;
 		}
 		for (Node node : computingNodes) {
 			resources.put(node.getId(), node);
+
+			topologyManager.addNode(node);
 		}
 		this.nodes.addAll(computingNodes);
-
 	}
 
-	public void addClusters(List<Cluster> clusters2) {
-		this.clusters.addAll(clusters);
-
-	}
-
-	//TODO : replace
-//	public void addGateways(List<Gateway> gateways) {
-//		if (gateways == null) {
-//			log.warn("Try to add empty list of gateways");
-//			return;
-//		}
-//		for (Gateway gateway : gateways) {
-//			this.resources.put(gateway.getId(), gateway);
-//		}
-//		this.gateways.addAll(gateways);
-//
-//	}
-
-	public void addDomains(List<Domain> domains) {
+	public void addDomains(List<Domain> domains) throws GraphDataException {
+		if (domains == null) {
+			log.warn("Try to add empty list of domains");
+			return;
+		}
+		for (Domain domain : domains) {
+			topologyManager.addDomain(domain);
+		}
 		this.domains.addAll(domains);
 
 	}
@@ -170,10 +145,9 @@ public class InfrastructureManager {
 		//return null;
 	}
 
-	// TODO : Path findpath(FromDomain, ToNode); Le lancement de la config se
-	// fait depuis un domain. Pas nécessairement depuis un noeud existant dans
-	// la description
-
+	public TopologyManager getTopologyManager() {
+		return topologyManager;
+	}
 	/**
 	 * TODO: Change name to getNode
 	 * @param resourceId

@@ -71,11 +71,6 @@ public class CommandInitForwardersTest {
 
 	}
 
-	@After
-	public void after()
-	{
-		this.rm.getInfrastructureModel().destroy();
-	}
 	
 	@Test
 	public void testCommandInitForwarder1() {

@@ -1,24 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<godiet:platform xmlns:godiet="http://www.sysfera.com"
+<godiet:infrastructure xmlns:godiet="http://www.sysfera.com"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.sysfera.com ../Infrastructure.xsd">
-	<infrastructure>
-		<domain label="DomainLocalhost">
-			<storage label="localhd">
-				<scratch dir="/tmp/scratch_runtime" />
-				<scp login="traore" server="127.0.0.1" />
-			</storage>
-			<node disk="localhd" id="local">
-				<ssh login="traore" server="127.0.0.1" />
-				<env>
-					<var name="PATH"
-						value="/home/traore/OMNIORB-INSTALL/install/bin/:/usr/local/bin:/home/traore/VishnuProject/vishnu/TMS/build/bin:$PATH" />
-					<var name="LD_LIBRARY_PATH"
-						value="/home/traore/OMNIORB-INSTALL/install/lib:/home/traore/VishnuProject/vishnu/TMS/build/lib" />
-				</env>
-			</node>
 
-		</domain>
+	<domain id="DomainLocalhost" />
 
-	</infrastructure>
-</godiet:platform>
+	<node id="local">
+
+		<ssh domain="DomainLocalhost" login="traore" server="127.0.0.1" />
+		<env>
+			<var name="PATH"
+				value="/home/traore/OMNIORB-INSTALL/install/bin/:/usr/local/bin:/home/traore/VishnuProject/vishnu/TMS/build/bin:$PATH" />
+			<var name="LD_LIBRARY_PATH"
+				value="/home/traore/OMNIORB-INSTALL/install/lib:/home/traore/VishnuProject/vishnu/TMS/build/lib" />
+		</env>
+		<scratch dir="/tmp/scratch/" />
+	
+	</node>
+
+
+</godiet:infrastructure>
