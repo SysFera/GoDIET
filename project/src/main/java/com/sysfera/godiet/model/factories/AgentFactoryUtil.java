@@ -1,6 +1,5 @@
 package com.sysfera.godiet.model.factories;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.sysfera.godiet.exceptions.DietResourceCreationException;
@@ -10,11 +9,10 @@ import com.sysfera.godiet.model.generated.Env;
 import com.sysfera.godiet.model.generated.ObjectFactory;
 import com.sysfera.godiet.model.generated.OmniNames;
 import com.sysfera.godiet.model.generated.Options;
-import com.sysfera.godiet.model.generated.Var;
 import com.sysfera.godiet.model.generated.Options.Option;
 import com.sysfera.godiet.model.generated.Parameters;
 import com.sysfera.godiet.model.generated.Software;
-import com.sysfera.godiet.model.utils.ResourceUtil;
+import com.sysfera.godiet.model.generated.Var;
 
 /**
  * Some utils to set default configuration and running command for agent

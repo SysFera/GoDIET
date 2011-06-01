@@ -1,4 +1,4 @@
-package com.sysfera.godiet.remote.ssh;
+ package com.sysfera.godiet.remote.ssh;
 
 import java.io.File;
 import java.io.FileInputStream;

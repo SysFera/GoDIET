@@ -18,10 +18,17 @@ public class SSHKeyManager {
 
 	public SSHKeyManager(User.Ssh.Key sshDesc) {
 		this.sshDesc = sshDesc;
-		state = Status.PASSWORDNOTSET;
+		
+		
 		
 		setPrivKeyPath(this.sshDesc.getPath());
 		setPubKeyPath(this.sshDesc.getPathPub());
+		if(this.sshDesc.isEncrypted()){
+			state = Status.PASSWORDNOTSET;
+		}
+		else {
+			setPassword("");
+		}
 
 	}
 

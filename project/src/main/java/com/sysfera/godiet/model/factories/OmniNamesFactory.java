@@ -10,11 +10,10 @@ import com.sysfera.godiet.model.generated.Env;
 import com.sysfera.godiet.model.generated.ObjectFactory;
 import com.sysfera.godiet.model.generated.OmniNames;
 import com.sysfera.godiet.model.generated.Options;
-import com.sysfera.godiet.model.generated.Var;
 import com.sysfera.godiet.model.generated.Options.Option;
 import com.sysfera.godiet.model.generated.Resource;
 import com.sysfera.godiet.model.generated.Software;
-import com.sysfera.godiet.model.utils.ResourceUtil;
+import com.sysfera.godiet.model.generated.Var;
 import com.sysfera.godiet.model.validators.RuntimeValidator;
 
 /**

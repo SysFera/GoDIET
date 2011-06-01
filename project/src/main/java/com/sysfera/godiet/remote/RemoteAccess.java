@@ -1,7 +1,6 @@
 package com.sysfera.godiet.remote;
 
 import java.io.File;
-import java.util.Set;
 
 import com.sysfera.godiet.exceptions.generics.RemoteAccessException;
 import com.sysfera.godiet.exceptions.remote.AddAuthentificationException;
