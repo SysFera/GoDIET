@@ -434,7 +434,11 @@ extends Shell {
 			// (but cygwin gives an empty string, so ignore that)
 			if (commandLine != null && commandLine.trim().size() > 0) {
 				// Run the given commands
-				execute(commandLine)
+				def commands = commandLine.split('--')
+				commands.each { 
+					execute(it)
+				}
+				
 			}
 			else {
 				loadUserScript('groovysh.rc')
