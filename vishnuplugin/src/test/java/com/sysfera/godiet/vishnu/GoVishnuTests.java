@@ -107,9 +107,9 @@ public class GoVishnuTests {
 		vishnuPlugin = new GoVishnuPlugin(dm);
 		
 		vishnuPlugin.init(0);
-		ProcessIF procesRemoved = new ProcessStubImpl();
-		procesRemoved.setDietId("diet_2_1");
-		VISHNU_IMSStub.getProcesses("fake", null).getProcesses().remove(procesRemoved);
+		ProcessIF processRemoved = new ProcessStubImpl();
+		processRemoved.setDietId("diet_2_1");
+		VISHNU_IMSStub.getProcesses("fakeSessionKey", null).getProcesses().remove(processRemoved);
 
 		vishnuPlugin.stopListener();
 		vishnuPlugin.waitProperExit();

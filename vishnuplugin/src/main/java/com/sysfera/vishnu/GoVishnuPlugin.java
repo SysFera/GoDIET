@@ -17,13 +17,14 @@ import com.sysfera.godiet.model.generated.Sed;
 import com.sysfera.vishnu.api.ims.stub.ProcessIF;
 
 public class GoVishnuPlugin {
+	
 	private Logger log = LoggerFactory.getLogger(getClass());
 	private final DietManager dietModel;
 	private final GoVishnuSedFactory govishnuFactory;
 	private final VishnuListener vishnuListener;
 	private final Thread vishnuListenerThread;
-
 	public GoVishnuPlugin(DietManager dietModel) {
+		
 		this.dietModel = dietModel;
 		this.govishnuFactory = new GoVishnuSedFactory(dietModel);
 		vishnuListener = new VishnuListener(this);
@@ -45,7 +46,7 @@ public class GoVishnuPlugin {
 			vishnuListener.setPeriodicity(periodicity);
 			vishnuListenerThread.start();
 		} catch (IllegalThreadStateException e) {
-			log.debug("Vishnu listener thread already started");
+			log.warn("Vishnu listener thread already started");
 		}
 	}
 
@@ -97,7 +98,7 @@ public class GoVishnuPlugin {
 	 * 
 	 * @param process
 	 */
-	public void removeSedNotification(ProcessIF process) {
+	public void deletedSedNotification(ProcessIF process) {
 		log.debug("Sed state change: " + process.getDietId());
 		List<DietResourceManaged> seds = dietModel.getSeds();
 		for (DietResourceManaged dietResourceManaged : seds) {

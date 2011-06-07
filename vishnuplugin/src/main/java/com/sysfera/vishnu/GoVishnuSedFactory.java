@@ -58,31 +58,31 @@ public class GoVishnuSedFactory {
 	
 	
 	
-	
+	/**
+	 * Empty controller. Godiet do not handle this software
+	 * @author phi
+	 *
+	 */
 	class EmptySoftwareController implements SoftwareController{
 
 		@Override
 		public void configure(SoftwareManager resource) throws PrepareException {
-			// TODO Auto-generated method stub
 			
 		}
 
 		@Override
 		public void launch(SoftwareManager managedSofware)
 				throws LaunchException {
-			// TODO Auto-generated method stub
 			
 		}
 
 		@Override
 		public void check(SoftwareManager resource) throws CheckException {
-			// TODO Auto-generated method stub
 			
 		}
 
 		@Override
 		public void stop(SoftwareManager resource) throws StopException {
-			// TODO Auto-generated method stub
 			
 		}
 		

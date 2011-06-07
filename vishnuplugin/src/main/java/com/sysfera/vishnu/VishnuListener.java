@@ -61,7 +61,7 @@ public class VishnuListener implements Runnable {
 				// traitement
 
 				synchronized (this) {
-					checkStatus();
+					checkDiff();
 					Thread.sleep(periodicity);
 					end = this.stopPolling;
 				}
@@ -75,11 +75,10 @@ public class VishnuListener implements Runnable {
 	}
 
 	/**
-	 * 
-S
+	 * Notify goVishnu of the seds management notification
 	 * 
 	 */
-	private void checkStatus() {
+	private void checkDiff() {
 		ListProcessesStub pulledProcesses = VISHNU_IMSStub.getProcesses(
 				sessionID, null);
 
@@ -95,7 +94,7 @@ S
 			goVishnu.newSedNotification(processIF);
 		}
 		for (ProcessIF processIF : deletedProcesses) {
-			goVishnu.removeSedNotification(processIF);
+			goVishnu.deletedSedNotification(processIF);
 		}
 		currentProcesses = pulledProcesses;
 	}
