@@ -123,7 +123,7 @@ public class LaunchPlatformIntegrationTest {
 			this.rm.getUserManager().addManagedSSHKey(sshkey);
 			this.rm.getUserManager().registerKey(sshkey);
 		}
-		{// My temporary local Graal access key
+		{// My local Graal access key
 			User.Ssh.Key mykeyDesc = new User.Ssh.Key();
 			mykeyDesc.setPath("/home/phi/tmp/id_dsa");
 			SSHKeyManager sshkey = new SSHKeyManager(mykeyDesc);
