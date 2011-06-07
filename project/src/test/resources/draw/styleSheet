@@ -1,0 +1,65 @@
+// link node > domain
+edge.belongto {
+ size : 1px;
+}
+edge.belongToMarked {
+    fill-color: red;
+}
+
+// link node > node
+edge.nodeToNode {
+ shape : angle;
+ arrow-shape: none;
+ size : 5px;
+}
+edge.nodeToNodeMarked {
+ shape : angle;
+ arrow-shape: none;
+ size : 5px;
+ fill-color: red;
+}
+
+node.noeud {
+ size-mode: fit;  
+ shape: rounded-box; // forme 
+ fill-color: white; // couleur
+ stroke-mode: plain; // contour activé
+ padding: 4px, 4px; // écart entre le stroke et le texte
+ icon-mode: at-left; // placement icône
+ icon: url('C:/Users/Soon/MyWorkspace/testGraphStream/images/noeud.png'); // localisation de l'image 
+}
+node.noeudMarked {
+ size-mode: fit;  
+ shape: rounded-box;
+ fill-color: white; 
+ stroke-mode: plain; 
+ padding: 5px, 4px; 
+ icon-mode: at-left;
+ icon: url('C:/Users/Soon/MyWorkspace/testGraphStream/images/noeud.png'); 
+ // Coloration du contour car dans shortestpath
+ stroke-color: red; 
+ stroke-width: 2px;
+}
+
+node.domain {
+ shape : circle;
+ stroke-mode : plain;
+ size-mode : fit;
+ size : 50px, 35px;
+ fill-color : white;
+ padding : 10px, 10px;
+ }
+node.domainMarked {
+ shape : circle;
+ stroke-mode : plain;
+ size-mode : fit;
+ size : 50px, 35px;
+ fill-color : white;
+ padding : 10px, 10px;
+ // Coloration car dans shortestpath 
+ stroke-color: red; 
+ stroke-width: 2px;
+}
+
+
+
