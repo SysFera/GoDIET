@@ -21,8 +21,9 @@ import com.sysfera.godiet.model.generated.Node;
 import com.sysfera.godiet.model.generated.Resource;
 
 /**
- * Physical infrastructure description
- * TODO: check the unique id resource (like dietReousceid in DietManager)
+ * Physical infrastructure description TODO: check the unique id resource (like
+ * dietReousceid in DietManager)
+ * 
  * @author phi
  * 
  */
@@ -38,11 +39,11 @@ public class InfrastructureManager {
 	private final List<Fronted> fronteds;
 	private final List<Link> links;
 	private final List<Domain> domains;
-	//FIXME:
+	// FIXME:
 	private final TopologyManager topologyManager;
 
 	public InfrastructureManager() {
-	//	this.topologyManager = new TopologyManagerNeo4jImpl(this);
+		// this.topologyManager = new TopologyManagerNeo4jImpl(this);
 		this.topologyManager = new TopologyManagerGSImpl();
 		this.domains = new ArrayList<Domain>();
 		this.nodes = new ArrayList<Node>();
@@ -59,14 +60,13 @@ public class InfrastructureManager {
 	public List<Node> getNodes() {
 		return nodes;
 	}
-	
+
 	/**
 	 * @return the clusters
 	 */
 	public List<Cluster> getClusters() {
 		return clusters;
 	}
-
 
 	/**
 	 * @return the frontends
@@ -139,17 +139,18 @@ public class InfrastructureManager {
 	public Path findPath(Resource from, Resource to) throws PathException {
 		if (from == null || to == null) {
 			throw new PathException("Try to find path between null argument");
-                }
-	//	return topologyManager.findPath(from, to);
-		throw new IllegalAccessError("Topology Manager not yet implemented");
-		//return null;
+		} else {
+			return topologyManager.findPath(from, to);
+	    }
 	}
 
 	public TopologyManager getTopologyManager() {
 		return topologyManager;
 	}
+
 	/**
 	 * TODO: Change name to getNode
+	 * 
 	 * @param resourceId
 	 * @return Resource given is id
 	 */

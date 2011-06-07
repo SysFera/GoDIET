@@ -19,6 +19,7 @@ import com.sysfera.godiet.exceptions.remote.AddAuthentificationException;
 import com.sysfera.godiet.exceptions.remote.RemoveAuthentificationException;
 import com.sysfera.godiet.managers.user.SSHKeyManager;
 import com.sysfera.godiet.model.Path;
+import com.sysfera.godiet.model.Path.Hop;
 import com.sysfera.godiet.model.generated.Ssh;
 
 public class ChannelManagerJsch {
@@ -69,7 +70,7 @@ public class ChannelManagerJsch {
 
 		if (session == null) {
 
-			LinkedHashSet<Ssh> hops = path.getPath();
+			LinkedHashSet<Hop> hops = path.getPath();
 			//FIXME : handle localhost
 //			if (hops.size() < 2) {
 //				throw new RemoteAccessException(
@@ -126,7 +127,7 @@ public class ChannelManagerJsch {
 	 * @throws JSchException
 	 * @throws RemoteAccessException
 	 */
-	private void initProxiesPath(LinkedHashSet<Ssh> hops,
+	private void initProxiesPath(LinkedHashSet<Hop> hops,
 			Session session, UserInfo ui) throws JSchException,
 			RemoteAccessException {
 

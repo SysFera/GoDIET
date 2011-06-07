@@ -47,13 +47,13 @@
 			<version>1.0</version>
 			<optional>false</optional>
 		</dependency>
-		<dependency>
+	 	<dependency>
 			<artifactId>gs-ui</artifactId>
 			<groupId>org.graphstream</groupId>
 			<version>1.0</version>
 			
 			<optional>false</optional>
-		</dependency>
+		</dependency> 
 		<dependency>
 			<groupId>org.scala-lang</groupId>
 			<artifactId>scala-library</artifactId>

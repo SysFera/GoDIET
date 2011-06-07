@@ -1,0 +1,129 @@
+
+		digraph G {
+		compound = true;
+		
+	
+
+	
+
+		"Domain1" [fontsize=10,shape=ellipse];
+	
+	
+	
+
+		"Domain2" [fontsize=10,shape=ellipse];
+	
+	
+	
+
+		"Domain3" [fontsize=10,shape=ellipse];
+	
+	
+	
+
+		"Domain4" [fontsize=10,shape=ellipse];
+	
+	
+	
+
+		"Domain5" [fontsize=10,shape=ellipse];
+	
+	
+	
+
+		"Domain6" [fontsize=10,shape=ellipse];
+	
+	
+
+
+	
+		"Node1" 	[fontsize=10,shape=none,image="/home/phi/Dev/GoDIET/shell/src/test/resources/infrastructure/fig/node.png"];
+		
+			"Node1" -> "Domain1"
+		
+
+	
+		"Node2" 	[fontsize=10,shape=none,image="/home/phi/Dev/GoDIET/shell/src/test/resources/infrastructure/fig/node.png"];
+		
+			"Node2" -> "Domain2"
+		
+	
+		"Node3" 	[fontsize=10,shape=none,image="/home/phi/Dev/GoDIET/shell/src/test/resources/infrastructure/fig/node.png"];
+		
+			"Node3" -> "Domain2"
+		
+
+	
+		"Node4" 	[fontsize=10,shape=none,image="/home/phi/Dev/GoDIET/shell/src/test/resources/infrastructure/fig/node.png"];
+		
+			"Node4" -> "Domain3"
+		
+	
+		"Node5" 	[fontsize=10,shape=none,image="/home/phi/Dev/GoDIET/shell/src/test/resources/infrastructure/fig/node.png"];
+		
+			"Node5" -> "Domain3"
+		
+	
+	
+	
+		"Node6" 	[fontsize=10,shape=none,image="/home/phi/Dev/GoDIET/shell/src/test/resources/infrastructure/fig/node.png"];
+		
+			"Node6" -> "Domain4"
+		
+	
+		"ClientNodeDomain4" 	[fontsize=10,shape=none,image="/home/phi/Dev/GoDIET/shell/src/test/resources/infrastructure/fig/node.png"];
+		
+			"ClientNodeDomain4" -> "Domain5"
+		
+
+	
+		"Node7" 	[fontsize=10,shape=none,image="/home/phi/Dev/GoDIET/shell/src/test/resources/infrastructure/fig/node.png"];
+		
+			"Node7" -> "Domain5"
+		
+
+
+	
+		"Node8" 	[fontsize=10,shape=none,image="/home/phi/Dev/GoDIET/shell/src/test/resources/infrastructure/fig/node.png"];
+		
+			"Node8" -> "Domain6"
+		
+	
+		"Node9" 	[fontsize=10,shape=none,image="/home/phi/Dev/GoDIET/shell/src/test/resources/infrastructure/fig/node.png"];
+		
+			"Node9" -> "Domain6"
+		
+
+
+	
+	
+		"Node1"->"Node2" [style=dotted,color=".7 .3 1.0"];
+	
+	
+		"Node2"->"Node4" [style=dotted,color=".7 .3 1.0"];
+	
+	
+		"Node4"->"Node1" [style=dotted,color=".7 .3 1.0"];
+	
+	
+	
+		"Node4"->"Node6" [style=dotted,color=".7 .3 1.0"];
+	
+	
+		"Node4"->"Node7" [style=dotted,color=".7 .3 1.0"];
+	
+	
+		"Node4"->"Node9" [style=dotted,color=".7 .3 1.0"];
+	
+	
+	
+		"Node6"->"Node3" [style=dotted,color=".7 .3 1.0"];
+	
+	
+	
+		"Node6"->"Node8" [style=dotted,color=".7 .3 1.0"];
+	
+
+
+		}
+	

@@ -109,7 +109,15 @@
 				</xs:appinfo>
 			</xs:annotation>
 		</xs:attribute>
-		<xs:attribute name="accessref" type="xs:IDREF" use="required" />
+		<xs:attribute name="accessref" type="xs:IDREF" use="required" >
+			<xs:annotation>
+				<xs:appinfo>
+					<jaxb:property>
+						<jaxb:baseType name="Ssh" />
+					</jaxb:property>
+				</xs:appinfo>
+			</xs:annotation>
+		</xs:attribute>
 
 	</xs:complexType>
 

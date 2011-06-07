@@ -55,7 +55,7 @@ public class Link {
     @XmlAttribute(required = true)
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
-    protected Object accessref;
+    protected Ssh accessref;
 
     /**
      * Gets the value of the fromDomain property.
@@ -134,10 +134,10 @@ public class Link {
      * 
      * @return
      *     possible object is
-     *     {@link Object }
+     *     {@link Ssh }
      *     
      */
-    public Object getAccessref() {
+    public Ssh getAccessref() {
         return accessref;
     }
 
@@ -149,7 +149,7 @@ public class Link {
      *     {@link Object }
      *     
      */
-    public void setAccessref(Object value) {
+    public void setAccessref(Ssh value) {
         this.accessref = value;
     }
 

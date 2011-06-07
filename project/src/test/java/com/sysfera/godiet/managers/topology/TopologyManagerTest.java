@@ -4,6 +4,7 @@ import java.io.InputStream;
 
 import junit.framework.Assert;
 
+import org.graphstream.graph.Path;
 import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -48,14 +49,17 @@ public class TopologyManagerTest {
 
 	@Test
 	public void topologyTest() {
-		tm = (TopologyManagerGSImpl)rm.getInfrastructureModel().getTopologyManager();
+		tm = (TopologyManagerGSImpl)rm.getInfrastructureModel().getTopologyManager();		
 		Draw d = new Draw(tm);
 		d.display();
+		d.drawShortestPath("Node1", "Domain6");		
 	}
-	
+		
 	public static void main(String[] args) {
 		TopologyManagerTest test = new TopologyManagerTest();
+		System.setProperty("gs.ui.renderer",
+		"org.graphstream.ui.j2dviewer.J2DGraphRenderer");
 		test.setupTest();
-		test.topologyTest();
+		test.topologyTest();		
 	}
 }
