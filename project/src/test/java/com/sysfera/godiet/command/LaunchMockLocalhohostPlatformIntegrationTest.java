@@ -7,8 +7,13 @@ import junit.framework.Assert;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.sysfera.godiet.command.init.InitForwardersCommand;
 import com.sysfera.godiet.command.init.util.XMLLoadingHelper;
@@ -26,7 +31,6 @@ import com.sysfera.godiet.exceptions.remote.AddAuthentificationException;
 import com.sysfera.godiet.managers.DietManager;
 import com.sysfera.godiet.managers.ResourcesManager;
 import com.sysfera.godiet.managers.user.SSHKeyManager;
-import com.sysfera.godiet.model.SoftwareController;
 import com.sysfera.godiet.model.factories.GodietAbstractFactory;
 import com.sysfera.godiet.model.generated.User;
 import com.sysfera.godiet.model.validators.ForwarderRuntimeValidatorImpl;
@@ -35,19 +39,25 @@ import com.sysfera.godiet.model.validators.MasterAgentRuntimeValidatorImpl;
 import com.sysfera.godiet.model.validators.OmniNamesRuntimeValidatorImpl;
 import com.sysfera.godiet.model.validators.SedRuntimeValidatorImpl;
 import com.sysfera.godiet.remote.RemoteAccess;
-import com.sysfera.godiet.remote.RemoteAccessMock;
 import com.sysfera.godiet.remote.RemoteConfigurationHelper;
 import com.sysfera.godiet.utils.xml.XmlScannerJaxbImpl;
 
+@RunWith(SpringJUnit4ClassRunner.class)
+@DirtiesContext
+@ContextConfiguration(locations = { "/spring/spring-config.xml","/spring/ssh-context.xml" ,"/spring/ssh-context.xml"})
 public class LaunchMockLocalhohostPlatformIntegrationTest {
 	private Logger log = LoggerFactory.getLogger(getClass());
+
+	@Autowired
 	private ResourcesManager rm;
-	RemoteAccess remoteAccess = new RemoteAccessMock();
+
 	GodietAbstractFactory godietAbstractFactory;
+	@Autowired
+	RemoteAccess remoteAccess;
+
 	@Before
 	public void init() {
-		rm = new ResourcesManager();
-		
+
 		try {
 			// Loading configuration
 			{
@@ -56,8 +66,7 @@ public class LaunchMockLocalhohostPlatformIntegrationTest {
 				InputStream inputStream = getClass().getClassLoader()
 						.getResourceAsStream(configurationFile);
 				XMLLoadingHelper.initConfig(rm, inputStream);
-				this.rm.getUserManager().setRemoteAccessor(remoteAccess);
-		
+
 			}
 			{
 				String platformTestCase = "infrastructure/testbed-platform.xml";
@@ -75,16 +84,19 @@ public class LaunchMockLocalhohostPlatformIntegrationTest {
 				xmlLoadingCommand.setRm(rm);
 				xmlLoadingCommand.setXmlInput(inputStream);
 				xmlLoadingCommand.setXmlParser(scanner);
-				SoftwareController softwareController = new RemoteConfigurationHelper(remoteAccess, rm.getGodietConfiguration().getGoDietConfiguration(), rm.getPlatformModel());
+				RemoteConfigurationHelper softwareController = new RemoteConfigurationHelper(
+						rm.getGodietConfiguration().getGoDietConfiguration(),
+						rm.getPlatformModel());
+				softwareController.setRemoteAccess(remoteAccess);
 				DietManager dietModel = rm.getDietModel();
-				godietAbstractFactory = new GodietAbstractFactory(softwareController,
-						new ForwarderRuntimeValidatorImpl(dietModel),
+				godietAbstractFactory = new GodietAbstractFactory(
+						softwareController, new ForwarderRuntimeValidatorImpl(
+								dietModel),
 						new MasterAgentRuntimeValidatorImpl(dietModel),
 						new LocalAgentRuntimeValidatorImpl(dietModel),
 						new SedRuntimeValidatorImpl(dietModel),
 						new OmniNamesRuntimeValidatorImpl(dietModel));
 				xmlLoadingCommand.setAbstractFactory(godietAbstractFactory);
-
 
 				xmlLoadingCommand.execute();
 
@@ -99,11 +111,12 @@ public class LaunchMockLocalhohostPlatformIntegrationTest {
 			Assert.fail("SSH key not found");
 
 		try {
-			User.Ssh.Key sshDesc = new  User.Ssh.Key();
+			User.Ssh.Key sshDesc = new User.Ssh.Key();
 			sshDesc.setPath(urlFile.getPath());
 			SSHKeyManager sshkey = new SSHKeyManager(sshDesc);
 			sshkey.setPassword("godiet");
-			this.rm.getUserManager().addManagedSSHKey(new SSHKeyManager(sshDesc));
+			this.rm.getUserManager().addManagedSSHKey(
+					new SSHKeyManager(sshDesc));
 			remoteAccess.addItentity(sshkey);
 		} catch (AddAuthentificationException e) {
 			Assert.fail("Unable to load testbed key");

@@ -8,8 +8,13 @@ import junit.framework.Assert;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.sysfera.godiet.command.init.InitForwardersCommand;
 import com.sysfera.godiet.command.init.util.XMLLoadingHelper;
@@ -25,23 +30,23 @@ import com.sysfera.godiet.model.validators.LocalAgentRuntimeValidatorImpl;
 import com.sysfera.godiet.model.validators.MasterAgentRuntimeValidatorImpl;
 import com.sysfera.godiet.model.validators.OmniNamesRuntimeValidatorImpl;
 import com.sysfera.godiet.model.validators.SedRuntimeValidatorImpl;
-import com.sysfera.godiet.remote.RemoteAccess;
-import com.sysfera.godiet.remote.RemoteAccessMock;
 import com.sysfera.godiet.remote.RemoteConfigurationHelper;
 import com.sysfera.godiet.utils.xml.XmlScannerJaxbImpl;
 
+@RunWith(SpringJUnit4ClassRunner.class)
+@DirtiesContext
+@ContextConfiguration(locations = { "/spring/spring-config.xml","/spring/ssh-context.xml" })
 public class CommandInitForwardersTest {
 
 	private Logger log = LoggerFactory.getLogger(getClass());
+	@Autowired
 	private ResourcesManager rm;
 	LoadXMLDietCommand xmlLoadingCommand;
-	RemoteAccess remoteAccess = new RemoteAccessMock();
+	
 	GodietAbstractFactory godietAbstractFactory;
 
 	@Before
 	public void initRM() {
-
-		rm = new ResourcesManager();
 
 		String configurationFile = "configuration/configuration.xml";
 		InputStream inputStream = getClass().getClassLoader()
@@ -53,10 +58,10 @@ public class CommandInitForwardersTest {
 
 		}
 		SoftwareController softwareController = new RemoteConfigurationHelper(
-				remoteAccess, rm.getGodietConfiguration()
+				rm.getGodietConfiguration()
 						.getGoDietConfiguration(), rm.getPlatformModel());
 		DietManager dietModel = rm.getDietModel();
-		 godietAbstractFactory = new GodietAbstractFactory(softwareController,
+		godietAbstractFactory = new GodietAbstractFactory(softwareController,
 				new ForwarderRuntimeValidatorImpl(dietModel),
 				new MasterAgentRuntimeValidatorImpl(dietModel),
 				new LocalAgentRuntimeValidatorImpl(dietModel),
@@ -71,12 +76,12 @@ public class CommandInitForwardersTest {
 	}
 
 	@After
-	public void after()
-	{
+	public void after() {
 		this.rm.getPlatformModel().destroy();
 	}
-	
+
 	@Test
+	@DirtiesContext
 	public void testCommandInitForwarder1() {
 
 		String platformTestCase = "infrastructure/3D-5N-3G-3L.xml";
@@ -114,6 +119,7 @@ public class CommandInitForwardersTest {
 	}
 
 	@Test
+	@DirtiesContext
 	public void testCommandInitForwarder2() {
 
 		try {

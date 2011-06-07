@@ -1,7 +1,11 @@
 package com.sysfera.godiet.remote;
 
+import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 /**
  * 
@@ -9,6 +13,8 @@ import org.slf4j.LoggerFactory;
  * @author phi
  * 
  */
+
+
 public class ProxyMock {
 	private Logger log = LoggerFactory.getLogger(getClass());
 
@@ -27,12 +33,12 @@ public class ProxyMock {
 		this.proxy = proxy;
 	}
 
-	public void connect(String username,String destHost, int destPort) {
+	public void connect(String username, String destHost, int destPort) {
 		if (proxy != null) {
 			proxy.connect(username, host, port);
 		}
 		log.debug("Create a proxy command on " + username + "@" + host + ":"
-				+ port + " to "+destHost+":" + destPort);
-		
+				+ port + " to " + destHost + ":" + destPort);
+
 	}
 }

@@ -46,6 +46,8 @@ import com.sysfera.godiet.utils.xml.XmlScannerJaxbImpl;
 		"/spring/ssh-context.xml" })
 public class LaunchPlatformIntegrationTest {
 	private Logger log = LoggerFactory.getLogger(getClass());
+	
+	@Autowired
 	private ResourcesManager rm;
 
 	@Autowired
@@ -55,12 +57,11 @@ public class LaunchPlatformIntegrationTest {
 
 	@Before
 	public void init() {
-		rm = new ResourcesManager();
 
 		try {
 			// Loading configuration
 			{
-				String configurationFile = "configuration/configuration.xml";
+				String configurationFile = "configuration/configuration-local.xml";
 
 				InputStream inputStream = getClass().getClassLoader()
 						.getResourceAsStream(configurationFile);
@@ -84,10 +85,11 @@ public class LaunchPlatformIntegrationTest {
 				xmlLoadingCommand.setRm(rm);
 				xmlLoadingCommand.setXmlInput(inputStream);
 				xmlLoadingCommand.setXmlParser(scanner);
-				SoftwareController softwareController = new RemoteConfigurationHelper(
-						remoteAccess, rm.getGodietConfiguration()
+				RemoteConfigurationHelper softwareController = new RemoteConfigurationHelper(
+						 rm.getGodietConfiguration()
 								.getGoDietConfiguration(),
 						rm.getPlatformModel());
+				softwareController.setRemoteAccess(remoteAccess);
 				DietManager dietModel = rm.getDietModel();
 				 godietAbstractFactory = new GodietAbstractFactory(softwareController,
 						new ForwarderRuntimeValidatorImpl(dietModel),

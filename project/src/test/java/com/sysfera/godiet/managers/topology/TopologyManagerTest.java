@@ -7,8 +7,13 @@ import junit.framework.Assert;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.sysfera.godiet.command.init.util.XMLLoadingHelper;
 import com.sysfera.godiet.command.xml.LoadXMLDietCommand;
@@ -32,14 +37,18 @@ import com.sysfera.godiet.remote.RemoteAccessMock;
 import com.sysfera.godiet.remote.RemoteConfigurationHelper;
 import com.sysfera.godiet.utils.xml.XmlScannerJaxbImpl;
 
+@RunWith(SpringJUnit4ClassRunner.class)
+@DirtiesContext
+@ContextConfiguration(locations = { "/spring/spring-config.xml","/spring/ssh-context.xml" })
 public class TopologyManagerTest {
 	private Logger log = LoggerFactory.getLogger(getClass());
+	@Autowired
 	private ResourcesManager rm;
-	RemoteAccess remoteAccess = new RemoteAccessMock();
+	
 
 	@Before
 	public void setupTest() {
-		rm = new ResourcesManager();
+
 		try {
 			// Loading configuration
 			{
@@ -65,8 +74,7 @@ public class TopologyManagerTest {
 				xmlLoadingCommand.setRm(rm);
 				xmlLoadingCommand.setXmlInput(inputStream);
 				xmlLoadingCommand.setXmlParser(scanner);
-				SoftwareController softwareController = new RemoteConfigurationHelper(
-						remoteAccess, rm.getGodietConfiguration()
+				SoftwareController softwareController = new RemoteConfigurationHelper(rm.getGodietConfiguration()
 								.getGoDietConfiguration(),
 						rm.getPlatformModel());
 				DietManager dietModel = rm.getDietModel();

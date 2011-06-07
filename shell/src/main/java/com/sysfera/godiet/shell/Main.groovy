@@ -21,13 +21,14 @@ import java.util.concurrent.Callable
 import jline.Terminal
 
 import org.codehaus.groovy.runtime.InvokerHelper
-import org.codehaus.groovy.tools.shell.IO;
+import org.codehaus.groovy.tools.shell.IO
 import org.codehaus.groovy.tools.shell.util.HelpFormatter
-import org.codehaus.groovy.tools.shell.util.Logger;
+import org.codehaus.groovy.tools.shell.util.Logger
 import org.codehaus.groovy.tools.shell.util.MessageSource
 import org.codehaus.groovy.tools.shell.util.NoExitSecurityManager
 import org.fusesource.jansi.Ansi
 import org.fusesource.jansi.AnsiConsole
+import org.springframework.context.support.ClassPathXmlApplicationContext
 /**
  * Main CLI entry-point for <tt>godiesh<</tt>.
  *
@@ -125,7 +126,12 @@ class Main
         }
         // Boot up the shell... :-)
         GoDietSh shell = new GoDietSh(io)
+		def ctx = new ClassPathXmlApplicationContext( [ "/spring/spring-config.xml","/spring/ssh-context.xml" ] as String[])
+		def diet = ctx.getBean('diet')
 
+		diet.initConfig()
+		shell.setDiet(diet)
+		
         SecurityManager psm = System.getSecurityManager()
         System.setSecurityManager(new NoExitSecurityManager())
 

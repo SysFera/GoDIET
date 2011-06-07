@@ -91,8 +91,7 @@ extends Shell {
 		interp = new Interpreter(classLoader, binding)
 		registrar.call(this)
 		
-		diet = new Diet();
-		diet.initConfig()
+		
 		log.debug("Godiet shell started")
 		
 	}

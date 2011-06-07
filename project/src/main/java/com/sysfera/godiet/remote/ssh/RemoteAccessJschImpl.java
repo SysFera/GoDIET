@@ -9,6 +9,7 @@ import java.util.Properties;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.jcraft.jsch.Channel;
 import com.jcraft.jsch.ChannelExec;
@@ -29,6 +30,7 @@ import com.sysfera.godiet.remote.RemoteAccess;
 public class RemoteAccessJschImpl implements RemoteAccess {
 	private Logger log = LoggerFactory.getLogger(getClass());
 
+	
 	private ChannelManagerJsch channelManager;
 
 	// TODO: Extract JSCH default options.

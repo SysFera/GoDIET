@@ -8,8 +8,13 @@ import junit.framework.Assert;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.sysfera.godiet.command.init.util.XMLLoadingHelper;
 import com.sysfera.godiet.command.xml.LoadXMLDietCommand;
@@ -32,17 +37,21 @@ import com.sysfera.godiet.remote.RemoteConfigurationHelper;
 import com.sysfera.godiet.utils.xml.XMLParser;
 import com.sysfera.godiet.utils.xml.XmlScannerJaxbImpl;
 
+@RunWith(SpringJUnit4ClassRunner.class)
+@DirtiesContext
+@ContextConfiguration(locations = { "/spring/spring-config.xml","/spring/ssh-context.xml" })
 public class CommandLoadXMLImplTest {
 	private Logger log = LoggerFactory.getLogger(getClass());
-	RemoteAccess remoteAccess = new RemoteAccessMock();
+	
+	@Autowired
 	ResourcesManager rm;
 
 	@Before
 	public void initGodietConfig() {
-		rm = new ResourcesManager();
 
 		// Loading configuration
 		{
+			
 			String configurationFile = "configuration/configuration.xml";
 
 			InputStream inputStream = getClass().getClassLoader()
@@ -55,22 +64,27 @@ public class CommandLoadXMLImplTest {
 		}
 
 	}
-
+	@DirtiesContext
 	@Test
 	public void testCommand() {
 		List<String> testCaseFiles = Arrays.asList(new String[] {
-				"diet/2MA-1LA-6SED.xml", "diet/1MA-3LA-10SED.xml",
-				"diet/1MA-3SED.xml", });
-		String platfomCaseFiles = "infrastructure/3D-5N-3G-3L.xml";
+				"diet/2MA-1LA-6SED.xml", 
+				"diet/1MA-3LA-10SED.xml",
+				"diet/1MA-3SED.xml"
+				});
+		String infraCaseFiles = "infrastructure/3D-5N-3G-3L.xml";
 
 		XMLParser scanner = new XmlScannerJaxbImpl();
 
 		LoadXMLDietCommand xmlLoadingCommand = new LoadXMLDietCommand();
 
 		xmlLoadingCommand.setXmlParser(scanner);
-		SoftwareController softwareController = new RemoteConfigurationHelper(remoteAccess, rm.getGodietConfiguration().getGoDietConfiguration(), rm.getPlatformModel());
+		SoftwareController softwareController = new RemoteConfigurationHelper(
+				rm.getGodietConfiguration()
+						.getGoDietConfiguration(), rm.getPlatformModel());
 		DietManager dietModel = rm.getDietModel();
-		GodietAbstractFactory godietAbstractFactory = new GodietAbstractFactory(softwareController,
+		GodietAbstractFactory godietAbstractFactory = new GodietAbstractFactory(
+				softwareController,
 				new ForwarderRuntimeValidatorImpl(dietModel),
 				new MasterAgentRuntimeValidatorImpl(dietModel),
 				new LocalAgentRuntimeValidatorImpl(dietModel),
@@ -78,21 +92,21 @@ public class CommandLoadXMLImplTest {
 				new OmniNamesRuntimeValidatorImpl(dietModel));
 
 		xmlLoadingCommand.setAbstractFactory(godietAbstractFactory);
-
+		// Load platform
+		InputStream infraInputStream = getClass().getClassLoader()
+				.getResourceAsStream(infraCaseFiles);
+		try {
+			XMLLoadingHelper.initPlatform(rm, infraInputStream);
+		} catch (CommandExecutionException e1) {
+		Assert.fail("unable to load infrastructure: " + infraCaseFiles);
+		}
 		for (String testCaseFile : testCaseFiles) {
 			// Retry with the same config
-			GoDietConfiguration config = rm.getGodietConfiguration()
-					.getGoDietConfiguration();
-			// A Faire : Découper tous les fichiers en 2. Puis faire en sorte de
-			// refaire les tests (Hashmap ?)
-			rm = new ResourcesManager();
-			rm.setGoDietConfiguration(config);
-			// Load platform
-			InputStream platformInputStream = getClass().getClassLoader()
-					.getResourceAsStream(platfomCaseFiles);
+
+
 
 			try {
-				XMLLoadingHelper.initPlatform(rm, platformInputStream);
+				rm.setDietModel(new DietManager());
 
 				xmlLoadingCommand.setRm(rm);
 
@@ -110,7 +124,7 @@ public class CommandLoadXMLImplTest {
 		}
 
 	}
-
+@DirtiesContext
 	@Test
 	public void testCountDietElement1() {
 
@@ -131,17 +145,18 @@ public class CommandLoadXMLImplTest {
 			xmlLoadingCommand.setRm(rm);
 			xmlLoadingCommand.setXmlInput(inputStream);
 			xmlLoadingCommand.setXmlParser(scanner);
-			SoftwareController softwareController = new RemoteConfigurationHelper(remoteAccess, rm.getGodietConfiguration().getGoDietConfiguration(), rm.getPlatformModel());
+			SoftwareController softwareController = new RemoteConfigurationHelper(
+					rm.getGodietConfiguration()
+							.getGoDietConfiguration(), rm.getPlatformModel());
 			DietManager dietModel = rm.getDietModel();
-		GodietAbstractFactory godietAbstractFactory = new GodietAbstractFactory(softwareController,
-				new ForwarderRuntimeValidatorImpl(dietModel),
-				new MasterAgentRuntimeValidatorImpl(dietModel),
-				new LocalAgentRuntimeValidatorImpl(dietModel),
-				new SedRuntimeValidatorImpl(dietModel),
-				new OmniNamesRuntimeValidatorImpl(dietModel));
+			GodietAbstractFactory godietAbstractFactory = new GodietAbstractFactory(
+					softwareController, new ForwarderRuntimeValidatorImpl(
+							dietModel), new MasterAgentRuntimeValidatorImpl(
+							dietModel), new LocalAgentRuntimeValidatorImpl(
+							dietModel), new SedRuntimeValidatorImpl(dietModel),
+					new OmniNamesRuntimeValidatorImpl(dietModel));
 
 			xmlLoadingCommand.setAbstractFactory(godietAbstractFactory);
-
 
 			xmlLoadingCommand.execute();
 			PlatformManager platform = rm.getPlatformModel();
@@ -189,6 +204,7 @@ public class CommandLoadXMLImplTest {
 	}
 
 	@Test
+	@DirtiesContext
 	public void testCountDietElement2() {
 
 		try {
@@ -207,17 +223,18 @@ public class CommandLoadXMLImplTest {
 			xmlLoadingCommand.setRm(rm);
 			xmlLoadingCommand.setXmlInput(inputStream);
 			xmlLoadingCommand.setXmlParser(scanner);
-			SoftwareController softwareController = new RemoteConfigurationHelper(remoteAccess, rm.getGodietConfiguration().getGoDietConfiguration(), rm.getPlatformModel());
+			SoftwareController softwareController = new RemoteConfigurationHelper(
+					rm.getGodietConfiguration()
+							.getGoDietConfiguration(), rm.getPlatformModel());
 			DietManager dietModel = rm.getDietModel();
-		GodietAbstractFactory godietAbstractFactory = new GodietAbstractFactory(softwareController,
-				new ForwarderRuntimeValidatorImpl(dietModel),
-				new MasterAgentRuntimeValidatorImpl(dietModel),
-				new LocalAgentRuntimeValidatorImpl(dietModel),
-				new SedRuntimeValidatorImpl(dietModel),
-				new OmniNamesRuntimeValidatorImpl(dietModel));
+			GodietAbstractFactory godietAbstractFactory = new GodietAbstractFactory(
+					softwareController, new ForwarderRuntimeValidatorImpl(
+							dietModel), new MasterAgentRuntimeValidatorImpl(
+							dietModel), new LocalAgentRuntimeValidatorImpl(
+							dietModel), new SedRuntimeValidatorImpl(dietModel),
+					new OmniNamesRuntimeValidatorImpl(dietModel));
 
 			xmlLoadingCommand.setAbstractFactory(godietAbstractFactory);
-
 
 			xmlLoadingCommand.execute();
 			PlatformManager platform = rm.getPlatformModel();

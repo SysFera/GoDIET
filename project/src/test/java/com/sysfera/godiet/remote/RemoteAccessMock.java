@@ -7,9 +7,15 @@ import java.io.File;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import com.jcraft.jsch.Channel;
 import com.sysfera.godiet.exceptions.generics.RemoteAccessException;
 import com.sysfera.godiet.exceptions.remote.RemoveAuthentificationException;
 import com.sysfera.godiet.managers.user.SSHKeyManager;
@@ -23,6 +29,7 @@ import com.sysfera.godiet.model.generated.Resource;
  * @author phi
  * 
  */
+
 public class RemoteAccessMock implements RemoteAccess {
 	private Logger log = LoggerFactory.getLogger(getClass());
 	Set<SSHKeyManager> keyBunch = new HashSet<SSHKeyManager>();
@@ -76,6 +83,10 @@ public class RemoteAccessMock implements RemoteAccess {
 		for (int i = 1; i < pathResources.length; i++) {
 			pathInfo += "-->" + ((Resource) pathResources[i]).getId();
 		}
+		Channel channel = null;
+
+		if (channel != null)
+			log.debug("Find a buffered stored path between: ");
 		Resource remoteNode = (Resource) pathResources[pathResources.length - 1];
 		if (remoteAccessDown)
 			throw new RemoteAccessException("Unable to copy file "
@@ -109,6 +120,10 @@ public class RemoteAccessMock implements RemoteAccess {
 		for (int i = 1; i < pathResources.length; i++) {
 			pathInfo += "-->" + ((Resource) pathResources[i]).getId();
 		}
+		Channel channel = null;
+
+		if (channel != null)
+			log.debug("Find a buffered stored path between: ");
 		Resource remoteNode = ((Resource) pathResources[pathResources.length - 1]);
 		if (remoteAccessDown) {
 			throw new RemoteAccessException("Unable to check process " + pid
@@ -120,12 +135,11 @@ public class RemoteAccessMock implements RemoteAccess {
 
 	}
 
-
-
 	@Override
 	public void removeItentity(SSHKeyManager sshkey)
 			throws RemoveAuthentificationException {
 		keyBunch.remove(sshkey);
-		
+
 	}
+
 }

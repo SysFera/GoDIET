@@ -6,8 +6,13 @@ import junit.framework.Assert;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.sysfera.godiet.command.init.util.XMLLoadingHelper;
 import com.sysfera.godiet.command.prepare.PrepareServicesCommand;
@@ -27,15 +32,20 @@ import com.sysfera.godiet.remote.RemoteAccessMock;
 import com.sysfera.godiet.remote.RemoteConfigurationHelper;
 import com.sysfera.godiet.utils.xml.XmlScannerJaxbImpl;
 
+@RunWith(SpringJUnit4ClassRunner.class)
+@DirtiesContext
+@ContextConfiguration(locations = { "/spring/spring-config.xml" ,"/spring/ssh-context.xml"})
 public class CommandPrepareServicesTest {
 
 	private Logger log = LoggerFactory.getLogger(getClass());
+	@Autowired
 	private ResourcesManager rm;
-	RemoteAccess remoteAccess = new RemoteAccessMock();
-
+	
+	@Autowired
+	RemoteAccess remoteAccess;
 	@Before
 	public void init() {
-		rm = new ResourcesManager();
+
 		try {
 			// Loading configuration
 			{
@@ -61,17 +71,21 @@ public class CommandPrepareServicesTest {
 				xmlLoadingCommand.setRm(rm);
 				xmlLoadingCommand.setXmlInput(inputStream);
 				xmlLoadingCommand.setXmlParser(scanner);
-				SoftwareController softwareController = new RemoteConfigurationHelper(remoteAccess, rm.getGodietConfiguration().getGoDietConfiguration(), rm.getPlatformModel());
+				RemoteConfigurationHelper softwareController = new RemoteConfigurationHelper(
+						rm.getGodietConfiguration()
+								.getGoDietConfiguration(),
+						rm.getPlatformModel());
+				softwareController.setRemoteAccess(remoteAccess);
 				DietManager dietModel = rm.getDietModel();
-		GodietAbstractFactory godietAbstractFactory = new GodietAbstractFactory(softwareController,
-				new ForwarderRuntimeValidatorImpl(dietModel),
-				new MasterAgentRuntimeValidatorImpl(dietModel),
-				new LocalAgentRuntimeValidatorImpl(dietModel),
-				new SedRuntimeValidatorImpl(dietModel),
-				new OmniNamesRuntimeValidatorImpl(dietModel));
+				GodietAbstractFactory godietAbstractFactory = new GodietAbstractFactory(
+						softwareController, new ForwarderRuntimeValidatorImpl(
+								dietModel),
+						new MasterAgentRuntimeValidatorImpl(dietModel),
+						new LocalAgentRuntimeValidatorImpl(dietModel),
+						new SedRuntimeValidatorImpl(dietModel),
+						new OmniNamesRuntimeValidatorImpl(dietModel));
 
 				xmlLoadingCommand.setAbstractFactory(godietAbstractFactory);
-
 
 				xmlLoadingCommand.execute();
 

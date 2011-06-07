@@ -10,7 +10,9 @@
 				<key path="/home/phi/.ssh/id" />
 			</ssh>
 		</user>
-
+		<!-- Host node4 proxycommand="ssh rotule nc {node4} {portnode44}" -->
+		<proxy host="node4" login="pmartinez"  server="rotule" port="22" type="nc"/> 
+		<!-- Host  -->
 		
 	</goDietConfiguration>
 </godiet:configuration>

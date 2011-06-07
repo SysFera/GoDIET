@@ -1,5 +1,7 @@
 package com.sysfera.godiet.managers;
 
+import org.springframework.stereotype.Component;
+
 import com.sysfera.godiet.model.generated.GoDietConfiguration;
 import com.sysfera.godiet.users.UserManager;
 
@@ -8,8 +10,10 @@ import com.sysfera.godiet.users.UserManager;
  * @author phi
  *
  */
+@Component
 public class ConfigurationManager {
 
+	
 	private GoDietConfiguration goDietConfiguration;
 	private UserManager userManager;
 	

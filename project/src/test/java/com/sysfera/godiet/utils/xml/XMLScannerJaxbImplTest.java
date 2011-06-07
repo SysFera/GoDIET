@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 
 import com.sysfera.godiet.exceptions.XMLParseException;
 
+
 public class XMLScannerJaxbImplTest {
 	private Logger log = LoggerFactory.getLogger(getClass());
 

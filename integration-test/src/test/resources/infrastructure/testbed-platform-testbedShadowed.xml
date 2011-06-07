@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<godiet:platform xmlns:godiet="http://www.sysfera.com"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.sysfera.com ../Infrastructure.xsd">
+	<infrastructure>
+		<domain label="DomainSysfera">
+			<storage label="fake">
+				<scratch dir="/tmp/fake" />
+				<scp server="fake" login="fake" />
+			</storage>
+			<node disk="fake" id="myLaptop">
+				<ssh login="phi" server="192.168.0.14" />
+			</node>
+			<gateway id="myLaptopGateway" disk="fake">
+				<ssh login="phi" server="192.168.0.14" />
+			</gateway>
+		</domain>
+		<domain label="DomainEns">
+			<node disk="fake" id="graal">
+				<ssh login="pmartinez" server="140.77.166.19" />
+			</node>
+			<gateway id="graalGW" disk="fake">
+				<ssh login="pmartinez" server="140.77.166.19" />
+			</gateway>
+		</domain>
+
+		<domain label="Domain1">
+			<storage label="Disk1">
+				<scratch dir="/tmp/scratch_runtime/Domain1" />
+				<scp server="192.168.1.11" login="godiet" />
+			</storage>
+
+			<node id="Node1" disk="Disk1">
+				<ssh server="192.168.1.11" login="godiet" />
+				<env>
+					<var name="PATH"
+						value="/home/godiet/GRAAL/build/bin:/home/godiet/GRAAL/build/bin/examples/dmat_manips/:$PATH" />
+					<var name="LD_LIBRARY_PATH" value="/home/godiet/GRAAL/build/lib" />
+				</env>
+			</node>
+			<gateway id="G1" disk="Disk1">
+				<ssh server="192.169.1.1" login="godiet" />
+				<env>
+					<var name="PATH"
+						value="/home/godiet/GRAAL/build/bin:/home/godiet/GRAAL/build/bin/examples/dmat_manips/:$PATH" />
+					<var name="LD_LIBRARY_PATH" value="/home/godiet/GRAAL/build/lib" />
+				</env>
+			</gateway>
+		</domain>
+		<domain label="Domain2">
+			<storage label="Disk2">
+				<scratch dir="/tmp/scratch_runtime/Domain2" />
+				<scp server="192.168.2.11" login="godiet" />
+			</storage>
+
+			<node id="Node2" disk="Disk2">
+				<ssh server="192.168.2.11" login="godiet" />
+				<env>
+					<var name="PATH"
+						value="/home/godiet/GRAAL/build/bin:/home/godiet/GRAAL/build/bin/examples/dmat_manips/:$PATH" />
+					<var name="LD_LIBRARY_PATH" value="/home/godiet/GRAAL/build/lib" />
+				</env>
+			</node>
+			<node id="Node3" disk="Disk2">
+				<ssh server="192.168.2.12" login="godiet" />
+				<env>
+					<var name="PATH"
+						value="/home/godiet/GRAAL/build/bin:/home/godiet/GRAAL/build/bin/examples/dmat_manips/:$PATH" />
+					<var name="LD_LIBRARY_PATH" value="/home/godiet/GRAAL/build/lib" />
+				</env>
+			</node>
+			<gateway id="G2" disk="Disk2">
+				<ssh server="192.169.1.2" login="godiet" />
+				<env>
+					<var name="PATH"
+						value="/home/godiet/GRAAL/build/bin:/home/godiet/GRAAL/build/bin/examples/dmat_manips/:$PATH" />
+					<var name="LD_LIBRARY_PATH" value="/home/godiet/GRAAL/build/lib" />
+				</env>
+			</gateway>
+		</domain>
+		<domain label="Domain3">
+			<storage label="Disk3">
+				<scratch dir="/tmp/scratch_runtime/Domain3" />
+				<scp server="192.168.3.12" login="godiet" />
+			</storage>
+			<node id="Node4" disk="Disk3">
+				<ssh server="192.168.3.11" login="godiet" />
+				<env>
+					<var name="PATH"
+						value="/home/godiet/GRAAL/build/bin:/home/godiet/GRAAL/build/bin/examples/dmat_manips/:$PATH" />
+					<var name="LD_LIBRARY_PATH" value="/home/godiet/GRAAL/build/lib" />
+				</env>
+			</node>
+			<node id="Node5" disk="Disk3">
+				<ssh server="192.168.3.12" login="godiet" />
+				<env>
+					<var name="PATH"
+						value="/home/godiet/GRAAL/build/bin:/home/godiet/GRAAL/build/bin/examples/dmat_manips/:$PATH" />
+					<var name="LD_LIBRARY_PATH" value="/home/godiet/GRAAL/build/lib" />
+				</env>
+			</node>
+			<gateway id="G3" disk="Disk3">
+				<ssh server="192.169.1.3" login="godiet" />
+				<env>
+					<var name="PATH"
+						value="/home/godiet/GRAAL/build/bin:/home/godiet/GRAAL/build/bin/examples/dmat_manips/:$PATH" />
+					<var name="LD_LIBRARY_PATH" value="/home/godiet/GRAAL/build/lib" />
+				</env>
+			</gateway>
+		</domain>
+		<link from="myLaptopGateway" to="graalGW" />
+		<link from="graalGW" to="G1" />
+
+
+		<link from="G1" to="G2" />
+		<link from="G2" to="G3" />
+		<link from="G3" to="G1" />
+	</infrastructure>
+</godiet:platform>

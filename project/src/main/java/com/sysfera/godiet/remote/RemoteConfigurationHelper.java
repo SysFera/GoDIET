@@ -9,6 +9,8 @@ import java.io.OutputStreamWriter;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import com.sysfera.godiet.exceptions.generics.PathException;
 import com.sysfera.godiet.exceptions.generics.RemoteAccessException;
@@ -33,26 +35,34 @@ import com.sysfera.godiet.model.generated.Scratch;
  * @author phi
  * 
  */
+
 public class RemoteConfigurationHelper implements SoftwareController {
 	private Logger log = LoggerFactory.getLogger(getClass());
 
-	private final RemoteAccess remoteAccess;
+	@Autowired
+	private  RemoteAccess remoteAccess;
+	
 	private final GoDietConfiguration configuration;
+	
 	private final PlatformManager platform;
 
 		
-	public RemoteConfigurationHelper(RemoteAccess remoteAccess,
+	public RemoteConfigurationHelper(
 			GoDietConfiguration configuration, PlatformManager platform) {
-		if (remoteAccess == null || configuration == null || platform == null) {
+		if (configuration == null || platform == null) {
 			log.error("Unable to create remote controller. One of constructor argument is null");
 			throw new IllegalArgumentException(
 					"Unable to create remote controller. One of constructor argument is null");
 		}
-		this.remoteAccess= remoteAccess;
+	
 		this.configuration = configuration;
 		this.platform = platform;
 		
 
+	}
+	
+	public void setRemoteAccess(RemoteAccess remoteAccess) {
+		this.remoteAccess = remoteAccess;
 	}
 	/**
 	 * Prepare physical resource to launch the Software - Search the physical

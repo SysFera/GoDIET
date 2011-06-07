@@ -5,6 +5,8 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import com.sysfera.godiet.exceptions.remote.AddAuthentificationException;
 import com.sysfera.godiet.exceptions.remote.RemoveAuthentificationException;
@@ -20,10 +22,12 @@ import com.sysfera.godiet.remote.RemoteAccess;
  * @author phi
  * 
  */
+@Component
 public class UserManager {
 	private Logger log = LoggerFactory.getLogger(getClass());
 
 	private final List<SSHKeyManager> managedKeys;
+	@Autowired
 	private RemoteAccess remoteAccessor;
 
 	public UserManager() {

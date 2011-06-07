@@ -2,7 +2,7 @@
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
 	targetNamespace="http://www.sysfera.com" xmlns="http://www.sysfera.com"
 	elementFormDefault="unqualified">
-	<xs:include schemaLocation="GoDietNG.xsd" />
+	<xs:include schemaLocation="GoDietModel.xsd" />
 
 	<xs:element name="platform">
 		<xs:complexType>

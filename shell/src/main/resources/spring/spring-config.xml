@@ -8,10 +8,7 @@
 	<context:component-scan base-package="com.sysfera.godiet" />
 	<context:annotation-config />
 
-	<bean id="channelManager" class="com.sysfera.godiet.remote.ssh.ChannelManagerJsch"
-		destroy-method="destroy" />
 
-	<bean id="remoteAccess" class="com.sysfera.godiet.remote.ssh.RemoteAccessJschImpl">
-		<property name="channelManager" ref="channelManager" />
-	</bean>
+	<bean id="diet" class="com.sysfera.godiet.Diet"/>
+	
 </beans>

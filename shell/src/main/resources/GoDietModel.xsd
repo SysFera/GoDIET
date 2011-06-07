@@ -6,7 +6,7 @@
 
 
 
-	
+
 
 
 
@@ -19,6 +19,25 @@
 				</xs:annotation>
 			</xs:element>
 			<xs:element name="user" type="user" minOccurs="0" />
+			<xs:element name="proxy" minOccurs="0" maxOccurs="unbounded">
+				<xs:complexType>
+					<xs:attribute name="host" type="xs:string" />
+					<xs:attribute name="login" type="xs:string" />
+					<xs:attribute name="server" type="xs:string" />
+					<xs:attribute name="destination" type="xs:string" />
+					<xs:attribute name="port" type="portType" />
+					<xs:attribute name="type">
+						<xs:annotation>
+							<xs:documentation>Only netcat</xs:documentation>
+						</xs:annotation>
+						<xs:simpleType>
+							<xs:restriction base="xs:string">
+								<xs:enumeration value="nc"></xs:enumeration>
+							</xs:restriction>
+						</xs:simpleType>
+					</xs:attribute>
+				</xs:complexType>
+			</xs:element>
 		</xs:sequence>
 		<xs:attribute name="debug" type="xs:int" default="1" />
 		<xs:attribute name="saveStdOut" type="xs:boolean"
@@ -52,6 +71,19 @@
 									</xs:annotation>
 									<xs:attribute name="path" type="xs:string" use="required" />
 									<xs:attribute name="pathPub" type="xs:string" use="optional" />
+
+									<xs:attribute name="encrypted" type="xs:boolean"
+										use="optional" default="true">
+										<xs:annotation>
+											<xs:documentation>
+												if your key need a passphrase (i.e is
+												encrypted), it isn't
+												automatically loaded. Use ssh command to
+												initalize
+												passphrase.
+										</xs:documentation>
+										</xs:annotation>
+									</xs:attribute>
 								</xs:complexType>
 							</xs:element>
 						</xs:sequence>
