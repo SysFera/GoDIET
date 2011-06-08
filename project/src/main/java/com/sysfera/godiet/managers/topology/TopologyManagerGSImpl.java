@@ -37,6 +37,7 @@ public class TopologyManagerGSImpl implements TopologyManager {
 
 	@Override
 	public void addLink(Link link) throws GraphDataException {
+		
 		String nodeFrom = link.getFrom().getId();
 		String nodeTo = link.getTo().getId();
 		String idLink = nodeFrom + "_" + nodeTo;

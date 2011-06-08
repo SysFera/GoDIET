@@ -1,6 +1,7 @@
 package com.sysfera.godiet.managers.topology;
 
 
+import com.sysfera.godiet.exceptions.generics.PathException;
 import com.sysfera.godiet.exceptions.graph.GraphDataException;
 import com.sysfera.godiet.model.Path;
 import com.sysfera.godiet.model.generated.Domain;
@@ -18,6 +19,6 @@ public interface TopologyManager {
 	public abstract void addDomain(Domain d) throws GraphDataException;	
 	public abstract void addNode(Node n) throws GraphDataException;
 	public abstract void addLink(Link link) throws GraphDataException;
-	public abstract Path findPath(Resource from, Resource to);	
+	public abstract Path findPath(Resource from, Resource to) throws PathException;	
 	
 }

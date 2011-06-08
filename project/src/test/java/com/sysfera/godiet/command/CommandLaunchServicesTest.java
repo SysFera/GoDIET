@@ -47,7 +47,7 @@ public class CommandLaunchServicesTest {
 				XMLLoadingHelper.initConfig(rm, inputStream);
 			}
 			{
-				String platformTestCase = "infrastructure/testbed-platform.xml";
+				String platformTestCase = "infrastructure/testbed.xml";
 				InputStream inputStreamPlatform = getClass().getClassLoader()
 						.getResourceAsStream(platformTestCase);
 				XMLLoadingHelper.initInfrastructure(rm, inputStreamPlatform);
