@@ -28,7 +28,6 @@
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context</artifactId>
 			<version>${spring.version}</version>
-			<scope>runtime</scope>
 			<exclusions>
 				<exclusion>
 					<groupId>commons-logging</groupId>
