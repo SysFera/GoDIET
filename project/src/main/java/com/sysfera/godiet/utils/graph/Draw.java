@@ -5,10 +5,14 @@ import java.net.URL;
 import java.util.Iterator;
 import java.util.List;
 
+import org.graphstream.algorithm.generator.DorogovtsevMendesGenerator;
+import org.graphstream.algorithm.generator.Generator;
 import org.graphstream.graph.Edge;
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.Path;
+import org.graphstream.graph.implementations.SingleGraph;
 
+import com.sysfera.godiet.exceptions.generics.PathException;
 import com.sysfera.godiet.managers.topology.TopologyManagerGSImpl;
 
 public class Draw {
@@ -25,8 +29,15 @@ public class Draw {
 		gs.addAttribute("ui.quality");
 		gs.addAttribute("ui.antialias");
 
-		// Generator gen = new WattsStrogatzGenerator(20, 2, 0.5);
-		// gen.addSink(gs);s
+
+		Generator gen = new DorogovtsevMendesGenerator();
+		gen.addSink(gs);
+		gen.begin();
+		for(int i=0; i<100; i++) {
+		    gen.nextEvents();
+		}
+		gen.end();
+		
 	}
 
 	public void display() {
@@ -45,7 +56,7 @@ public class Draw {
 		}
 	}
 
-	public void drawShortestPath(String source, String dest) {
+	public void drawShortestPath(String source, String dest) throws PathException {
 		Path p = topologyManager.shortestPath(source, dest);
 
 		// Coloration of the shortPath

@@ -1,6 +1,9 @@
 package com.sysfera.godiet.managers.topology;
 
 import java.io.InputStream;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
 
 import junit.framework.Assert;
 
@@ -15,6 +18,7 @@ import com.sysfera.godiet.exceptions.generics.PathException;
 import com.sysfera.godiet.managers.InfrastructureManager;
 import com.sysfera.godiet.managers.ResourcesManager;
 import com.sysfera.godiet.model.Path;
+import com.sysfera.godiet.model.Path.Hop;
 import com.sysfera.godiet.model.generated.Resource;
 import com.sysfera.godiet.remote.RemoteAccess;
 import com.sysfera.godiet.remote.RemoteAccessMock;
@@ -32,7 +36,6 @@ public class TopologyManagerTest {
 			// Loading configuration
 			{
 				String configurationFile = "configuration/configuration.xml";
-
 				InputStream inputStream = getClass().getClassLoader()
 						.getResourceAsStream(configurationFile);
 				XMLLoadingHelper.initConfig(rm, inputStream);
@@ -50,6 +53,7 @@ public class TopologyManagerTest {
 			String infrastructureTestCase = "infrastructure/6D-10N-7G-3L.xml";
 			InputStream infrastructureInputStream = getClass().getClassLoader()
 					.getResourceAsStream(infrastructureTestCase);
+
 			try {
 				XMLLoadingHelper.initInfrastructure(rm,
 						infrastructureInputStream);
@@ -60,7 +64,7 @@ public class TopologyManagerTest {
 						.getTopologyManager();
 				Resource source;
 				Resource destination;
-				Path path = null ;
+				Path path = null;
 
 				/** Source = Destination **/
 				source = infrastructureModel.getResource("Node1");
@@ -70,38 +74,119 @@ public class TopologyManagerTest {
 				} catch (PathException e) {
 					Assert.fail(e.getMessage());
 				}
-				Assert.assertEquals(path.getPath().size(), 0);
+				// We expect to find a path'size of 1 pointed at the source node
+				Assert.assertEquals(path.getPath().size(), 1);
+				Assert.assertEquals(((Hop) path.getPath().toArray()[0])
+						.getDestination().getId(), "Node1");
 
-				
-				
 				/** Source et Dest n'existent pas **/
 				source = infrastructureModel.getResource("Fake1");
 				destination = infrastructureModel.getResource("Fake2");
 				boolean exceptionPathNotExist = false;
 				try {
 					topologyManager.findPath(source, destination);
-
 				} catch (PathException e) {
-					//Comportement recherche
+					// Comportement recherche
+					log.debug(e.getMessage());
 					exceptionPathNotExist = true;
 				}
-
 				Assert.assertEquals(exceptionPathNotExist, true);
 
-				/** dource = destination et source et destination n'existent pas **/
+				/** Source = destination et source et destination n'existent pas **/
+				source = infrastructureModel.getResource("Fake1");
+				destination = infrastructureModel.getResource("Fake1");
+				boolean exceptionPathNotExist2 = false;
+				try {
+					topologyManager.findPath(source, destination);
+				} catch (PathException e) {
+					// Comportement recherche
+					log.debug(e.getMessage());
+					exceptionPathNotExist2 = true;
+				}
+				Assert.assertEquals(exceptionPathNotExist2, true);
 
 				/** Source qui existe dest qui n'existe pas **/
+				source = infrastructureModel.getResource("Node1");
+				destination = infrastructureModel.getResource("Fake1");
+				boolean exceptionPathNotExist3 = false;
+				try {
+					topologyManager.findPath(source, destination);
+				} catch (PathException e) {
+					// Comportement recherche
+					log.debug(e.getMessage());
+					exceptionPathNotExist3 = true;
+				}
+				Assert.assertEquals(exceptionPathNotExist3, true);
 
-				/**  Dest qui n'existe pas et source qui existe **/
+				/** Source qui n'existe pas et dest qui existe **/
+				source = infrastructureModel.getResource("Fake1");
+				destination = infrastructureModel.getResource("Node6");
+				boolean exceptionPathNotExist4 = false;
+				try {
+					topologyManager.findPath(source, destination);
+				} catch (PathException e) {
+					// Comportement recherche
+					log.debug(e.getMessage());
+					exceptionPathNotExist4 = true;
+				}
+				Assert.assertEquals(exceptionPathNotExist4, true);
 
-				/**  Source dest joignable domain différent. Tester tous les hops **/
+				/**
+				 * Source dest joignable domain différent. Tester tous les hops
+				 **/
+				source = infrastructureModel.getResource("Node1");
+				destination = infrastructureModel.getResource("Node8");
+				try {
+					path = topologyManager.findPath(source, destination);
+				} catch (PathException e) {
+					Assert.fail(e.getMessage());
+				}
+				Assert.assertEquals(path.getPath().size(), 4);
+				Object[] o = path.getPath().toArray();
+				Assert.assertEquals(((Hop) o[0]).getDestination().getId(),
+						"Node2");
+				Assert.assertEquals(((Hop) o[0]).getLink().getId(),
+						"node2interface1");
+				Assert.assertEquals(((Hop) o[1]).getDestination().getId(),
+						"Node4");
+				Assert.assertEquals(((Hop) o[1]).getLink().getId(),
+						"node4interface1");
+				Assert.assertEquals(((Hop) o[2]).getDestination().getId(),
+						"Node6");
+				Assert.assertEquals(((Hop) o[2]).getLink().getId(),
+						"node6interface1");
+				Assert.assertEquals(((Hop) o[3]).getDestination().getId(),
+						"Node8");
+				Assert.assertEquals(((Hop) o[3]).getLink().getId(),
+						"node8interface1");
 
-				
 				/** Source dest joignable même domaine. Tester tous les hops **/
+				source = infrastructureModel.getResource("Node4");
+				destination = infrastructureModel.getResource("Node5");
+				try {
+					path = topologyManager.findPath(source, destination);
+				} catch (PathException e) {
+					Assert.fail(e.getMessage());
+				}
+				Assert.assertEquals(path.getPath().size(), 1);
+				Assert.assertEquals(((Hop) path.getPath().toArray()[0])
+						.getDestination().getId(), "Node5");
+				Assert.assertEquals(((Hop) path.getPath().toArray()[0])
+						.getLink().getId(), "node5interface1");
 
 				/** Source et dest non joignable **/
+				source = infrastructureModel.getResource("Node9");
+				destination = infrastructureModel.getResource("Node1");
+				boolean exceptionPathNotExist5 = false;
+				try {
+					topologyManager.findPath(source, destination);
+				} catch (PathException e) {
+					// Comportement recherche
+					log.debug(e.getMessage());
+					exceptionPathNotExist5 = true;
+				}
+				Assert.assertEquals(exceptionPathNotExist5, true);
 
-				
 			} catch (CommandExecutionException e) {
 				log.error("Test Fail", e);
 				Assert.fail(e.getMessage());
@@ -113,10 +198,156 @@ public class TopologyManagerTest {
 	public void searchPath2() {
 		{
 			String platformTestCase = "infrastructure/testbed.xml";
-			InputStream inputStreamPlatform = getClass().getClassLoader()
+			InputStream platforInputStream = getClass().getClassLoader()
 					.getResourceAsStream(platformTestCase);
 			try {
-				XMLLoadingHelper.initInfrastructure(rm, inputStreamPlatform);
+				XMLLoadingHelper.initInfrastructure(rm, platforInputStream);
+				InfrastructureManager infrastructureModel = rm
+						.getInfrastructureModel();
+				TopologyManager topologyManager = infrastructureModel
+						.getTopologyManager();
+				Resource source;
+				Resource destination;
+				Path path = null;
+
+				/** Source = Destination **/
+				source = infrastructureModel.getResource("miaou");
+				destination = infrastructureModel.getResource("miaou");
+				try {
+					path = topologyManager.findPath(source, destination);
+				} catch (PathException e) {
+					Assert.fail(e.getMessage());
+				}
+				// We expect to find a path'size of 1 pointed at the source node
+				Assert.assertEquals(path.getPath().size(), 1);
+				Assert.assertEquals(((Hop) path.getPath().toArray()[0])
+						.getDestination().getId(), "miaou");
+
+				/** Source et Dest n'existent pas **/
+				source = infrastructureModel.getResource("Fake1");
+				destination = infrastructureModel.getResource("Fake2");
+				boolean exceptionPathNotExist = false;
+				try {
+					topologyManager.findPath(source, destination);
+				} catch (PathException e) {
+					// Comportement recherche
+					log.debug(e.getMessage());
+					exceptionPathNotExist = true;
+				}
+				Assert.assertEquals(exceptionPathNotExist, true);
+
+				/** Source = destination et source et destination n'existent pas **/
+				source = infrastructureModel.getResource("Fake1");
+				destination = infrastructureModel.getResource("Fake1");
+				boolean exceptionPathNotExist2 = false;
+				try {
+					topologyManager.findPath(source, destination);
+				} catch (PathException e) {
+					// Comportement recherche
+					log.debug(e.getMessage());
+					exceptionPathNotExist2 = true;
+				}
+				Assert.assertEquals(exceptionPathNotExist2, true);
+
+				/** Source qui existe dest qui n'existe pas **/
+				source = infrastructureModel.getResource("phi-laptop");
+				destination = infrastructureModel.getResource("Fake1");
+				boolean exceptionPathNotExist3 = false;
+				try {
+					topologyManager.findPath(source, destination);
+				} catch (PathException e) {
+					// Comportement recherche
+					log.debug(e.getMessage());
+					exceptionPathNotExist3 = true;
+				}
+				Assert.assertEquals(exceptionPathNotExist3, true);
+
+				/** Source qui n'existe pas et dest qui existe **/
+				source = infrastructureModel.getResource("Fake1");
+				destination = infrastructureModel.getResource("Node1");
+				boolean exceptionPathNotExist4 = false;
+				try {
+					topologyManager.findPath(source, destination);
+				} catch (PathException e) {
+					// Comportement recherche
+					log.debug(e.getMessage());
+					exceptionPathNotExist4 = true;
+				}
+				Assert.assertEquals(exceptionPathNotExist4, true);
+
+				/**
+				 * Source dest joignable domain différent. Tester tous les hops
+				 **/
+				source = infrastructureModel.getResource("phi-laptop");
+				destination = infrastructureModel.getResource("Node4");
+				try {
+					path = topologyManager.findPath(source, destination);
+				} catch (PathException e) {
+					Assert.fail(e.getMessage());
+				}
+				Assert.assertEquals(path.getPath().size(), 5);
+				Object[] o = path.getPath().toArray();
+				Assert.assertEquals(((Hop) o[0]).getDestination().getId(),
+						"graal");
+				Assert.assertEquals(((Hop) o[0]).getLink().getId(),
+						"graalinterface1");
+				Assert.assertEquals(((Hop) o[1]).getDestination().getId(),
+						"testbedVM");
+				Assert.assertEquals(((Hop) o[1]).getLink().getId(),
+						"testbedVMinterface1");
+				Assert.assertEquals(((Hop) o[2]).getDestination().getId(),
+						"Node1");
+				Assert.assertEquals(((Hop) o[2]).getLink().getId(),
+						"node1interface1");
+				Assert.assertEquals(((Hop) o[3]).getDestination().getId(),
+						"Node5");
+				Assert.assertEquals(((Hop) o[3]).getLink().getId(),
+						"node5interface2");
+				Assert.assertEquals(((Hop) o[4]).getDestination().getId(),
+						"Node4");
+				Assert.assertEquals(((Hop) o[4]).getLink().getId(),
+						"node4interface1");
+
+				/** Source dest joignable même domaine. Tester tous les hops **/
+				source = infrastructureModel.getResource("Node2");
+				destination = infrastructureModel.getResource("Node3");
+				try {
+					path = topologyManager.findPath(source, destination);
+				} catch (PathException e) {
+					Assert.fail(e.getMessage());
+				}
+				Assert.assertEquals(path.getPath().size(), 1);
+				Assert.assertEquals(((Hop) path.getPath().toArray()[0])
+						.getDestination().getId(), "Node3");
+				Assert.assertEquals(((Hop) path.getPath().toArray()[0])
+						.getLink().getId(), "node3interface1");
+
+				source = infrastructureModel.getResource("Node3");
+				destination = infrastructureModel.getResource("Node2");
+				try {
+					path = topologyManager.findPath(source, destination);
+				} catch (PathException e) {
+					Assert.fail(e.getMessage());
+				}
+				Assert.assertEquals(path.getPath().size(), 1);
+				Assert.assertEquals(((Hop) path.getPath().toArray()[0])
+						.getDestination().getId(), "Node2");
+				Assert.assertEquals(((Hop) path.getPath().toArray()[0])
+						.getLink().getId(), "node2interface1");
+				
+				/** Source et dest non joignable **/
+				source = infrastructureModel.getResource("Node2");
+				destination = infrastructureModel.getResource("miaou");
+				boolean exceptionPathNotExist5 = false;
+				try {
+					topologyManager.findPath(source, destination);
+				} catch (PathException e) {
+					// Comportement recherche
+					log.debug(e.getMessage());
+					exceptionPathNotExist5 = true;
+				}
+				Assert.assertEquals(exceptionPathNotExist5, true);
+
 			} catch (CommandExecutionException e) {
 				log.error("Test Fail", e);
 				Assert.fail(e.getMessage());
