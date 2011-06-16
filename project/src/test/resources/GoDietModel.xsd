@@ -432,15 +432,8 @@
 
 	<xs:complexType name="config">
 		<xs:attribute name="remoteBinary" type="xs:string" use="required" />
-		<xs:attribute name="server" type="xs:string" use="required">
-			<xs:annotation>
-				<xs:appinfo>
-					<jaxb:property>
-						<jaxb:baseType name="Node" />
-					</jaxb:property>
-				</xs:appinfo>
-			</xs:annotation>
-		</xs:attribute>
+		<xs:attribute name="server" type="xs:string" use="required"/>
+		
 	</xs:complexType>
 
 	<xs:complexType name="parameters">
