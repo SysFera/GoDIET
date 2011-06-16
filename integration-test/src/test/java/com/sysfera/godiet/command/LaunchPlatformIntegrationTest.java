@@ -25,12 +25,10 @@ import com.sysfera.godiet.command.stop.StopForwardersCommand;
 import com.sysfera.godiet.command.stop.StopServicesCommand;
 import com.sysfera.godiet.command.xml.LoadXMLDietCommand;
 import com.sysfera.godiet.exceptions.CommandExecutionException;
-import com.sysfera.godiet.exceptions.remote.AddAuthentificationException;
 import com.sysfera.godiet.managers.DietManager;
 import com.sysfera.godiet.managers.ResourcesManager;
 import com.sysfera.godiet.managers.user.SSHKeyManager;
-import com.sysfera.godiet.model.SoftwareController;
-import com.sysfera.godiet.model.factories.GodietAbstractFactory;
+import com.sysfera.godiet.model.factories.GodietMetaFactory;
 import com.sysfera.godiet.model.generated.User;
 import com.sysfera.godiet.model.validators.ForwarderRuntimeValidatorImpl;
 import com.sysfera.godiet.model.validators.LocalAgentRuntimeValidatorImpl;
@@ -53,7 +51,7 @@ public class LaunchPlatformIntegrationTest {
 	@Autowired
 	private RemoteAccessJschImpl remoteAccess;
 
-	private GodietAbstractFactory godietAbstractFactory;
+	private GodietMetaFactory godietAbstractFactory;
 
 	@Before
 	public void init() {
@@ -86,12 +84,11 @@ public class LaunchPlatformIntegrationTest {
 				xmlLoadingCommand.setXmlInput(inputStream);
 				xmlLoadingCommand.setXmlParser(scanner);
 				RemoteConfigurationHelper softwareController = new RemoteConfigurationHelper(
-						 rm.getGodietConfiguration()
-								.getGoDietConfiguration(),
+						 rm.getGodietConfiguration(),
 						rm.getPlatformModel());
 				softwareController.setRemoteAccess(remoteAccess);
 				DietManager dietModel = rm.getDietModel();
-				 godietAbstractFactory = new GodietAbstractFactory(softwareController,
+				 godietAbstractFactory = new GodietMetaFactory(softwareController,
 						new ForwarderRuntimeValidatorImpl(dietModel),
 						new MasterAgentRuntimeValidatorImpl(dietModel),
 						new LocalAgentRuntimeValidatorImpl(dietModel),
