@@ -24,7 +24,7 @@ import com.sysfera.godiet.managers.DietManager;
 import com.sysfera.godiet.managers.ResourcesManager;
 import com.sysfera.godiet.model.DietResourceManaged;
 import com.sysfera.godiet.model.SoftwareController;
-import com.sysfera.godiet.model.factories.GodietAbstractFactory;
+import com.sysfera.godiet.model.factories.GodietMetaFactory;
 import com.sysfera.godiet.model.validators.ForwarderRuntimeValidatorImpl;
 import com.sysfera.godiet.model.validators.LocalAgentRuntimeValidatorImpl;
 import com.sysfera.godiet.model.validators.MasterAgentRuntimeValidatorImpl;
@@ -43,7 +43,7 @@ public class CommandInitForwardersTest {
 	private ResourcesManager rm;
 	LoadXMLDietCommand xmlLoadingCommand;
 	
-	GodietAbstractFactory godietAbstractFactory;
+	GodietMetaFactory godietAbstractFactory;
 
 	@Before
 	public void initRM() {
@@ -59,9 +59,9 @@ public class CommandInitForwardersTest {
 		}
 		SoftwareController softwareController = new RemoteConfigurationHelper(
 				rm.getGodietConfiguration()
-						.getGoDietConfiguration(), rm.getPlatformModel());
+						, rm.getPlatformModel());
 		DietManager dietModel = rm.getDietModel();
-		godietAbstractFactory = new GodietAbstractFactory(softwareController,
+		godietAbstractFactory = new GodietMetaFactory(softwareController,
 				new ForwarderRuntimeValidatorImpl(dietModel),
 				new MasterAgentRuntimeValidatorImpl(dietModel),
 				new LocalAgentRuntimeValidatorImpl(dietModel),

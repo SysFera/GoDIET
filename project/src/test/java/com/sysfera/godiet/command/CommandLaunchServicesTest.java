@@ -21,21 +21,20 @@ import com.sysfera.godiet.command.xml.LoadXMLDietCommand;
 import com.sysfera.godiet.exceptions.CommandExecutionException;
 import com.sysfera.godiet.managers.DietManager;
 import com.sysfera.godiet.managers.ResourcesManager;
-import com.sysfera.godiet.model.SoftwareController;
-import com.sysfera.godiet.model.factories.GodietAbstractFactory;
+import com.sysfera.godiet.model.factories.GodietMetaFactory;
 import com.sysfera.godiet.model.validators.ForwarderRuntimeValidatorImpl;
 import com.sysfera.godiet.model.validators.LocalAgentRuntimeValidatorImpl;
 import com.sysfera.godiet.model.validators.MasterAgentRuntimeValidatorImpl;
 import com.sysfera.godiet.model.validators.OmniNamesRuntimeValidatorImpl;
 import com.sysfera.godiet.model.validators.SedRuntimeValidatorImpl;
 import com.sysfera.godiet.remote.RemoteAccess;
-import com.sysfera.godiet.remote.RemoteAccessMock;
 import com.sysfera.godiet.remote.RemoteConfigurationHelper;
 import com.sysfera.godiet.utils.xml.XmlScannerJaxbImpl;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @DirtiesContext
-@ContextConfiguration(locations = { "/spring/spring-config.xml" ,"/spring/ssh-context.xml"})
+@ContextConfiguration(locations = { "/spring/spring-config.xml",
+		"/spring/ssh-context.xml" })
 public class CommandLaunchServicesTest {
 
 	private Logger log = LoggerFactory.getLogger(getClass());
@@ -43,6 +42,7 @@ public class CommandLaunchServicesTest {
 	private ResourcesManager rm;
 	@Autowired
 	RemoteAccess remoteAccess;
+
 	@Before
 	public void init() {
 
@@ -72,12 +72,10 @@ public class CommandLaunchServicesTest {
 				xmlLoadingCommand.setXmlInput(inputStream);
 				xmlLoadingCommand.setXmlParser(scanner);
 				RemoteConfigurationHelper softwareController = new RemoteConfigurationHelper(
-						rm.getGodietConfiguration()
-								.getGoDietConfiguration(),
-						rm.getPlatformModel());
+						rm.getGodietConfiguration(), rm.getPlatformModel());
 				softwareController.setRemoteAccess(remoteAccess);
 				DietManager dietModel = rm.getDietModel();
-				GodietAbstractFactory godietAbstractFactory = new GodietAbstractFactory(
+				GodietMetaFactory godietAbstractFactory = new GodietMetaFactory(
 						softwareController, new ForwarderRuntimeValidatorImpl(
 								dietModel),
 						new MasterAgentRuntimeValidatorImpl(dietModel),

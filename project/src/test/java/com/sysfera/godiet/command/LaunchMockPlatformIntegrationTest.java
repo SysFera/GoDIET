@@ -31,8 +31,7 @@ import com.sysfera.godiet.exceptions.remote.AddAuthentificationException;
 import com.sysfera.godiet.managers.DietManager;
 import com.sysfera.godiet.managers.ResourcesManager;
 import com.sysfera.godiet.managers.user.SSHKeyManager;
-import com.sysfera.godiet.model.SoftwareController;
-import com.sysfera.godiet.model.factories.GodietAbstractFactory;
+import com.sysfera.godiet.model.factories.GodietMetaFactory;
 import com.sysfera.godiet.model.generated.User;
 import com.sysfera.godiet.model.validators.ForwarderRuntimeValidatorImpl;
 import com.sysfera.godiet.model.validators.LocalAgentRuntimeValidatorImpl;
@@ -40,7 +39,6 @@ import com.sysfera.godiet.model.validators.MasterAgentRuntimeValidatorImpl;
 import com.sysfera.godiet.model.validators.OmniNamesRuntimeValidatorImpl;
 import com.sysfera.godiet.model.validators.SedRuntimeValidatorImpl;
 import com.sysfera.godiet.remote.RemoteAccess;
-import com.sysfera.godiet.remote.RemoteAccessMock;
 import com.sysfera.godiet.remote.RemoteConfigurationHelper;
 import com.sysfera.godiet.utils.xml.XmlScannerJaxbImpl;
 
@@ -52,7 +50,7 @@ public class LaunchMockPlatformIntegrationTest {
 	@Autowired
 	private ResourcesManager rm;
 	
-	GodietAbstractFactory godietAbstractFactory;
+	GodietMetaFactory godietAbstractFactory;
 	@Autowired
 	RemoteAccess remoteAccess;
 	@Before
@@ -86,12 +84,11 @@ public class LaunchMockPlatformIntegrationTest {
 				xmlLoadingCommand.setXmlInput(inputStream);
 				xmlLoadingCommand.setXmlParser(scanner);
 				RemoteConfigurationHelper softwareController = new RemoteConfigurationHelper(
-						rm.getGodietConfiguration()
-								.getGoDietConfiguration(),
+						rm.getGodietConfiguration(),
 						rm.getPlatformModel());
 				softwareController.setRemoteAccess(remoteAccess);
 				DietManager dietModel = rm.getDietModel();
-				godietAbstractFactory = new GodietAbstractFactory(
+				godietAbstractFactory = new GodietMetaFactory(
 						softwareController, new ForwarderRuntimeValidatorImpl(
 								dietModel),
 						new MasterAgentRuntimeValidatorImpl(dietModel),

@@ -22,7 +22,7 @@ import com.sysfera.godiet.command.xml.LoadXMLDietCommand;
 import com.sysfera.godiet.exceptions.CommandExecutionException;
 import com.sysfera.godiet.managers.DietManager;
 import com.sysfera.godiet.managers.ResourcesManager;
-import com.sysfera.godiet.model.factories.GodietAbstractFactory;
+import com.sysfera.godiet.model.factories.GodietMetaFactory;
 import com.sysfera.godiet.model.validators.ForwarderRuntimeValidatorImpl;
 import com.sysfera.godiet.model.validators.LocalAgentRuntimeValidatorImpl;
 import com.sysfera.godiet.model.validators.MasterAgentRuntimeValidatorImpl;
@@ -73,12 +73,11 @@ public class StopServicesCommandTest {
 				xmlLoadingCommand.setXmlInput(inputStream);
 				xmlLoadingCommand.setXmlParser(scanner);
 				RemoteConfigurationHelper softwareController = new RemoteConfigurationHelper(
-						rm.getGodietConfiguration()
-								.getGoDietConfiguration(),
+						rm.getGodietConfiguration(),
 						rm.getPlatformModel());
 				softwareController.setRemoteAccess(remoteAccess);
 				DietManager dietModel = rm.getDietModel();
-				GodietAbstractFactory godietAbstractFactory = new GodietAbstractFactory(
+				GodietMetaFactory godietAbstractFactory = new GodietMetaFactory(
 						softwareController, new ForwarderRuntimeValidatorImpl(
 								dietModel),
 						new MasterAgentRuntimeValidatorImpl(dietModel),

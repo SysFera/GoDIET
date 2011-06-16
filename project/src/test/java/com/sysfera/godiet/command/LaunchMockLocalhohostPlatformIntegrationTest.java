@@ -31,7 +31,7 @@ import com.sysfera.godiet.exceptions.remote.AddAuthentificationException;
 import com.sysfera.godiet.managers.DietManager;
 import com.sysfera.godiet.managers.ResourcesManager;
 import com.sysfera.godiet.managers.user.SSHKeyManager;
-import com.sysfera.godiet.model.factories.GodietAbstractFactory;
+import com.sysfera.godiet.model.factories.GodietMetaFactory;
 import com.sysfera.godiet.model.generated.User;
 import com.sysfera.godiet.model.validators.ForwarderRuntimeValidatorImpl;
 import com.sysfera.godiet.model.validators.LocalAgentRuntimeValidatorImpl;
@@ -44,14 +44,14 @@ import com.sysfera.godiet.utils.xml.XmlScannerJaxbImpl;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @DirtiesContext
-@ContextConfiguration(locations = { "/spring/spring-config.xml","/spring/ssh-context.xml" ,"/spring/ssh-context.xml"})
+@ContextConfiguration(locations = { "/spring/spring-config.xml","/spring/ssh-context.xml" })
 public class LaunchMockLocalhohostPlatformIntegrationTest {
 	private Logger log = LoggerFactory.getLogger(getClass());
 
 	@Autowired
 	private ResourcesManager rm;
 
-	GodietAbstractFactory godietAbstractFactory;
+	GodietMetaFactory godietAbstractFactory;
 	@Autowired
 	RemoteAccess remoteAccess;
 
@@ -85,11 +85,11 @@ public class LaunchMockLocalhohostPlatformIntegrationTest {
 				xmlLoadingCommand.setXmlInput(inputStream);
 				xmlLoadingCommand.setXmlParser(scanner);
 				RemoteConfigurationHelper softwareController = new RemoteConfigurationHelper(
-						rm.getGodietConfiguration().getGoDietConfiguration(),
+						rm.getGodietConfiguration(),
 						rm.getPlatformModel());
 				softwareController.setRemoteAccess(remoteAccess);
 				DietManager dietModel = rm.getDietModel();
-				godietAbstractFactory = new GodietAbstractFactory(
+				godietAbstractFactory = new GodietMetaFactory(
 						softwareController, new ForwarderRuntimeValidatorImpl(
 								dietModel),
 						new MasterAgentRuntimeValidatorImpl(dietModel),

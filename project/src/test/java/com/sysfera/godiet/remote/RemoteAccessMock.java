@@ -4,16 +4,13 @@
 package com.sysfera.godiet.remote;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
-import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.jcraft.jsch.Channel;
 import com.sysfera.godiet.exceptions.generics.RemoteAccessException;
@@ -142,4 +139,29 @@ public class RemoteAccessMock implements RemoteAccess {
 
 	}
 
+	
+	public static void setInt(Integer i, Integer value)
+	{
+		//i = Integer.valueOf(value);
+		
+		System.out.println(i);
+	}
+	public static void setInt(List<Integer> li, int value)
+	{
+		li = new ArrayList<Integer>();
+		//li.set(0, value);
+	}
+	public static void main(String[] args) {
+		List<Integer> listi = new ArrayList<Integer>();
+		listi.add(4);
+		listi.add(5);
+		RemoteAccessMock.setInt(listi, 0);
+		for (Integer integer : listi) {
+			System.out.println(integer);
+		}
+		
+		
+		
+		
+	}
 }

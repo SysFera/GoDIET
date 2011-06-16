@@ -24,7 +24,7 @@ import com.sysfera.godiet.managers.PlatformManager;
 import com.sysfera.godiet.managers.ResourcesManager;
 import com.sysfera.godiet.model.Path;
 import com.sysfera.godiet.model.SoftwareController;
-import com.sysfera.godiet.model.factories.GodietAbstractFactory;
+import com.sysfera.godiet.model.factories.GodietMetaFactory;
 import com.sysfera.godiet.model.generated.Node;
 import com.sysfera.godiet.model.generated.Resource;
 import com.sysfera.godiet.model.validators.ForwarderRuntimeValidatorImpl;
@@ -32,8 +32,6 @@ import com.sysfera.godiet.model.validators.LocalAgentRuntimeValidatorImpl;
 import com.sysfera.godiet.model.validators.MasterAgentRuntimeValidatorImpl;
 import com.sysfera.godiet.model.validators.OmniNamesRuntimeValidatorImpl;
 import com.sysfera.godiet.model.validators.SedRuntimeValidatorImpl;
-import com.sysfera.godiet.remote.RemoteAccess;
-import com.sysfera.godiet.remote.RemoteAccessMock;
 import com.sysfera.godiet.remote.RemoteConfigurationHelper;
 import com.sysfera.godiet.utils.xml.XmlScannerJaxbImpl;
 
@@ -74,11 +72,10 @@ public class TopologyManagerTest {
 				xmlLoadingCommand.setRm(rm);
 				xmlLoadingCommand.setXmlInput(inputStream);
 				xmlLoadingCommand.setXmlParser(scanner);
-				SoftwareController softwareController = new RemoteConfigurationHelper(rm.getGodietConfiguration()
-								.getGoDietConfiguration(),
+				SoftwareController softwareController = new RemoteConfigurationHelper(rm.getGodietConfiguration(),
 						rm.getPlatformModel());
 				DietManager dietModel = rm.getDietModel();
-				GodietAbstractFactory godietAbstractFactory = new GodietAbstractFactory(
+				GodietMetaFactory godietAbstractFactory = new GodietMetaFactory(
 						softwareController, new ForwarderRuntimeValidatorImpl(
 								dietModel),
 						new MasterAgentRuntimeValidatorImpl(dietModel),
