@@ -11,7 +11,6 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import com.sysfera.godiet.command.init.InitForwardersCommand;
 import com.sysfera.godiet.command.init.util.XMLLoadingHelper;
@@ -29,9 +28,8 @@ import com.sysfera.godiet.exceptions.remote.StopException;
 import com.sysfera.godiet.managers.DietManager;
 import com.sysfera.godiet.managers.ResourcesManager;
 import com.sysfera.godiet.managers.user.SSHKeyManager;
-import com.sysfera.godiet.model.SoftwareController;
 import com.sysfera.godiet.model.SoftwareManager;
-import com.sysfera.godiet.model.factories.GodietAbstractFactory;
+import com.sysfera.godiet.model.factories.GodietMetaFactory;
 import com.sysfera.godiet.model.validators.ForwarderRuntimeValidatorImpl;
 import com.sysfera.godiet.model.validators.LocalAgentRuntimeValidatorImpl;
 import com.sysfera.godiet.model.validators.MasterAgentRuntimeValidatorImpl;
@@ -39,14 +37,12 @@ import com.sysfera.godiet.model.validators.OmniNamesRuntimeValidatorImpl;
 import com.sysfera.godiet.model.validators.SedRuntimeValidatorImpl;
 import com.sysfera.godiet.remote.RemoteAccess;
 import com.sysfera.godiet.remote.RemoteConfigurationHelper;
-import com.sysfera.godiet.remote.ssh.ChannelManagerJsch;
-import com.sysfera.godiet.remote.ssh.RemoteAccessJschImpl;
 
 
 public class Diet {
 	private Logger log = LoggerFactory.getLogger(getClass());
 
-	private GodietAbstractFactory godietAbstractFactory;
+	private GodietMetaFactory godietAbstractFactory;
 	@Autowired
 	private ResourcesManager rm;
 	@Autowired
@@ -106,11 +102,10 @@ public class Diet {
 		XMLLoadingHelper.initConfig(rm, inputStream);
 		
 		RemoteConfigurationHelper softwareController = new RemoteConfigurationHelper(
-				 rm.getGodietConfiguration()
-						.getGoDietConfiguration(), rm.getPlatformModel());
+				 rm.getGodietConfiguration(), rm.getPlatformModel());
 		softwareController.setRemoteAccess(remoteAccess);
 		DietManager dietModel = rm.getDietModel();
-		godietAbstractFactory = new GodietAbstractFactory(softwareController,
+		godietAbstractFactory = new GodietMetaFactory(softwareController,
 				new ForwarderRuntimeValidatorImpl(dietModel),
 				new MasterAgentRuntimeValidatorImpl(dietModel),
 				new LocalAgentRuntimeValidatorImpl(dietModel),
