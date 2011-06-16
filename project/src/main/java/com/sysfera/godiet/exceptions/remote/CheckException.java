@@ -16,16 +16,16 @@ public class CheckException extends GoDietException{
 
 	public CheckException(String errormessage)
 	{
-		this("TMPDEFAULTCONTEXT","TEMPCODE",errormessage);
+		this("TMPDEFAULTCONTEXT","TEMPCODE",errormessage,null);
 	}
 
 	public CheckException(String errormessage, Throwable e)
 	{
-		this("TMPDEFAULTCONTEXT",e.getMessage(),errormessage);
+		this("TMPDEFAULTCONTEXT",e.getMessage(),errormessage,null);
 	}
 	public CheckException(String errorContext, String errorCode,
-			String errorMessage) {
-		super(errorContext, errorCode, errorMessage);
+			String errorMessage,Throwable e) {
+		super(errorContext, errorCode, errorMessage,e);
 	}
 
 }

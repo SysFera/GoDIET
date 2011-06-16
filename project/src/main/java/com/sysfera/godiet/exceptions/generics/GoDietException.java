@@ -10,31 +10,16 @@ public class GoDietException extends Exception {
     protected List<InfoItem> infoItems =
             new ArrayList<InfoItem>();
 
-    protected class InfoItem{
-        public String errorContext = null;
-        public String errorCode  = null;
-        public String errorText  = null;
-        public InfoItem(String contextCode, String errorCode,
-                                     String errorText){
 
-            this.errorContext = contextCode;
-            this.errorCode   = errorCode;
-            this.errorText   = errorText;
-        }
-    }
 
 
     public GoDietException(String errorContext, String errorCode,
-                               String errorMessage){
+                               String errorMessage,Throwable origin){
 
         addInfo(errorContext, errorCode, errorMessage);
     }
 
-    public GoDietException(String errorContext, String errorCode,
-                               String errorMessage, Throwable cause){
-        super(cause);
-        addInfo(errorContext, errorCode, errorMessage);
-    }
+ 
 
     public GoDietException addInfo(
         String errorContext, String errorCode, String errorText){
@@ -100,5 +85,18 @@ public class GoDietException extends Exception {
         appendException(builder, throwable.getCause());
         builder.append(throwable.toString());
         builder.append('\n');
+    }
+    
+    protected class InfoItem{
+        public String errorContext = null;
+        public String errorCode  = null;
+        public String errorText  = null;
+        public InfoItem(String contextCode, String errorCode,
+                                     String errorText){
+
+            this.errorContext = contextCode;
+            this.errorCode   = errorCode;
+            this.errorText   = errorText;
+        }
     }
 }
