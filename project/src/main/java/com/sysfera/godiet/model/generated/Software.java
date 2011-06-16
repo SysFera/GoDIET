@@ -65,7 +65,10 @@ public abstract class Software {
 	public Software getParent() {
 		return parent;
 	}
-
+	public void setParent(Software parent)
+	{
+		this.parent = parent;
+	}
 	public void afterUnmarshal(Unmarshaller u, Object parent) {
 		if (parent instanceof Software)
 			this.parent = (Software) parent;

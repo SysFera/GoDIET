@@ -4,7 +4,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.sysfera.godiet.managers.user.UserManager;
-import com.sysfera.godiet.model.generated.GoDietConfiguration;
+import com.sysfera.godiet.model.DietServiceManaged;
+import com.sysfera.godiet.model.SoftwareManager;
+import com.sysfera.godiet.model.generated.OmniNames;
 
 /**
  * NG Diet + Infrastructure manager.
@@ -17,25 +19,20 @@ public class ResourcesManager {
 
 	// Other model representation to help and improve resources access. All
 	// objects are reference of goDiet field
-	private DietManager dietModel;
-	private final PlatformManager platformModel;
-	// TODO move this field in configuration manager
 	@Autowired
-	private ConfigurationManager godietConfiguration;
+	private  DietManager dietModel;
+	@Autowired
+	private  PlatformManager platformModel;
+	@Autowired
+	private  ConfigurationManager godietConfiguration;
+	// TODO move this field in configuration manager??
 	@Autowired
 	private UserManager userManager;
 
-	public ResourcesManager() {
-		this.dietModel = new DietManager();
-		this.platformModel = new PlatformManager();
-	}
+
 
 	public DietManager getDietModel() {
 		return dietModel;
-	}
-
-	public void setDietModel(DietManager dietModel) {
-		this.dietModel = dietModel;
 	}
 
 	public PlatformManager getPlatformModel() {
@@ -46,13 +43,28 @@ public class ResourcesManager {
 		return godietConfiguration;
 	}
 
-	public void setGoDietConfiguration(GoDietConfiguration goDietConfiguration) {
-		this.godietConfiguration.setConfiguration(goDietConfiguration);
-
-	}
-
 	public UserManager getUserManager() {
 		return userManager;
+	}
+	
+	/**
+	 * 
+	 * @param domain
+	 * @return The managed omniName which are is in the managedSoftware's
+	 *         domain. Null if it's not found
+	 */
+	public OmniNames getOmniName(SoftwareManager software) {
+
+		
+		for (DietServiceManaged omniName : dietModel.getOmninames()) {
+			if (omniName.getPluggedOn().getDomain().getLabel()
+					.equals(software.getPluggedOn())) {
+				return (OmniNames) omniName.getSoftwareDescription();
+			}
+
+		}
+		
+		return null;
 	}
 
 }

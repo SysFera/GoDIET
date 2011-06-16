@@ -3,6 +3,7 @@ package com.sysfera.godiet.model.factories;
 import java.util.List;
 
 import com.sysfera.godiet.exceptions.DietResourceCreationException;
+import com.sysfera.godiet.exceptions.remote.IncubateException;
 import com.sysfera.godiet.model.DietServiceManaged;
 import com.sysfera.godiet.model.SoftwareController;
 import com.sysfera.godiet.model.SoftwareManager;
@@ -27,7 +28,8 @@ public class OmniNamesFactory {
 	private final SoftwareController softwareController;
 	private final RuntimeValidator validator;
 
-	public OmniNamesFactory(SoftwareController softwareController, RuntimeValidator omniNamesValidator) {
+	public OmniNamesFactory(SoftwareController softwareController,
+			RuntimeValidator omniNamesValidator) {
 		this.softwareController = softwareController;
 		this.validator = omniNamesValidator;
 	}
@@ -41,14 +43,19 @@ public class OmniNamesFactory {
 	 * @throws DietResourceCreationException
 	 *             if resource not plugged
 	 */
-	public DietServiceManaged create(OmniNames omniNamesDescription)
+	public DietServiceManaged create(OmniNames omniNamesDescription, Resource pluggedOn)
 			throws DietResourceCreationException {
-		DietServiceManaged omniNamesManaged = new DietServiceManaged(softwareController,validator);
-
-		omniNamesManaged.setManagedSoftware(omniNamesDescription);
-		settingConfigurationOptions(omniNamesManaged);
-		settingOmniNamesRunningCommand(omniNamesManaged);
-		return omniNamesManaged;
+		try {
+			DietServiceManaged omniNamesManaged = new DietServiceManaged(omniNamesDescription,
+					softwareController, validator);
+			omniNamesManaged.setPluggedOn(pluggedOn);
+			settingConfigurationOptions(omniNamesManaged);
+			settingOmniNamesRunningCommand(omniNamesManaged);
+			return omniNamesManaged;
+		} catch (IncubateException e) {
+			throw new DietResourceCreationException("Resource creation fail.",
+					e);
+		}
 	}
 
 	/**
@@ -65,18 +72,17 @@ public class OmniNamesFactory {
 		String command = "";
 		String scratchDir = softManaged.getPluggedOn().getDisk().getScratch()
 				.getDir();
-		//Add all environment node
+		// Add all environment node
 		Env env = softManaged.getPluggedOn().getEnv();
-		if(env != null) {
+		if (env != null) {
 			List<Var> vars = env.getVar();
-			if(vars != null)
-			{
+			if (vars != null) {
 				for (Var var : vars) {
-					command+= " " + var.getName() +"=" +var.getValue()+" "; 
+					command += " " + var.getName() + "=" + var.getValue() + " ";
 				}
 			}
 		}
-		
+
 		Software softwareDescription = softManaged.getSoftwareDescription();
 		command += "OMNINAMES_LOGDIR=" + scratchDir + "/";
 		command += " ";

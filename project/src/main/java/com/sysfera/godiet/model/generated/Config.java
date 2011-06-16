@@ -66,31 +66,8 @@ public class Config {
         this.remoteBinary = value;
     }
 
-    
-    protected Resource serverNode;
-    /**
-     * Gets the value of the server property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link Object }
-     *     
-     */
-    public Resource getServerNode() {
-        return serverNode;
-    }
+  
 
-    /**
-     * Sets the value of the server property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link Object }
-     *     
-     */
-    public void setServerNode(Resource value) {
-        this.serverNode = value;
-    }
     /**
      * Gets the value of the server property.
      * 

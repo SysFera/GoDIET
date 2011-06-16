@@ -7,6 +7,7 @@ import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
 import com.sysfera.godiet.exceptions.DietResourceCreationException;
 import com.sysfera.godiet.model.DietResourceManaged;
@@ -14,6 +15,7 @@ import com.sysfera.godiet.model.DietServiceManaged;
 import com.sysfera.godiet.model.SoftwareManager;
 import com.sysfera.godiet.model.generated.Domain;
 import com.sysfera.godiet.model.generated.OmniNames;
+import com.sysfera.godiet.model.generated.Software;
 
 /**
  * Diet platform manager.
@@ -21,6 +23,7 @@ import com.sysfera.godiet.model.generated.OmniNames;
  * @author phi
  * 
  */
+@Component
 public class DietManager {
 	private Logger log = LoggerFactory.getLogger(getClass());
 
@@ -172,25 +175,7 @@ public class DietManager {
 		return softwaresManaged;
 	}
 
-	/**
-	 * 
-	 * @param domain
-	 * @return The managed omniName which are is in the managedSoftware's
-	 *         domain. Null if it's not found
-	 */
-	public OmniNames getOmniName(Domain domain) {
 
-		for (DietServiceManaged omniName : omninames) {
-			if (omniName.getPluggedOn().getDomain().getLabel()
-					.equals(domain.getLabel())) {
-				return (OmniNames) omniName.getSoftwareDescription();
-			}
-
-		}
-		log.error("Unable to find a known omniName for domain: "
-				+ domain.getLabel());
-		return null;
-	}
 
 	/**
 	 * Search the Software managed given is id

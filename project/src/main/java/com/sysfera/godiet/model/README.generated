@@ -4,7 +4,10 @@ Some modification:
 In Software.java
     @XmlTransient
 	protected Software parent;
-
+	public void setParent(Software parent)
+	{
+		this.parent = parent;
+	}
 	public void afterUnmarshal(Unmarshaller u, Object parent) {
 		if (parent instanceof Software)
 			this.parent = (Software) parent;
@@ -55,9 +58,4 @@ In Resource.java:
 			return false;
 		return true;
 	}
-	
-
-Get the Diet, Platform and Configuration generated with the diet.xsd platform.xsd configuration.xsd.
-Add this 3 class in objectFactory
-Add NodeServer in Config
 

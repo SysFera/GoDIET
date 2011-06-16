@@ -149,7 +149,7 @@ public class ChannelManagerJsch {
 		NCProxy shadowProxy = null;
 
 	
-		List<Proxy> proxies = goDietConfiguration.getGoDietConfiguration().getProxy();
+		List<Proxy> proxies = goDietConfiguration.getShadowedProxy();
 
 		for (Proxy proxy : proxies) {
 			if (proxy.getHost().equals(destination.getId())) {

@@ -3,6 +3,9 @@
  */
 package com.sysfera.godiet.model;
 
+import com.sysfera.godiet.exceptions.remote.IncubateException;
+import com.sysfera.godiet.model.generated.Domain;
+import com.sysfera.godiet.model.generated.Software;
 import com.sysfera.godiet.model.validators.RuntimeValidator;
 
 
@@ -14,8 +17,17 @@ import com.sysfera.godiet.model.validators.RuntimeValidator;
  */
 public class DietServiceManaged extends DietResourceManaged {
 
-	public DietServiceManaged(SoftwareController softwareController,RuntimeValidator validator) {
-		super(softwareController,validator);
+	public DietServiceManaged(Software software,SoftwareController softwareController,RuntimeValidator validator) throws IncubateException {
+		super(software,softwareController,validator);
 	}
-
+	
+	private Domain domain;
+	public Domain getDomain()
+	{
+		return domain;
+	}
+	
+	public void setDomain(Domain domain) {
+		this.domain = domain;
+	}
 }

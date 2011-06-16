@@ -7,7 +7,9 @@ import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
+import com.sysfera.godiet.exceptions.ResourceAddException;
 import com.sysfera.godiet.exceptions.generics.PathException;
 import com.sysfera.godiet.exceptions.graph.GraphDataException;
 import com.sysfera.godiet.managers.topology.TopologyManager;
@@ -27,6 +29,7 @@ import com.sysfera.godiet.model.generated.Resource;
  * @author phi
  * 
  */
+@Component
 public class PlatformManager {
 	private Logger log = LoggerFactory.getLogger(getClass());
 
@@ -113,7 +116,7 @@ public class PlatformManager {
 	}
 	
 
-	public void addFrontends(List<Fronted> frontends) {
+	public void addFrontends(List<Fronted> frontends) throws ResourceAddException{
 		if (fronteds == null) {
 			log.warn("Try to add empty list of fronteds");
 			return;
@@ -125,7 +128,7 @@ public class PlatformManager {
 
 	}
 
-	public void addNodes(List<Node> computingNodes) {
+	public void addNodes(List<Node> computingNodes) throws ResourceAddException{
 		if (computingNodes == null) {
 			log.warn("Try to add empty list of nodes");
 			return;
@@ -137,12 +140,12 @@ public class PlatformManager {
 
 	}
 
-	public void addClusters(List<Cluster> clusters2) {
+	public void addClusters(List<Cluster> clusters) throws ResourceAddException{
 		this.clusters.addAll(clusters);
 
 	}
 
-	public void addGateways(List<Gateway> gateways) {
+	public void addGateways(List<Gateway> gateways) throws ResourceAddException{
 		if (gateways == null) {
 			log.warn("Try to add empty list of gateways");
 			return;
@@ -154,7 +157,7 @@ public class PlatformManager {
 
 	}
 
-	public void addDomains(List<Domain> domains) {
+	public void addDomains(List<Domain> domains) throws ResourceAddException{
 		this.domains.addAll(domains);
 
 	}
@@ -188,5 +191,17 @@ public class PlatformManager {
 	 */
 	public Resource getResource(String resourceId) {
 		return resources.get(resourceId);
+	}
+
+	
+
+	public Domain getDomain(String server) {
+		Resource res = resources.get(server);
+		if(res == null)
+		{
+			log.error("Unable to find physical resource with name: "+server);
+			return null;
+		}
+		return res.getDomain();
 	}
 }

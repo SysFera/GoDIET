@@ -10,7 +10,6 @@ import java.io.OutputStreamWriter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import com.sysfera.godiet.exceptions.generics.PathException;
 import com.sysfera.godiet.exceptions.generics.RemoteAccessException;
@@ -18,11 +17,11 @@ import com.sysfera.godiet.exceptions.remote.CheckException;
 import com.sysfera.godiet.exceptions.remote.LaunchException;
 import com.sysfera.godiet.exceptions.remote.PrepareException;
 import com.sysfera.godiet.exceptions.remote.StopException;
+import com.sysfera.godiet.managers.ConfigurationManager;
 import com.sysfera.godiet.managers.PlatformManager;
 import com.sysfera.godiet.model.Path;
 import com.sysfera.godiet.model.SoftwareController;
 import com.sysfera.godiet.model.SoftwareManager;
-import com.sysfera.godiet.model.generated.GoDietConfiguration;
 import com.sysfera.godiet.model.generated.Node;
 import com.sysfera.godiet.model.generated.Options;
 import com.sysfera.godiet.model.generated.Options.Option;
@@ -42,13 +41,13 @@ public class RemoteConfigurationHelper implements SoftwareController {
 	@Autowired
 	private  RemoteAccess remoteAccess;
 	
-	private final GoDietConfiguration configuration;
+	private final ConfigurationManager configuration;
 	
 	private final PlatformManager platform;
 
 		
 	public RemoteConfigurationHelper(
-			GoDietConfiguration configuration, PlatformManager platform) {
+			ConfigurationManager configuration, PlatformManager platform) {
 		if (configuration == null || platform == null) {
 			log.error("Unable to create remote controller. One of constructor argument is null");
 			throw new IllegalArgumentException(
@@ -88,11 +87,11 @@ public class RemoteConfigurationHelper implements SoftwareController {
 
 		// the local node. From where the command is launch.
 		// TODO : Path findpath(FromDomain, ToNode); Move this code
-		Resource localNode = platform.getResource(configuration.getLocalNode());
+		Resource localNode = platform.getResource(configuration.getLocalNodeId());
 		if (localNode == null || !(localNode instanceof Node)) {
 			log.error("Unable to find the local resource.");
 			throw new PrepareException("Unable to find the resource: "
-					+ configuration.getLocalNode());
+					+ configuration.getLocalNodeId());
 		}
 		// Find a path between the current node until remote node
 		Path path = null;
@@ -143,7 +142,7 @@ public class RemoteConfigurationHelper implements SoftwareController {
 	 */
 	private File createConfigFile(SoftwareManager resource)
 			throws PrepareException {
-		Scratch scratch = configuration.getLocalscratch();
+		Scratch scratch = configuration.getLocalScratch();
 		File file = new File(scratch.getDir());
 		if (!file.exists()) {
 
@@ -210,7 +209,7 @@ public class RemoteConfigurationHelper implements SoftwareController {
 		}
 		// the local node. From where the command is launch.
 		// TODO : Path findpath(FromDomain, ToNode); Move this code
-		Resource localNode = platform.getResource(configuration.getLocalNode());
+		Resource localNode = platform.getResource(configuration.getLocalNodeId());
 		if (localNode == null || !(localNode instanceof Node)) {
 			log.error("Unable to find the local resource.");
 			throw new LaunchException(
@@ -270,11 +269,11 @@ public class RemoteConfigurationHelper implements SoftwareController {
 
 		// the local node. From where the command is launch.
 		// TODO : Path findpath(FromDomain, ToNode); Move this code
-		Resource localNode = platform.getResource(configuration.getLocalNode());
+		Resource localNode = platform.getResource(configuration.getLocalNodeId());
 		if (localNode == null || !(localNode instanceof Node)) {
 			log.error("Unable to find the local resource.");
 			throw new StopException("Unable to find the resource: "
-					+ configuration.getLocalNode());
+					+ configuration.getLocalNodeId());
 		}
 		// Find a path between the current node until remote node
 		Path path = null;
@@ -327,11 +326,11 @@ public class RemoteConfigurationHelper implements SoftwareController {
 
 		// the local node. From where the command is launch.
 		// TODO : Path findpath(FromDomain, ToNode); Move this code
-		Resource localNode = platform.getResource(configuration.getLocalNode());
+		Resource localNode = platform.getResource(configuration.getLocalNodeId());
 		if (localNode == null || !(localNode instanceof Node)) {
 			log.error("Unable to find the local resource.");
 			throw new CheckException("Unable to find the resource: "
-					+ configuration.getLocalNode());
+					+ configuration.getLocalNodeId());
 		}
 		// Find a path between the current node until remote node
 		Path path = null;

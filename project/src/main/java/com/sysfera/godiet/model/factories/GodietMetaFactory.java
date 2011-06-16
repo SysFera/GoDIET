@@ -8,10 +8,11 @@ import com.sysfera.godiet.model.generated.Forwarders;
 import com.sysfera.godiet.model.generated.LocalAgent;
 import com.sysfera.godiet.model.generated.MasterAgent;
 import com.sysfera.godiet.model.generated.OmniNames;
+import com.sysfera.godiet.model.generated.Resource;
 import com.sysfera.godiet.model.generated.Sed;
 import com.sysfera.godiet.model.validators.RuntimeValidator;
 
-public class GodietAbstractFactory {
+public class GodietMetaFactory {
 
 	private final OmniNamesFactory omniNamesFactory;
 	private final ForwardersFactory forwardersFactory;
@@ -21,7 +22,7 @@ public class GodietAbstractFactory {
 
 
 
-	public GodietAbstractFactory(SoftwareController softwareController,
+	public GodietMetaFactory(SoftwareController softwareController,
 			RuntimeValidator forwardersValidator, RuntimeValidator maValidator,
 			RuntimeValidator laValidator, RuntimeValidator sedValidator,
 			RuntimeValidator omniNamesValidator) {
@@ -36,31 +37,31 @@ public class GodietAbstractFactory {
 				omniNamesValidator);
 	}
 
-	public DietResourceManaged[] create(Forwarders forwarders,
+	public DietResourceManaged[] create(Forwarders forwarders,Resource pluggedOnClient,Resource pluggedOnServer,
 			OmniNames omniNamesClient, OmniNames omniNamesServer)
 			throws DietResourceCreationException {
-		return forwardersFactory.create(forwarders, omniNamesClient,
+		return forwardersFactory.create(forwarders, pluggedOnClient,pluggedOnServer,omniNamesClient,
 				omniNamesServer);
 	}
 
-	public DietResourceManaged create(LocalAgent localAgentDescription,
+	public DietResourceManaged create(LocalAgent localAgentDescription,Resource pluggedOn,
 			OmniNames omniNames) throws DietResourceCreationException {
-		return localAgentFactory.create(localAgentDescription, omniNames);
+		return localAgentFactory.create(localAgentDescription, pluggedOn,omniNames);
 	}
 
-	public DietResourceManaged create(MasterAgent masterAgentDescription,
+	public DietResourceManaged create(MasterAgent masterAgentDescription,Resource pluggedOn,
 			OmniNames omniNames) throws DietResourceCreationException {
-		return masterAgentFactory.create(masterAgentDescription, omniNames);
+		return masterAgentFactory.create(masterAgentDescription,pluggedOn, omniNames);
 	}
 
-	// TODO: Why no throws ?
-	public DietResourceManaged create(Sed sedDescription, OmniNames omniNames) {
-		return sedFactory.create(sedDescription, omniNames);
+	
+	public DietResourceManaged create(Sed sedDescription,Resource pluggedOn, OmniNames omniNames) throws DietResourceCreationException {
+		return sedFactory.create(sedDescription, pluggedOn,omniNames);
 	}
 
-	public DietServiceManaged create(OmniNames omniNamesDescription)
+	public DietServiceManaged create(OmniNames omniNamesDescription,Resource pluggedOn)
 			throws DietResourceCreationException {
-		return omniNamesFactory.create(omniNamesDescription);
+		return omniNamesFactory.create(omniNamesDescription,pluggedOn);
 	}
 
 }

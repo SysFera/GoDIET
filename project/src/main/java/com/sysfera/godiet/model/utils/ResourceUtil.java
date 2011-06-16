@@ -6,7 +6,7 @@ import java.util.List;
 import com.sysfera.godiet.model.generated.Resource;
 import com.sysfera.godiet.model.generated.Var;
 
-public class ResourceUtil {
+public final class ResourceUtil {
 
 	/**
 	 * Search the value in Node's environment variables

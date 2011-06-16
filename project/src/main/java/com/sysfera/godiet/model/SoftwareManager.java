@@ -1,5 +1,6 @@
 package com.sysfera.godiet.model;
 
+import com.sysfera.godiet.exceptions.remote.IncubateException;
 import com.sysfera.godiet.exceptions.remote.LaunchException;
 import com.sysfera.godiet.exceptions.remote.PrepareException;
 import com.sysfera.godiet.exceptions.remote.StopException;
@@ -18,22 +19,29 @@ import com.sysfera.godiet.model.validators.RuntimeValidator;
  */
 public abstract class SoftwareManager {
 	private String runningCommand;
-
+	private Resource pluggedOn;
 	private Integer pid;
 	protected final StateController stateController;
-
-	public SoftwareManager(SoftwareController softwareController,RuntimeValidator validator) {
-
-		stateController = new StateController(this, softwareController,validator);
+	protected final Software softwareDescription;
+	public SoftwareManager(Software softwareDescription,SoftwareController softwareController,RuntimeValidator validator) throws IncubateException {
+		this.softwareDescription = softwareDescription;
+		this.stateController = new StateController(this, softwareController,validator);
 
 	}
 
 	/**
 	 * Return the physical resource on which agent is plugged on
 	 * 
-	 * @return the pluggedOn or null otherwise
+	 * @return the pluggedOn resource or null if not yet plugged
 	 */
-	public abstract Resource getPluggedOn();
+	public Resource getPluggedOn(){
+		return pluggedOn;
+	}
+	
+	
+	public void setPluggedOn(Resource pluggedOn) {
+		this.pluggedOn = pluggedOn;
+	}
 
 	/**
 	 * 
@@ -43,7 +51,10 @@ public abstract class SoftwareManager {
 		return stateController;
 	}
 
-	public abstract Software getSoftwareDescription();
+	public Software getSoftwareDescription()
+	{
+		return softwareDescription;
+	}
 
 	public void setPid(Integer pid) {
 		this.pid = pid;
