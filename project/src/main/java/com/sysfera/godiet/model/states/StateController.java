@@ -6,6 +6,7 @@ import java.util.Date;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.sysfera.godiet.exceptions.remote.IncubateException;
 import com.sysfera.godiet.model.SoftwareController;
 import com.sysfera.godiet.model.SoftwareManager;
 import com.sysfera.godiet.model.validators.RuntimeValidator;
@@ -44,7 +45,7 @@ public class StateController {
 	private final Thread checker;
 
 	public StateController(SoftwareManager agent,
-			SoftwareController softwareController, RuntimeValidator validator) {
+			SoftwareController softwareController, RuntimeValidator validator) throws IncubateException {
 		this.validator = validator;
 		this.softwareManaged = agent;
 		this.softwareController = softwareController;
@@ -61,7 +62,7 @@ public class StateController {
 		// Start state checker
 		Checker ch = new Checker(PERIODICITY);
 		this.checker = new Thread(ch);
-		// Down
+		// Incubate
 		toIncubate();
 
 	}
@@ -80,12 +81,13 @@ public class StateController {
 		this.checker.interrupt();
 	}
 
-	void toIncubate() {
+	void toIncubate() throws IncubateException {
 		stopChecking();
 		errorCause = null;
 		this.softwareManaged.setPid(null);
 		this.lastTransition = Calendar.getInstance().getTime();
 		this.state = incubate;
+		this.state.incubate();
 	}
 
 	void toDown() {

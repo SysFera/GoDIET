@@ -3,6 +3,7 @@ package com.sysfera.godiet.model.states;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.sysfera.godiet.exceptions.remote.IncubateException;
 import com.sysfera.godiet.exceptions.remote.LaunchException;
 import com.sysfera.godiet.exceptions.remote.PrepareException;
 import com.sysfera.godiet.model.SoftwareController;
@@ -60,6 +61,12 @@ public class IncubateStateImpl implements ResourceState {
 	@Override
 	public State getStatus() {
 		return State.INCUBATE;
+	}
+
+	@Override
+	public void incubate() throws IncubateException {
+		 stateController.validator.wantIncubate(stateController.softwareManaged);
+		
 	}
 	
 	

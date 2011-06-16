@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.sysfera.godiet.exceptions.remote.CheckException;
+import com.sysfera.godiet.exceptions.remote.IncubateException;
 import com.sysfera.godiet.exceptions.remote.StopException;
 import com.sysfera.godiet.model.SoftwareController;
 import com.sysfera.godiet.model.validators.RuntimeValidator;
@@ -85,5 +86,11 @@ public class UpStateImpl implements ResourceState {
 	@Override
 	public State getStatus() {
 		return State.UP;
+	}
+
+	@Override
+	public void incubate() throws IncubateException {
+		// TODO Auto-generated method stub
+		
 	}
 }

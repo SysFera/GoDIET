@@ -1,5 +1,6 @@
 package com.sysfera.godiet.model.validators;
 
+import com.sysfera.godiet.exceptions.remote.IncubateException;
 import com.sysfera.godiet.exceptions.remote.LaunchException;
 import com.sysfera.godiet.exceptions.remote.StopException;
 import com.sysfera.godiet.managers.DietManager;
@@ -27,6 +28,9 @@ public abstract class RuntimeValidator {
 	public abstract void wantLaunch(SoftwareManager managedResource) throws LaunchException;
 	
 	public abstract void wantStop(SoftwareManager managedResource) throws StopException;
+	
+	public abstract void wantIncubate(SoftwareManager managedResource) throws IncubateException;
+
 	
 	
 }
