@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 
 import com.sysfera.godiet.command.Command;
 import com.sysfera.godiet.exceptions.CommandExecutionException;
+import com.sysfera.godiet.exceptions.ResourceAddException;
 import com.sysfera.godiet.exceptions.XMLParseException;
 import com.sysfera.godiet.exceptions.graph.GraphDataException;
 import com.sysfera.godiet.managers.ResourcesManager;
@@ -41,8 +42,7 @@ public class LoadXMLPlatformCommand implements Command {
 
 	@Override
 	public void execute() throws CommandExecutionException {
-		if (rm == null
-				|| xmlScanner == null || xmlInput == null) {
+		if (rm == null || xmlScanner == null || xmlInput == null) {
 			throw new CommandExecutionException(getClass().getName()
 					+ " not initialized correctly");
 		}
@@ -95,32 +95,38 @@ public class LoadXMLPlatformCommand implements Command {
 	 */
 	private void initPlatform(Infrastructure infrastructure)
 			throws CommandExecutionException {
-		List<Domain> domains = infrastructure.getDomain();
-		this.rm.getPlatformModel().addDomains(domains);
-		if (domains != null) {
-			for (Domain domain : domains) {
-				this.rm.getPlatformModel().addGateways(domain.getGateway());
-				this.rm.getPlatformModel().addNodes(domain.getNode());
-				List<Cluster> clusters = domain.getCluster();
-				this.rm.getPlatformModel().addClusters(clusters);
-				if (clusters != null) {
-					for (Cluster cluster : clusters) {
-						this.rm.getPlatformModel().addNodes(
-								cluster.getComputingNode());
-						this.rm.getPlatformModel().addFrontends(
-								cluster.getFronted());
+
+		try {
+			List<Domain> domains = infrastructure.getDomain();
+			this.rm.getPlatformModel().addDomains(domains);
+			if (domains != null) {
+				for (Domain domain : domains) {
+					this.rm.getPlatformModel().addGateways(domain.getGateway());
+					this.rm.getPlatformModel().addNodes(domain.getNode());
+					List<Cluster> clusters = domain.getCluster();
+					this.rm.getPlatformModel().addClusters(clusters);
+					if (clusters != null) {
+						for (Cluster cluster : clusters) {
+							this.rm.getPlatformModel().addNodes(
+									cluster.getComputingNode());
+							this.rm.getPlatformModel().addFrontends(
+									cluster.getFronted());
+						}
 					}
 				}
 			}
-		}
 
-		List<Link> links = infrastructure.getLink();
-		try {
+			List<Link> links = infrastructure.getLink();
+
 			this.rm.getPlatformModel().addLinks(links);
 		} catch (GraphDataException e) {
 
 			throw new CommandExecutionException(
 					"Unable to add links. Error in the model description", e);
+		} catch(ResourceAddException e)
+		{
+			throw new CommandExecutionException(
+					"Unable to add some resource. Error in the model description", e);
 		}
 	}
 

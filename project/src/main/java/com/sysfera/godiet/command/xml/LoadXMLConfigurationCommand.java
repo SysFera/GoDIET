@@ -4,9 +4,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.sysfera.godiet.command.Command;
 import com.sysfera.godiet.exceptions.CommandExecutionException;
 import com.sysfera.godiet.exceptions.XMLParseException;
+import com.sysfera.godiet.exceptions.generics.GoDietConfigurationException;
 import com.sysfera.godiet.managers.ResourcesManager;
 import com.sysfera.godiet.managers.user.SSHKeyManager;
 import com.sysfera.godiet.managers.user.UserManager;
@@ -22,6 +26,7 @@ import com.sysfera.godiet.utils.xml.XMLParser;
  */
 public class LoadXMLConfigurationCommand implements Command {
 	private ResourcesManager rm;
+	private Logger log = LoggerFactory.getLogger(getClass());
 
 	private XMLParser xmlScanner;
 	private InputStream xmlInput;
@@ -40,8 +45,13 @@ public class LoadXMLConfigurationCommand implements Command {
 		try {
 			GoDietConfiguration goDietConfiguration = xmlScanner
 					.buildGodietConfiguration(xmlInput);
-			rm.setGoDietConfiguration(goDietConfiguration);
-			initUserManager();
+			rm.getGodietConfiguration().setLocalNodeId(goDietConfiguration.getLocalNode());
+			try {
+				rm.getGodietConfiguration().setLocalScratch(goDietConfiguration.getLocalscratch());
+			} catch (GoDietConfigurationException e) {
+				log.error("Unable to set local scratch",e.getMessage());
+			}
+			initUserManager(goDietConfiguration);
 		} catch (IOException e) {
 			throw new CommandExecutionException("XML read error", e);
 		} catch (XMLParseException e) {
@@ -53,9 +63,8 @@ public class LoadXMLConfigurationCommand implements Command {
 	/**
 	 * Initialize user manager whith key list in the xml desc file
 	 */
-	private void initUserManager() {
-		GoDietConfiguration goDietConfiguration = this.rm
-				.getGodietConfiguration().getGoDietConfiguration();
+	private void initUserManager(GoDietConfiguration goDietConfiguration) {
+		
 		UserManager um = this.rm.getUserManager();
 		if (goDietConfiguration.getUser() != null
 				&& goDietConfiguration.getUser().getSsh() != null
