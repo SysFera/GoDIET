@@ -15,23 +15,13 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.sysfera.godiet.command.init.util.XMLLoadingHelper;
-import com.sysfera.godiet.command.xml.LoadXMLDietCommand;
 import com.sysfera.godiet.exceptions.CommandExecutionException;
 import com.sysfera.godiet.exceptions.generics.PathException;
-import com.sysfera.godiet.managers.DietManager;
 import com.sysfera.godiet.managers.InfrastructureManager;
 import com.sysfera.godiet.managers.ResourcesManager;
 import com.sysfera.godiet.model.Path;
-import com.sysfera.godiet.model.SoftwareController;
-import com.sysfera.godiet.model.factories.GodietMetaFactory;
+import com.sysfera.godiet.model.Path.Hop;
 import com.sysfera.godiet.model.generated.Resource;
-import com.sysfera.godiet.model.validators.ForwarderRuntimeValidatorImpl;
-import com.sysfera.godiet.model.validators.LocalAgentRuntimeValidatorImpl;
-import com.sysfera.godiet.model.validators.MasterAgentRuntimeValidatorImpl;
-import com.sysfera.godiet.model.validators.OmniNamesRuntimeValidatorImpl;
-import com.sysfera.godiet.model.validators.SedRuntimeValidatorImpl;
-import com.sysfera.godiet.remote.RemoteConfigurationHelper;
-import com.sysfera.godiet.utils.xml.XmlScannerJaxbImpl;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @DirtiesContext
@@ -51,56 +41,26 @@ public class TopologyManagerTest {
 			// Loading configuration
 			{
 				String configurationFile = "configuration/configuration.xml";
-
 				InputStream inputStream = getClass().getClassLoader()
 						.getResourceAsStream(configurationFile);
 				XMLLoadingHelper.initConfig(rm, inputStream);
 			}
 
-			{
-				String platformTestCase = "infrastructure/6D-10N-7G-3L.xml";
-				InputStream inputStreamPlatform = getClass().getClassLoader()
-						.getResourceAsStream(platformTestCase);
-				XMLLoadingHelper.initInfrastructure(rm, inputStreamPlatform);
-			}
-			{
-				// Init RM
-				String testCaseFile = "diet/2MA-1LA-6SED.xml";
-				InputStream inputStream = getClass().getClassLoader()
-						.getResourceAsStream(testCaseFile);
-				XmlScannerJaxbImpl scanner = new XmlScannerJaxbImpl();
-				LoadXMLDietCommand xmlLoadingCommand = new LoadXMLDietCommand();
-				xmlLoadingCommand.setRm(rm);
-				xmlLoadingCommand.setXmlInput(inputStream);
-				xmlLoadingCommand.setXmlParser(scanner);
-				SoftwareController softwareController = new RemoteConfigurationHelper(
-						rm.getGodietConfiguration(), rm.getInfrastructureModel());
-				DietManager dietModel = rm.getDietModel();
-				GodietMetaFactory godietAbstractFactory = new GodietMetaFactory(
-						softwareController, new ForwarderRuntimeValidatorImpl(
-								dietModel),
-						new MasterAgentRuntimeValidatorImpl(dietModel),
-						new LocalAgentRuntimeValidatorImpl(dietModel),
-						new SedRuntimeValidatorImpl(dietModel),
-						new OmniNamesRuntimeValidatorImpl(dietModel));
-
-				xmlLoadingCommand.setAbstractFactory(godietAbstractFactory);
-
-				xmlLoadingCommand.execute();
-			}
-
+			
 		} catch (CommandExecutionException e) {
 			log.error("Test Fail", e);
 			Assert.fail(e.getMessage());
 		}
 	}
 
+	@DirtiesContext
 	@Test
 	public void searchPath1() {
 		{
 			String infrastructureTestCase = "infrastructure/6D-10N-7G-3L.xml";
 			InputStream infrastructureInputStream = getClass().getClassLoader()
 					.getResourceAsStream(infrastructureTestCase);
+
 			try {
 				XMLLoadingHelper.initInfrastructure(rm,
 						infrastructureInputStream);
@@ -121,7 +81,10 @@ public class TopologyManagerTest {
 				} catch (PathException e) {
 					Assert.fail(e.getMessage());
 				}
-				Assert.assertEquals(path.getPath().size(), 0);
+				// We expect to find a path'size of 1 pointed at the source node
+				Assert.assertEquals(path.getPath().size(), 1);
+				Assert.assertEquals(((Hop) path.getPath().toArray()[0])
+						.getDestination().getId(), "Node1");
 
 				/** Source et Dest n'existent pas **/
 				source = infrastructureModel.getResource("Fake1");
@@ -129,25 +92,107 @@ public class TopologyManagerTest {
 				boolean exceptionPathNotExist = false;
 				try {
 					topologyManager.findPath(source, destination);
-
 				} catch (PathException e) {
 					// Comportement recherche
 					exceptionPathNotExist = true;
 				}
-
 				Assert.assertEquals(exceptionPathNotExist, true);
 
-				/** dource = destination et source et destination n'existent pas **/
+				/** Source = destination et source et destination n'existent pas **/
+				source = infrastructureModel.getResource("Fake1");
+				destination = infrastructureModel.getResource("Fake1");
+				boolean exceptionPathNotExist2 = false;
+				try {
+					topologyManager.findPath(source, destination);
+				} catch (PathException e) {
+					// Comportement recherche
+					log.debug(e.getMessage());
+					exceptionPathNotExist2 = true;
+				}
+				Assert.assertEquals(exceptionPathNotExist2, true);
 
 				/** Source qui existe dest qui n'existe pas **/
+				source = infrastructureModel.getResource("Node1");
+				destination = infrastructureModel.getResource("Fake1");
+				boolean exceptionPathNotExist3 = false;
+				try {
+					topologyManager.findPath(source, destination);
+				} catch (PathException e) {
+					// Comportement recherche
+					log.debug(e.getMessage());
+					exceptionPathNotExist3 = true;
+				}
+				Assert.assertEquals(exceptionPathNotExist3, true);
 
-				/** Dest qui n'existe pas et source qui existe **/
 
-				/** Source dest joignable domain différent. Tester tous les hops **/
+				/** Source qui n'existe pas et dest qui existe **/
+				source = infrastructureModel.getResource("Fake1");
+				destination = infrastructureModel.getResource("Node6");
+				boolean exceptionPathNotExist4 = false;
+				try {
+					topologyManager.findPath(source, destination);
+				} catch (PathException e) {
+					// Comportement recherche
+					log.debug(e.getMessage());
+					exceptionPathNotExist4 = true;
+				}
+				Assert.assertEquals(exceptionPathNotExist4, true);
+
+				/**
+				 * Source dest joignable domain différent. Tester tous les hops
+				 **/
+				source = infrastructureModel.getResource("Node1");
+				destination = infrastructureModel.getResource("Node8");
+				try {
+					path = topologyManager.findPath(source, destination);
+				} catch (PathException e) {
+					Assert.fail(e.getMessage());
+				}
+				Assert.assertEquals(path.getPath().size(), 4);
+				Object[] o = path.getPath().toArray();
+				Assert.assertEquals(((Hop) o[0]).getDestination().getId(),
+						"Node2");
+				Assert.assertEquals(((Hop) o[0]).getLink().getId(),
+						"node2interface1");
+				Assert.assertEquals(((Hop) o[1]).getDestination().getId(),
+						"Node4");
+				Assert.assertEquals(((Hop) o[1]).getLink().getId(),
+						"node4interface1");
+				Assert.assertEquals(((Hop) o[2]).getDestination().getId(),
+						"Node6");
+				Assert.assertEquals(((Hop) o[2]).getLink().getId(),
+						"node6interface1");
+				Assert.assertEquals(((Hop) o[3]).getDestination().getId(),
+						"Node8");
+				Assert.assertEquals(((Hop) o[3]).getLink().getId(),
+						"node8interface1");
 
 				/** Source dest joignable même domaine. Tester tous les hops **/
+				source = infrastructureModel.getResource("Node4");
+				destination = infrastructureModel.getResource("Node5");
+				try {
+					path = topologyManager.findPath(source, destination);
+				} catch (PathException e) {
+					Assert.fail(e.getMessage());
+				}
+				Assert.assertEquals(path.getPath().size(), 1);
+				Assert.assertEquals(((Hop) path.getPath().toArray()[0])
+						.getDestination().getId(), "Node5");
+				Assert.assertEquals(((Hop) path.getPath().toArray()[0])
+						.getLink().getId(), "node5interface1");
 
 				/** Source et dest non joignable **/
+				source = infrastructureModel.getResource("Node9");
+				destination = infrastructureModel.getResource("Node1");
+				boolean exceptionPathNotExist5 = false;
+				try {
+					topologyManager.findPath(source, destination);
+				} catch (PathException e) {
+					// Comportement recherche
+					log.debug(e.getMessage());
+					exceptionPathNotExist5 = true;
+				}
+				Assert.assertEquals(exceptionPathNotExist5, true);
 
 			} catch (CommandExecutionException e) {
 				log.error("Test Fail", e);
@@ -155,15 +200,161 @@ public class TopologyManagerTest {
 			}
 		}
 	}
-
+	@DirtiesContext
 	@Test
 	public void searchPath2() {
 		{
 			String platformTestCase = "infrastructure/testbed.xml";
-			InputStream inputStreamPlatform = getClass().getClassLoader()
+			InputStream platforInputStream = getClass().getClassLoader()
 					.getResourceAsStream(platformTestCase);
 			try {
-				XMLLoadingHelper.initInfrastructure(rm, inputStreamPlatform);
+				XMLLoadingHelper.initInfrastructure(rm, platforInputStream);
+				InfrastructureManager infrastructureModel = rm
+						.getInfrastructureModel();
+				TopologyManager topologyManager = infrastructureModel
+						.getTopologyManager();
+				Resource source;
+				Resource destination;
+				Path path = null;
+
+				/** Source = Destination **/
+				source = infrastructureModel.getResource("miaou");
+				destination = infrastructureModel.getResource("miaou");
+				try {
+					path = topologyManager.findPath(source, destination);
+				} catch (PathException e) {
+					Assert.fail(e.getMessage());
+				}
+				// We expect to find a path'size of 1 pointed at the source node
+				Assert.assertEquals(path.getPath().size(), 1);
+				Assert.assertEquals(((Hop) path.getPath().toArray()[0])
+						.getDestination().getId(), "miaou");
+
+				/** Source et Dest n'existent pas **/
+				source = infrastructureModel.getResource("Fake1");
+				destination = infrastructureModel.getResource("Fake2");
+				boolean exceptionPathNotExist = false;
+				try {
+					topologyManager.findPath(source, destination);
+				} catch (PathException e) {
+					// Comportement recherche
+					log.debug(e.getMessage());
+					exceptionPathNotExist = true;
+				}
+				Assert.assertEquals(exceptionPathNotExist, true);
+
+				/** Source = destination et source et destination n'existent pas **/
+				source = infrastructureModel.getResource("Fake1");
+				destination = infrastructureModel.getResource("Fake1");
+				boolean exceptionPathNotExist2 = false;
+				try {
+					topologyManager.findPath(source, destination);
+				} catch (PathException e) {
+					// Comportement recherche
+					log.debug(e.getMessage());
+					exceptionPathNotExist2 = true;
+				}
+				Assert.assertEquals(exceptionPathNotExist2, true);
+
+				/** Source qui existe dest qui n'existe pas **/
+				source = infrastructureModel.getResource("phi-laptop");
+				destination = infrastructureModel.getResource("Fake1");
+				boolean exceptionPathNotExist3 = false;
+				try {
+					topologyManager.findPath(source, destination);
+				} catch (PathException e) {
+					// Comportement recherche
+					log.debug(e.getMessage());
+					exceptionPathNotExist3 = true;
+				}
+				Assert.assertEquals(exceptionPathNotExist3, true);
+
+				/** Source qui n'existe pas et dest qui existe **/
+				source = infrastructureModel.getResource("Fake1");
+				destination = infrastructureModel.getResource("Node1");
+				boolean exceptionPathNotExist4 = false;
+				try {
+					topologyManager.findPath(source, destination);
+				} catch (PathException e) {
+					// Comportement recherche
+					log.debug(e.getMessage());
+					exceptionPathNotExist4 = true;
+				}
+				Assert.assertEquals(exceptionPathNotExist4, true);
+
+				/**
+				 * Source dest joignable domain différent. Tester tous les hops
+				 **/
+				source = infrastructureModel.getResource("phi-laptop");
+				destination = infrastructureModel.getResource("Node4");
+				try {
+					path = topologyManager.findPath(source, destination);
+				} catch (PathException e) {
+					Assert.fail(e.getMessage());
+				}
+				Assert.assertEquals(path.getPath().size(), 5);
+				Object[] o = path.getPath().toArray();
+				Assert.assertEquals(((Hop) o[0]).getDestination().getId(),
+						"graal");
+				Assert.assertEquals(((Hop) o[0]).getLink().getId(),
+						"graalinterface1");
+				Assert.assertEquals(((Hop) o[1]).getDestination().getId(),
+						"testbedVM");
+				Assert.assertEquals(((Hop) o[1]).getLink().getId(),
+						"testbedVMinterface1");
+				Assert.assertEquals(((Hop) o[2]).getDestination().getId(),
+						"Node1");
+				Assert.assertEquals(((Hop) o[2]).getLink().getId(),
+						"node1interface1");
+				Assert.assertEquals(((Hop) o[3]).getDestination().getId(),
+						"Node5");
+				Assert.assertEquals(((Hop) o[3]).getLink().getId(),
+						"node5interface2");
+				Assert.assertEquals(((Hop) o[4]).getDestination().getId(),
+						"Node4");
+				Assert.assertEquals(((Hop) o[4]).getLink().getId(),
+						"node4interface1");
+
+				/** Source dest joignable même domaine. Tester tous les hops **/
+				source = infrastructureModel.getResource("Node2");
+				destination = infrastructureModel.getResource("Node3");
+				try {
+					path = topologyManager.findPath(source, destination);
+				} catch (PathException e) {
+					Assert.fail(e.getMessage());
+				}
+				Assert.assertEquals(path.getPath().size(), 1);
+				Assert.assertEquals(((Hop) path.getPath().toArray()[0])
+						.getDestination().getId(), "Node3");
+				Assert.assertEquals(((Hop) path.getPath().toArray()[0])
+						.getLink().getId(), "node3interface1");
+
+				source = infrastructureModel.getResource("Node3");
+				destination = infrastructureModel.getResource("Node2");
+				try {
+					path = topologyManager.findPath(source, destination);
+				} catch (PathException e) {
+					Assert.fail(e.getMessage());
+				}
+				Assert.assertEquals(path.getPath().size(), 1);
+				Assert.assertEquals(((Hop) path.getPath().toArray()[0])
+						.getDestination().getId(), "Node2");
+				Assert.assertEquals(((Hop) path.getPath().toArray()[0])
+						.getLink().getId(), "node2interface1");
+				
+				/** Source et dest non joignable **/
+				source = infrastructureModel.getResource("Node2");
+				destination = infrastructureModel.getResource("miaou");
+				boolean exceptionPathNotExist5 = false;
+				try {
+					topologyManager.findPath(source, destination);
+				} catch (PathException e) {
+					// Comportement recherche
+					log.debug(e.getMessage());
+					exceptionPathNotExist5 = true;
+				}
+				Assert.assertEquals(exceptionPathNotExist5, true);
+
 			} catch (CommandExecutionException e) {
 				log.error("Test Fail", e);
 				Assert.fail(e.getMessage());
