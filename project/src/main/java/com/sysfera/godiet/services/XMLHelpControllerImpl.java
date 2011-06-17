@@ -14,19 +14,16 @@ import com.sysfera.godiet.exceptions.XMLParseException;
 import com.sysfera.godiet.exceptions.generics.DietResourceValidationException;
 import com.sysfera.godiet.exceptions.generics.GoDietConfigurationException;
 import com.sysfera.godiet.exceptions.graph.GraphDataException;
+import com.sysfera.godiet.exceptions.remote.IncubateException;
 import com.sysfera.godiet.managers.ConfigurationManager;
-import com.sysfera.godiet.model.generated.Cluster;
-import com.sysfera.godiet.model.generated.Diet;
-import com.sysfera.godiet.model.generated.DietInfrastructure;
+import com.sysfera.godiet.model.generated.DietHierarchy;
+import com.sysfera.godiet.model.generated.DietPlatform;
 import com.sysfera.godiet.model.generated.DietServices;
-import com.sysfera.godiet.model.generated.Domain;
 import com.sysfera.godiet.model.generated.GoDietConfiguration;
 import com.sysfera.godiet.model.generated.Infrastructure;
-import com.sysfera.godiet.model.generated.Link;
 import com.sysfera.godiet.model.generated.LocalAgent;
 import com.sysfera.godiet.model.generated.MasterAgent;
 import com.sysfera.godiet.model.generated.OmniNames;
-import com.sysfera.godiet.model.generated.Platform;
 import com.sysfera.godiet.model.generated.Sed;
 import com.sysfera.godiet.model.generated.User.Ssh.Key;
 import com.sysfera.godiet.utils.xml.XMLParser;
@@ -35,23 +32,23 @@ import com.sysfera.godiet.utils.xml.XmlScannerJaxbImpl;
 @Component
 public class XMLHelpControllerImpl {
 	@Autowired
-	private  ConfigurationManager configurationManager;
+	private ConfigurationManager configurationManager;
 	@Autowired
-	private  PlatformController platformController;
+	private PlatformController platformController;
 	@Autowired
-	private  InfrastructureController infrastructureController;
+	private InfrastructureController infrastructureController;
 	@Autowired
-	private  UserController userController;
-	
+	private UserController userController;
+
 	private final XMLParser xmlScanner;
 
 	public XMLHelpControllerImpl() {
-		
+
 		this.xmlScanner = new XmlScannerJaxbImpl();
 	}
 
 	public void registerConfigurationFile(InputStream xmlInput)
-			throws IOException, XMLParseException,GoDietConfigurationException {
+			throws IOException, XMLParseException, GoDietConfigurationException {
 		GoDietConfiguration goDietConfiguration = xmlScanner
 				.buildGodietConfiguration(xmlInput);
 		List<Key> sshKeys = goDietConfiguration.getUser().getSsh().getKey();
@@ -59,16 +56,17 @@ public class XMLHelpControllerImpl {
 		for (Key key : sshKeys) {
 			userController.registerSSHKey(key);
 		}
-		
+
 		configurationManager.setLocalNodeId(goDietConfiguration.getLocalNode());
-		configurationManager.setLocalScratch(goDietConfiguration.getLocalscratch());
+		configurationManager.setLocalScratch(goDietConfiguration
+				.getLocalscratch());
 	}
 
 	// TODO: Transactionnal
 	public void registerDietElements(InputStream xmlInput) throws IOException,
 			XMLParseException, DietResourceCreationException,
-			DietResourceValidationException {
-		Diet dietDescription = xmlScanner.buildDietModel(xmlInput);
+			DietResourceValidationException, IncubateException {
+		DietPlatform dietDescription = xmlScanner.buildDietModel(xmlInput);
 		load(dietDescription);
 	}
 
@@ -76,11 +74,11 @@ public class XMLHelpControllerImpl {
 	public void registerInfrastructureElements(InputStream xmlInput)
 			throws IOException, XMLParseException, ResourceAddException,
 			GraphDataException {
-		Platform platformDescription = xmlScanner.buildPlatformModel(xmlInput);
-		loadInfrastructure(platformDescription.getInfrastructure());
+		Infrastructure platformDescription = xmlScanner
+				.buildInfrastructureModel(xmlInput);
+		loadInfrastructure(platformDescription);
 	}
 
-	
 	/**
 	 * TODO Transactionnal
 	 * 
@@ -90,27 +88,14 @@ public class XMLHelpControllerImpl {
 	 */
 	private void loadInfrastructure(Infrastructure infrastructure)
 			throws ResourceAddException, GraphDataException {
-		List<Domain> domains = infrastructure.getDomain();
-		infrastructureController.registerDomains(domains);
-		if (domains != null) {
-			for (Domain domain : domains) {
-				infrastructureController.registerGateways(domain.getGateway());
-				infrastructureController.registerNodes(domain.getNode());
-				List<Cluster> clusters = domain.getCluster();
-				infrastructureController.registerClusters(clusters);
-				if (clusters != null) {
-					for (Cluster cluster : clusters) {
-						infrastructureController.registerNodes(cluster
-								.getComputingNode());
-						infrastructureController.registerFrontends(cluster
-								.getFronted());
-					}
-				}
-			}
-		}
+		this.infrastructureController.registerDomains(infrastructure
+				.getDomain());
+		this.infrastructureController.registerNodes(infrastructure.getNode());
+		// FIXME
+		// this.rm.getInfrastructureModel().addClusters(infrastructure.getCluster());
 
-		List<Link> links = infrastructure.getLink();
-		infrastructureController.registerLinks(links);
+		this.infrastructureController.registerLinks(infrastructure.getLink());
+
 	}
 
 	/**
@@ -120,12 +105,13 @@ public class XMLHelpControllerImpl {
 	 * 
 	 * @throws DietResourceCreationException
 	 * @throws DietResourceValidationException
+	 * @throws IncubateException 
 	 * @throws CommandExecutionException
 	 */
-	private void load(Diet diet) throws DietResourceCreationException,
-			DietResourceValidationException {
+	private void load(DietPlatform diet) throws DietResourceCreationException,
+			DietResourceValidationException, IncubateException {
 
-		initDietPlatform(diet.getDietInfrastructure(), diet.getDietServices());
+		initDietPlatform(diet.getHierarchy(), diet.getServices());
 
 	}
 
@@ -136,10 +122,11 @@ public class XMLHelpControllerImpl {
 	 * @param dietServices
 	 * @throws DietResourceCreationException
 	 * @throws DietResourceValidationException
+	 * @throws IncubateException 
 	 */
-	private void initDietPlatform(DietInfrastructure dietHierarchy,
+	private void initDietPlatform(DietHierarchy dietHierarchy,
 			DietServices dietServices) throws DietResourceCreationException,
-			DietResourceValidationException {
+			DietResourceValidationException, IncubateException {
 		List<OmniNames> omniNames = dietServices.getOmniNames();
 		for (OmniNames omniName : omniNames) {
 			platformController.registerOmniNames(omniName);
@@ -156,10 +143,11 @@ public class XMLHelpControllerImpl {
 	 *            of masterAgent
 	 * @throws DietResourceCreationException
 	 * @throws DietResourceValidationException
+	 * @throws IncubateException 
 	 */
 	private void initMasterAgents(List<MasterAgent> masterAgents)
 			throws DietResourceCreationException,
-			DietResourceValidationException {
+			DietResourceValidationException, IncubateException {
 		if (masterAgents != null) {
 			for (MasterAgent masterAgent : masterAgents) {
 				platformController.registerMasterAgent(masterAgent);
@@ -176,10 +164,11 @@ public class XMLHelpControllerImpl {
 	 * @param localAgent
 	 * @throws DietResourceCreationException
 	 * @throws DietResourceValidationException
+	 * @throws IncubateException 
 	 */
 	private void initLocalAgents(List<LocalAgent> localAgents)
 			throws DietResourceCreationException,
-			DietResourceValidationException {
+			DietResourceValidationException, IncubateException {
 		if (localAgents != null) {
 			for (LocalAgent localAgent : localAgents) {
 				platformController.registerLocalAgent(localAgent);
@@ -195,9 +184,10 @@ public class XMLHelpControllerImpl {
 	 * @param sed
 	 * @throws DietResourceCreationException
 	 * @throws DietResourceValidationException
+	 * @throws IncubateException 
 	 */
 	private void initSeds(List<Sed> seds) throws DietResourceCreationException,
-			DietResourceValidationException {
+			DietResourceValidationException, IncubateException {
 		if (seds != null) {
 			for (Sed sed : seds) {
 				platformController.registerSed(sed);

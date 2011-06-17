@@ -1,7 +1,6 @@
 package com.sysfera.godiet.managers.topology;
 
 import java.io.InputStream;
-import java.util.LinkedHashSet;
 
 import junit.framework.Assert;
 
@@ -20,12 +19,11 @@ import com.sysfera.godiet.command.xml.LoadXMLDietCommand;
 import com.sysfera.godiet.exceptions.CommandExecutionException;
 import com.sysfera.godiet.exceptions.generics.PathException;
 import com.sysfera.godiet.managers.DietManager;
-import com.sysfera.godiet.managers.PlatformManager;
+import com.sysfera.godiet.managers.InfrastructureManager;
 import com.sysfera.godiet.managers.ResourcesManager;
 import com.sysfera.godiet.model.Path;
 import com.sysfera.godiet.model.SoftwareController;
 import com.sysfera.godiet.model.factories.GodietMetaFactory;
-import com.sysfera.godiet.model.generated.Node;
 import com.sysfera.godiet.model.generated.Resource;
 import com.sysfera.godiet.model.validators.ForwarderRuntimeValidatorImpl;
 import com.sysfera.godiet.model.validators.LocalAgentRuntimeValidatorImpl;
@@ -37,12 +35,14 @@ import com.sysfera.godiet.utils.xml.XmlScannerJaxbImpl;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @DirtiesContext
-@ContextConfiguration(locations = { "/spring/spring-config.xml","/spring/ssh-context.xml" })
+@ContextConfiguration(locations = { "/spring/spring-config.xml",
+		"/spring/ssh-context.xml" })
 public class TopologyManagerTest {
 	private Logger log = LoggerFactory.getLogger(getClass());
 	@Autowired
 	private ResourcesManager rm;
-	
+
+	private TopologyManagerGSImpl tm;
 
 	@Before
 	public void setupTest() {
@@ -56,11 +56,12 @@ public class TopologyManagerTest {
 						.getResourceAsStream(configurationFile);
 				XMLLoadingHelper.initConfig(rm, inputStream);
 			}
+
 			{
 				String platformTestCase = "infrastructure/6D-10N-7G-3L.xml";
 				InputStream inputStreamPlatform = getClass().getClassLoader()
 						.getResourceAsStream(platformTestCase);
-				XMLLoadingHelper.initPlatform(rm, inputStreamPlatform);
+				XMLLoadingHelper.initInfrastructure(rm, inputStreamPlatform);
 			}
 			{
 				// Init RM
@@ -72,8 +73,8 @@ public class TopologyManagerTest {
 				xmlLoadingCommand.setRm(rm);
 				xmlLoadingCommand.setXmlInput(inputStream);
 				xmlLoadingCommand.setXmlParser(scanner);
-				SoftwareController softwareController = new RemoteConfigurationHelper(rm.getGodietConfiguration(),
-						rm.getPlatformModel());
+				SoftwareController softwareController = new RemoteConfigurationHelper(
+						rm.getGodietConfiguration(), rm.getInfrastructureModel());
 				DietManager dietModel = rm.getDietModel();
 				GodietMetaFactory godietAbstractFactory = new GodietMetaFactory(
 						softwareController, new ForwarderRuntimeValidatorImpl(
@@ -86,96 +87,103 @@ public class TopologyManagerTest {
 				xmlLoadingCommand.setAbstractFactory(godietAbstractFactory);
 
 				xmlLoadingCommand.execute();
-
 			}
+
 		} catch (CommandExecutionException e) {
 			log.error("Test Fail", e);
 			Assert.fail(e.getMessage());
 		}
-
 	}
 
 	@Test
-	public void topologyTest() {
-		// Correct complex path
-		PlatformManager physPlatform = rm.getPlatformModel();
-		Node sourceNode = (Node) physPlatform.getResource("Node1");
-		Node destinationNode = (Node) physPlatform.getResource("Node5");
+	public void searchPath1() {
+		{
+			String infrastructureTestCase = "infrastructure/6D-10N-7G-3L.xml";
+			InputStream infrastructureInputStream = getClass().getClassLoader()
+					.getResourceAsStream(infrastructureTestCase);
+			try {
+				XMLLoadingHelper.initInfrastructure(rm,
+						infrastructureInputStream);
 
-		try {
-			Path p = physPlatform.findPath(sourceNode, destinationNode);
-			LinkedHashSet<? extends Resource> res = p.getPath();
-			String info = "Find path: ";
-			for (Resource resource : res) {
+				InfrastructureManager infrastructureModel = rm
+						.getInfrastructureModel();
+				TopologyManager topologyManager = infrastructureModel
+						.getTopologyManager();
+				Resource source;
+				Resource destination;
+				Path path = null;
 
-				info += (resource.getSsh().getServer() + " ");
+				/** Source = Destination **/
+				source = infrastructureModel.getResource("Node1");
+				destination = infrastructureModel.getResource("Node1");
+				try {
+					path = topologyManager.findPath(source, destination);
+				} catch (PathException e) {
+					Assert.fail(e.getMessage());
+				}
+				Assert.assertEquals(path.getPath().size(), 0);
+
+				/** Source et Dest n'existent pas **/
+				source = infrastructureModel.getResource("Fake1");
+				destination = infrastructureModel.getResource("Fake2");
+				boolean exceptionPathNotExist = false;
+				try {
+					topologyManager.findPath(source, destination);
+
+				} catch (PathException e) {
+					// Comportement recherche
+					exceptionPathNotExist = true;
+				}
+
+				Assert.assertEquals(exceptionPathNotExist, true);
+
+				/** dource = destination et source et destination n'existent pas **/
+
+				/** Source qui existe dest qui n'existe pas **/
+
+				/** Dest qui n'existe pas et source qui existe **/
+
+				/** Source dest joignable domain différent. Tester tous les hops **/
+
+				/** Source dest joignable même domaine. Tester tous les hops **/
+
+				/** Source et dest non joignable **/
+
+			} catch (CommandExecutionException e) {
+				log.error("Test Fail", e);
+				Assert.fail(e.getMessage());
 			}
-			log.info(info);
-		} catch (PathException e) {
-			e.printStackTrace();
-			Assert.fail("Topology error");
 		}
-
-		// Thrown PathException cause incorrect node name
-		sourceNode = (Node) physPlatform.getResource("Node1");
-		destinationNode = (Node) physPlatform.getResource("IncorrectNodeName");
-		boolean thrown = false;
-		try {
-			physPlatform.findPath(sourceNode, destinationNode);
-		} catch (PathException e) {
-			thrown = true;
-		}
-		Assert.assertTrue(thrown);
-		thrown = false;
-
-		// Null path cause unreachable node (Node7 (Domain5) to Node2 (Domain2)
-		sourceNode = (Node) physPlatform.getResource("Node7");
-		destinationNode = (Node) physPlatform.getResource("Node2");
-
-		try {
-			Path p = physPlatform.findPath(sourceNode, destinationNode);
-			Assert.assertNull(p);
-		} catch (PathException e) {
-			Assert.fail("Must be null, not throw exception");
-		}
-
-		// Complex path (from D4 to D1. Find
-		// ClientNodeDomain4<-->G4<-->(G6<-->G7)<-->G2<-->G3<-->G1<-->Node1 )
-		sourceNode = (Node) physPlatform.getResource("ClientNodeDomain4");
-		destinationNode = (Node) physPlatform.getResource("Node1");
-		try {
-			Path p = physPlatform.findPath(sourceNode, destinationNode);
-			Object[] pathResources = p.getPath().toArray();
-			Assert.assertEquals(8, pathResources.length);
-
-			Assert.assertEquals("ClientNodeDomain4",
-					((Resource) pathResources[0]).getId());
-			Assert.assertEquals("G4", ((Resource) pathResources[1]).getId());
-			Assert.assertEquals("G6", ((Resource) pathResources[2]).getId());
-			Assert.assertEquals("G7", ((Resource) pathResources[3]).getId());
-			Assert.assertEquals("G2", ((Resource) pathResources[4]).getId());
-			Assert.assertEquals("G3", ((Resource) pathResources[5]).getId());
-			Assert.assertEquals("G1", ((Resource) pathResources[6]).getId());
-			Assert.assertEquals("Node1", ((Resource) pathResources[7]).getId());
-
-		} catch (PathException e) {
-			Assert.fail();
-		}
-
-		// Path.length = 2 cause nodes are in the same domain
-		sourceNode = (Node) physPlatform.getResource("Node4");
-		destinationNode = (Node) physPlatform.getResource("Node5");
-		try {
-			Path p = physPlatform.findPath(sourceNode, destinationNode);
-			Object[] pathResources = p.getPath().toArray();
-			Assert.assertEquals(2, pathResources.length);
-
-			Assert.assertEquals("Node4", ((Resource) pathResources[0]).getId());
-			Assert.assertEquals("Node5", ((Resource) pathResources[1]).getId());
-		} catch (PathException e) {
-			Assert.fail("Must be null, not throw exception");
-		}
-
-		// TODO Try to add an exising link
 	}
+
+	@Test
+	public void searchPath2() {
+		{
+			String platformTestCase = "infrastructure/testbed.xml";
+			InputStream inputStreamPlatform = getClass().getClassLoader()
+					.getResourceAsStream(platformTestCase);
+			try {
+				XMLLoadingHelper.initInfrastructure(rm, inputStreamPlatform);
+			} catch (CommandExecutionException e) {
+				log.error("Test Fail", e);
+				Assert.fail(e.getMessage());
+			}
+		}
+	}
+	// @Test
+	// public void topologyTest() {
+	// tm =
+	// (TopologyManagerGSImpl)rm.getInfrastructureModel().getTopologyManager();
+	// Draw d = new Draw(tm);
+	// d.display();
+	// d.drawShortestPath("Node1", "Domain6");
+	// }
+
+	// public static void main(String[] args) {
+	// TopologyManagerTest test = new TopologyManagerTest();
+	// System.setProperty("gs.ui.renderer",
+	// "org.graphstream.ui.j2dviewer.J2DGraphRenderer");
+	// test.setupTest();
+	// test.topologyTest();
+	// }
 }

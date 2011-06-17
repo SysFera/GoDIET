@@ -3,8 +3,10 @@ package com.sysfera.godiet.model.factories;
 import com.sysfera.godiet.exceptions.DietResourceCreationException;
 import com.sysfera.godiet.exceptions.remote.IncubateException;
 import com.sysfera.godiet.model.DietResourceManaged;
+import com.sysfera.godiet.model.OmniNamesManaged;
 import com.sysfera.godiet.model.SoftwareController;
 import com.sysfera.godiet.model.generated.MasterAgent;
+import com.sysfera.godiet.model.generated.Node;
 import com.sysfera.godiet.model.generated.OmniNames;
 import com.sysfera.godiet.model.generated.Resource;
 import com.sysfera.godiet.model.validators.RuntimeValidator;
@@ -17,10 +19,9 @@ import com.sysfera.godiet.model.validators.RuntimeValidator;
  */
 public class MasterAgentFactory {
 	private final SoftwareController softwareController;
-	private final RuntimeValidator validator;
 
-	public MasterAgentFactory(SoftwareController softwareController,
-			RuntimeValidator maValidator) {
+	private final RuntimeValidator<DietResourceManaged<MasterAgent>> validator;
+	public MasterAgentFactory(SoftwareController softwareController,RuntimeValidator<DietResourceManaged<MasterAgent>> maValidator) {
 		this.softwareController = softwareController;
 		this.validator = maValidator;
 	}
@@ -32,21 +33,15 @@ public class MasterAgentFactory {
 	 * @param masterAgentDescription
 	 * @return The managed MasterAgent
 	 * @throws DietResourceCreationException
+	 * @throws IncubateException 
 	 */
-	public DietResourceManaged create(MasterAgent masterAgentDescription,Resource pluggedOn,
-			OmniNames omniNames) throws DietResourceCreationException {
-		try {
-			DietResourceManaged MAManaged = new DietResourceManaged(masterAgentDescription,
-					softwareController, validator);
-			MAManaged.setPluggedOn(pluggedOn);
-			AgentFactoryUtil.settingConfigurationOptions(MAManaged,
-					"DIET_MASTER_AGENT");
-			AgentFactoryUtil.settingRunningCommand(omniNames, MAManaged);
-			return MAManaged;
-		} catch (IncubateException e) {
-			throw new DietResourceCreationException("Resource creation fail.",
-					e);
-		}
+	public DietResourceManaged<MasterAgent> create(MasterAgent masterAgentDescription,Resource pluggedOn,OmniNamesManaged omniNames) throws DietResourceCreationException, IncubateException
+	{
+		DietResourceManaged<MasterAgent> MAManaged = new DietResourceManaged<MasterAgent>(masterAgentDescription,pluggedOn, softwareController, validator,omniNames);
+		
+		AgentFactoryUtil.settingConfigurationOptions(MAManaged,"DIET_MASTER_AGENT");
+		AgentFactoryUtil.settingRunningCommand(omniNames.getSoftwareDescription(),MAManaged);
+		return MAManaged;
 	}
 
 }

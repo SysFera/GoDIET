@@ -1,12 +1,15 @@
 package com.sysfera.godiet.model.factories;
 
 import com.sysfera.godiet.exceptions.DietResourceCreationException;
+import com.sysfera.godiet.exceptions.remote.IncubateException;
 import com.sysfera.godiet.model.DietResourceManaged;
-import com.sysfera.godiet.model.DietServiceManaged;
+import com.sysfera.godiet.model.OmniNamesManaged;
 import com.sysfera.godiet.model.SoftwareController;
+import com.sysfera.godiet.model.generated.Forwarder;
 import com.sysfera.godiet.model.generated.Forwarders;
 import com.sysfera.godiet.model.generated.LocalAgent;
 import com.sysfera.godiet.model.generated.MasterAgent;
+import com.sysfera.godiet.model.generated.Node;
 import com.sysfera.godiet.model.generated.OmniNames;
 import com.sysfera.godiet.model.generated.Resource;
 import com.sysfera.godiet.model.generated.Sed;
@@ -22,10 +25,11 @@ public class GodietMetaFactory {
 
 
 
+
 	public GodietMetaFactory(SoftwareController softwareController,
-			RuntimeValidator forwardersValidator, RuntimeValidator maValidator,
-			RuntimeValidator laValidator, RuntimeValidator sedValidator,
-			RuntimeValidator omniNamesValidator) {
+			RuntimeValidator<DietResourceManaged<Forwarder>> forwardersValidator, RuntimeValidator<DietResourceManaged<MasterAgent>> maValidator,
+			RuntimeValidator<DietResourceManaged<LocalAgent>> laValidator, RuntimeValidator<DietResourceManaged<Sed>> sedValidator,
+			RuntimeValidator<OmniNamesManaged> omniNamesValidator) {
 		this.forwardersFactory = new ForwardersFactory(softwareController,
 				forwardersValidator);
 		this.localAgentFactory = new LocalAgentFactory(softwareController,
@@ -37,30 +41,34 @@ public class GodietMetaFactory {
 				omniNamesValidator);
 	}
 
-	public DietResourceManaged[] create(Forwarders forwarders,Resource pluggedOnClient,Resource pluggedOnServer,
-			OmniNames omniNamesClient, OmniNames omniNamesServer)
-			throws DietResourceCreationException {
-		return forwardersFactory.create(forwarders, pluggedOnClient,pluggedOnServer,omniNamesClient,
+
+
+
+	public DietResourceManaged<Forwarder>[] create(Forwarders forwarders,
+			Node clientPluggedOn, OmniNamesManaged omniNamesClient,
+			Node serverPluggedOn, OmniNamesManaged omniNamesServer)
+			throws DietResourceCreationException, IncubateException {
+		return forwardersFactory.create(forwarders, clientPluggedOn, omniNamesClient, serverPluggedOn,
 				omniNamesServer);
 	}
 
-	public DietResourceManaged create(LocalAgent localAgentDescription,Resource pluggedOn,
-			OmniNames omniNames) throws DietResourceCreationException {
-		return localAgentFactory.create(localAgentDescription, pluggedOn,omniNames);
+	public DietResourceManaged<LocalAgent> create(LocalAgent localAgentDescription,Resource pluggedOn,
+			OmniNamesManaged omniNames) throws DietResourceCreationException, IncubateException {
+		return localAgentFactory.create(localAgentDescription,pluggedOn,omniNames);
 	}
 
-	public DietResourceManaged create(MasterAgent masterAgentDescription,Resource pluggedOn,
-			OmniNames omniNames) throws DietResourceCreationException {
+	public DietResourceManaged<MasterAgent> create(MasterAgent masterAgentDescription,Resource pluggedOn,
+			OmniNamesManaged omniNames) throws DietResourceCreationException, IncubateException {
 		return masterAgentFactory.create(masterAgentDescription,pluggedOn, omniNames);
 	}
 
-	
-	public DietResourceManaged create(Sed sedDescription,Resource pluggedOn, OmniNames omniNames) throws DietResourceCreationException {
+	// TODO: Why no throws ?
+	public DietResourceManaged<Sed> create(Sed sedDescription,Resource pluggedOn, OmniNamesManaged omniNames) throws IncubateException {
 		return sedFactory.create(sedDescription, pluggedOn,omniNames);
 	}
 
-	public DietServiceManaged create(OmniNames omniNamesDescription,Resource pluggedOn)
-			throws DietResourceCreationException {
+	public OmniNamesManaged create(OmniNames omniNamesDescription,Resource pluggedOn)
+			throws DietResourceCreationException, IncubateException {
 		return omniNamesFactory.create(omniNamesDescription,pluggedOn);
 	}
 

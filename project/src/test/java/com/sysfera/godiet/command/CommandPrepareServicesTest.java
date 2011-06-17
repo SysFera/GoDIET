@@ -59,7 +59,7 @@ public class CommandPrepareServicesTest {
 				String platformTestCase = "infrastructure/testbed-platform.xml";
 				InputStream inputStreamPlatform = getClass().getClassLoader()
 						.getResourceAsStream(platformTestCase);
-				XMLLoadingHelper.initPlatform(rm, inputStreamPlatform);
+				XMLLoadingHelper.initInfrastructure(rm, inputStreamPlatform);
 			}
 			{
 				// Init RM
@@ -72,8 +72,9 @@ public class CommandPrepareServicesTest {
 				xmlLoadingCommand.setXmlInput(inputStream);
 				xmlLoadingCommand.setXmlParser(scanner);
 				RemoteConfigurationHelper softwareController = new RemoteConfigurationHelper(
-						rm.getGodietConfiguration(), rm.getPlatformModel());
+						rm.getGodietConfiguration(), rm.getInfrastructureModel());
 				softwareController.setRemoteAccess(remoteAccess);
+
 				DietManager dietModel = rm.getDietModel();
 				GodietMetaFactory godietAbstractFactory = new GodietMetaFactory(
 						softwareController, new ForwarderRuntimeValidatorImpl(

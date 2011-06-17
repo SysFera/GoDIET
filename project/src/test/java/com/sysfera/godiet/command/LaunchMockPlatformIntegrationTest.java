@@ -31,6 +31,7 @@ import com.sysfera.godiet.exceptions.remote.AddAuthentificationException;
 import com.sysfera.godiet.managers.DietManager;
 import com.sysfera.godiet.managers.ResourcesManager;
 import com.sysfera.godiet.managers.user.SSHKeyManager;
+import com.sysfera.godiet.model.SoftwareController;
 import com.sysfera.godiet.model.factories.GodietMetaFactory;
 import com.sysfera.godiet.model.generated.User;
 import com.sysfera.godiet.model.validators.ForwarderRuntimeValidatorImpl;
@@ -44,15 +45,17 @@ import com.sysfera.godiet.utils.xml.XmlScannerJaxbImpl;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @DirtiesContext
-@ContextConfiguration(inheritLocations = false, locations = { "/spring/spring-config.xml" ,"/spring/ssh-context.xml"})
+@ContextConfiguration(inheritLocations = false, locations = {
+		"/spring/spring-config.xml", "/spring/ssh-context.xml" })
 public class LaunchMockPlatformIntegrationTest {
 	private Logger log = LoggerFactory.getLogger(getClass());
 	@Autowired
 	private ResourcesManager rm;
-	
+
 	GodietMetaFactory godietAbstractFactory;
 	@Autowired
 	RemoteAccess remoteAccess;
+
 	@Before
 	public void init() {
 
@@ -64,14 +67,13 @@ public class LaunchMockPlatformIntegrationTest {
 				InputStream inputStream = getClass().getClassLoader()
 						.getResourceAsStream(configurationFile);
 				XMLLoadingHelper.initConfig(rm, inputStream);
-			
 
 			}
 			{
 				String platformTestCase = "infrastructure/localhost-infrastructure.xml";
 				InputStream inputStreamPlatform = getClass().getClassLoader()
 						.getResourceAsStream(platformTestCase);
-				XMLLoadingHelper.initPlatform(rm, inputStreamPlatform);
+				XMLLoadingHelper.initInfrastructure(rm, inputStreamPlatform);
 			}
 			{
 				// Init RM
@@ -83,10 +85,11 @@ public class LaunchMockPlatformIntegrationTest {
 				xmlLoadingCommand.setRm(rm);
 				xmlLoadingCommand.setXmlInput(inputStream);
 				xmlLoadingCommand.setXmlParser(scanner);
-				RemoteConfigurationHelper softwareController = new RemoteConfigurationHelper(
+
+				SoftwareController softwareController = new RemoteConfigurationHelper(
 						rm.getGodietConfiguration(),
-						rm.getPlatformModel());
-				softwareController.setRemoteAccess(remoteAccess);
+						rm.getInfrastructureModel());
+
 				DietManager dietModel = rm.getDietModel();
 				godietAbstractFactory = new GodietMetaFactory(
 						softwareController, new ForwarderRuntimeValidatorImpl(

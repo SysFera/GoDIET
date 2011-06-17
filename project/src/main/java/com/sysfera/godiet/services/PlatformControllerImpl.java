@@ -1,5 +1,7 @@
 package com.sysfera.godiet.services;
 
+import java.util.List;
+
 import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,12 +11,13 @@ import com.sysfera.godiet.exceptions.DietResourceCreationException;
 import com.sysfera.godiet.exceptions.generics.DietResourceValidationException;
 import com.sysfera.godiet.exceptions.generics.GoDietServiceException;
 import com.sysfera.godiet.exceptions.generics.StartException;
+import com.sysfera.godiet.exceptions.remote.IncubateException;
 import com.sysfera.godiet.exceptions.remote.StopException;
 import com.sysfera.godiet.managers.ConfigurationManager;
 import com.sysfera.godiet.managers.DietManager;
-import com.sysfera.godiet.managers.PlatformManager;
+import com.sysfera.godiet.managers.InfrastructureManager;
 import com.sysfera.godiet.model.DietResourceManaged;
-import com.sysfera.godiet.model.DietServiceManaged;
+import com.sysfera.godiet.model.OmniNamesManaged;
 import com.sysfera.godiet.model.SoftwareManager;
 import com.sysfera.godiet.model.factories.GodietMetaFactory;
 import com.sysfera.godiet.model.generated.Domain;
@@ -39,7 +42,7 @@ public final class PlatformControllerImpl implements PlatformController {
 	@Autowired
 	private DietManager dietManager;
 	@Autowired
-	private PlatformManager infrastructureManager;
+	private InfrastructureManager infrastructureManager;
 
 	private GodietMetaFactory godietMetaFactory;
 
@@ -48,6 +51,7 @@ public final class PlatformControllerImpl implements PlatformController {
 
 	@Autowired
 	private RemoteAccess remoteAccess;
+
 	@Override
 	@PostConstruct
 	public void start() throws StartException {
@@ -71,7 +75,7 @@ public final class PlatformControllerImpl implements PlatformController {
 	@Override
 	public void registerMasterAgent(MasterAgent masterAgent)
 			throws DietResourceCreationException,
-			DietResourceValidationException {
+			DietResourceValidationException, IncubateException {
 
 		Resource pluggedOn = infrastructureManager.getResource(masterAgent
 				.getConfig().getServer());
@@ -79,51 +83,50 @@ public final class PlatformControllerImpl implements PlatformController {
 			throw new DietResourceCreationException(
 					"Unable to find the physical resource "
 							+ masterAgent.getConfig().getServer());
-		OmniNames omniNames = InfrastructureUtil.getOmniNames(dietManager,
-				pluggedOn);
+		OmniNamesManaged omniNames = getOmniNames( pluggedOn);
 		if (omniNames == null)
 			throw new DietResourceCreationException("Unable to find omninames "
 					+ masterAgent.getConfig().getServer());
-		DietResourceManaged masterAgentManaged = godietMetaFactory.create(
-				masterAgent, pluggedOn, omniNames);
+		DietResourceManaged<MasterAgent> masterAgentManaged = godietMetaFactory
+				.create(masterAgent, pluggedOn, omniNames);
 		dietManager.addMasterAgent(masterAgentManaged);
 	}
 
 	@Override
 	public void registerLocalAgent(LocalAgent localAgent)
 			throws DietResourceCreationException,
-			DietResourceValidationException {
+			DietResourceValidationException, IncubateException {
 		Resource pluggedOn = infrastructureManager.getResource(localAgent
 				.getConfig().getServer());
 		if (pluggedOn == null)
 			throw new DietResourceCreationException(
 					"Unable to find the physical resource "
 							+ localAgent.getConfig().getServer());
-		OmniNames omniNames = InfrastructureUtil.getOmniNames(dietManager,
-				pluggedOn);
+		OmniNamesManaged omniNames = getOmniNames(pluggedOn);
 		if (omniNames == null)
-			throw new DietResourceCreationException("Unable to find omninames for"
-					+ localAgent.getConfig().getServer());
-		DietResourceManaged localAgentManaged = godietMetaFactory.create(
-				localAgent, pluggedOn, omniNames);
+			throw new DietResourceCreationException(
+					"Unable to find omninames for"
+							+ localAgent.getConfig().getServer());
+		DietResourceManaged<LocalAgent> localAgentManaged = godietMetaFactory
+				.create(localAgent, pluggedOn, omniNames);
 		dietManager.addLocalAgent(localAgentManaged);
 	}
 
 	@Override
 	public void registerSed(Sed sedAgent) throws DietResourceCreationException,
-			DietResourceValidationException {
+			DietResourceValidationException, IncubateException {
 		Resource pluggedOn = infrastructureManager.getResource(sedAgent
 				.getConfig().getServer());
 		if (pluggedOn == null)
 			throw new DietResourceCreationException(
 					"Unable to find the physical resource "
 							+ sedAgent.getConfig().getServer());
-		OmniNames omniNames = InfrastructureUtil.getOmniNames(dietManager,
-				pluggedOn);
+		OmniNamesManaged omniNames = getOmniNames(pluggedOn);
 		if (omniNames == null)
-			throw new DietResourceCreationException("Unable to find omninames for"
-					+ sedAgent.getConfig().getServer());
-		DietResourceManaged sedAgentManaged = godietMetaFactory.create(
+			throw new DietResourceCreationException(
+					"Unable to find omninames for"
+							+ sedAgent.getConfig().getServer());
+		DietResourceManaged<Sed> sedAgentManaged = godietMetaFactory.create(
 				sedAgent, pluggedOn, omniNames);
 		dietManager.addSed(sedAgentManaged);
 	}
@@ -131,33 +134,36 @@ public final class PlatformControllerImpl implements PlatformController {
 	@Override
 	public void registerOmniNames(OmniNames omniNames)
 			throws DietResourceCreationException,
-			DietResourceValidationException {
+			DietResourceValidationException, IncubateException {
 		Resource pluggedOn = infrastructureManager.getResource(omniNames
 				.getConfig().getServer());
 		if (pluggedOn == null)
 			throw new DietResourceCreationException(
 					"Unable to find the physical resource "
 							+ omniNames.getConfig().getServer());
-		Domain domain = infrastructureManager.getDomain(omniNames.getConfig()
-				.getServer());
-		if (domain == null)
-			throw new DietResourceCreationException("Unable to find a registered domain for omninames with name: "
-					+ omniNames.getId());
+		List<Domain> domains = infrastructureManager.getDomains(pluggedOn);
+		if (domains.size() == 0)
+			throw new DietResourceCreationException(
+					"Unable to find a registered domain for omninames with name: "
+							+ omniNames.getId());
 
-		DietServiceManaged OmniNamesAgentManaged = godietMetaFactory.create(omniNames, pluggedOn);
-		OmniNamesAgentManaged.setDomain(domain);
-		dietManager.addOmniName(OmniNamesAgentManaged);
+		OmniNamesManaged omniNameManaged = godietMetaFactory
+				.create(omniNames, pluggedOn);
+		
+			omniNameManaged.getDomains().addAll(domains);
+		
+		dietManager.addOmniName(omniNameManaged);
 	}
 
-//	/**
-//	 * temporary method
-//	 */
-//	public void buildForwarders()
-//	{
-//		InitForwardersCommand initForwarder = new InitForwardersCommand();
-//		initForwarder.setForwarderFactory(godietMetaFactory);
-//		initForwarder.setRm(dietManager);
-//	}
+	// /**
+	// * temporary method
+	// */
+	// public void buildForwarders()
+	// {
+	// InitForwardersCommand initForwarder = new InitForwardersCommand();
+	// initForwarder.setForwarderFactory(godietMetaFactory);
+	// initForwarder.setRm(dietManager);
+	// }
 	@Override
 	public ResourceState getSoftwareController(String id) {
 		return this.dietManager.getManagedSoftware(id).getState();
@@ -174,6 +180,23 @@ public final class PlatformControllerImpl implements PlatformController {
 					+ software.getId());
 		softManaged.stop();
 
+	}
+
+	private OmniNamesManaged getOmniNames(Resource resource) throws DietResourceCreationException {
+		List<OmniNamesManaged> omniNamesManaged = dietManager
+				.getOmninames();
+		List<Domain> domains = infrastructureManager.getDomains(resource);
+
+		for (Domain domain : domains) {
+			for (OmniNamesManaged omniNameManaged : omniNamesManaged) {
+				if (domain == omniNameManaged.getDomains()) {
+					return omniNameManaged;
+				}
+			}
+		}
+		throw new DietResourceCreationException(
+				"Unable to find the omniNames for resource"
+						+ resource.getId());
 	}
 
 }

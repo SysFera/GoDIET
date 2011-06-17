@@ -100,10 +100,19 @@ public class Diet {
 		}
 		// TODO: springified this
 		XMLLoadingHelper.initConfig(rm, inputStream);
+<<<<<<< HEAD
 		
 		RemoteConfigurationHelper softwareController = new RemoteConfigurationHelper(
 				 rm.getGodietConfiguration(), rm.getPlatformModel());
 		softwareController.setRemoteAccess(remoteAccess);
+=======
+		RemoteAccessJschImpl remoteJsch = new RemoteAccessJschImpl();
+		remoteJsch.setChannelManager(new ChannelManagerJsch());
+		this.rm.getUserManager().setRemoteAccessor(remoteJsch);
+		SoftwareController softwareController = new RemoteConfigurationHelper(
+				remoteJsch, rm.getGodietConfiguration()
+						.getGoDietConfiguration(), rm.getInfrastructureModel());
+>>>>>>> feature-newInfraModel
 		DietManager dietModel = rm.getDietModel();
 		godietAbstractFactory = new GodietMetaFactory(softwareController,
 				new ForwarderRuntimeValidatorImpl(dietModel),
@@ -147,7 +156,7 @@ public class Diet {
 		} catch (FileNotFoundException e) {
 			throw new CommandExecutionException("Unable to open file " + url, e);
 		}
-		XMLLoadingHelper.initPlatform(rm, inputStream);
+		XMLLoadingHelper.initInfrastructure(rm, inputStream);
 		platfromLoaded = true;
 	}
 

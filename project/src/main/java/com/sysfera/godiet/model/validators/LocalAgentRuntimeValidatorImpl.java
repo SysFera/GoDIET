@@ -5,8 +5,11 @@ import com.sysfera.godiet.exceptions.remote.IncubateException;
 import com.sysfera.godiet.exceptions.remote.LaunchException;
 import com.sysfera.godiet.exceptions.remote.StopException;
 import com.sysfera.godiet.managers.DietManager;
+import com.sysfera.godiet.model.DietResourceManaged;
 import com.sysfera.godiet.model.SoftwareManager;
 import com.sysfera.godiet.model.generated.LocalAgent;
+import com.sysfera.godiet.model.generated.MasterAgent;
+import com.sysfera.godiet.model.generated.Software;
 import com.sysfera.godiet.model.states.ResourceState;
 import com.sysfera.godiet.model.states.ResourceState.State;
 
@@ -16,7 +19,7 @@ import com.sysfera.godiet.model.states.ResourceState.State;
  * @author phi
  * 
  */
-public class LocalAgentRuntimeValidatorImpl extends RuntimeValidator {
+public class LocalAgentRuntimeValidatorImpl extends RuntimeValidator<DietResourceManaged<LocalAgent>> {
 
 	public LocalAgentRuntimeValidatorImpl(DietManager dietManager) {
 		super(dietManager);
@@ -26,7 +29,7 @@ public class LocalAgentRuntimeValidatorImpl extends RuntimeValidator {
 	 * Check if the parent Ma  running
 	 */
 	@Override
-	public void wantLaunch(SoftwareManager ma) throws LaunchException {
+	public void wantLaunch(DietResourceManaged<LocalAgent> ma) throws LaunchException {
 		SoftwareManager parentMa = dietManager.getManagedSoftware(ma
 				.getSoftwareDescription().getParent().getId());
 		ResourceState parentMaState = parentMa.getState();
@@ -43,12 +46,12 @@ public class LocalAgentRuntimeValidatorImpl extends RuntimeValidator {
 
 	//TODO: check if childs ( la,sed ) currently running
 	@Override
-	public void wantStop(SoftwareManager managedResource) throws StopException {
+	public void wantStop(DietResourceManaged<LocalAgent> managedResource) throws StopException {
 
 	}
 
 	@Override
-	public void wantIncubate(SoftwareManager managedResource)
+	public void wantIncubate(DietResourceManaged<LocalAgent> managedResource)
 			throws IncubateException {
 		try {
 			BuildingValidator.validate((LocalAgent)managedResource.getSoftwareDescription(), dietManager);

@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.sysfera.godiet.exceptions.DietResourceCreationException;
+import com.sysfera.godiet.exceptions.remote.IncubateException;
 import com.sysfera.godiet.exceptions.remote.LaunchException;
 import com.sysfera.godiet.exceptions.remote.PrepareException;
 import com.sysfera.godiet.exceptions.remote.StopException;
@@ -17,14 +18,15 @@ import com.sysfera.godiet.model.generated.Sed;
 import com.sysfera.vishnu.api.ims.stub.ProcessIF;
 
 public class GoVishnuPlugin {
-	
+
 	private Logger log = LoggerFactory.getLogger(getClass());
 	private final DietManager dietModel;
 	private final GoVishnuSedFactory govishnuFactory;
 	private final VishnuListener vishnuListener;
 	private final Thread vishnuListenerThread;
+
 	public GoVishnuPlugin(DietManager dietModel) {
-		
+
 		this.dietModel = dietModel;
 		this.govishnuFactory = new GoVishnuSedFactory(dietModel);
 		vishnuListener = new VishnuListener(this);
@@ -33,11 +35,12 @@ public class GoVishnuPlugin {
 
 	/**
 	 * 
-	 * @param periodicity The polling periocity time in milliseconds
+	 * @param periodicity
+	 *            The polling periocity time in milliseconds
 	 */
 	public void init(int periodicity) {
 		// TODO: get session ID
-		
+
 		startListener(periodicity);
 	}
 
@@ -76,8 +79,12 @@ public class GoVishnuPlugin {
 			dietModel.addSed(drmanaged);
 			drmanaged.prepare();
 			drmanaged.start();
+		} catch (IncubateException e) {
+			log.error(
+					"Unable to add software in manager " + process.getDietId(),
+					e);
 		} catch (DietResourceCreationException e) {
-			//TODO: if already created, change manager
+			// TODO: if already created, change manager
 			log.error(
 					"Unable to add software in manager " + process.getDietId(),
 					e);
@@ -85,7 +92,7 @@ public class GoVishnuPlugin {
 			log.error(
 					"Must never happened. Unable to prepare"
 							+ process.getDietId(), e);
-		
+
 		} catch (LaunchException e) {
 			log.error(
 					"Must never happened. Unable to start"
@@ -117,12 +124,12 @@ public class GoVishnuPlugin {
 	}
 
 	public void waitProperExit() {
-		
+
 		try {
 			log.debug("Waiting polling thread proper exit");
 			vishnuListenerThread.join();
 		} catch (InterruptedException e) {
-			log.error("FATAL. Waiting vishnu's polling thread exit failed ",e);
+			log.error("FATAL. Waiting vishnu's polling thread exit failed ", e);
 		}
 	}
 

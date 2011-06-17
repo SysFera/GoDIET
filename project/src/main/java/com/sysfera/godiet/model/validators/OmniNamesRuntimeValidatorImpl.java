@@ -5,17 +5,19 @@ import com.sysfera.godiet.exceptions.remote.IncubateException;
 import com.sysfera.godiet.exceptions.remote.LaunchException;
 import com.sysfera.godiet.exceptions.remote.StopException;
 import com.sysfera.godiet.managers.DietManager;
+import com.sysfera.godiet.model.OmniNamesManaged;
 import com.sysfera.godiet.model.SoftwareManager;
 import com.sysfera.godiet.model.generated.OmniNames;
+import com.sysfera.godiet.model.generated.Software;
 
-public class OmniNamesRuntimeValidatorImpl extends RuntimeValidator{
+public class OmniNamesRuntimeValidatorImpl extends RuntimeValidator<OmniNamesManaged>{
 
 	public OmniNamesRuntimeValidatorImpl(DietManager dietManager) {
 		super(dietManager);
 	}
 
 	@Override
-	public void wantLaunch(SoftwareManager managedResource)
+	public void wantLaunch(OmniNamesManaged managedResource)
 			throws LaunchException {
 		//Nothing to do
 		
@@ -23,13 +25,13 @@ public class OmniNamesRuntimeValidatorImpl extends RuntimeValidator{
 
 	//TODO: check if all childs (ma, la, sed) are down
 	@Override
-	public void wantStop(SoftwareManager managedResource) throws StopException {
+	public void wantStop(OmniNamesManaged managedResource) throws StopException {
 		
 		
 	}
 
 	@Override
-	public void wantIncubate(SoftwareManager managedResource)
+	public void wantIncubate(OmniNamesManaged managedResource)
 			throws IncubateException {
 		try {
 			BuildingValidator.validate((OmniNames)managedResource.getSoftwareDescription(), dietManager);

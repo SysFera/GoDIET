@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<godiet:diet xmlns:godiet="http://www.sysfera.com"
+<godiet:dietPlatform xmlns:godiet="http://www.sysfera.com"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.sysfera.com ../Diet.xsd">
 
 	
-	<dietServices>
+	<services>
 		<omniNames id="omniNamesDomain1">
 			<config server="Node1" remoteBinary="omniNames" />
 		</omniNames>
@@ -14,9 +14,9 @@
 		<omniNames id="omniNamesDomain3">
 			<config server="Node4" remoteBinary="omniNames" />
 		</omniNames>
-	</dietServices>
+	</services>
 
-	<dietInfrastructure>
+	<hierarchy>
 		<masterAgent id="MA1">
 			<config server="Node1" remoteBinary="dietAgent" />
 			<localAgent id="LA1">
@@ -69,6 +69,6 @@
 				<parameters string="T" />
 			</sed>
 		</masterAgent>
-	</dietInfrastructure>
+	</hierarchy>
 
-</godiet:diet>
+</godiet:dietPlatform>

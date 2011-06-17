@@ -1,25 +1,64 @@
 package com.sysfera.godiet.model;
 
+import java.util.Iterator;
 import java.util.LinkedHashSet;
 
-import com.sysfera.godiet.model.generated.Resource;
+import com.sysfera.godiet.model.generated.Node;
+import com.sysfera.godiet.model.generated.Ssh;
 
 /**
- * Represent a path 
+ * Represent a path
+ * 
  * @author phi
- *
+ * 
  */
 public class Path {
 
 	
-	//TODO: #1 Change resource to RemoteNode (ie ssh) 
-	private LinkedHashSet<? extends Resource>  path;
 
-	public void setPath(LinkedHashSet<? extends Resource>  path) {
+	public class Hop {
+		
+
+		private Node destination;
+		private Ssh link;
+
+		public Node getDestination() {
+			return destination;
+		}
+
+		public void setDestination(Node destination) {
+			this.destination = destination;
+		}
+
+		public Ssh getLink() {
+			return link;
+		}
+
+		public void setLink(Ssh link) {
+			this.link = link;
+		}
+
+		
+		
+		@Override
+		public String toString() {
+			String s = null;
+				s = "Ssh : " + getLink().getId() + " , " + "Node : " + getDestination().getId();				
+			return s;
+		}
+	}
+
+	class LinkPath {
+
+	}
+
+	private LinkedHashSet<Hop> path;
+
+	public void setPath(LinkedHashSet<Hop> path) {
 		this.path = path;
 	}
-	
-	public LinkedHashSet<? extends Resource> getPath() {
+
+	public LinkedHashSet<Hop> getPath() {
 		return path;
 	}
 
@@ -33,28 +72,28 @@ public class Path {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj) {
+		if (this == obj)
 			return true;
-                }
-		if (obj == null) {
+		if (obj == null)
 			return false;
-                }
-		if (getClass() != obj.getClass()) {
+		if (getClass() != obj.getClass())
 			return false;
-                }
 		Path other = (Path) obj;
 		if (path == null) {
-			if (other.path != null) {
+			if (other.path != null)
 				return false;
-                        }
-		} else {
-                    if (!path.equals(other.path)) {
+		} else if (!path.equals(other.path))
 			return false;
-                    }
-                }
 		return true;
 	}
 
-
-	
+	@Override
+	public String toString() {
+		Iterator<Hop> i = path.iterator();
+		String s = null;
+		while(i.hasNext()) {
+			s += i.next().toString();
+		}
+		return s;
+	}
 }

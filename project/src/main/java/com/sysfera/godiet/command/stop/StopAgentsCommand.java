@@ -10,6 +10,9 @@ import com.sysfera.godiet.exceptions.CommandExecutionException;
 import com.sysfera.godiet.exceptions.remote.StopException;
 import com.sysfera.godiet.managers.ResourcesManager;
 import com.sysfera.godiet.model.DietResourceManaged;
+import com.sysfera.godiet.model.generated.LocalAgent;
+import com.sysfera.godiet.model.generated.MasterAgent;
+import com.sysfera.godiet.model.generated.Sed;
 
 /**
  * 
@@ -39,9 +42,9 @@ public class StopAgentsCommand implements Command {
 		}
 		boolean error = false;
 
-		List<DietResourceManaged> seds = rm.getDietModel().getSeds();
+		List<DietResourceManaged<Sed>> seds = rm.getDietModel().getSeds();
 		log.debug("Trying to stop  " + seds.size() + " Sed Agent");
-		for (DietResourceManaged sed : seds) {
+		for (DietResourceManaged<Sed> sed : seds) {
 			try {
 				sed.stop();
 			} catch (StopException e) {
@@ -51,9 +54,9 @@ public class StopAgentsCommand implements Command {
 
 			}
 
-			List<DietResourceManaged> las = rm.getDietModel().getMasterAgents();
+			List<DietResourceManaged<LocalAgent>> las = rm.getDietModel().getLocalAgents();
 			log.debug("Trying to stop  " + las.size() + " Diet Local Agent");
-			for (DietResourceManaged la : las) {
+			for (DietResourceManaged<LocalAgent> la : las) {
 				try {
 					la.stop();
 				} catch (StopException e) {
@@ -64,9 +67,9 @@ public class StopAgentsCommand implements Command {
 				}
 			}
 
-			List<DietResourceManaged> mas = rm.getDietModel().getMasterAgents();
+			List<DietResourceManaged<MasterAgent>> mas = rm.getDietModel().getMasterAgents();
 			log.debug("Trying to stop  " + mas.size() + " Diet Master Agent");
-			for (DietResourceManaged ma : mas) {
+			for (DietResourceManaged<MasterAgent> ma : mas) {
 				try {
 					ma.stop();
 				} catch (StopException e) {

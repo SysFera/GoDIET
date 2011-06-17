@@ -9,7 +9,8 @@ import com.sysfera.godiet.command.Command;
 import com.sysfera.godiet.exceptions.CommandExecutionException;
 import com.sysfera.godiet.exceptions.remote.LaunchException;
 import com.sysfera.godiet.managers.ResourcesManager;
-import com.sysfera.godiet.model.DietServiceManaged;
+import com.sysfera.godiet.model.OmniNamesManaged;
+import com.sysfera.godiet.model.generated.OmniNames;
 
 /**
  * Launch diet services.
@@ -33,10 +34,10 @@ public class StartServicesCommand implements Command {
 			throw new CommandExecutionException(getClass().getName()
 					+ " not initialized correctly");
 		}
-		List<DietServiceManaged> omniNames = rm.getDietModel().getOmninames();
+		List<OmniNamesManaged> omniNames = rm.getDietModel().getOmninames();
 		log.debug("Trying to run  " +omniNames.size() + " omniNames");
 		boolean error = false;
-		for (DietServiceManaged omniName : omniNames) {
+		for (OmniNamesManaged omniName : omniNames) {
 			try {
 				omniName.start();
 			} catch (LaunchException e) {

@@ -5,7 +5,6 @@ import java.util.List;
 
 import junit.framework.Assert;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -25,6 +24,7 @@ import com.sysfera.godiet.managers.ResourcesManager;
 import com.sysfera.godiet.model.DietResourceManaged;
 import com.sysfera.godiet.model.SoftwareController;
 import com.sysfera.godiet.model.factories.GodietMetaFactory;
+import com.sysfera.godiet.model.generated.Forwarder;
 import com.sysfera.godiet.model.validators.ForwarderRuntimeValidatorImpl;
 import com.sysfera.godiet.model.validators.LocalAgentRuntimeValidatorImpl;
 import com.sysfera.godiet.model.validators.MasterAgentRuntimeValidatorImpl;
@@ -59,7 +59,8 @@ public class CommandInitForwardersTest {
 		}
 		SoftwareController softwareController = new RemoteConfigurationHelper(
 				rm.getGodietConfiguration()
-						, rm.getPlatformModel());
+						, rm.getInfrastructureModel());
+
 		DietManager dietModel = rm.getDietModel();
 		godietAbstractFactory = new GodietMetaFactory(softwareController,
 				new ForwarderRuntimeValidatorImpl(dietModel),
@@ -75,10 +76,6 @@ public class CommandInitForwardersTest {
 
 	}
 
-	@After
-	public void after() {
-		this.rm.getPlatformModel().destroy();
-	}
 
 	@Test
 	@DirtiesContext
@@ -88,7 +85,7 @@ public class CommandInitForwardersTest {
 		InputStream inputStreamPlatform = getClass().getClassLoader()
 				.getResourceAsStream(platformTestCase);
 		try {
-			XMLLoadingHelper.initPlatform(rm, inputStreamPlatform);
+			XMLLoadingHelper.initInfrastructure(rm, inputStreamPlatform);
 
 			String testCaseFile = "diet/1MA-3SED.xml";
 			InputStream inputStream = getClass().getClassLoader()
@@ -107,7 +104,7 @@ public class CommandInitForwardersTest {
 		initForwardersInit.setForwarderFactory(godietAbstractFactory);
 		try {
 			initForwardersInit.execute();
-			List<DietResourceManaged> forwarders = rm.getDietModel()
+			List<DietResourceManaged<Forwarder>> forwarders = rm.getDietModel()
 					.getForwarders();
 			if (forwarders.size() != 6)
 				Assert.fail();
@@ -126,7 +123,7 @@ public class CommandInitForwardersTest {
 			String platformTestCase = "infrastructure/testbed-platform.xml";
 			InputStream inputStreamPlatform = getClass().getClassLoader()
 					.getResourceAsStream(platformTestCase);
-			XMLLoadingHelper.initPlatform(rm, inputStreamPlatform);
+			XMLLoadingHelper.initInfrastructure(rm, inputStreamPlatform);
 
 			String testCaseFile = "diet/testbed-diet.xml";
 			InputStream inputStream = getClass().getClassLoader()
@@ -142,7 +139,7 @@ public class CommandInitForwardersTest {
 
 			try {
 				initForwardersInit.execute();
-				List<DietResourceManaged> forwarders = rm.getDietModel()
+				List<DietResourceManaged<Forwarder>> forwarders = rm.getDietModel()
 						.getForwarders();
 				if (forwarders.size() != 6)
 					Assert.fail();

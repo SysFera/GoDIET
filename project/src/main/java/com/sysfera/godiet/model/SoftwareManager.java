@@ -17,16 +17,20 @@ import com.sysfera.godiet.model.validators.RuntimeValidator;
  * @author phi
  * 
  */
-public abstract class SoftwareManager {
+public abstract class SoftwareManager<T extends Software> {
 	private String runningCommand;
-	private Resource pluggedOn;
+
+	// Software description
+	private T softwareDescription;
+	private final Resource pluggedOn;
+	
 	private Integer pid;
 	protected final StateController stateController;
-	protected final Software softwareDescription;
-	public SoftwareManager(Software softwareDescription,SoftwareController softwareController,RuntimeValidator validator) throws IncubateException {
-		this.softwareDescription = softwareDescription;
-		this.stateController = new StateController(this, softwareController,validator);
 
+	public SoftwareManager(T description, Resource pluggedOn,SoftwareController softwareController, RuntimeValidator<? extends SoftwareManager<T>> validator) throws IncubateException {
+		this.softwareDescription = description;
+		this.pluggedOn = pluggedOn;
+		stateController = new StateController(this, softwareController,validator);
 	}
 
 	/**
@@ -39,9 +43,6 @@ public abstract class SoftwareManager {
 	}
 	
 	
-	public void setPluggedOn(Resource pluggedOn) {
-		this.pluggedOn = pluggedOn;
-	}
 
 	/**
 	 * 
@@ -51,11 +52,10 @@ public abstract class SoftwareManager {
 		return stateController;
 	}
 
-	public Software getSoftwareDescription()
-	{
+
+	public T getSoftwareDescription() {
 		return softwareDescription;
 	}
-
 	public void setPid(Integer pid) {
 		this.pid = pid;
 	}
@@ -109,5 +109,8 @@ public abstract class SoftwareManager {
 		ResourceState currentState = this.stateController.getState();
 		currentState.stop();
 	}
+
+
+
 
 }

@@ -18,6 +18,7 @@ import com.sysfera.godiet.exceptions.remote.RemoveAuthentificationException;
 import com.sysfera.godiet.managers.user.SSHKeyManager;
 import com.sysfera.godiet.model.Path;
 import com.sysfera.godiet.model.generated.Resource;
+import com.sysfera.godiet.model.generated.Ssh;
 
 /**
  * 
@@ -49,15 +50,15 @@ public class RemoteAccessMock implements RemoteAccess {
 		for (int i = 1; i < pathResources.length; i++) {
 			pathInfo += "-->" + ((Resource) pathResources[i]).getId();
 		}
-		Resource remoteNode = ((Resource) pathResources[pathResources.length - 1]);
+		Ssh remoteNode = ((Ssh) pathResources[pathResources.length - 1]);
 		if (remoteAccessDown) {
 			throw new RemoteAccessException("Unable to run " + command + " on "
-					+ remoteNode + ":" + remoteNode.getSsh().getPort()
-					+ " . Login: " + remoteNode.getSsh().getPort());
+					+ remoteNode.getServer() + ":" + remoteNode.getPort()
+					+ " . Login: " + remoteNode.getLogin());
 		}
 
 		log.debug("Execute: \"" + command + "\" on "
-				+ remoteNode.getSsh().getServer() + "(" + remoteNode.getId()
+				+ remoteNode.getServer() + "(" + remoteNode.getId()
 				+ "). Path: " + pathInfo);
 		return 1234;
 	}
@@ -81,19 +82,22 @@ public class RemoteAccessMock implements RemoteAccess {
 			pathInfo += "-->" + ((Resource) pathResources[i]).getId();
 		}
 		Channel channel = null;
-
+		//TODO
 		if (channel != null)
 			log.debug("Find a buffered stored path between: ");
-		Resource remoteNode = (Resource) pathResources[pathResources.length - 1];
+	//	Resource remoteNode = (Resource) pathResources[pathResources.length - 1];
+
+		Ssh remoteNode = (Ssh) pathResources[pathResources.length - 1];
+
 		if (remoteAccessDown)
 			throw new RemoteAccessException("Unable to copy file "
-					+ file.getName() + " on " + remoteNode.getSsh().getPort()
-					+ " . Login: " + remoteNode.getSsh().getPort());
+					+ file.getName() + " on " + remoteNode.getPort()
+					+ " . Login: " + remoteNode.getPort());
 
 		log.debug("scp " + file.getAbsolutePath() + " "
-				+ remoteNode.getDisk().getScp().getLogin() + "@"
-				+ remoteNode.getDisk().getScp().getServer() + ":"
-				+ remoteNode.getDisk().getScp().getPort() + ":" + remotePath);
+				+ remoteNode.getLogin() + "@"
+				+ remoteNode.getServer() + ":"
+				+ remoteNode.getPort() + ":" + remotePath);
 
 	}
 
@@ -118,14 +122,17 @@ public class RemoteAccessMock implements RemoteAccess {
 			pathInfo += "-->" + ((Resource) pathResources[i]).getId();
 		}
 		Channel channel = null;
-
+		//TODO
 		if (channel != null)
 			log.debug("Find a buffered stored path between: ");
-		Resource remoteNode = ((Resource) pathResources[pathResources.length - 1]);
+
+
+		Ssh remoteNode = ((Ssh) pathResources[pathResources.length - 1]);
+
 		if (remoteAccessDown) {
 			throw new RemoteAccessException("Unable to check process " + pid
-					+ " on " + remoteNode + ":" + remoteNode.getSsh().getPort()
-					+ " . Login: " + remoteNode.getSsh().getPort());
+					+ " on " + remoteNode + ":" + remoteNode.getPort()
+					+ " . Login: " + remoteNode.getPort());
 		}
 
 		log.debug("Process " + pid + " running on " + remoteNode.getId());
@@ -140,28 +147,4 @@ public class RemoteAccessMock implements RemoteAccess {
 	}
 
 	
-	public static void setInt(Integer i, Integer value)
-	{
-		//i = Integer.valueOf(value);
-		
-		System.out.println(i);
-	}
-	public static void setInt(List<Integer> li, int value)
-	{
-		li = new ArrayList<Integer>();
-		//li.set(0, value);
-	}
-	public static void main(String[] args) {
-		List<Integer> listi = new ArrayList<Integer>();
-		listi.add(4);
-		listi.add(5);
-		RemoteAccessMock.setInt(listi, 0);
-		for (Integer integer : listi) {
-			System.out.println(integer);
-		}
-		
-		
-		
-		
-	}
 }

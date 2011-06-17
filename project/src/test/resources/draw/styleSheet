@@ -1,0 +1,45 @@
+// link node > domain
+edge.nodeToDomain {
+ shape: cubic-curve;
+ size : 1px;
+}
+// link node > node
+edge.nodeToNode {
+ shape: cubic-curve;
+ arrow-shape: arrow; 
+ arrow-size: 12px, 4px; 
+}
+edge.shortestPath {
+ fill-color: red;
+}
+edge.pathSelected {
+ fill-color: green;
+}
+
+
+node.noeud {
+ size-mode: fit;  
+ shape: rounded-box; // forme 
+ fill-color: white; // couleur
+ stroke-mode: plain; // contour activé
+ padding: 4px, 4px; // écart entre le stroke et le texte
+ icon-mode: at-left; // placement icône
+ icon: url('draw/noeud.png'); // localisation de l'image 
+}
+node.domain {
+ shape : circle;
+ stroke-mode : plain;
+ size-mode : fit;
+ size : 50px, 35px;
+ fill-color : white;
+ padding : 10px, 10px;
+ } 
+node.shortestPath {
+ stroke-color: red; 
+ stroke-width: 2px;
+} 
+node.pathSelected {
+ stroke-color: green; 
+ stroke-width: 2px;
+ }
+

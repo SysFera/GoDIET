@@ -21,10 +21,11 @@ import com.sysfera.godiet.exceptions.XMLParseException;
 import com.sysfera.godiet.exceptions.generics.DietResourceValidationException;
 import com.sysfera.godiet.exceptions.generics.GoDietConfigurationException;
 import com.sysfera.godiet.exceptions.graph.GraphDataException;
+import com.sysfera.godiet.exceptions.remote.IncubateException;
 import com.sysfera.godiet.exceptions.remote.LaunchException;
 import com.sysfera.godiet.exceptions.remote.PrepareException;
 import com.sysfera.godiet.managers.DietManager;
-import com.sysfera.godiet.model.DietServiceManaged;
+import com.sysfera.godiet.model.OmniNamesManaged;
 import com.sysfera.godiet.remote.RemoteAccess;
 import com.sysfera.godiet.services.GoDietService;
 import com.sysfera.godiet.services.PlatformController;
@@ -45,7 +46,7 @@ public class GoDietServiceTest {
 	private DietManager dietModel;
 
 	@Before
-	public void init() {
+	public void init() throws IncubateException {
 		try {
 			// Loading configuration
 			{
@@ -126,8 +127,8 @@ public class GoDietServiceTest {
 	}
 
 	private void launchServices() throws PrepareException, LaunchException {
-		List<DietServiceManaged> omniNames = dietModel.getOmninames();
-		for (DietServiceManaged dietServiceManaged : omniNames) {
+		List<OmniNamesManaged> omniNames = dietModel.getOmninames();
+		for (OmniNamesManaged dietServiceManaged : omniNames) {
 			platformController.getSoftwareController(
 					dietServiceManaged.getSoftwareDescription().getId())
 					.prepare();

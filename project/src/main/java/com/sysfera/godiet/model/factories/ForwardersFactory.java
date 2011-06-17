@@ -1,17 +1,20 @@
 package com.sysfera.godiet.model.factories;
 
+import java.lang.reflect.Array;
+
 import com.sysfera.godiet.exceptions.DietResourceCreationException;
 import com.sysfera.godiet.exceptions.remote.IncubateException;
 import com.sysfera.godiet.model.DietResourceManaged;
+import com.sysfera.godiet.model.OmniNamesManaged;
 import com.sysfera.godiet.model.SoftwareController;
 import com.sysfera.godiet.model.SoftwareManager;
 import com.sysfera.godiet.model.generated.Forwarder;
 import com.sysfera.godiet.model.generated.Forwarders;
+import com.sysfera.godiet.model.generated.Node;
 import com.sysfera.godiet.model.generated.ObjectFactory;
 import com.sysfera.godiet.model.generated.OmniNames;
 import com.sysfera.godiet.model.generated.Options;
 import com.sysfera.godiet.model.generated.Options.Option;
-import com.sysfera.godiet.model.generated.Resource;
 import com.sysfera.godiet.model.utils.ResourceUtil;
 import com.sysfera.godiet.model.validators.RuntimeValidator;
 
@@ -25,7 +28,7 @@ public class ForwardersFactory {
 
 	private final SoftwareController softwareController;
 
-	private final RuntimeValidator forwarderValidator;
+	private final RuntimeValidator<DietResourceManaged<Forwarder>> forwarderValidator;
 
 	public static enum ForwarderType {
 		CLIENT("CLIENT"), SERVER("SERVER");
@@ -38,7 +41,8 @@ public class ForwardersFactory {
 	}
 
 	public ForwardersFactory(SoftwareController softwareController,
-			RuntimeValidator forwarderValidator) {
+
+			RuntimeValidator<DietResourceManaged<Forwarder>> forwarderValidator) {
 		this.softwareController = softwareController;
 		this.forwarderValidator = forwarderValidator;
 	}
@@ -51,34 +55,35 @@ public class ForwardersFactory {
 	 *            Forwarders description
 	 * @return The Managed forwarders. DietResourceManaged[0] the client and
 	 *         DietResourceManaged[1] the server
+	 * @throws IncubateException 
 	 * @throws DietResourceCreationException
 	 *             if resource not plugged
 	 */
-	public DietResourceManaged[] create(Forwarders forwarders,Resource clientPluginOn,Resource serverPluginOn,
-			OmniNames omniNamesClient, OmniNames omniNamesServer)
-			throws DietResourceCreationException {
 
-		DietResourceManaged[] forwardersManager = new DietResourceManaged[2];
-		DietResourceManaged clientForwarderManager;
-		try {
-			clientForwarderManager = new DietResourceManaged(forwarders.getClient(),
-					softwareController, forwarderValidator);
-			clientForwarderManager.setPluggedOn(clientPluginOn);
-			DietResourceManaged serverForwarderManager = new DietResourceManaged(forwarders.getServer(),
-					softwareController, forwarderValidator);
-			serverForwarderManager.setPluggedOn(serverPluginOn);
-			
+	public DietResourceManaged<Forwarder>[] create(Forwarders forwarders,
+			Node clientPluggedOn, OmniNamesManaged omniNamesClient,
+			Node serverPluggedOn, OmniNamesManaged omniNamesServer) throws IncubateException, DietResourceCreationException
+			 {
 
-			settingConfigurationOptions(clientForwarderManager,
-					serverForwarderManager);
-			buildForwarderCommand(clientForwarderManager,
-					serverForwarderManager, omniNamesClient, omniNamesServer);
+		@SuppressWarnings("unchecked")
+		DietResourceManaged<Forwarder>[] forwardersManager = (DietResourceManaged<Forwarder>[])Array.newInstance(DietResourceManaged.class,2);
+		
+		DietResourceManaged<Forwarder> clientForwarderManager = new DietResourceManaged<Forwarder>(forwarders.getClient(),clientPluggedOn,
+				softwareController, forwarderValidator, omniNamesClient);
+		DietResourceManaged<Forwarder> serverForwarderManager = new DietResourceManaged<Forwarder>(forwarders.getServer(),serverPluggedOn,
+				softwareController, forwarderValidator, omniNamesServer);
+
+
+
+		settingConfigurationOptions(clientForwarderManager,
+				serverForwarderManager);
+		buildForwarderCommand(clientForwarderManager, serverForwarderManager,
+				omniNamesClient.getSoftwareDescription(),
+				omniNamesServer.getSoftwareDescription());
 
 			forwardersManager[0] = clientForwarderManager;
 			forwardersManager[1] = serverForwarderManager;
-		} catch (IncubateException e) {
-			throw new DietResourceCreationException("Resource creation fail.",e);
-		}
+		
 		return forwardersManager;
 
 	}
@@ -90,8 +95,8 @@ public class ForwardersFactory {
 	 * @throws DietResourceCreationException
 	 *             if resource not plugged
 	 */
-	private void settingConfigurationOptions(DietResourceManaged managedClient,
-			DietResourceManaged managedServer)
+	private void settingConfigurationOptions(DietResourceManaged<Forwarder> managedClient,
+			DietResourceManaged<Forwarder> managedServer)
 			throws DietResourceCreationException {
 		if (managedClient.getPluggedOn() == null
 				|| managedServer.getPluggedOn() == null) {
@@ -168,7 +173,7 @@ public class ForwardersFactory {
 			SoftwareManager managedServer, OmniNames omniNamesClient,
 			OmniNames omniNamesServer) {
 		String command = "";
-		String scratchDir = managedServer.getPluggedOn().getDisk().getScratch()
+		String scratchDir = managedServer.getPluggedOn().getScratch()
 				.getDir();
 		Forwarder forwarderDescription = (Forwarder) managedServer
 				.getSoftwareDescription();
@@ -213,11 +218,13 @@ public class ForwardersFactory {
 	 * @param managedClient
 	 * @param managedServer
 	 */
-	private void buildForwarderClientCommand(SoftwareManager managedClient,
-			SoftwareManager managedServer, OmniNames omniNamesClient,
+
+	private void buildForwarderClientCommand(SoftwareManager<Forwarder> managedClient,
+			SoftwareManager<Forwarder> managedServer, OmniNames omniNamesClient,
+
 			OmniNames omniNamesServer) {
 		String command = "";
-		String scratchDir = managedClient.getPluggedOn().getDisk().getScratch()
+		String scratchDir = managedClient.getPluggedOn().getScratch()
 				.getDir();
 		Forwarder forwarderDescription = (Forwarder) managedClient
 				.getSoftwareDescription();
@@ -242,11 +249,13 @@ public class ForwardersFactory {
 		command += "--peer-name "
 				+ managedServer.getSoftwareDescription().getId() + " ";
 		// --ssh-host {remoteHost}
-		command += " --ssh-host "
-				+ managedServer.getPluggedOn().getSsh().getServer() + " ";
-		// --ssh-login {remoteLogin}
-		command += "--ssh-login "
-				+ managedServer.getPluggedOn().getSsh().getLogin() + " ";
+		
+//		FIXME:
+		//command += " --ssh-host "
+//				+ managedServer.getPluggedOn().getSsh().getServer() + " ";
+//		// --ssh-login {remoteLogin}
+//		command += "--ssh-login "
+//				+ managedServer.getPluggedOn().getSsh().getLogin() + " ";
 		// --remote-port {remotePort} -C &
 
 		// --remote-host 127.0.0.1 -C
@@ -263,4 +272,5 @@ public class ForwardersFactory {
 
 		managedClient.setRunningCommand(command);
 	}
+
 }

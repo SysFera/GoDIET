@@ -13,11 +13,8 @@ import com.sysfera.godiet.exceptions.ResourceAddException;
 import com.sysfera.godiet.exceptions.XMLParseException;
 import com.sysfera.godiet.exceptions.graph.GraphDataException;
 import com.sysfera.godiet.managers.ResourcesManager;
-import com.sysfera.godiet.model.generated.Cluster;
 import com.sysfera.godiet.model.generated.Domain;
 import com.sysfera.godiet.model.generated.Infrastructure;
-import com.sysfera.godiet.model.generated.Link;
-import com.sysfera.godiet.model.generated.Platform;
 import com.sysfera.godiet.utils.xml.XMLParser;
 
 /**
@@ -28,7 +25,7 @@ import com.sysfera.godiet.utils.xml.XMLParser;
  * @author phi
  * 
  */
-public class LoadXMLPlatformCommand implements Command {
+public class LoadXMLInfrastructureCommand implements Command {
 	private Logger log = LoggerFactory.getLogger(getClass());
 
 	private ResourcesManager rm;
@@ -48,9 +45,9 @@ public class LoadXMLPlatformCommand implements Command {
 		}
 
 		try {
-			Platform platformDescription = xmlScanner
-					.buildPlatformModel(xmlInput);
-			initPlatform(platformDescription.getInfrastructure());
+			Infrastructure infraDescription = xmlScanner
+					.buildInfrastructureModel(xmlInput);
+			initInfrastructureModel(infraDescription);
 		} catch (IOException e) {
 			throw new CommandExecutionException("XML read error", e);
 		} catch (XMLParseException e) {
@@ -93,40 +90,20 @@ public class LoadXMLPlatformCommand implements Command {
 	 * @param infrastructure
 	 * @throws CommandExecutionException
 	 */
-	private void initPlatform(Infrastructure infrastructure)
+	private void initInfrastructureModel(Infrastructure infrastructure)
 			throws CommandExecutionException {
 
+		List<Domain> domains = infrastructure.getDomain();
 		try {
-			List<Domain> domains = infrastructure.getDomain();
-			this.rm.getPlatformModel().addDomains(domains);
-			if (domains != null) {
-				for (Domain domain : domains) {
-					this.rm.getPlatformModel().addGateways(domain.getGateway());
-					this.rm.getPlatformModel().addNodes(domain.getNode());
-					List<Cluster> clusters = domain.getCluster();
-					this.rm.getPlatformModel().addClusters(clusters);
-					if (clusters != null) {
-						for (Cluster cluster : clusters) {
-							this.rm.getPlatformModel().addNodes(
-									cluster.getComputingNode());
-							this.rm.getPlatformModel().addFrontends(
-									cluster.getFronted());
-						}
-					}
-				}
-			}
+			this.rm.getInfrastructureModel().addDomains(domains);
+			this.rm.getInfrastructureModel().addNodes(infrastructure.getNode());
+			// FIXME
+			// this.rm.getInfrastructureModel().addClusters(infrastructure.getCluster());
 
-			List<Link> links = infrastructure.getLink();
-
-			this.rm.getPlatformModel().addLinks(links);
+			this.rm.getInfrastructureModel().addLinks(infrastructure.getLink());
 		} catch (GraphDataException e) {
-
 			throw new CommandExecutionException(
-					"Unable to add links. Error in the model description", e);
-		} catch(ResourceAddException e)
-		{
-			throw new CommandExecutionException(
-					"Unable to add some resource. Error in the model description", e);
+					"Unable to initialize infrastructure", e);
 		}
 	}
 

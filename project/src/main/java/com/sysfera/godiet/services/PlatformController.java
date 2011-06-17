@@ -4,6 +4,7 @@ import com.sysfera.godiet.exceptions.DietResourceCreationException;
 import com.sysfera.godiet.exceptions.generics.DietResourceValidationException;
 import com.sysfera.godiet.exceptions.generics.GoDietServiceException;
 import com.sysfera.godiet.exceptions.generics.StartException;
+import com.sysfera.godiet.exceptions.remote.IncubateException;
 import com.sysfera.godiet.exceptions.remote.StopException;
 import com.sysfera.godiet.model.generated.LocalAgent;
 import com.sysfera.godiet.model.generated.MasterAgent;
@@ -18,19 +19,19 @@ public interface PlatformController {
 
 	public abstract void registerMasterAgent(MasterAgent masterAgent)
 			throws DietResourceCreationException,
-			DietResourceValidationException;
+			DietResourceValidationException, IncubateException;
 
 	public abstract void registerLocalAgent(LocalAgent localAgent)
 			throws DietResourceCreationException,
-			DietResourceValidationException;
+			DietResourceValidationException, IncubateException;
 
 	public abstract void registerSed(Sed sed)
 			throws DietResourceCreationException,
-			DietResourceValidationException;
+			DietResourceValidationException, IncubateException;
 
 	public abstract void registerOmniNames(OmniNames omniNames)
 			throws DietResourceCreationException,
-			DietResourceValidationException;
+			DietResourceValidationException, IncubateException;
 	/**
 	 * TODO: Currently only stop. Not useful. Destroy ? ORM ...
 	 * @param software

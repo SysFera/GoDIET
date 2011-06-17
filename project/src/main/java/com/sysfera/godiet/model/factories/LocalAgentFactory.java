@@ -3,8 +3,10 @@ package com.sysfera.godiet.model.factories;
 import com.sysfera.godiet.exceptions.DietResourceCreationException;
 import com.sysfera.godiet.exceptions.remote.IncubateException;
 import com.sysfera.godiet.model.DietResourceManaged;
+import com.sysfera.godiet.model.OmniNamesManaged;
 import com.sysfera.godiet.model.SoftwareController;
 import com.sysfera.godiet.model.generated.LocalAgent;
+import com.sysfera.godiet.model.generated.Node;
 import com.sysfera.godiet.model.generated.OmniNames;
 import com.sysfera.godiet.model.generated.Resource;
 import com.sysfera.godiet.model.validators.RuntimeValidator;
@@ -18,10 +20,10 @@ import com.sysfera.godiet.model.validators.RuntimeValidator;
 public class LocalAgentFactory {
 
 	private final SoftwareController softwareController;
-	private final RuntimeValidator validator;
+	private final RuntimeValidator<DietResourceManaged<LocalAgent>> validator;
+	
+	public LocalAgentFactory(SoftwareController softwareController,RuntimeValidator<DietResourceManaged<LocalAgent>> laValidator) {
 
-	public LocalAgentFactory(SoftwareController softwareController,
-			RuntimeValidator laValidator) {
 		this.softwareController = softwareController;
 		this.validator = laValidator;
 	}
@@ -32,24 +34,15 @@ public class LocalAgentFactory {
 	 * 
 	 * @param localAgentDescription
 	 * @return The managed LocalAgent
-	 * @throws DietResourceCreationException
+	 * @throws IncubateException 
+	 * @throws DietResourceCreationException 
 	 */
-	public DietResourceManaged create(LocalAgent localAgentDescription,Resource pluggedOn,
-			OmniNames omniNames) throws DietResourceCreationException {
-		try {
-			DietResourceManaged localAgentManaged = new DietResourceManaged(localAgentDescription,
-					softwareController, validator);
-			localAgentManaged.setPluggedOn(pluggedOn);
-			AgentFactoryUtil.settingConfigurationOptions(localAgentManaged,
-					"DIET_LOCAL_AGENT");
-			AgentFactoryUtil
-					.settingRunningCommand(omniNames, localAgentManaged);
-			return localAgentManaged;
-		} catch (IncubateException e) {
-			throw new DietResourceCreationException("Resource creation fail.",
-					e);
-		}
-
+	public DietResourceManaged<LocalAgent> create(LocalAgent localAgentDescription, Resource pluggedOn, OmniNamesManaged omniNames) throws IncubateException, DietResourceCreationException  {
+		
+		DietResourceManaged<LocalAgent> localAgentManaged = new DietResourceManaged<LocalAgent>(localAgentDescription,pluggedOn,softwareController,validator,omniNames);
+		AgentFactoryUtil.settingConfigurationOptions(localAgentManaged,"DIET_LOCAL_AGENT");
+		AgentFactoryUtil.settingRunningCommand(omniNames.getSoftwareDescription(),localAgentManaged);
+		return localAgentManaged;
 	}
 
 }

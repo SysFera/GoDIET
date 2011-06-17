@@ -32,7 +32,7 @@ public class SoftwareValidatorTest {
 				String platformTestCase = "infrastructure/testbed-platform.xml";
 				InputStream inputStreamPlatform = getClass().getClassLoader()
 						.getResourceAsStream(platformTestCase);
-				XMLLoadingHelper.initPlatform(rm, inputStreamPlatform);
+				XMLLoadingHelper.initInfrastructure(rm, inputStreamPlatform);
 			}
 		} catch (Exception e) {
 

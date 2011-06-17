@@ -4,9 +4,9 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import com.sysfera.godiet.exceptions.XMLParseException;
-import com.sysfera.godiet.model.generated.Diet;
+import com.sysfera.godiet.model.generated.DietPlatform;
 import com.sysfera.godiet.model.generated.GoDietConfiguration;
-import com.sysfera.godiet.model.generated.Platform;
+import com.sysfera.godiet.model.generated.Infrastructure;
 
 public interface XMLParser {
 	
@@ -18,7 +18,7 @@ public interface XMLParser {
 	 * @throws IOException
 	 * @throws XMLParseException
 	 */
-	public Diet buildDietModel(InputStream xmlInput)
+	public DietPlatform buildDietModel(InputStream xmlInput)
 			throws IOException, XMLParseException;
 
 	/**
@@ -36,6 +36,6 @@ public interface XMLParser {
 	 * @throws IOException
 	 * @throws XMLParseException
 	 */
-	public Platform buildPlatformModel(InputStream xmlFile) throws IOException,
+	public Infrastructure buildInfrastructureModel(InputStream xmlFile) throws IOException,
 			XMLParseException;
 }

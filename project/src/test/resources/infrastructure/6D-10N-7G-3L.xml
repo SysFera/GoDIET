@@ -1,200 +1,128 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<godiet:platform xmlns:godiet="http://www.sysfera.com"
+<godiet:infrastructure xmlns:godiet="http://www.sysfera.com"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.sysfera.com ../Infrastructure.xsd">
 	<!-- Six domains. The sixth have two gateways. See links field to have more 
 		details -->
-	<infrastructure>
-		<domain label="Domain1">
 
-			<storage label="Disk1">
-				<scratch dir="/tmp/scratch_runtime" />
-				<scp server="IPNFS" login="phi" />
-			</storage>
+	<domain id="Domain1" />
+	<domain id="Domain2" />
+	<domain id="Domain3" />
+	<domain id="Domain4" />
+	<domain id="Domain5" />
+	<domain id="Domain6" />
 
-			<node id="Node1" disk="Disk1">
-				<ssh server="IP1" login="phi" />
-				<env>
-					<var name="PATH"
-						value="/usr/local/Diet/build/bin:/usr/local/Diet/build/bin/examples/dmat_manips/:$PATH" />
-					<var name="LD_LIBRARY_PATH" value="/usr/local/Diet/build/lib" />
-				</env>
-			</node>
-			<gateway id="G1" disk="Disk1">
-				<ssh server="IP1Gate" login="phi" />
-				<env>
-					<var name="PATH"
-						value="/usr/local/Diet/build/bin:/usr/local/Diet/build/bin/examples/dmat_manips/:$PATH" />
-					<var name="LD_LIBRARY_PATH" value="/usr/local/Diet/build/lib" />
-				</env>
-			</gateway>
-		</domain>
-		<domain label="Domain2">
-			<storage label="Disk2">
-				<scratch dir="/tmp/scratch_runtime" />
-				<scp server="IPNFS2" login="phi" />
-			</storage>
 
-			<node id="Node2" disk="Disk1">
-				<ssh server="IP2" login="phi" />
-				<env>
-					<var name="PATH"
-						value="/usr/local/Soft/Diet/bin:/usr/local/Soft/Diet/bin/examples/dmat_manips/:$PATH" />
-					<var name="LD_LIBRARY_PATH" value="/usr/local/Soft/diet/build/lib" />
-				</env>
-			</node>
-			<node id="Node3" disk="Disk1">
-				<ssh server="IP3" login="phi" />
-				<env>
-					<var name="PATH"
-						value="/usr/local/Soft/Diet/bin:/usr/local/Soft/Diet/bin/examples/dmat_manips/:$PATH" />
-					<var name="LD_LIBRARY_PATH" value="/usr/local/Soft/diet/build/lib" />
-				</env>
-			</node>
-			<gateway id="G2" disk="Disk1">
-				<ssh server="IP3" login="phi" />
-				<env>
-					<var name="PATH"
-						value="/usr/local/Soft/Diet/bin:/usr/local/Soft/Diet/bin/examples/dmat_manips/:$PATH" />
-					<var name="LD_LIBRARY_PATH" value="/usr/local/Soft/diet/build/lib" />
-				</env>
-			</gateway>
-		</domain>
-		<domain label="Domain3">
-			<storage label="Disk3">
-				<scratch dir="/tmp/scratch_runtime" />
-				<scp server="IPNFS3" login="phi" />
-			</storage>
-			<node id="Node4" disk="Disk1">
-				<ssh server="IP4" login="phi" />
-				<env>
-					<var name="PATH"
-						value="/usr/local/Soft/Diet/bin:/usr/local/Soft/Diet/bin/examples/dmat_manips/:$PATH" />
-					<var name="LD_LIBRARY_PATH" value="/usr/local/Soft/diet/build/lib" />
-				</env>
-			</node>
-			<node id="Node5" disk="Disk1">
-				<ssh server="IP5" login="phi" />
-				<env>
-					<var name="PATH"
-						value="/usr/local/Soft/Diet/bin:/usr/local/Soft/Diet/bin/examples/dmat_manips/:$PATH" />
-					<var name="LD_LIBRARY_PATH" value="/usr/local/Soft/diet/build/lib" />
-				</env>
-			</node>
-			<gateway id="G3" disk="Disk1">
-				<ssh server="IP4Gate" login="phi" />
-				<env>
-					<var name="PATH"
-						value="/usr/local/Soft/Diet/bin:/usr/local/Soft/Diet/bin/examples/dmat_manips/:$PATH" />
-					<var name="LD_LIBRARY_PATH" value="/usr/local/Soft/diet/build/lib" />
-				</env>
-			</gateway>
-		</domain>
+	<node id="Node1">
+		<ssh id="node1interface1"  domain="Domain1" server="IP1" login="phi" />
+		<env>
+			<var name="PATH"
+				value="/usr/local/Diet/build/bin:/usr/local/Diet/build/bin/examples/dmat_manips/:$PATH" />
+			<var name="LD_LIBRARY_PATH" value="/usr/local/Diet/build/lib" />
+		</env>
+		<scratch dir="/tmp/scratch"/>
+	</node>
 
-		<domain label="Domain4">
-			<storage label="Disk6">
-				<scratch dir="/tmp/scratch_runtime" />
-				<scp server="IPNFS" login="phi" />
-			</storage>
-			<node id="Node6" disk="Disk6">
-				<ssh server="IP6" login="phi" />
-				<env>
-					<var name="PATH"
-						value="/usr/local/Diet/build/bin:/usr/local/Diet/build/bin/examples/dmat_manips/:$PATH" />
-					<var name="LD_LIBRARY_PATH" value="/usr/local/Diet/build/lib" />
-				</env>
-			</node>
-			<node id="ClientNodeDomain4" disk="Disk6">
-				<ssh server="IP6" login="phi" />
-				<env>
-					<var name="PATH"
-						value="/usr/local/Diet/build/bin:/usr/local/Diet/build/bin/examples/dmat_manips/:$PATH" />
-					<var name="LD_LIBRARY_PATH" value="/usr/local/Diet/build/lib" />
-				</env>
-			</node>
-			<gateway id="G4" disk="Disk6">
-				<ssh server="IP6Gate" login="phi" />
-				<env>
-					<var name="PATH"
-						value="/usr/local/Diet/build/bin:/usr/local/Diet/build/bin/examples/dmat_manips/:$PATH" />
-					<var name="LD_LIBRARY_PATH" value="/usr/local/Diet/build/lib" />
-				</env>
-			</gateway>
-		</domain>
+	<node id="Node2">
+		<ssh id="node2interface1" domain="Domain2" server="IP2" login="phi" />
+		<env>
+			<var name="PATH"
+				value="/usr/local/Soft/Diet/bin:/usr/local/Soft/Diet/bin/examples/dmat_manips/:$PATH" />
+			<var name="LD_LIBRARY_PATH" value="/usr/local/Soft/diet/build/lib" />
+		</env>
+		<scratch dir="/tmp/scratch"/>
+	</node>
+	<node id="Node3">
+		<ssh id="node3interface1" domain="Domain2" server="IP3" login="phi" />
+		<env>
+			<var name="PATH"
+				value="/usr/local/Soft/Diet/bin:/usr/local/Soft/Diet/bin/examples/dmat_manips/:$PATH" />
+			<var name="LD_LIBRARY_PATH" value="/usr/local/Soft/diet/build/lib" />
+		</env>
+		<scratch dir="/tmp/scratch"/>
+	</node>
 
-		<domain label="Domain5">
-			<storage label="Disk7">
-				<scratch dir="/tmp/scratch_runtime" />
-				<scp server="IPNFS" login="phi" />
-			</storage>
-			<node id="Node7" disk="Disk7">
-				<ssh server="IP7" login="phi" />
-				<env>
-					<var name="PATH"
-						value="/usr/local/Diet/build/bin:/usr/local/Diet/build/bin/examples/dmat_manips/:$PATH" />
-					<var name="LD_LIBRARY_PATH" value="/usr/local/Diet/build/lib" />
-				</env>
-			</node>
-			<gateway id="G5" disk="Disk7">
-				<ssh server="IP7" login="phi" />
-				<env>
-					<var name="PATH"
-						value="/usr/local/Diet/build/bin:/usr/local/Diet/build/bin/examples/dmat_manips/:$PATH" />
-					<var name="LD_LIBRARY_PATH" value="/usr/local/Diet/build/lib" />
-				</env>
-			</gateway>
-		</domain>
+	<node id="Node4">
+		<ssh id="node4interface1" domain="Domain3" server="IP4" login="phi" />
+		<env>
+			<var name="PATH"
+				value="/usr/local/Soft/Diet/bin:/usr/local/Soft/Diet/bin/examples/dmat_manips/:$PATH" />
+			<var name="LD_LIBRARY_PATH" value="/usr/local/Soft/diet/build/lib" />
+		</env>
+		<scratch dir="/tmp/scratch"/>
+	</node>
+	<node id="Node5">
+		<ssh id="node5interface1" domain="Domain3" server="IP5" login="phi" />
+		<env>
+			<var name="PATH"
+				value="/usr/local/Soft/Diet/bin:/usr/local/Soft/Diet/bin/examples/dmat_manips/:$PATH" />
+			<var name="LD_LIBRARY_PATH" value="/usr/local/Soft/diet/build/lib" />
+		</env>
+		<scratch dir="/tmp/scratch"/>
+	</node>
+	
+	
+	<node id="Node6">
+		<ssh id="node6interface1" domain="Domain4" server="IP6" login="phi" />
+		<env>
+			<var name="PATH"
+				value="/usr/local/Diet/build/bin:/usr/local/Diet/build/bin/examples/dmat_manips/:$PATH" />
+			<var name="LD_LIBRARY_PATH" value="/usr/local/Diet/build/lib" />
+		</env>
+		<scratch dir="/tmp/scratch"/>
+	</node>
+	<node id="ClientNodeDomain4">
+		<ssh id="nodeClientNodeDomain4interface1" domain="Domain5" server="IP6" login="phi" />
+		<env>
+			<var name="PATH"
+				value="/usr/local/Diet/build/bin:/usr/local/Diet/build/bin/examples/dmat_manips/:$PATH" />
+			<var name="LD_LIBRARY_PATH" value="/usr/local/Diet/build/lib" />
+		</env>
+		<scratch dir="/tmp/scratch"/>
+	</node>
 
-		<domain label="Domain6">
-			<storage label="Disk8">
-				<scratch dir="/tmp/scratch_runtime" />
-				<scp server="IPNFS" login="phi" />
-			</storage>
-			<node id="Node8" disk="Disk8">
-				<ssh server="IP8" login="phi" />
-				<env>
-					<var name="PATH"
-						value="/usr/local/Diet/build/bin:/usr/local/Diet/build/bin/examples/dmat_manips/:$PATH" />
-					<var name="LD_LIBRARY_PATH" value="/usr/local/Diet/build/lib" />
-				</env>
-			</node>
-			<node id="Node9" disk="Disk8">
-				<ssh server="IP9" login="phi" />
-				<env>
-					<var name="PATH"
-						value="/usr/local/Diet/build/bin:/usr/local/Diet/build/bin/examples/dmat_manips/:$PATH" />
-					<var name="LD_LIBRARY_PATH" value="/usr/local/Diet/build/lib" />
-				</env>
-			</node>
-			<gateway id="G6" disk="Disk8">
-				<ssh server="IP8Gate" login="phi" />
-				<env>
-					<var name="PATH"
-						value="/usr/local/Diet/build/bin:/usr/local/Diet/build/bin/examples/dmat_manips/:$PATH" />
-					<var name="LD_LIBRARY_PATH" value="/usr/local/Diet/build/lib" />
-				</env>
-			</gateway>
-			<gateway id="G7" disk="Disk8">
-				<ssh server="IP9Gate" login="phi" />
-				<env>
-					<var name="PATH"
-						value="/usr/local/Diet/build/bin:/usr/local/Diet/build/bin/examples/dmat_manips/:$PATH" />
-					<var name="LD_LIBRARY_PATH" value="/usr/local/Diet/build/lib" />
-				</env>
-			</gateway>
-		</domain>
-		<!-- D1, D2 and D3 are interconnected with a ring -->
-		<link from="G1" to="G2" />
-		<link from="G2" to="G3" />
-		<link from="G3" to="G1" />
-		<!-- D3, D4, D5, D6 are interconnected with a star. D3 is the center -->
-		<link from="G3" to="G4" />
-		<link from="G3" to="G5" />
-		<link from="G3" to="G6" />
-		<!-- D6(G7) connected to D2 -->
-		<link from="G7" to="G2" />
-		<!-- D4 connected to D6(G6) -->
-		<link from="G4" to="G6" />
-	</infrastructure>
+	<node id="Node7">
+		<ssh id="node7interface1" domain="Domain5" server="IP7" login="phi" />
+		<env>
+			<var name="PATH"
+				value="/usr/local/Diet/build/bin:/usr/local/Diet/build/bin/examples/dmat_manips/:$PATH" />
+			<var name="LD_LIBRARY_PATH" value="/usr/local/Diet/build/lib" />
+		</env>
+		<scratch dir="/tmp/scratch"/>
+	</node>
 
-</godiet:platform>
+
+	<node id="Node8">
+		<ssh id="node8interface1" domain="Domain6" server="IP8" login="phi" />
+		<env>
+			<var name="PATH"
+				value="/usr/local/Diet/build/bin:/usr/local/Diet/build/bin/examples/dmat_manips/:$PATH" />
+			<var name="LD_LIBRARY_PATH" value="/usr/local/Diet/build/lib" />
+		</env>
+		<scratch dir="/tmp/scratch"/>
+	</node>
+	<node id="Node9">
+		<ssh id="node9interface1" domain="Domain6" server="IP9" login="phi" />
+		<env>
+			<var name="PATH"
+				value="/usr/local/Diet/build/bin:/usr/local/Diet/build/bin/examples/dmat_manips/:$PATH" />
+			<var name="LD_LIBRARY_PATH" value="/usr/local/Diet/build/lib" />
+		</env>
+		<scratch dir="/tmp/scratch"/>
+	</node>
+
+
+	<!-- D1, D2 and D3 are interconnected with a ring -->
+	<link from="Node1" to="Node2" accessref="node2interface1"/>
+	<link from="Node2" to="Node4" accessref="node4interface1" />
+	<link from="Node4" to="Node1" accessref="node1interface1"/>
+	<!-- D3, D4, D5, D6 are interconnected with a star. D3 is the center -->
+	<link from="Node4" to="Node6" accessref="node6interface1"/>
+	<link from="Node4" to="Node7" accessref="node7interface1"/>
+	<link from="Node4" to="Node9" accessref="node9interface1"/>
+	<!-- D6(G7) connected to D2 -->
+	<link from="Node6" to="Node3" accessref="node3interface1"/>
+	<!-- D4 connected to D6(G6) -->
+	<link from="Node6" to="Node8" accessref="node8interface1"/>
+
+</godiet:infrastructure>

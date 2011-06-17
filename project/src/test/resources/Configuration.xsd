@@ -4,13 +4,7 @@
 	elementFormDefault="unqualified">
 	<xs:include schemaLocation="GoDietModel.xsd" />
 
-	<xs:element name="configuration">
-		<xs:complexType>
-			<xs:sequence>
-				<xs:element name="goDietConfiguration" type="goDietConfiguration" />
-			</xs:sequence>
-		</xs:complexType>
-	</xs:element>
+	<xs:element name="configuration" type="goDietConfiguration"/>
 
 
 </xs:schema>

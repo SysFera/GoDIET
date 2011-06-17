@@ -44,7 +44,7 @@ public class GoDietService {
 	@PostConstruct
 	public void start() throws StartException {
 		if (ressourceManager == null || ressourceManager.getDietModel() == null
-				|| ressourceManager.getPlatformModel() == null) {
+				|| ressourceManager.getInfrastructureModel() == null) {
 			throw new StartException(getClass().getName(), "4",
 					"ressource manager isn't initialize", null);
 		}

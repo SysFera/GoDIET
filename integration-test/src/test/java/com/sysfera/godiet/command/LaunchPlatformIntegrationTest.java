@@ -15,6 +15,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.sysfera.godiet.command.init.InitForwardersCommand;
+import com.sysfera.godiet.command.init.util.XMLLoadingHelper;
 import com.sysfera.godiet.command.prepare.PrepareAgentsCommand;
 import com.sysfera.godiet.command.prepare.PrepareServicesCommand;
 import com.sysfera.godiet.command.start.StartAgentsCommand;
@@ -25,9 +26,11 @@ import com.sysfera.godiet.command.stop.StopForwardersCommand;
 import com.sysfera.godiet.command.stop.StopServicesCommand;
 import com.sysfera.godiet.command.xml.LoadXMLDietCommand;
 import com.sysfera.godiet.exceptions.CommandExecutionException;
+import com.sysfera.godiet.exceptions.remote.AddAuthentificationException;
 import com.sysfera.godiet.managers.DietManager;
 import com.sysfera.godiet.managers.ResourcesManager;
 import com.sysfera.godiet.managers.user.SSHKeyManager;
+import com.sysfera.godiet.model.SoftwareController;
 import com.sysfera.godiet.model.factories.GodietMetaFactory;
 import com.sysfera.godiet.model.generated.User;
 import com.sysfera.godiet.model.validators.ForwarderRuntimeValidatorImpl;
@@ -59,23 +62,22 @@ public class LaunchPlatformIntegrationTest {
 		try {
 			// Loading configuration
 			{
-				String configurationFile = "configuration/configuration.xml";
+				String configurationFile = "configuration/configuration-localhost.xml";
 
 				InputStream inputStream = getClass().getClassLoader()
 						.getResourceAsStream(configurationFile);
-				InitUtil.initConfig(rm, inputStream);
-				this.rm.getUserManager().setRemoteAccessor(remoteAccess);
+				XMLLoadingHelper.initConfig(rm, inputStream);
 
 			}
 			{
-				String platformTestCase = "infrastructure/testbed-platform.xml";
+				String platformTestCase = "infrastructure/localhost-infrastructure.xml";
 				InputStream inputStreamPlatform = getClass().getClassLoader()
 						.getResourceAsStream(platformTestCase);
-				InitUtil.initPlatform(rm, inputStreamPlatform);
+				XMLLoadingHelper.initInfrastructure(rm, inputStreamPlatform);
 			}
 			{
 				// Init RM
-				String testCaseFile = "diet/testbed-diet.xml";
+				String testCaseFile = "diet/localhost-diet.xml";
 				InputStream inputStream = getClass().getClassLoader()
 						.getResourceAsStream(testCaseFile);
 				XmlScannerJaxbImpl scanner = new XmlScannerJaxbImpl();
@@ -83,18 +85,19 @@ public class LaunchPlatformIntegrationTest {
 				xmlLoadingCommand.setRm(rm);
 				xmlLoadingCommand.setXmlInput(inputStream);
 				xmlLoadingCommand.setXmlParser(scanner);
-				RemoteConfigurationHelper softwareController = new RemoteConfigurationHelper(
-						 rm.getGodietConfiguration(),
-						rm.getPlatformModel());
-				softwareController.setRemoteAccess(remoteAccess);
+
+				SoftwareController softwareController = new RemoteConfigurationHelper(
+						rm.getGodietConfiguration(),
+						rm.getInfrastructureModel());
+
 				DietManager dietModel = rm.getDietModel();
-				 godietAbstractFactory = new GodietMetaFactory(softwareController,
-						new ForwarderRuntimeValidatorImpl(dietModel),
+				godietAbstractFactory = new GodietMetaFactory(
+						softwareController, new ForwarderRuntimeValidatorImpl(
+								dietModel),
 						new MasterAgentRuntimeValidatorImpl(dietModel),
 						new LocalAgentRuntimeValidatorImpl(dietModel),
 						new SedRuntimeValidatorImpl(dietModel),
 						new OmniNamesRuntimeValidatorImpl(dietModel));
-
 				xmlLoadingCommand.setAbstractFactory(godietAbstractFactory);
 
 				xmlLoadingCommand.execute();
@@ -104,31 +107,23 @@ public class LaunchPlatformIntegrationTest {
 			log.error("Test Fail", e);
 			Assert.fail(e.getMessage());
 		}
+		String fakeKey = "fakeuser/testbedKey";
+		URL urlFile = getClass().getClassLoader().getResource(fakeKey);
+		if (urlFile == null || urlFile.getFile().isEmpty())
+			Assert.fail("SSH key not found");
 
-		remoteAccess.debug(true);
-
-		/* Real Remote SSH */
-		{ // Testbed key
-			String fakeKey = "fakeuser/testbedKey";
-			URL urlFile = getClass().getClassLoader().getResource(fakeKey);
-			if (urlFile == null || urlFile.getFile().isEmpty())
-				Assert.fail("SSH key not found");
+		try {
 			User.Ssh.Key sshDesc = new User.Ssh.Key();
 			sshDesc.setPath(urlFile.getPath());
 			SSHKeyManager sshkey = new SSHKeyManager(sshDesc);
 			sshkey.setPassword("godiet");
-			this.rm.getUserManager().addManagedSSHKey(sshkey);
-			this.rm.getUserManager().registerKey(sshkey);
+			this.rm.getUserManager().addManagedSSHKey(
+					new SSHKeyManager(sshDesc));
+			remoteAccess.addItentity(sshkey);
+		} catch (AddAuthentificationException e) {
+			Assert.fail("Unable to load testbed key");
 		}
-		{// My local Graal access key
-			User.Ssh.Key mykeyDesc = new User.Ssh.Key();
-			mykeyDesc.setPath("/home/phi/tmp/id_dsa");
-			SSHKeyManager sshkey = new SSHKeyManager(mykeyDesc);
-			sshkey.setPassword("godiet");
-			this.rm.getUserManager().addManagedSSHKey(sshkey);
-			this.rm.getUserManager().registerKey(sshkey);
-		}
-		
+
 	}
 
 	/***

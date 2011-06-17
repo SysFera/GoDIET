@@ -13,58 +13,51 @@ import com.sysfera.godiet.exceptions.ResourceAddException;
 import com.sysfera.godiet.exceptions.generics.PathException;
 import com.sysfera.godiet.exceptions.graph.GraphDataException;
 import com.sysfera.godiet.managers.topology.TopologyManager;
-import com.sysfera.godiet.managers.topology.TopologyManagerNeo4jImpl;
+import com.sysfera.godiet.managers.topology.TopologyManagerGSImpl;
 import com.sysfera.godiet.model.Path;
 import com.sysfera.godiet.model.generated.Cluster;
 import com.sysfera.godiet.model.generated.Domain;
 import com.sysfera.godiet.model.generated.Fronted;
-import com.sysfera.godiet.model.generated.Gateway;
 import com.sysfera.godiet.model.generated.Link;
 import com.sysfera.godiet.model.generated.Node;
 import com.sysfera.godiet.model.generated.Resource;
+import com.sysfera.godiet.model.generated.Ssh;
 
 /**
- * Physical infrastructure description
- * TODO: check the unique id resource (like dietReousceid in DietManager)
+ * Physical infrastructure description TODO: check the unique id resource (like
+ * dietReousceid in DietManager)
+ * 
  * @author phi
  * 
  */
 @Component
-public class PlatformManager {
+public class InfrastructureManager {
 	private Logger log = LoggerFactory.getLogger(getClass());
 
 	// Reference all nodes,gateways, fronted by is id.
-	private final Map<String, Resource> resources;
+	private final Map<String, Node> resources;
+	// voir dossier bureau GoDiet pour old version de ce fichier java.
 	// All nodes platform (even cluster node)
 	private final List<Node> nodes;
 	private final List<Cluster> clusters;
-	private final List<Gateway> gateways;
 	private final List<Fronted> fronteds;
 	private final List<Link> links;
 	private final List<Domain> domains;
+	// FIXME:
 	private final TopologyManager topologyManager;
+	private final DomainsManager domainManager;
 
-	public PlatformManager() {
-		this.topologyManager = new TopologyManagerNeo4jImpl(this);
+	public InfrastructureManager() {
+		this.domainManager = new DomainsManager();
+		this.topologyManager = new TopologyManagerGSImpl();
 		this.domains = new ArrayList<Domain>();
 		this.nodes = new ArrayList<Node>();
 		this.clusters = new ArrayList<Cluster>();
-		this.gateways = new ArrayList<Gateway>();
 		this.fronteds = new ArrayList<Fronted>();
 		this.links = new ArrayList<Link>();
-		this.resources = new HashMap<String, Resource>();
+		this.resources = new HashMap<String, Node>();
 	}
 
-	
-	/*
-	 * TODO: Workaround to resolve the release of Neo4j's base at each Test. Resolve when use IOC Spring or new graph implementation
-	 * 
-	 */
-	public void destroy()
-	{
-		if(topologyManager instanceof TopologyManagerNeo4jImpl)
-			((TopologyManagerNeo4jImpl)topologyManager).destroy();
-	}
 	/**
 	 * 
 	 * @return the list nodes
@@ -78,13 +71,6 @@ public class PlatformManager {
 	 */
 	public List<Cluster> getClusters() {
 		return clusters;
-	}
-
-	/**
-	 * @return the gateways
-	 */
-	public List<Gateway> getGateways() {
-		return gateways;
 	}
 
 	/**
@@ -110,54 +96,39 @@ public class PlatformManager {
 
 	public void addLinks(List<Link> links) throws GraphDataException {
 		for (Link link : links) {
-			topologyManager.addLink(link.getFrom(), link.getTo());
+			topologyManager.addLink(link);
 		}
 		this.links.addAll(links);
 	}
-	
 
-	public void addFrontends(List<Fronted> frontends) throws ResourceAddException{
-		if (fronteds == null) {
-			log.warn("Try to add empty list of fronteds");
-			return;
-		}
-		for (Fronted fronted : frontends) {
-			resources.put(fronted.getId(), fronted);
-		}
-		this.fronteds.addAll(frontends);
-
-	}
-
-	public void addNodes(List<Node> computingNodes) throws ResourceAddException{
+	public void addNodes(List<Node> computingNodes) throws GraphDataException {
 		if (computingNodes == null) {
 			log.warn("Try to add empty list of nodes");
 			return;
 		}
 		for (Node node : computingNodes) {
 			resources.put(node.getId(), node);
+
+			topologyManager.addNode(node);
 		}
 		this.nodes.addAll(computingNodes);
 
 	}
 
-	public void addClusters(List<Cluster> clusters) throws ResourceAddException{
+	public void addClusters(List<Cluster> clusters) throws ResourceAddException {
 		this.clusters.addAll(clusters);
 
 	}
 
-	public void addGateways(List<Gateway> gateways) throws ResourceAddException{
-		if (gateways == null) {
-			log.warn("Try to add empty list of gateways");
+	public void addDomains(List<Domain> domains) throws GraphDataException {
+		if (domains == null) {
+			log.warn("Try to add empty list of domains");
 			return;
 		}
-		for (Gateway gateway : gateways) {
-			this.resources.put(gateway.getId(), gateway);
+		for (Domain domain : domains) {
+			topologyManager.addDomain(domain);
 		}
-		this.gateways.addAll(gateways);
 
-	}
-
-	public void addDomains(List<Domain> domains) throws ResourceAddException{
 		this.domains.addAll(domains);
 
 	}
@@ -176,32 +147,47 @@ public class PlatformManager {
 	public Path findPath(Resource from, Resource to) throws PathException {
 		if (from == null || to == null) {
 			throw new PathException("Try to find path between null argument");
-                }
-		return topologyManager.findPath(from, to);
+		} else {
+			return topologyManager.findPath(from, to);
+		}
 	}
 
-	// TODO : Path findpath(FromDomain, ToNode); Le lancement de la config se
-	// fait depuis un domain. Pas nécessairement depuis un noeud existant dans
-	// la description
+	public TopologyManager getTopologyManager() {
+		return topologyManager;
+	}
 
 	/**
+	 * TODO: Change name to getNode
 	 * 
 	 * @param resourceId
 	 * @return Resource given is id
 	 */
-	public Resource getResource(String resourceId) {
+	public Node getResource(String resourceId) {
 		return resources.get(resourceId);
 	}
 
-	
-
-	public Domain getDomain(String server) {
-		Resource res = resources.get(server);
-		if(res == null)
-		{
-			log.error("Unable to find physical resource with name: "+server);
-			return null;
+	/**
+	 * Return all the domains where resource is include
+	 * 
+	 * @param resource
+	 * @return
+	 */
+	public List<Domain> getDomains(Resource resource) {
+		List<Domain> domainsCovered = new ArrayList<Domain>();
+		for (Ssh ssh : resource.getSsh()) {
+			domainsCovered.add(ssh.getDomain());
 		}
-		return res.getDomain();
+
+		return domainsCovered;
 	}
+
+	// public Domain getDomain(String server) {
+	// Resource res = resources.get(server);
+	// if(res == null)
+	// {
+	// log.error("Unable to find physical resource with name: "+server);
+	// return null;
+	// }
+	// return res.getDomain();
+	// }
 }

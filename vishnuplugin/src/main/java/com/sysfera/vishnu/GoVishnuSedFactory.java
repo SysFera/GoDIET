@@ -1,6 +1,7 @@
 package com.sysfera.vishnu;
 
 import com.sysfera.godiet.exceptions.remote.CheckException;
+import com.sysfera.godiet.exceptions.remote.IncubateException;
 import com.sysfera.godiet.exceptions.remote.LaunchException;
 import com.sysfera.godiet.exceptions.remote.PrepareException;
 import com.sysfera.godiet.exceptions.remote.StopException;
@@ -23,10 +24,9 @@ public class GoVishnuSedFactory {
 		softwareController = new EmptySoftwareController();
 	}
 	
-	public DietResourceManaged create(Sed sedDescription)
+	public DietResourceManaged create(Sed sedDescription) throws IncubateException
 	{
-		DietResourceManaged managedSed = new DietResourceManaged(softwareController, validator);
-		managedSed.setManagedSoftware(sedDescription);
+		DietResourceManaged managedSed = new DietResourceManaged(sedDescription,softwareController, validator);
 		return managedSed;
 	}
 	
@@ -50,6 +50,13 @@ public class GoVishnuSedFactory {
 		@Override
 		public void wantStop(SoftwareManager managedResource)
 				throws StopException {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void wantIncubate(SoftwareManager managedResource)
+				throws IncubateException {
 			// TODO Auto-generated method stub
 			
 		}

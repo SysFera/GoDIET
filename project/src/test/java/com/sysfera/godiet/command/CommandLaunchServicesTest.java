@@ -21,6 +21,7 @@ import com.sysfera.godiet.command.xml.LoadXMLDietCommand;
 import com.sysfera.godiet.exceptions.CommandExecutionException;
 import com.sysfera.godiet.managers.DietManager;
 import com.sysfera.godiet.managers.ResourcesManager;
+import com.sysfera.godiet.model.SoftwareController;
 import com.sysfera.godiet.model.factories.GodietMetaFactory;
 import com.sysfera.godiet.model.validators.ForwarderRuntimeValidatorImpl;
 import com.sysfera.godiet.model.validators.LocalAgentRuntimeValidatorImpl;
@@ -56,10 +57,10 @@ public class CommandLaunchServicesTest {
 				XMLLoadingHelper.initConfig(rm, inputStream);
 			}
 			{
-				String platformTestCase = "infrastructure/testbed-platform.xml";
+				String platformTestCase = "infrastructure/testbed.xml";
 				InputStream inputStreamPlatform = getClass().getClassLoader()
 						.getResourceAsStream(platformTestCase);
-				XMLLoadingHelper.initPlatform(rm, inputStreamPlatform);
+				XMLLoadingHelper.initInfrastructure(rm, inputStreamPlatform);
 			}
 			{
 				// Init RM
@@ -71,9 +72,11 @@ public class CommandLaunchServicesTest {
 				xmlLoadingCommand.setRm(rm);
 				xmlLoadingCommand.setXmlInput(inputStream);
 				xmlLoadingCommand.setXmlParser(scanner);
-				RemoteConfigurationHelper softwareController = new RemoteConfigurationHelper(
-						rm.getGodietConfiguration(), rm.getPlatformModel());
-				softwareController.setRemoteAccess(remoteAccess);
+
+				SoftwareController softwareController = new RemoteConfigurationHelper(
+						rm.getGodietConfiguration(),
+						rm.getInfrastructureModel());
+
 				DietManager dietModel = rm.getDietModel();
 				GodietMetaFactory godietAbstractFactory = new GodietMetaFactory(
 						softwareController, new ForwarderRuntimeValidatorImpl(

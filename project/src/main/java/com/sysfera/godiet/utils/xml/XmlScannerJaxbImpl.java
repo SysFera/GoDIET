@@ -6,6 +6,7 @@ import java.net.URL;
 
 import javax.xml.XMLConstants;
 import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.ValidationEvent;
@@ -17,10 +18,9 @@ import javax.xml.validation.SchemaFactory;
 import org.xml.sax.SAXException;
 
 import com.sysfera.godiet.exceptions.XMLParseException;
-import com.sysfera.godiet.model.generated.Configuration;
-import com.sysfera.godiet.model.generated.Diet;
+import com.sysfera.godiet.model.generated.DietPlatform;
 import com.sysfera.godiet.model.generated.GoDietConfiguration;
-import com.sysfera.godiet.model.generated.Platform;
+import com.sysfera.godiet.model.generated.Infrastructure;
 
 /**
  * 
@@ -39,7 +39,7 @@ public class XmlScannerJaxbImpl implements XMLParser {
 	/**
 	 */
 	@Override
-	final public Diet buildDietModel(InputStream xmlFile) throws IOException,
+	final public DietPlatform buildDietModel(InputStream xmlFile) throws IOException,
 			XMLParseException {
 
 		try {
@@ -52,8 +52,8 @@ public class XmlScannerJaxbImpl implements XMLParser {
 			if(schemaFile == null) throw new XMLParseException("Unable to find schema description: "+GODIET_DIET_SCHEMA_PATH);
 			Schema schema = sf.newSchema(schemaFile);
 			u.setSchema(schema);
-
-			Diet diet = (Diet) u.unmarshal(xmlFile);
+			Object obj = u.unmarshal(xmlFile);
+			DietPlatform diet = (DietPlatform)obj;
 			return diet;
 		} catch (JAXBException e) {
 			throw new XMLParseException("Error when marshalling diet model", e);
@@ -69,7 +69,7 @@ public class XmlScannerJaxbImpl implements XMLParser {
 
 
 	@Override
-	final public Platform buildPlatformModel(InputStream xmlFile)
+	final public Infrastructure buildInfrastructureModel(InputStream xmlFile)
 			throws IOException, XMLParseException {
 
 		try {
@@ -83,7 +83,7 @@ public class XmlScannerJaxbImpl implements XMLParser {
 			Schema schema = sf.newSchema(schemaFile);
 			u.setSchema(schema);
 
-			Platform platform = (Platform) u.unmarshal(xmlFile);
+			Infrastructure platform = (Infrastructure) u.unmarshal(xmlFile);
 			return platform;
 		} catch (JAXBException e) {
 			throw new XMLParseException("Error when marshalling diet model", e);
@@ -127,8 +127,8 @@ public class XmlScannerJaxbImpl implements XMLParser {
 			if(schemaFile == null) throw new XMLParseException("Unable to find schema description: "+GODIET_CONFIGURATION_SCHEMA_PATH);
 			Schema schema = sf.newSchema(schemaFile);
 			u.setSchema(schema);
-			Configuration config = (Configuration)u.unmarshal(xmlInput);
-			return config.getGoDietConfiguration();
+			GoDietConfiguration config = (GoDietConfiguration)u.unmarshal(xmlInput);
+			return config;
 		} catch (JAXBException e) {
 			throw new XMLParseException("Error when marshalling diet model", e);
 		} catch (SAXException e) {

@@ -31,6 +31,7 @@ import com.sysfera.godiet.exceptions.remote.AddAuthentificationException;
 import com.sysfera.godiet.managers.DietManager;
 import com.sysfera.godiet.managers.ResourcesManager;
 import com.sysfera.godiet.managers.user.SSHKeyManager;
+import com.sysfera.godiet.model.SoftwareController;
 import com.sysfera.godiet.model.factories.GodietMetaFactory;
 import com.sysfera.godiet.model.generated.User;
 import com.sysfera.godiet.model.validators.ForwarderRuntimeValidatorImpl;
@@ -44,7 +45,8 @@ import com.sysfera.godiet.utils.xml.XmlScannerJaxbImpl;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @DirtiesContext
-@ContextConfiguration(locations = { "/spring/spring-config.xml","/spring/ssh-context.xml" })
+@ContextConfiguration(locations = { "/spring/spring-config.xml",
+		"/spring/ssh-context.xml" })
 public class LaunchMockLocalhohostPlatformIntegrationTest {
 	private Logger log = LoggerFactory.getLogger(getClass());
 
@@ -72,7 +74,7 @@ public class LaunchMockLocalhohostPlatformIntegrationTest {
 				String platformTestCase = "infrastructure/testbed-platform.xml";
 				InputStream inputStreamPlatform = getClass().getClassLoader()
 						.getResourceAsStream(platformTestCase);
-				XMLLoadingHelper.initPlatform(rm, inputStreamPlatform);
+				XMLLoadingHelper.initInfrastructure(rm, inputStreamPlatform);
 			}
 			{
 				// Init RM
@@ -84,10 +86,11 @@ public class LaunchMockLocalhohostPlatformIntegrationTest {
 				xmlLoadingCommand.setRm(rm);
 				xmlLoadingCommand.setXmlInput(inputStream);
 				xmlLoadingCommand.setXmlParser(scanner);
-				RemoteConfigurationHelper softwareController = new RemoteConfigurationHelper(
-						rm.getGodietConfiguration(),
-						rm.getPlatformModel());
-				softwareController.setRemoteAccess(remoteAccess);
+
+				SoftwareController softwareController = new RemoteConfigurationHelper(
+						 rm.getGodietConfiguration(),
+						rm.getInfrastructureModel());
+
 				DietManager dietModel = rm.getDietModel();
 				godietAbstractFactory = new GodietMetaFactory(
 						softwareController, new ForwarderRuntimeValidatorImpl(

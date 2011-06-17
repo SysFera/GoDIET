@@ -38,11 +38,11 @@ public class StartForwardersCommand implements Command {
 			throw new CommandExecutionException(getClass().getName()
 					+ " not initialized correctly");
 		}
-		List<DietResourceManaged> forwarders = rm.getDietModel()
+		List<DietResourceManaged<Forwarder>> forwarders = rm.getDietModel()
 				.getForwarders();
 		log.debug("Trying to run  " + forwarders.size() + " Forwarders");
 		boolean error = false;
-		for (DietResourceManaged forwarder : forwarders) {
+		for (DietResourceManaged<Forwarder> forwarder : forwarders) {
 			try {
 				Forwarder forwarderDescription = (Forwarder) forwarder
 						.getSoftwareDescription();
@@ -56,7 +56,7 @@ public class StartForwardersCommand implements Command {
 			}
 		}
 
-		for (DietResourceManaged forwarder : forwarders) {
+		for (DietResourceManaged<Forwarder> forwarder : forwarders) {
 			try {
 				Forwarder forwarderDescription = (Forwarder) forwarder
 						.getSoftwareDescription();
