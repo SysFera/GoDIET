@@ -5,7 +5,7 @@
 	<domain id="Domain1" />
 
 	<node id="Node1">
-		<ssh domain="Domain1" server="IP1" login="phi" />
+		<ssh id="node1interface1"  domain="Domain1" server="IP1" login="phi" />
 		<env>
 			<var name="PATH"
 				value="/usr/local/Diet/build/bin:/usr/local/Diet/build/bin/examples/dmat_manips/:$PATH" />
@@ -16,7 +16,7 @@
 	</node>
 
 	<node id="Node2">
-		<ssh domain="Domain1" server="IP2" login="phi" />
+		<ssh id="node2interface1"  domain="Domain1" server="IP2" login="phi" />
 		<env>
 			<var name="PATH"
 				value="/usr/local/Soft/Diet/bin:/usr/local/Soft/Diet/bin/examples/dmat_manips/:$PATH" />
@@ -26,7 +26,7 @@
 
 	</node>
 	<node id="Node3">
-		<ssh domain="Domain1" server="IP3" login="phi" />
+		<ssh id="node3interface1"  domain="Domain1" server="IP3" login="phi" />
 		<env>
 			<var name="PATH"
 				value="/usr/local/Soft/Diet/bin:/usr/local/Soft/Diet/bin/examples/dmat_manips/:$PATH" />

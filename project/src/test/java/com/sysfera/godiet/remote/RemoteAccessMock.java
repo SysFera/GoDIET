@@ -17,6 +17,7 @@ import com.sysfera.godiet.exceptions.generics.RemoteAccessException;
 import com.sysfera.godiet.exceptions.remote.RemoveAuthentificationException;
 import com.sysfera.godiet.managers.user.SSHKeyManager;
 import com.sysfera.godiet.model.Path;
+import com.sysfera.godiet.model.Path.Hop;
 import com.sysfera.godiet.model.generated.Resource;
 import com.sysfera.godiet.model.generated.Ssh;
 
@@ -41,16 +42,16 @@ public class RemoteAccessMock implements RemoteAccess {
 	@Override
 	public Integer launch(String command, Path path)
 			throws RemoteAccessException {
-		Object[] pathResources = ((Object[]) path.getPath().toArray());
+		Hop[] pathResources = ((Hop[]) path.getPath().toArray(new Hop[0]));
 		if (pathResources == null || pathResources.length == 0)
 			throw new RemoteAccessException(
 					"Unable to run a command. The path is empty");
-		String pathInfo = "Connection path:"
-				+ ((Resource) pathResources[0]).getId();
+		String pathInfo = "Connection path:" +pathResources[0].getDestination().getId();
+				
 		for (int i = 1; i < pathResources.length; i++) {
-			pathInfo += "-->" + ((Resource) pathResources[i]).getId();
+			pathInfo += "-->" + pathResources[i].getDestination().getId();
 		}
-		Ssh remoteNode = ((Ssh) pathResources[pathResources.length - 1]);
+		Ssh remoteNode = pathResources[pathResources.length- 1].getLink();
 		if (remoteAccessDown) {
 			throw new RemoteAccessException("Unable to run " + command + " on "
 					+ remoteNode.getServer() + ":" + remoteNode.getPort()
@@ -72,22 +73,21 @@ public class RemoteAccessMock implements RemoteAccess {
 	@Override
 	public void copy(File file, String remotePath, Path path)
 			throws RemoteAccessException {
-		Object[] pathResources = ((Object[]) path.getPath().toArray());
+		Hop[] pathResources = ((Hop[]) path.getPath().toArray(new Hop[0]));
 		if (pathResources == null || pathResources.length == 0)
 			throw new RemoteAccessException(
 					"Unable to run a command. The path is empty");
-		String pathInfo = "Connection path:"
-				+ ((Resource) pathResources[0]).getId();
+		String pathInfo = "Connection path:" +pathResources[0].getDestination().getId();
+				
 		for (int i = 1; i < pathResources.length; i++) {
-			pathInfo += "-->" + ((Resource) pathResources[i]).getId();
+			pathInfo += "-->" + pathResources[i].getDestination().getId();
 		}
-		Channel channel = null;
-		//TODO
-		if (channel != null)
-			log.debug("Find a buffered stored path between: ");
-	//	Resource remoteNode = (Resource) pathResources[pathResources.length - 1];
-
-		Ssh remoteNode = (Ssh) pathResources[pathResources.length - 1];
+		Ssh remoteNode = pathResources[pathResources.length- 1].getLink();
+		if (remoteAccessDown) {
+			throw new RemoteAccessException("Unable to scp "
+					+ remoteNode.getServer() + ":" + remoteNode.getPort()
+					+ " . Login: " + remoteNode.getLogin());
+		}
 
 		if (remoteAccessDown)
 			throw new RemoteAccessException("Unable to copy file "
@@ -112,23 +112,16 @@ public class RemoteAccessMock implements RemoteAccess {
 
 	@Override
 	public void check(String pid, Path path) throws RemoteAccessException {
-		Object[] pathResources = ((Object[]) path.getPath().toArray());
+		Hop[] pathResources = ((Hop[]) path.getPath().toArray(new Hop[0]));
 		if (pathResources == null || pathResources.length == 0)
 			throw new RemoteAccessException(
 					"Unable to run a command. The path is empty");
-		String pathInfo = "Connection path:"
-				+ ((Resource) pathResources[0]).getId();
+		String pathInfo = "Connection path:" +pathResources[0].getDestination().getId();
+				
 		for (int i = 1; i < pathResources.length; i++) {
-			pathInfo += "-->" + ((Resource) pathResources[i]).getId();
+			pathInfo += "-->" + pathResources[i].getDestination().getId();
 		}
-		Channel channel = null;
-		//TODO
-		if (channel != null)
-			log.debug("Find a buffered stored path between: ");
-
-
-		Ssh remoteNode = ((Ssh) pathResources[pathResources.length - 1]);
-
+		Ssh remoteNode = pathResources[pathResources.length- 1].getLink();
 		if (remoteAccessDown) {
 			throw new RemoteAccessException("Unable to check process " + pid
 					+ " on " + remoteNode + ":" + remoteNode.getPort()

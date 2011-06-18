@@ -43,7 +43,8 @@ public class CommandLaunchServicesTest {
 	private ResourcesManager rm;
 	@Autowired
 	RemoteAccess remoteAccess;
-
+	@Autowired
+	SoftwareController softwareController;
 	@Before
 	public void init() {
 
@@ -72,10 +73,6 @@ public class CommandLaunchServicesTest {
 				xmlLoadingCommand.setRm(rm);
 				xmlLoadingCommand.setXmlInput(inputStream);
 				xmlLoadingCommand.setXmlParser(scanner);
-
-				SoftwareController softwareController = new RemoteConfigurationHelper(
-						rm.getGodietConfiguration(),
-						rm.getInfrastructureModel());
 
 				DietManager dietModel = rm.getDietModel();
 				GodietMetaFactory godietAbstractFactory = new GodietMetaFactory(

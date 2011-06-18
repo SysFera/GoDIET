@@ -38,7 +38,6 @@ import com.sysfera.godiet.model.validators.LocalAgentRuntimeValidatorImpl;
 import com.sysfera.godiet.model.validators.MasterAgentRuntimeValidatorImpl;
 import com.sysfera.godiet.model.validators.OmniNamesRuntimeValidatorImpl;
 import com.sysfera.godiet.model.validators.SedRuntimeValidatorImpl;
-import com.sysfera.godiet.remote.RemoteConfigurationHelper;
 import com.sysfera.godiet.remote.ssh.RemoteAccessJschImpl;
 import com.sysfera.godiet.utils.xml.XmlScannerJaxbImpl;
 
@@ -55,7 +54,10 @@ public class LaunchPlatformIntegrationTest {
 	private RemoteAccessJschImpl remoteAccess;
 
 	private GodietMetaFactory godietAbstractFactory;
-
+	
+	@Autowired
+	SoftwareController softwareController;
+	
 	@Before
 	public void init() {
 
@@ -86,10 +88,7 @@ public class LaunchPlatformIntegrationTest {
 				xmlLoadingCommand.setXmlInput(inputStream);
 				xmlLoadingCommand.setXmlParser(scanner);
 
-				SoftwareController softwareController = new RemoteConfigurationHelper(
-						rm.getGodietConfiguration(),
-						rm.getInfrastructureModel());
-
+		
 				DietManager dietModel = rm.getDietModel();
 				godietAbstractFactory = new GodietMetaFactory(
 						softwareController, new ForwarderRuntimeValidatorImpl(

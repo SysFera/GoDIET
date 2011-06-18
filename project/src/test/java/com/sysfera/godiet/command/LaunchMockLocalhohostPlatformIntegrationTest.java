@@ -40,7 +40,6 @@ import com.sysfera.godiet.model.validators.MasterAgentRuntimeValidatorImpl;
 import com.sysfera.godiet.model.validators.OmniNamesRuntimeValidatorImpl;
 import com.sysfera.godiet.model.validators.SedRuntimeValidatorImpl;
 import com.sysfera.godiet.remote.RemoteAccess;
-import com.sysfera.godiet.remote.RemoteConfigurationHelper;
 import com.sysfera.godiet.utils.xml.XmlScannerJaxbImpl;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -56,7 +55,8 @@ public class LaunchMockLocalhohostPlatformIntegrationTest {
 	GodietMetaFactory godietAbstractFactory;
 	@Autowired
 	RemoteAccess remoteAccess;
-
+	@Autowired
+	private SoftwareController softwareController;
 	@Before
 	public void init() {
 
@@ -71,7 +71,7 @@ public class LaunchMockLocalhohostPlatformIntegrationTest {
 
 			}
 			{
-				String platformTestCase = "infrastructure/testbed-platform.xml";
+				String platformTestCase = "infrastructure/testbed.xml";
 				InputStream inputStreamPlatform = getClass().getClassLoader()
 						.getResourceAsStream(platformTestCase);
 				XMLLoadingHelper.initInfrastructure(rm, inputStreamPlatform);
@@ -86,10 +86,6 @@ public class LaunchMockLocalhohostPlatformIntegrationTest {
 				xmlLoadingCommand.setRm(rm);
 				xmlLoadingCommand.setXmlInput(inputStream);
 				xmlLoadingCommand.setXmlParser(scanner);
-
-				SoftwareController softwareController = new RemoteConfigurationHelper(
-						 rm.getGodietConfiguration(),
-						rm.getInfrastructureModel());
 
 				DietManager dietModel = rm.getDietModel();
 				godietAbstractFactory = new GodietMetaFactory(

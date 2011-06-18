@@ -30,7 +30,6 @@ import com.sysfera.godiet.model.validators.LocalAgentRuntimeValidatorImpl;
 import com.sysfera.godiet.model.validators.MasterAgentRuntimeValidatorImpl;
 import com.sysfera.godiet.model.validators.OmniNamesRuntimeValidatorImpl;
 import com.sysfera.godiet.model.validators.SedRuntimeValidatorImpl;
-import com.sysfera.godiet.remote.RemoteConfigurationHelper;
 import com.sysfera.godiet.utils.xml.XmlScannerJaxbImpl;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -41,6 +40,9 @@ public class CommandInitForwardersTest {
 	private Logger log = LoggerFactory.getLogger(getClass());
 	@Autowired
 	private ResourcesManager rm;
+
+	@Autowired
+	SoftwareController softwareController;
 	LoadXMLDietCommand xmlLoadingCommand;
 	
 	GodietMetaFactory godietAbstractFactory;
@@ -57,9 +59,6 @@ public class CommandInitForwardersTest {
 			Assert.fail();
 
 		}
-		SoftwareController softwareController = new RemoteConfigurationHelper(
-				rm.getGodietConfiguration()
-						, rm.getInfrastructureModel());
 
 		DietManager dietModel = rm.getDietModel();
 		godietAbstractFactory = new GodietMetaFactory(softwareController,

@@ -7,7 +7,7 @@
 
 	<node id="local">
 
-		<ssh domain="DomainLocalhost" login="traore" server="127.0.0.1" />
+		<ssh id="lo" domain="DomainLocalhost" login="traore" server="127.0.0.1" />
 		<env>
 			<var name="PATH"
 				value="/home/traore/OMNIORB-INSTALL/install/bin/:/usr/local/bin:/home/traore/VishnuProject/vishnu/TMS/build/bin:$PATH" />

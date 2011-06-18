@@ -44,7 +44,8 @@ public class StopServicesCommandTest {
 	private ResourcesManager rm;
 	@Autowired
 	private RemoteAccess remoteAccess;
-
+	@Autowired
+	private SoftwareController softwareController;
 	@Before
 	public void init() {
 
@@ -59,7 +60,7 @@ public class StopServicesCommandTest {
 				XMLLoadingHelper.initConfig(rm, inputStream);
 			}
 			{
-				String platformTestCase = "infrastructure/testbed-platform.xml";
+				String platformTestCase = "infrastructure/testbed.xml";
 				InputStream inputStreamPlatform = getClass().getClassLoader()
 						.getResourceAsStream(platformTestCase);
 				XMLLoadingHelper.initInfrastructure(rm, inputStreamPlatform);
@@ -75,10 +76,7 @@ public class StopServicesCommandTest {
 				xmlLoadingCommand.setXmlInput(inputStream);
 				xmlLoadingCommand.setXmlParser(scanner);
 
-				SoftwareController softwareController = new RemoteConfigurationHelper(
-						rm.getGodietConfiguration(),
-						rm.getInfrastructureModel());
-
+		
 				DietManager dietModel = rm.getDietModel();
 				GodietMetaFactory godietAbstractFactory = new GodietMetaFactory(
 						softwareController, new ForwarderRuntimeValidatorImpl(

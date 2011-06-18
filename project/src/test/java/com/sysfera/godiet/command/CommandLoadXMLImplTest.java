@@ -30,7 +30,6 @@ import com.sysfera.godiet.model.validators.LocalAgentRuntimeValidatorImpl;
 import com.sysfera.godiet.model.validators.MasterAgentRuntimeValidatorImpl;
 import com.sysfera.godiet.model.validators.OmniNamesRuntimeValidatorImpl;
 import com.sysfera.godiet.model.validators.SedRuntimeValidatorImpl;
-import com.sysfera.godiet.remote.RemoteConfigurationHelper;
 import com.sysfera.godiet.utils.xml.XMLParser;
 import com.sysfera.godiet.utils.xml.XmlScannerJaxbImpl;
 
@@ -44,6 +43,8 @@ public class CommandLoadXMLImplTest {
 	@Autowired
 	ResourcesManager rm;
 
+	@Autowired
+	SoftwareController softwareController;
 	@Before
 	public void initGodietConfig() {
 
@@ -78,9 +79,7 @@ public class CommandLoadXMLImplTest {
 		LoadXMLDietCommand xmlLoadingCommand = new LoadXMLDietCommand();
 
 		xmlLoadingCommand.setXmlParser(scanner);
-		SoftwareController softwareController = new RemoteConfigurationHelper(
-				rm.getGodietConfiguration(), rm.getInfrastructureModel());
-
+		
 		DietManager dietModel = rm.getDietModel();
 		GodietMetaFactory godietAbstractFactory = new GodietMetaFactory(
 				softwareController,
@@ -143,9 +142,7 @@ public class CommandLoadXMLImplTest {
 			xmlLoadingCommand.setXmlInput(inputStream);
 			xmlLoadingCommand.setXmlParser(scanner);
 
-			SoftwareController softwareController = new RemoteConfigurationHelper(
-					rm.getGodietConfiguration()
-							, rm.getInfrastructureModel());
+	
 			DietManager dietModel = rm.getDietModel();
 			GodietMetaFactory godietAbstractFactory = new GodietMetaFactory(
 					softwareController, new ForwarderRuntimeValidatorImpl(
@@ -220,9 +217,6 @@ public class CommandLoadXMLImplTest {
 			xmlLoadingCommand.setRm(rm);
 			xmlLoadingCommand.setXmlInput(inputStream);
 			xmlLoadingCommand.setXmlParser(scanner);
-			SoftwareController softwareController = new RemoteConfigurationHelper(
-					rm.getGodietConfiguration()
-							, rm.getInfrastructureModel());
 
 			DietManager dietModel = rm.getDietModel();
 			GodietMetaFactory godietAbstractFactory = new GodietMetaFactory(

@@ -56,6 +56,8 @@ public class LaunchMockPlatformIntegrationTest {
 	@Autowired
 	RemoteAccess remoteAccess;
 
+	@Autowired
+	private SoftwareController softwareController;
 	@Before
 	public void init() {
 
@@ -86,9 +88,7 @@ public class LaunchMockPlatformIntegrationTest {
 				xmlLoadingCommand.setXmlInput(inputStream);
 				xmlLoadingCommand.setXmlParser(scanner);
 
-				SoftwareController softwareController = new RemoteConfigurationHelper(
-						rm.getGodietConfiguration(),
-						rm.getInfrastructureModel());
+			
 
 				DietManager dietModel = rm.getDietModel();
 				godietAbstractFactory = new GodietMetaFactory(

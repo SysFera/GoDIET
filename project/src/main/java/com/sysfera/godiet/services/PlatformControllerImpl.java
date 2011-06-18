@@ -52,6 +52,8 @@ public final class PlatformControllerImpl implements PlatformController {
 	@Autowired
 	private RemoteAccess remoteAccess;
 
+	@Autowired
+	private RemoteConfigurationHelper softwareController;
 	@Override
 	@PostConstruct
 	public void start() throws StartException {
@@ -60,9 +62,7 @@ public final class PlatformControllerImpl implements PlatformController {
 			throw new StartException(getClass().getName(), "0",
 					"Unable to init platform", null);
 		}
-		RemoteConfigurationHelper softwareController = new RemoteConfigurationHelper(
-				goDietConfiguration, infrastructureManager);
-		softwareController.setRemoteAccess(remoteAccess);
+		
 		godietMetaFactory = new GodietMetaFactory(softwareController,
 				new ForwarderRuntimeValidatorImpl(dietManager),
 				new MasterAgentRuntimeValidatorImpl(dietManager),
