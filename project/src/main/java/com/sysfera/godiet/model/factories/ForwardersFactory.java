@@ -162,6 +162,7 @@ public class ForwardersFactory {
 				.getDir();
 		Forwarder forwarderDescription = (Forwarder) managedServer
 				.getSoftwareDescription();
+
 		//Add all environment node
 		Env env = managedServer.getPluggedOn().getEnv();
 		if(env != null) {
@@ -174,6 +175,7 @@ public class ForwardersFactory {
 			}
 		}
 		
+
 
 		// find the OmniOrbConfig file on the remote host to set OmniOrb.cfg
 		String omniOrbconfig = "OMNIORB_CONFIG=" + scratchDir + "/"
