@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<godiet:platform xmlns:godiet="http://www.sysfera.com"
+                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                 xsi:schemaLocation="http://www.sysfera.com ../Platform.xsd">
+  <infrastructure>
+    
+    <domain label="Domain1">
+      <storage label="Disk1">
+        <scratch dir="/tmp/scratch_runtime/Domain1" />
+        <scp server="127.0.0.1" login="bdepardo" />
+      </storage>
+
+      <node id="MacLaptop" disk="Disk1">
+        <ssh server="127.0.0.1" login="bdepardo" />
+        <env>
+          <var name="PATH"
+               value="/opt/local/bin:/opt/local/sbin:/Users/bdepardo/scripts:/Users/bdepardo/soft/DietUtils/bin:/Users/bdepardo/soft/Diet/bin:/Users/bdepardo/soft/gnuplot/bin:/Users/bdepardo/soft/tcptrace:/Users/bdepardo/soft/xerces/bin:/Users/bdepardo/soft/XQuilla/bin:/usr/local/ncbi/blast/bin:/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/opt/local/bin:/opt/local/sbin:/usr/local/mysql/bin:$PATH" />
+          <var name="DYLD_LIBRARY_PATH" value="/Users/bdepardo/soft/DietUtils/lib:/Users/bdepardo/soft/Diet/lib:/Users/bdepardo/soft/gnuplot/lib:/Users/bdepardo/soft/xerces/lib:/Users/bdepardo/soft/XQuilla/lib:/usr/local/lib:$DYLD_LIBRARY_PATH" />
+          <var name="EC2_ACCESS_KEY" value="AKIAI77INI7TE7T2NE5A" />
+          <var name="EC2_CERT" value="/Users/bdepardo/SysFera/SC10/EC2/cert-2GFVV4EBDSYWYSIVXTZIDBLYZTAOX4KW.pem" />
+          <var name="EC2_PRIVATE_KEY" value="/Users/bdepardo/SysFera/SC10/EC2/pk-2GFVV4EBDSYWYSIVXTZIDBLYZTAOX4KW.pem" />
+          <var name="EC2_SECRET_KEY" value="HV8W2JcHyo9y4sgY8SOAXHVorqyiHx5Df9e2JD9A" />
+          <var name="EC2_URL" value="https://eu-west-1.ec2.amazonaws.com" />
+          <var name="EC2_USER_ID" value="443252058477" />
+        </env>
+      </node>
+
+      <gateway id="G1" disk="Disk1">
+        <ssh server="127.0.0.1" login="bdepardo" />
+        <env>
+          <var name="PATH"
+               value="/opt/local/bin:/opt/local/sbin:/Users/bdepardo/scripts:/Users/bdepardo/soft/DietUtils/bin:/Users/bdepardo/soft/Diet/bin:/Users/bdepardo/soft/gnuplot/bin:/Users/bdepardo/soft/tcptrace:/Users/bdepardo/soft/xerces/bin:/Users/bdepardo/soft/XQuilla/bin:/usr/local/ncbi/blast/bin:/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/opt/local/bin:/opt/local/sbin:/usr/local/mysql/bin:$PATH" />
+          <var name="DYLD_LIBRARY_PATH" value="/Users/bdepardo/soft/DietUtils/lib:/Users/bdepardo/soft/Diet/lib:/Users/bdepardo/soft/gnuplot/lib:/Users/bdepardo/soft/xerces/lib:/Users/bdepardo/soft/XQuilla/lib:/usr/local/lib:$DYLD_LIBRARY_PATH" />
+          <var name="EC2_ACCESS_KEY" value="AKIAI77INI7TE7T2NE5A" />
+          <var name="EC2_CERT" value="/Users/bdepardo/SysFera/SC10/EC2/cert-2GFVV4EBDSYWYSIVXTZIDBLYZTAOX4KW.pem" />
+          <var name="EC2_PRIVATE_KEY" value="/Users/bdepardo/SysFera/SC10/EC2/pk-2GFVV4EBDSYWYSIVXTZIDBLYZTAOX4KW.pem" />
+          <var name="EC2_SECRET_KEY" value="HV8W2JcHyo9y4sgY8SOAXHVorqyiHx5Df9e2JD9A" />
+          <var name="EC2_URL" value="https://eu-west-1.ec2.amazonaws.com" />
+          <var name="EC2_USER_ID" value="443252058477" />
+        </env>
+      </gateway>
+    </domain>
+
+    <domain label="Grid5000">
+      <storage label="DiskGateway">
+        <scratch dir="/home/diet/tmp/scratch_runtime/Domain2" />
+        <scp server="10.69.7.243" login="diet" />
+      </storage>
+
+      <storage label="DiskFrontend">
+        <scratch dir="/home/diet/tmp/scratch_runtime/Domain2" />
+        <scp server="10.69.7.247" login="diet" />
+      </storage>
+
+      <node id="frontend" disk="DiskFrontend">
+        <ssh server="10.69.7.247" login="diet" />
+        <env>
+          <var name="PATH"
+               value="/home/diet/soft/Diet/bin:/home/diet/soft/omniORB/bin:/usr/sbin:/home/diet/soft/omniORB/bin:/home/bdepardo/soft/uuid/bin:/home/diet/soft/XQilla/bin:/home/diet/soft/xerces/bin:/usr/local/bin:/usr/bin:/bin:/usr/games:$PATH" />
+          <var name="LD_LIBRARY_PATH"
+               value="/home/diet/soft/Diet/lib:/home/diet/soft/omniORB/lib:/usr/lib:/lib:/home/bdepardo/soft/uuid/lib:/home/diet/soft/XQilla/lib:/home/diet/soft/xerces/lib:$LD_LIBRARY_PATH" />
+        </env>
+      </node>
+
+      <node id="gateway" disk="DiskGateway">
+        <ssh server="10.69.7.243" login="diet" />
+        <env>
+          <var name="PATH"
+               value="/home/diet/soft/Diet/bin:/home/diet/soft/omniORB/bin:/usr/sbin:/home/diet/soft/omniORB/bin:/home/bdepardo/soft/uuid/bin:/home/diet/soft/XQilla/bin:/home/diet/soft/xerces/bin:/usr/local/bin:/usr/bin:/bin:/usr/games:$PATH" />
+          <var name="LD_LIBRARY_PATH"
+               value="/home/diet/soft/Diet/lib:/home/diet/soft/omniORB/lib:/usr/lib:/lib:/home/bdepardo/soft/uuid/lib:/home/diet/soft/XQilla/lib:/home/diet/soft/xerces/lib:$LD_LIBRARY_PATH" />
+        </env>
+      </node>
+
+      <gateway id="G2" disk="DiskGateway">
+        <ssh server="grid5000.ens-lyon.fr" login="diet" />
+        <env>
+          <var name="PATH"
+               value="/home/diet/soft/Diet/bin:/home/diet/soft/omniORB/bin:/usr/sbin:/home/diet/soft/omniORB/bin:/home/bdepardo/soft/uuid/bin:/home/diet/soft/XQilla/bin:/home/diet/soft/xerces/bin:/usr/local/bin:/usr/bin:/bin:/usr/games:$PATH" />
+          <var name="LD_LIBRARY_PATH"
+               value="/home/diet/soft/Diet/lib:/home/diet/soft/omniORB/lib:/usr/lib:/lib:/home/bdepardo/soft/uuid/lib:/home/diet/soft/XQilla/lib:/home/diet/soft/xerces/lib:$LD_LIBRARY_PATH" />
+        </env>
+      </gateway>
+    </domain>
+
+    <link from="G1" to="G2" />
+  </infrastructure>
+</godiet:platform>
