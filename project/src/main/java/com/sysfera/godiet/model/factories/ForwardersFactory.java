@@ -1,15 +1,19 @@
 package com.sysfera.godiet.model.factories;
 
+import java.util.List;
+
 import com.sysfera.godiet.exceptions.DietResourceCreationException;
 import com.sysfera.godiet.model.DietResourceManaged;
 import com.sysfera.godiet.model.SoftwareController;
 import com.sysfera.godiet.model.SoftwareManager;
+import com.sysfera.godiet.model.generated.Env;
 import com.sysfera.godiet.model.generated.Forwarder;
 import com.sysfera.godiet.model.generated.Forwarders;
 import com.sysfera.godiet.model.generated.ObjectFactory;
 import com.sysfera.godiet.model.generated.OmniNames;
 import com.sysfera.godiet.model.generated.Options;
 import com.sysfera.godiet.model.generated.Options.Option;
+import com.sysfera.godiet.model.generated.Var;
 import com.sysfera.godiet.model.utils.ResourceUtil;
 import com.sysfera.godiet.model.validators.RuntimeValidator;
 
@@ -158,9 +162,19 @@ public class ForwardersFactory {
 				.getDir();
 		Forwarder forwarderDescription = (Forwarder) managedServer
 				.getSoftwareDescription();
-		//Env PATH
-		String envPath = ResourceUtil.getEnvValue(managedClient.getPluggedOn(),"PATH");
-		command+= "PATH="+envPath+":$PATH ";
+		//Add all environment node
+		Env env = managedServer.getPluggedOn().getEnv();
+		if(env != null) {
+			List<Var> vars = env.getVar();
+			if(vars != null)
+			{
+				for (Var var : vars) {
+					command+= " " + var.getName() +"=" +var.getValue()+" "; 
+				}
+			}
+		}
+		
+
 		// find the OmniOrbConfig file on the remote host to set OmniOrb.cfg
 		String omniOrbconfig = "OMNIORB_CONFIG=" + scratchDir + "/"
 				+ omniNamesServer.getId() + ".cfg";
@@ -205,9 +219,18 @@ public class ForwardersFactory {
 				.getDir();
 		Forwarder forwarderDescription = (Forwarder) managedClient
 				.getSoftwareDescription();
-		//Env PATH
-		String envPath = ResourceUtil.getEnvValue(managedClient.getPluggedOn(),"PATH");
-		command+= "PATH="+envPath+":$PATH ";
+		//Add all environment node
+		Env env = managedClient.getPluggedOn().getEnv();
+		if(env != null) {
+			List<Var> vars = env.getVar();
+			if(vars != null)
+			{
+				for (Var var : vars) {
+					command+= " " + var.getName() +"=" +var.getValue()+" "; 
+				}
+			}
+		}
+		
 		// find the OmniOrbConfig file on the remote host to set OmniOrb.cfg
 		String omniOrbconfig = "OMNIORB_CONFIG=" + scratchDir + "/"
 				+ omniNamesClient.getId() + ".cfg";
