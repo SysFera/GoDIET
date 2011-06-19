@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<godiet:diet xmlns:godiet="http://www.sysfera.com"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://www.sysfera.com ../Diet.xsd">
+
+  <dietServices>
+    <omniNames id="omniNames1">
+      <config server="MacLaptop" remoteBinary="omniNames" />
+    </omniNames>
+    <omniNames id="omniNames2">
+      <config server="gateway" remoteBinary="omniNames" />
+    </omniNames>
+  </dietServices>
+
+  <dietInfrastructure>
+    <masterAgent id="MA">
+      <config server="MacLaptop" remoteBinary="dietAgent" />
+      <cfgOptions>
+        <option key="traceLevel" value="10"/>
+        <option key="initRequestID" value="1308404064"/>
+        <!-- date "+%s" -->
+      </cfgOptions>
+
+      <sed id="SeD-classic">
+        <config server="MacLaptop"
+                remoteBinary="/Users/bdepardo/soft/DietDemo/bin/decrypthon_diet_server" />
+        <parameters string="/Users/bdepardo/CVSIMPORT/SYSFERA/startup/devel/SC10_demo/scripts_cfg/blastp/service_blastp.cfg" />
+      </sed>
+
+      <sed id="SeD-cloud">
+        <config server="MacLaptop"
+                remoteBinary="/Users/bdepardo/soft/Diet/bin/examples/cloud/cloud_server" />
+        <cfgOptions>
+          <option key="batchName" value="eucalyptus"/>
+          <option key="pathToNFS" value="/tmp"/>
+          <option key="cloudURL" value="https://eu-west-1.ec2.amazonaws.com"/>
+          <option key="emiName" value="ami-6e31041a"/>
+          <option key="vmType" value="t1.micro"/>
+          <option key="keyName" value="Ben"/>
+          <option key="pathToSSHKey" value="/Users/bdepardo/SysFera/SC10/EC2/Ben.pem"/>
+          <option key="instantiateVMs" value="1"/>
+          <option key="vmMinCount" value="1"/>
+          <option key="vmMaxCount" value="1"/>
+          <option key="pathToCert" value="/Users/bdepardo/SysFera/SC10/EC2/cert-2GFVV4EBDSYWYSIVXTZIDBLYZTAOX4KW.pem"/>
+          <option key="pathToPK" value="/Users/bdepardo/SysFera/SC10/EC2/pk-2GFVV4EBDSYWYSIVXTZIDBLYZTAOX4KW.pem"/>
+          <option key="userName" value="ec2-user"/>
+        </cfgOptions>
+      </sed>
+
+      <sed id="sedG5k">
+        <config server="frontend"
+                remoteBinary="/home/diet/soft/CosmoDiet/bin/SeD_GalaxyMaker" />
+        <parameters string="/home/diet/tmp/scratch_runtime/GalaxyMaker.cfg" />
+      </sed>
+    </masterAgent>
+  </dietInfrastructure>
+</godiet:diet>
