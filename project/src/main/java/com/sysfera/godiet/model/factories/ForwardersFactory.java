@@ -159,7 +159,7 @@ public class ForwardersFactory {
 		Forwarder forwarderDescription = (Forwarder) managedServer
 				.getSoftwareDescription();
 		//Env PATH
-		String envPath = ResourceUtil.getEnvValue(managedClient.getPluggedOn(),"PATH");
+		String envPath = ResourceUtil.getEnvValue(managedServer.getPluggedOn(),"PATH");
 		command+= "PATH="+envPath+":$PATH ";
 		// find the OmniOrbConfig file on the remote host to set OmniOrb.cfg
 		String omniOrbconfig = "OMNIORB_CONFIG=" + scratchDir + "/"
