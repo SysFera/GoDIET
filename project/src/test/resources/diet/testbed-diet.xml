@@ -25,6 +25,23 @@
 			</sed>
 			<sed id="sed2">
 				<config server="Node3" remoteBinary="dmat_manips_server" />
+				<cfgOptions>
+					<option key="batchName" value="eucalyptus" />
+					<option key="pathToNFS" value="/tmp" />
+					<option key="cloudURL" value="https://eu-west-1.ec2.amazonaws.com" />
+					<option key="emiName" value="ami-6e31041a" />
+					<option key="vmType" value="t1.micro" />
+					<option key="keyName" value="Ben" />
+					<option key="pathToSSHKey" value="/Users/bdepardo/SysFera/SC10/EC2/Ben.pem" />
+					<option key="instantiateVMs" value="1" />
+					<option key="vmMinCount" value="1" />
+					<option key="vmMaxCount" value="1" />
+					<option key="pathToCert"
+						value="/Users/bdepardo/SysFera/SC10/EC2/cert-2GFVV4EBDSYWYSIVXTZIDBLYZTAOX4KW.pem" />
+					<option key="pathToPK"
+						value="/Users/bdepardo/SysFera/SC10/EC2/pk-2GFVV4EBDSYWYSIVXTZIDBLYZTAOX4KW.pem" />
+					<option key="userName" value="ec2-user" />
+				</cfgOptions>
 				<parameters string="T" />
 			</sed>
 			<sed id="sed3">
