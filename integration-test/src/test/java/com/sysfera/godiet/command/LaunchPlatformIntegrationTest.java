@@ -64,7 +64,8 @@ public class LaunchPlatformIntegrationTest {
 		try {
 			// Loading configuration
 			{
-				String configurationFile = "configuration/configuration-localhost.xml";
+
+				String configurationFile = "configuration/configuration.xml";
 
 				InputStream inputStream = getClass().getClassLoader()
 						.getResourceAsStream(configurationFile);
