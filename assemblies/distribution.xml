@@ -75,6 +75,21 @@
 			</includes>
 			<outputDirectory>/vishnu</outputDirectory>
 		</fileSet>
+			<!-- Embedding Hambourg samples -->
+		<fileSet>
+			<directory>${project.basedir}/../project/src/test/resources/diet</directory>
+			<includes>
+				<include>hambourg-platform.xml</include>
+			</includes>
+			<outputDirectory>/hambourg</outputDirectory>
+		</fileSet>
+		<fileSet>
+			<directory>${project.basedir}/../project/src/test/resources/infrastructure</directory>
+			<includes>
+				<include>hambourg-g5k-infrastructure.xml</include>
+			</includes>
+			<outputDirectory>/hambourg</outputDirectory>
+		</fileSet>
 	</fileSets>
 
 </assembly>
