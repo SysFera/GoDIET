@@ -16,8 +16,9 @@ import com.sysfera.godiet.model.generated.Forwarders;
 /**
  * 
  * Run all Diet forwarders contains in the data model. Iterative running all
- * Server then Client forwarders.
- * Throw an CommandExecutionException if one forwarder launching failed
+ * Server then Client forwarders. Throw an CommandExecutionException if one
+ * forwarder launching failed
+ * 
  * @see Forwarders
  * @author phi
  * 
@@ -48,32 +49,37 @@ public class StartForwardersCommand implements Command {
 						.getSoftwareDescription();
 				if (forwarderDescription.getType().equals("SERVER")) {
 					forwarder.start();
-                                }
+				}
 			} catch (LaunchException e) {
 				log.error("Unable to run Forwarder "
 						+ forwarder.getSoftwareDescription().getId());
 				error = true;
 			}
 		}
+		try {
+			Thread.sleep(15000);
 
-		for (DietResourceManaged forwarder : forwarders) {
-			try {
-				Forwarder forwarderDescription = (Forwarder) forwarder
-						.getSoftwareDescription();
-				if (forwarderDescription.getType().equals("CLIENT")) {
-					forwarder.start();
-                                }
-			} catch (LaunchException e) {
-				log.error("Unable to run Forwarder "
-						+ forwarder.getSoftwareDescription().getId());
-				error = true;
+			for (DietResourceManaged forwarder : forwarders) {
+				try {
+					Forwarder forwarderDescription = (Forwarder) forwarder
+							.getSoftwareDescription();
+					if (forwarderDescription.getType().equals("CLIENT")) {
+						forwarder.start();
+					}
+				} catch (LaunchException e) {
+					log.error("Unable to run Forwarder "
+							+ forwarder.getSoftwareDescription().getId());
+					error = true;
 
+				}
 			}
-		}
 
-		if (error) {
+			if (error) {
+				
+			}
+		} catch (InterruptedException e1) {
 			throw new CommandExecutionException(
-					"Error when try to running a client forwarder");
+			"Error when try to running a client forwarder");
 		}
 
 	}
