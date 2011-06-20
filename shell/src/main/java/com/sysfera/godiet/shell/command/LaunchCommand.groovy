@@ -142,6 +142,7 @@ extends ComplexCommandSupport {
 		GoDietSh goDietShell = shell;
 		Diet rm = goDietShell.getDiet();
 		rm.launchServices();
+		rm.launchAgents();
 	}
 
 	def do_software = { arg ->

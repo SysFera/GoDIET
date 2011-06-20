@@ -4,9 +4,7 @@ import com.sysfera.godiet.exceptions.remote.IncubateException;
 import com.sysfera.godiet.model.DietResourceManaged;
 import com.sysfera.godiet.model.OmniNamesManaged;
 import com.sysfera.godiet.model.SoftwareController;
-import com.sysfera.godiet.model.generated.Node;
 import com.sysfera.godiet.model.generated.ObjectFactory;
-import com.sysfera.godiet.model.generated.OmniNames;
 import com.sysfera.godiet.model.generated.Options;
 import com.sysfera.godiet.model.generated.Options.Option;
 import com.sysfera.godiet.model.generated.Resource;
@@ -26,6 +24,7 @@ public class SedFactory {
 
 	public SedFactory(SoftwareController softwareController,
 			RuntimeValidator<DietResourceManaged<Sed>> sedValidator) {
+
 		this.softwareController = softwareController;
 		this.validator = sedValidator;
 	}
@@ -39,12 +38,14 @@ public class SedFactory {
 	 * @throws IncubateException 
 	 */
 
+
 	public DietResourceManaged<Sed> create(Sed sedDescription, Resource pluggedOn,
 			OmniNamesManaged omniNames) throws IncubateException {
 		DietResourceManaged<Sed> sedManaged = new DietResourceManaged<Sed>(sedDescription,
 				pluggedOn, softwareController, validator, omniNames);
 		
 		settingConfigurationOptions(sedManaged);
+
 		AgentFactoryUtil.settingRunningCommand(
 				omniNames.getSoftwareDescription(), sedManaged);
 		return sedManaged;
@@ -55,11 +56,19 @@ public class SedFactory {
 	 * 
 	 * @param sedManaged
 	 */
+
 	private void settingConfigurationOptions(DietResourceManaged<Sed> sedManaged) {
-		Options opts = new ObjectFactory().createOptions();
+
+		Options opts = sedManaged.getSoftwareDescription().getCfgOptions();
+		if (opts == null) {
+			opts = new ObjectFactory().createOptions();
+		}
+
+
 		Option parent = new Option();
 		parent.setKey("parentName");
 		parent.setValue(sedManaged.getSoftwareDescription().getParent().getId());
+
 		opts.getOption().add(parent);
 		sedManaged.getSoftwareDescription().setCfgOptions(opts);
 	}
