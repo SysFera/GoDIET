@@ -28,6 +28,7 @@ import com.sysfera.godiet.exceptions.remote.StopException;
 import com.sysfera.godiet.managers.DietManager;
 import com.sysfera.godiet.managers.ResourcesManager;
 import com.sysfera.godiet.managers.user.SSHKeyManager;
+import com.sysfera.godiet.model.SoftwareController;
 import com.sysfera.godiet.model.SoftwareManager;
 import com.sysfera.godiet.model.factories.GodietMetaFactory;
 import com.sysfera.godiet.model.validators.ForwarderRuntimeValidatorImpl;
@@ -37,6 +38,8 @@ import com.sysfera.godiet.model.validators.OmniNamesRuntimeValidatorImpl;
 import com.sysfera.godiet.model.validators.SedRuntimeValidatorImpl;
 import com.sysfera.godiet.remote.RemoteAccess;
 import com.sysfera.godiet.remote.RemoteConfigurationHelper;
+import com.sysfera.godiet.remote.ssh.ChannelManagerJsch;
+import com.sysfera.godiet.remote.ssh.RemoteAccessJschImpl;
 
 
 public class Diet {
@@ -100,19 +103,13 @@ public class Diet {
 		}
 		// TODO: springified this
 		XMLLoadingHelper.initConfig(rm, inputStream);
-<<<<<<< HEAD
-		
-		RemoteConfigurationHelper softwareController = new RemoteConfigurationHelper(
-				 rm.getGodietConfiguration(), rm.getPlatformModel());
-		softwareController.setRemoteAccess(remoteAccess);
-=======
+
 		RemoteAccessJschImpl remoteJsch = new RemoteAccessJschImpl();
 		remoteJsch.setChannelManager(new ChannelManagerJsch());
-		this.rm.getUserManager().setRemoteAccessor(remoteJsch);
 		SoftwareController softwareController = new RemoteConfigurationHelper(
 				remoteJsch, rm.getGodietConfiguration()
-						.getGoDietConfiguration(), rm.getInfrastructureModel());
->>>>>>> feature-newInfraModel
+						, rm.getInfrastructureModel());
+
 		DietManager dietModel = rm.getDietModel();
 		godietAbstractFactory = new GodietMetaFactory(softwareController,
 				new ForwarderRuntimeValidatorImpl(dietModel),

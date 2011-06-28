@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.sysfera.godiet.exceptions.generics.StartException;
 import com.sysfera.godiet.managers.ConfigurationManager;
 import com.sysfera.godiet.managers.ResourcesManager;
+import com.sysfera.godiet.model.observer.ForwardersCreator;
 
 /**
  * Godiet core main interface. Store controllers
@@ -18,22 +19,23 @@ public class GoDietService {
 
 	@Autowired
 	private ResourcesManager ressourceManager;
+	@Autowired
+	private ConfigurationManager configurationManager;
 
 	@Autowired
-	private  UserControllerImpl userController;
+	private UserControllerImpl userController;
 	@Autowired
-	private  PlatformControllerImpl platformController;
+	private PlatformControllerImpl platformController;
 	@Autowired
-	private  XMLHelpControllerImpl xmlHelpController;
+	private XMLHelpControllerImpl xmlHelpController;
 	@Autowired
-	private  InfrastructureControllerImpl infrastructureController;
+	private InfrastructureControllerImpl infrastructureController;
+
 	@Autowired
-	private  ConfigurationManager configurationManager;
+	private ForwardersCreator forwarderAutoCreator;
 
 	public GoDietService() {
-
 		
-
 	}
 
 	/**
@@ -48,7 +50,7 @@ public class GoDietService {
 			throw new StartException(getClass().getName(), "4",
 					"ressource manager isn't initialize", null);
 		}
-	
+
 	}
 
 	public PlatformController getPlatformController() {
@@ -71,4 +73,10 @@ public class GoDietService {
 		return this.ressourceManager;
 	}
 
+	public void startForwarderCreator(boolean start) {
+		if (start)
+			this.forwarderAutoCreator.start();
+		else
+			this.forwarderAutoCreator.stop();
+	}
 }

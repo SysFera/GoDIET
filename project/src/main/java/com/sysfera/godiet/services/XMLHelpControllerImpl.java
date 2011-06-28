@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -14,11 +16,13 @@ import com.sysfera.godiet.exceptions.XMLParseException;
 import com.sysfera.godiet.exceptions.generics.DietResourceValidationException;
 import com.sysfera.godiet.exceptions.generics.GoDietConfigurationException;
 import com.sysfera.godiet.exceptions.graph.GraphDataException;
+import com.sysfera.godiet.exceptions.remote.AddAuthentificationException;
 import com.sysfera.godiet.exceptions.remote.IncubateException;
 import com.sysfera.godiet.managers.ConfigurationManager;
 import com.sysfera.godiet.model.generated.DietHierarchy;
 import com.sysfera.godiet.model.generated.DietPlatform;
 import com.sysfera.godiet.model.generated.DietServices;
+import com.sysfera.godiet.model.generated.Forwarders;
 import com.sysfera.godiet.model.generated.GoDietConfiguration;
 import com.sysfera.godiet.model.generated.Infrastructure;
 import com.sysfera.godiet.model.generated.LocalAgent;
@@ -31,6 +35,8 @@ import com.sysfera.godiet.utils.xml.XmlScannerJaxbImpl;
 
 @Component
 public class XMLHelpControllerImpl {
+	private Logger log = LoggerFactory.getLogger(getClass());
+
 	@Autowired
 	private ConfigurationManager configurationManager;
 	@Autowired
@@ -51,12 +57,20 @@ public class XMLHelpControllerImpl {
 			throws IOException, XMLParseException, GoDietConfigurationException {
 		GoDietConfiguration goDietConfiguration = xmlScanner
 				.buildGodietConfiguration(xmlInput);
-		List<Key> sshKeys = goDietConfiguration.getUser().getSsh().getKey();
-		// Initialize user manager whith key list in the xml desc file
-		for (Key key : sshKeys) {
-			userController.registerSSHKey(key);
+		if (goDietConfiguration.getUser() != null
+				&& goDietConfiguration.getUser().getSsh() != null
+				&& goDietConfiguration.getUser().getSsh().getKey() != null) {
+			List<Key> sshKeys = goDietConfiguration.getUser().getSsh().getKey();
+			// Initialize user manager whith key list in the xml desc file
+			for (Key key : sshKeys) {
+				try {
+					userController.addSSHKey(key);
+				} catch (AddAuthentificationException e) {
+					log.error("Unable to register ssh key " + key.getPathPub());
+					e.printStackTrace();
+				}
+			}
 		}
-
 		configurationManager.setLocalNodeId(goDietConfiguration.getLocalNode());
 		configurationManager.setLocalScratch(goDietConfiguration
 				.getLocalscratch());
@@ -105,7 +119,7 @@ public class XMLHelpControllerImpl {
 	 * 
 	 * @throws DietResourceCreationException
 	 * @throws DietResourceValidationException
-	 * @throws IncubateException 
+	 * @throws IncubateException
 	 * @throws CommandExecutionException
 	 */
 	private void load(DietPlatform diet) throws DietResourceCreationException,
@@ -122,7 +136,7 @@ public class XMLHelpControllerImpl {
 	 * @param dietServices
 	 * @throws DietResourceCreationException
 	 * @throws DietResourceValidationException
-	 * @throws IncubateException 
+	 * @throws IncubateException
 	 */
 	private void initDietPlatform(DietHierarchy dietHierarchy,
 			DietServices dietServices) throws DietResourceCreationException,
@@ -132,8 +146,26 @@ public class XMLHelpControllerImpl {
 			platformController.registerOmniNames(omniName);
 
 		}
+		initForwarders(dietServices.getForwarders());
 		initMasterAgents(dietHierarchy.getMasterAgent());
 
+	}
+
+	/**
+	 * Init forwarders
+	 * 
+	 * @param forwarders
+	 * @throws IncubateException
+	 * @throws DietResourceCreationException
+	 */
+	private void initForwarders(List<Forwarders> forwarders)
+			throws DietResourceCreationException, IncubateException {
+		if (forwarders != null) {
+			for (Forwarders forwarder : forwarders) {
+				platformController.registerForwarders(forwarder.getClient(),
+						forwarder.getServer());
+			}
+		}
 	}
 
 	/**
@@ -143,7 +175,7 @@ public class XMLHelpControllerImpl {
 	 *            of masterAgent
 	 * @throws DietResourceCreationException
 	 * @throws DietResourceValidationException
-	 * @throws IncubateException 
+	 * @throws IncubateException
 	 */
 	private void initMasterAgents(List<MasterAgent> masterAgents)
 			throws DietResourceCreationException,
@@ -164,7 +196,7 @@ public class XMLHelpControllerImpl {
 	 * @param localAgent
 	 * @throws DietResourceCreationException
 	 * @throws DietResourceValidationException
-	 * @throws IncubateException 
+	 * @throws IncubateException
 	 */
 	private void initLocalAgents(List<LocalAgent> localAgents)
 			throws DietResourceCreationException,
@@ -184,7 +216,7 @@ public class XMLHelpControllerImpl {
 	 * @param sed
 	 * @throws DietResourceCreationException
 	 * @throws DietResourceValidationException
-	 * @throws IncubateException 
+	 * @throws IncubateException
 	 */
 	private void initSeds(List<Sed> seds) throws DietResourceCreationException,
 			DietResourceValidationException, IncubateException {
