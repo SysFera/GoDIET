@@ -11,8 +11,7 @@ import org.springframework.stereotype.Component;
 import com.sysfera.godiet.exceptions.remote.AddAuthentificationException;
 import com.sysfera.godiet.exceptions.remote.RemoveAuthentificationException;
 import com.sysfera.godiet.managers.user.SSHKeyManager.Status;
-import com.sysfera.godiet.model.generated.ObjectFactory;
-import com.sysfera.godiet.model.generated.User;
+import com.sysfera.godiet.model.generated.User.Ssh.Key;
 import com.sysfera.godiet.remote.RemoteAccess;
 
 /**
@@ -35,41 +34,40 @@ public class UserManager {
 
 	}
 
-	public void setRemoteAccessor(RemoteAccess remoteAccessor) {
-		this.remoteAccessor = remoteAccessor;
-	}
-
-	public void addManagedSSHKey(SSHKeyManager key) {
-		managedKeys.add(key);
-
+	public SSHKeyManager registerNewKey(Key key)
+			throws AddAuthentificationException {
+		SSHKeyManager managedKey = new SSHKeyManager(key);
+		managedKeys.add(managedKey);
+		registerKey(managedKey);
+		return managedKey;
 	}
 
 	/**
-	 * Register a key in the remote access manager if his password is initialized
+	 * Register a key in the remote access manager if his password is
+	 * initialized
+	 * 
 	 * @param key
+	 * @throws AddAuthentificationException
 	 */
-	public void registerKey(SSHKeyManager key) {
-		if (key.state == Status.PASSWORDINITIALIZE)
+	
+	public void registerKey(SSHKeyManager key)
+			throws AddAuthentificationException {
+		if (key.state == Status.LOADED || key.state == Status.ERROR) {
+			log.error("Unable to register " + key.getPubKeyPath()
+					+ ". This key is in " + key.state + " state.");
+			return;
+		}
+		if (key.state == Status.PASSWORDINITIALIZE
+				|| !key.getKeyDesc().isEncrypted()) {
 			try {
 				remoteAccessor.addItentity(key);
 				key.state = Status.LOADED;
 			} catch (AddAuthentificationException e) {
-				log.error(e.getMessage(),e);
+				log.error(e.getMessage(), e);
 				key.state = Status.ERROR;
 				key.errorCause = e;
+				throw e;
 			}
-	}
-
-	/**
-	 * 
-	 * Try to register all keys on the remote access manager 
-	 *	@see UserManager#registerKey(SSHKeyManager)
-	 *
-	 */
-	public void registerAllKeys() {
-
-		for (SSHKeyManager key : managedKeys) {
-			registerKey(key);
 		}
 
 	}
@@ -79,47 +77,28 @@ public class UserManager {
 	}
 
 	/**
-	 * Create a new key and add it in the Remote access manager
-	 * @param pubkeyPath
-	 * @param privKayPath
-	 * @param password
-	 */
-	public void registerNewKey(String pubkeyPath, String privKayPath,
-			String password) {
-		User.Ssh.Key sshKeyDesc = new ObjectFactory().createUserSshKey();
-		sshKeyDesc.setPath(privKayPath);
-		sshKeyDesc.setPathPub(pubkeyPath);
-		SSHKeyManager managedKey = new SSHKeyManager(sshKeyDesc);
-		managedKey.setPassword(password);
-		addManagedSSHKey(managedKey);
-		registerKey(managedKey);
-	}
-
-	/**
-	 * Modify key paramater. Create a new one and register if it was already Loaded in the remote access manager.
+	 * Modify key paramater. Create a new one and register if it was already
+	 * Loaded in the remote access manager.
+	 * 
 	 * @param key
 	 * @param pubkeyPath
 	 * @param privKayPath
 	 * @param password
 	 */
-	public void modifySSHKey(SSHKeyManager key, String privKeyPath ,
-			String pubkeyPath, String password) {
+	public void modifySSHKey(SSHKeyManager key, String privKeyPath,
+			String pubkeyPath, String password)
+			throws RemoveAuthentificationException,
+			AddAuthentificationException {
 		if (!managedKeys.contains(key))
 			return;
-		if (key.state == Status.LOADED) {
-			try {
-				remoteAccessor.removeItentity(key);
-				managedKeys.remove(key);
-				registerNewKey(pubkeyPath, privKeyPath, password);
-			} catch (RemoveAuthentificationException e) {
-				log.error("Unable to remove key from identityManager");
-			}
 
-		} else {
-			key.setPubKeyPath(pubkeyPath);
-			key.setPrivKeyPath(privKeyPath);
-			key.setPassword(password);
+		if (key.state == Status.LOADED) {
+			remoteAccessor.removeItentity(key);
 		}
+		key.setPrivKeyPath(privKeyPath);
+		key.setPubKeyPath(pubkeyPath);
+		key.setPassword(password);
+		registerKey(key);
 
 	}
 

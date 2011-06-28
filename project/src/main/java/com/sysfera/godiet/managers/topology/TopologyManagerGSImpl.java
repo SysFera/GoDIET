@@ -22,14 +22,27 @@ import com.sysfera.godiet.model.generated.Node;
 import com.sysfera.godiet.model.generated.Resource;
 import com.sysfera.godiet.model.generated.Ssh;
 
+/**
+ * 
+ * @author Nicolas Quattropani
+ * 
+ */
 public class TopologyManagerGSImpl implements TopologyManager {
+
+	private final static String ATTRIBUTEKEY_DOMAIN = "domain";
 
 	private Logger log = LoggerFactory.getLogger(getClass());
 	private final Graph gs;
+	// GS Shortest path calculator
+	private final APSP apsp;
 
 	// Constructor
 	public TopologyManagerGSImpl() {
 		this.gs = new MultiGraph("Construction Infrastructure");
+
+		this.apsp = new APSP();
+		apsp.setDirected(true); // directed grap
+		apsp.setWeightAttributeName("weight");
 	}
 
 	public Graph getGraph() {
@@ -95,7 +108,7 @@ public class TopologyManagerGSImpl implements TopologyManager {
 		node.addAttribute("ui.class", "domain"); // for the management of the
 													// domain's display
 		node.addAttribute("id", idDomain); // Storage of the id of the domain
-		node.addAttribute("domain", d);
+		node.addAttribute(ATTRIBUTEKEY_DOMAIN, d);
 	}
 
 	@Override
@@ -124,11 +137,7 @@ public class TopologyManagerGSImpl implements TopologyManager {
 	public org.graphstream.graph.Path shortestPath(String from, String to)
 			throws PathException {
 
-		// Calculation of the shortpaths
-		APSP apsp = new APSP();
 		apsp.init(gs); // registering apsp as a sink for the graph
-		apsp.setDirected(true); // directed grap
-		apsp.setWeightAttributeName("weight");
 		apsp.compute(); // the method that actually computes shortest paths
 		APSPInfo info = gs.getNode(from).getAttribute(APSPInfo.ATTRIBUTE_NAME);
 		// Prints
@@ -150,23 +159,20 @@ public class TopologyManagerGSImpl implements TopologyManager {
 		Path path = new Path();
 		LinkedHashSet<Hop> set = new LinkedHashSet<Hop>();
 
-		Iterator<Edge> ie =  p.getEdgePath().iterator();
-		
+		Iterator<Edge> ie = p.getEdgePath().iterator();
+
 		Edge e;
 		Ssh ssh;
-        Node node;
-
+		Node node;
+		Domain crossedDomain = null;
 		while (ie.hasNext()) { // Browse the edge(s) of the shortest path
 			e = ie.next();
 			Path.Hop hop = (path).new Hop();
 
 			// Selection of the edge
 			org.graphstream.graph.Node nGS = e.getNode1();
-
-			if (nGS.getAttribute("node") != null) { // if the node is a
-													// machine
-				// and NOT a domain then we
-				// add it
+			// if the node is a machine and NOT a domain then we add it
+			if (nGS.getAttribute("node") != null) {
 				node = nGS.getAttribute("node");
 				hop.setDestination(node); // Add the node at the end of the
 											// edge
@@ -185,9 +191,15 @@ public class TopologyManagerGSImpl implements TopologyManager {
 				} else {
 					e.addAttribute("ui.class", ts[0] + ", pathSelected");
 				}
+				hop.crossDomain(crossedDomain);
+				crossedDomain = null;
+				
+			} else if (nGS.hasAttribute(ATTRIBUTEKEY_DOMAIN)) {
+				crossedDomain = (Domain) nGS.getAttribute(ATTRIBUTEKEY_DOMAIN);
+
 			}
 		}
-		
+
 		// print
 		// System.out.println("\t --> " + le.size() + " edges.\n");
 		// Iterator<Hop> i = set.iterator();

@@ -30,7 +30,7 @@ public class AgentFactoryUtil {
 	 *             if resource not plugged
 	 */
 	protected static void settingConfigurationOptions(
-			DietResourceManaged agent, String agentType)
+			DietResourceManaged<? extends Software> agent, String agentType)
 			throws DietResourceCreationException {
 		if (agent.getPluggedOn() == null) {
 			throw new DietResourceCreationException(agent
@@ -72,7 +72,7 @@ public class AgentFactoryUtil {
 	 * 
 	 */
 	protected static void settingRunningCommand(final OmniNames omniName,
-			final SoftwareManager softManaged) {
+			final SoftwareManager<? extends Software> softManaged) {
 		String command = "";
 		String scratchDir = softManaged.getPluggedOn().getScratch()
 				.getDir();

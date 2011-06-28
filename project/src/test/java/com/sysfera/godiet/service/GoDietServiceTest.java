@@ -25,8 +25,12 @@ import com.sysfera.godiet.exceptions.remote.IncubateException;
 import com.sysfera.godiet.exceptions.remote.LaunchException;
 import com.sysfera.godiet.exceptions.remote.PrepareException;
 import com.sysfera.godiet.managers.DietManager;
+import com.sysfera.godiet.model.DietResourceManaged;
 import com.sysfera.godiet.model.OmniNamesManaged;
-import com.sysfera.godiet.remote.RemoteAccess;
+import com.sysfera.godiet.model.generated.Forwarder;
+import com.sysfera.godiet.model.generated.LocalAgent;
+import com.sysfera.godiet.model.generated.MasterAgent;
+import com.sysfera.godiet.model.generated.Sed;
 import com.sysfera.godiet.services.GoDietService;
 import com.sysfera.godiet.services.PlatformController;
 
@@ -39,10 +43,11 @@ public class GoDietServiceTest {
 	private Logger log = LoggerFactory.getLogger(getClass());
 	@Autowired
 	private GoDietService godiet;
-	@Autowired
-	RemoteAccess remoteAccess;
 
+	@Autowired
 	private PlatformController platformController;
+
+	@Autowired
 	private DietManager dietModel;
 
 	@Before
@@ -60,7 +65,7 @@ public class GoDietServiceTest {
 
 			}
 			{
-				String platformTestCase = "infrastructure/testbed-platform.xml";
+				String platformTestCase = "infrastructure/testbed.xml";
 				InputStream inputStreamPlatform = getClass().getClassLoader()
 						.getResourceAsStream(platformTestCase);
 				godiet.getXmlHelpController().registerInfrastructureElements(
@@ -74,33 +79,32 @@ public class GoDietServiceTest {
 				godiet.getXmlHelpController().registerDietElements(inputStream);
 			}
 
-			dietModel = godiet.getModel().getDietModel();
-			platformController = godiet.getPlatformController();
-
 		} catch (IOException e) {
-			log.error("",e);
+			log.error("", e);
 			Assert.fail("" + e.getMessage());
 
 		} catch (XMLParseException e) {
-			log.error("",e);
+			log.error("", e);
 			Assert.fail("" + e.getMessage());
 
 		} catch (GoDietConfigurationException e) {
-			log.error("",e);
+			log.error("", e);
 			Assert.fail("" + e.getMessage());
 
 		} catch (DietResourceValidationException e) {
-			log.error("",e);
+			log.error("", e);
 			Assert.fail("" + e.getMessage());
 
 		} catch (DietResourceCreationException e) {
-			log.error("",e);
+			log.error("", e);
 			Assert.fail("" + e.getMessage());
 
 		} catch (GraphDataException e) {
+			log.error("", e);
 			Assert.fail("" + e.getMessage());
 
 		} catch (ResourceAddException e) {
+			log.error("", e);
 			Assert.fail("" + e.getMessage());
 
 		}
@@ -108,15 +112,27 @@ public class GoDietServiceTest {
 
 	@Test
 	public void testMockIntegrationTest() {
-		Assert.assertEquals(3,dietModel.getOmninames().size());
-	//TODO	Assert.assertEquals(6,dietModel.getForwarders().size());
-		Assert.assertEquals(1,dietModel.getMasterAgents().size());
-		Assert.assertEquals(0,dietModel.getLocalAgents().size());
-		Assert.assertEquals(3,dietModel.getSeds().size());
+
+		List<DietResourceManaged<Forwarder>> forw = dietModel.getForwarders();
+		for (DietResourceManaged<Forwarder> dietResourceManaged : forw) {
+			System.err.println(dietResourceManaged.getSoftwareDescription()
+					.getId()
+					+ " on "
+					+ dietResourceManaged.getPluggedOn().getId());
+
+		}
+		Assert.assertEquals(3, dietModel.getOmninames().size());
+		Assert.assertEquals(4, dietModel.getForwarders().size());
+		Assert.assertEquals(1, dietModel.getMasterAgents().size());
+		Assert.assertEquals(0, dietModel.getLocalAgents().size());
+		Assert.assertEquals(3, dietModel.getSeds().size());
 
 		try {
-			launchServices();
+			launchOmniNames();
 			launchForwarders();
+			launchMasterAgents();
+			launchLocalAgents();
+			launchSedsAgents();
 		} catch (PrepareException e) {
 			Assert.fail(e.getMessage());
 		} catch (LaunchException e) {
@@ -126,33 +142,56 @@ public class GoDietServiceTest {
 
 	}
 
-	private void launchServices() throws PrepareException, LaunchException {
+	private void launchOmniNames() throws PrepareException, LaunchException {
 		List<OmniNamesManaged> omniNames = dietModel.getOmninames();
 		for (OmniNamesManaged dietServiceManaged : omniNames) {
-			platformController.getSoftwareController(
-					dietServiceManaged.getSoftwareDescription().getId())
-					.prepare();
-			platformController.getSoftwareController(
-					dietServiceManaged.getSoftwareDescription().getId())
-					.start();
+			dietServiceManaged.prepare();
+			dietServiceManaged.start();
 		}
 
 	}
 
-	private void launchForwarders() {
-
+	private void launchForwarders() throws PrepareException, LaunchException {
+		List<DietResourceManaged<Forwarder>> forwarders = dietModel
+				.getForwarders();
+		for (DietResourceManaged<Forwarder> dietResourceManaged : forwarders) {
+			if (dietResourceManaged.getSoftwareDescription().getType()
+					.equals("SERVER")) {
+				dietResourceManaged.prepare();
+				dietResourceManaged.start();
+			}
+		}
+		for (DietResourceManaged<Forwarder> dietResourceManaged : forwarders) {
+			if (dietResourceManaged.getSoftwareDescription().getType()
+					.equals("CLIENT")) {
+				dietResourceManaged.prepare();
+				dietResourceManaged.start();
+			}
+		}
 	}
 
-	private void launchMasterAgents() {
-
+	private void launchMasterAgents() throws PrepareException, LaunchException {
+		List<DietResourceManaged<MasterAgent>> masterAgents = dietModel.getMasterAgents();
+		for (DietResourceManaged<MasterAgent> ma : masterAgents) {
+			ma.prepare();
+			ma.start();
+		}
 	}
 
-	private void launchLocalAgents() {
-
+	private void launchLocalAgents() throws PrepareException, LaunchException {
+		List<DietResourceManaged<LocalAgent>> localAgents = dietModel.getLocalAgents();
+		for (DietResourceManaged<LocalAgent> la : localAgents) {
+			la.prepare();
+			la.start();
+		}
 	}
 
-	private void launchSedsAgents() {
-
+	private void launchSedsAgents() throws PrepareException, LaunchException {
+		List<DietResourceManaged<Sed>> seds = dietModel.getSeds();
+		for (DietResourceManaged<Sed> sed : seds) {
+			sed.prepare();
+			sed.start();
+		}
 	}
 
 }

@@ -16,7 +16,7 @@ public class SSHKeyManager {
 	Status state;
 	private String password;
 
-	public SSHKeyManager(User.Ssh.Key sshDesc) {
+	protected SSHKeyManager(User.Ssh.Key sshDesc) {
 		this.sshDesc = sshDesc;
 		
 		

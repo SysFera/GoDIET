@@ -4,7 +4,7 @@
 	xsi:schemaLocation="http://www.sysfera.com ../Diet.xsd">
 
 	<services>
-		<omniNames id="omniNames1">
+		<omniNames id="omniNames1" domain="domain1">
 			<config server="local" remoteBinary="omniNames" />
 		</omniNames>
 	</services>

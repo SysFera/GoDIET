@@ -2,11 +2,15 @@ package com.sysfera.godiet.model.factories;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.sysfera.godiet.exceptions.DietResourceCreationException;
 import com.sysfera.godiet.exceptions.remote.IncubateException;
+import com.sysfera.godiet.managers.InfrastructureManager;
 import com.sysfera.godiet.model.OmniNamesManaged;
 import com.sysfera.godiet.model.SoftwareController;
 import com.sysfera.godiet.model.SoftwareManager;
+import com.sysfera.godiet.model.generated.Domain;
 import com.sysfera.godiet.model.generated.Env;
 import com.sysfera.godiet.model.generated.ObjectFactory;
 import com.sysfera.godiet.model.generated.OmniNames;
@@ -14,6 +18,7 @@ import com.sysfera.godiet.model.generated.Options;
 import com.sysfera.godiet.model.generated.Options.Option;
 import com.sysfera.godiet.model.generated.Resource;
 import com.sysfera.godiet.model.generated.Software;
+import com.sysfera.godiet.model.generated.Ssh;
 import com.sysfera.godiet.model.generated.Var;
 import com.sysfera.godiet.model.validators.RuntimeValidator;
 
@@ -25,11 +30,13 @@ import com.sysfera.godiet.model.validators.RuntimeValidator;
  */
 public class OmniNamesFactory {
 
+	@Autowired
+	private InfrastructureManager infrastructureManager;
 	private final SoftwareController softwareController;
 	private final RuntimeValidator<OmniNamesManaged> validator;
 
-
-	public OmniNamesFactory(SoftwareController softwareController, RuntimeValidator<OmniNamesManaged> omniNamesValidator) {
+	public OmniNamesFactory(SoftwareController softwareController,
+			RuntimeValidator<OmniNamesManaged> omniNamesValidator) {
 		this.softwareController = softwareController;
 		this.validator = omniNamesValidator;
 	}
@@ -38,17 +45,37 @@ public class OmniNamesFactory {
 	 * Create a managed omninames given his description. Check validity. Set the
 	 * default option if needed (like command launch).
 	 * 
+	 * 
 	 * @param omniNamesDescription
 	 * @return The managed omniNames
 	 * @throws DietResourceCreationException
 	 *             if resource not plugged
-	 * @throws IncubateException 
+	 * @throws IncubateException
+	 * @throws DietResourceCreationException
+	 *             if the specified domain doesn't match domains on which it
+	 *             pluggedOn
 	 */
 
-	public OmniNamesManaged create(OmniNames omniNamesDescription,Resource pluggedOn)
-			throws DietResourceCreationException, IncubateException {
-		OmniNamesManaged omniNamesManaged = new OmniNamesManaged(omniNamesDescription,pluggedOn,softwareController,validator);
-
+	public OmniNamesManaged create(OmniNames omniNamesDescription,
+			Resource pluggedOn) throws DietResourceCreationException,
+			IncubateException {
+		Domain domain = infrastructureManager.getDomains(omniNamesDescription
+				.getDomain());
+		if (domain == null)
+			throw new DietResourceCreationException(
+					"Unable to find domain with the name : "
+							+ omniNamesDescription.getDomain());
+		
+		List<Domain> domainsPluggedOn = infrastructureManager.getDomains(pluggedOn);
+		if(!domainsPluggedOn.contains(domain)){
+			throw new DietResourceCreationException(
+					"The resource "+ pluggedOn.getId()+" isn't in " + omniNamesDescription.getDomain());
+		}
+		Ssh listenSsh  = infrastructureManager.getSsh(pluggedOn, domain);
+		String listenAddress = listenSsh.getServer();
+		OmniNamesManaged omniNamesManaged = new OmniNamesManaged(
+				omniNamesDescription, pluggedOn, softwareController, validator);
+		settingConfigurationOptions(omniNamesManaged,listenAddress);
 		settingOmniNamesRunningCommand(omniNamesManaged);
 		return omniNamesManaged;
 	}
@@ -63,10 +90,10 @@ public class OmniNamesFactory {
 	 * @param softManaged
 	 * 
 	 */
-	private void settingOmniNamesRunningCommand(SoftwareManager<OmniNames> softManaged) {
+	private void settingOmniNamesRunningCommand(
+			SoftwareManager<OmniNames> softManaged) {
 		String command = "";
-		String scratchDir = softManaged.getPluggedOn().getScratch()
-				.getDir();
+		String scratchDir = softManaged.getPluggedOn().getScratch().getDir();
 		// Add all environment node
 		Env env = softManaged.getPluggedOn().getEnv();
 		if (env != null) {
@@ -101,8 +128,8 @@ public class OmniNamesFactory {
 	 * @throws DietResourceCreationException
 	 *             if resource not plugged
 	 */
-	private void settingConfigurationOptions(OmniNamesManaged omniNamesManaged)
-			throws DietResourceCreationException {
+	private void settingConfigurationOptions(OmniNamesManaged omniNamesManaged,
+			String address) throws DietResourceCreationException {
 		Resource plugged = omniNamesManaged.getPluggedOn();
 		if (plugged == null) {
 			throw new DietResourceCreationException(omniNamesManaged
@@ -115,11 +142,8 @@ public class OmniNamesFactory {
 
 		Option nameService = factory.createOptionsOption();
 		nameService.setKey("InitRef");
-		nameService.setValue("NameService=corbaname::"
-			//FIXME:	+ plugged.getSsh().getServer()
-				+ ":"
-				+  omniNamesManaged.getSoftwareDescription()
-						.getPort());
+		nameService.setValue("NameService=corbaname::" + address + ":"
+				+ omniNamesManaged.getSoftwareDescription().getPort());
 		Option supportBootstrapAgent = factory.createOptionsOption();
 		supportBootstrapAgent.setKey("supportBootstrapAgent");
 		supportBootstrapAgent.setValue("1");

@@ -1,27 +1,12 @@
 package com.sysfera.godiet.command.init;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.sysfera.godiet.command.Command;
 import com.sysfera.godiet.exceptions.CommandExecutionException;
-import com.sysfera.godiet.exceptions.DietResourceCreationException;
 import com.sysfera.godiet.managers.ResourcesManager;
-import com.sysfera.godiet.model.DietResourceManaged;
-import com.sysfera.godiet.model.SoftwareManager;
 import com.sysfera.godiet.model.factories.GodietMetaFactory;
-import com.sysfera.godiet.model.generated.Config;
-import com.sysfera.godiet.model.generated.Forwarder;
-import com.sysfera.godiet.model.generated.Forwarders;
-import com.sysfera.godiet.model.generated.Software;
-
-import com.sysfera.godiet.model.generated.Link;
-import com.sysfera.godiet.model.generated.ObjectFactory;
-import com.sysfera.godiet.model.generated.OmniNames;
 
 /**
  * 
