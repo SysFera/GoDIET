@@ -43,7 +43,7 @@ public class BuildingValidator {
 	}
 
 	/**
-	 * 
+	 * Check if pluggedOn exist and if domain exist
 	 * @see BuildingValidator#validate(Software)
 	 * @param omniNames
 	 * @throws DietResourceValidationException
@@ -51,6 +51,7 @@ public class BuildingValidator {
 	public static void validate(OmniNames omniNames,DietManager dietManager)
 			throws DietResourceValidationException {
 		validate((Software) omniNames,dietManager);
+		//if(omniNames.get)
 	}
 	/**
 	 * 

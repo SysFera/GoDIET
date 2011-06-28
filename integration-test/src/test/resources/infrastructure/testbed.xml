@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<godiet:infrastructure xmlns:godiet="http://www.sysfera.com"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.sysfera.com ../Infrastructure.xsd" id="SysferaPlatform"
+	label="Sysfera infrastructure">
+	<domain id="DomainSysferaLB" />
+	<domain id="DomainEnsDMZ" />
+	<domain id="DomainTestBed" />
+	<domain id="Domain1" />
+	<domain id="Domain2" />
+	<domain id="Domain3" />
+	<domain id="CommonDomain123" />
+
+	<!-- Domain Sysfera -->
+
+	<node id="phi-laptop">
+		<ssh id="phi-laptopinterface1" domain="DomainSysferaLB" login="phi" server="192.168.1.13" />
+		<scratch dir="/tmp/scratch_runtime/" />
+	</node>
+
+	<node id="daouda-machina">
+		<ssh id="daouda-machinainterface1" domain="DomainSysferaLB" login="traore" server="192.168.1.14" />
+		<scratch dir="/tmp/scratch_runtime/" />
+	</node>
+
+	<node id="god-computer">
+		<ssh id="god-computerinterface1" domain="DomainSysferaLB" login="paco" server="192.168.1.15" />
+		<scratch dir="/tmp/scratch_runtime/" />
+	</node>
+
+	<node id="miaou">
+		<ssh id="miaouinterface1" domain="DomainSysferaLB" login="kev" server="192.168.1.16" />
+		<scratch dir="/tmp/scratch_runtime/" />
+	</node>
+
+
+	<!-- Domain ENS DMZ -->
+	<node id="graal">
+		<ssh id="graalinterface1" domain="DomainEnsDMZ" login="pmartinez"
+			server="140.77.166.19" />
+		<scratch dir="/tmp/scratch_runtime/Domain2" />
+	</node>
+
+	<!-- Domain Testbed -->
+	<node id="testbedVM">
+		<ssh id="testbedVMinterface1" domain="DomainTestBed" login="godiet"
+			server="140.77.166.19" port="40022" />
+		<ssh id="testbedVMinterface2" domain="Domain1" login="godiet" server="192.168.1.254" port="22" />
+		<scratch dir="/tmp/scratch_runtime/DomainTB" />
+	</node>
+
+
+	<!-- Domain Domain1 -->
+
+
+	<node id="Node1">
+		<ssh id="node1interface1" domain="Domain1" server="192.168.1.11" login="godiet" />
+		<ssh id="node1interface2" domain="CommonDomain123" server="192.169.1.1" login="godiet" />
+
+		<env>
+			<var name="PATH"
+				value="/home/godiet/GRAAL/build/bin:/home/godiet/GRAAL/build/bin/examples/dmat_manips/:$PATH" />
+			<var name="LD_LIBRARY_PATH" value="/home/godiet/GRAAL/build/lib" />
+		</env>
+		<scratch dir="/tmp/scratch_runtime/Domain1" />
+	</node>
+
+
+
+	<!-- Domain Domain2 -->
+
+
+	<node id="Node2">
+		<ssh id="node2interface1" domain="Domain2" server="192.168.2.11" login="godiet" />
+		<env>
+			<var name="PATH"
+				value="/home/godiet/GRAAL/build/bin:/home/godiet/GRAAL/build/bin/examples/dmat_manips/:$PATH" />
+			<var name="LD_LIBRARY_PATH" value="/home/godiet/GRAAL/build/lib" />
+		</env>
+		<scratch dir="/tmp/scratch_runtime/Domain2" />
+	</node>
+	<node id="Node3">
+		<ssh id="node3interface1" domain="Domain2" server="192.168.2.12" login="godiet" />
+		<ssh id="node3interface2" domain="CommonDomain123" server="192.169.1.2" login="godiet" />
+		<env>
+			<var name="PATH"
+				value="/home/godiet/GRAAL/build/bin:/home/godiet/GRAAL/build/bin/examples/dmat_manips/:$PATH" />
+			<var name="LD_LIBRARY_PATH" value="/home/godiet/GRAAL/build/lib" />
+		</env>
+		<scratch dir="/tmp/scratch_runtime/Domain2" />
+	</node>
+
+	<!-- Domain Domain3 -->
+
+	<node id="Node4">
+		<ssh id="node4interface1" domain="Domain3" server="192.168.3.11" login="godiet" />
+		<env>
+			<var name="PATH"
+				value="/home/godiet/GRAAL/build/bin:/home/godiet/GRAAL/build/bin/examples/dmat_manips/:$PATH" />
+			<var name="LD_LIBRARY_PATH" value="/home/godiet/GRAAL/build/lib" />
+		</env>
+		<scratch dir="/tmp/scratch_runtime/Domain3" />
+	</node>
+
+
+	<node id="Node5">
+		<ssh id="node5interface1" domain="Domain3" server="192.168.3.12" login="godiet" />
+		<ssh id="node5interface2" domain="CommonDomain123" server="192.169.1.3" login="godiet" />
+
+		<env>
+			<var name="PATH"
+				value="/home/godiet/GRAAL/build/bin:/home/godiet/GRAAL/build/bin/examples/dmat_manips/:$PATH" />
+			<var name="LD_LIBRARY_PATH" value="/home/godiet/GRAAL/build/lib" />
+		</env>
+		<scratch dir="/tmp/scratch_runtime/Domain3" />
+
+	</node>
+
+	<link fromDomain="DomainSysferaLB" to="graal" accessref="graalinterface1"></link>
+	<link from="graal" to="testbedVM" accessref="testbedVMinterface1" />
+
+</godiet:infrastructure>

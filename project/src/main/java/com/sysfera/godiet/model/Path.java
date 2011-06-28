@@ -3,6 +3,7 @@ package com.sysfera.godiet.model;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 
+import com.sysfera.godiet.model.generated.Domain;
 import com.sysfera.godiet.model.generated.Node;
 import com.sysfera.godiet.model.generated.Ssh;
 
@@ -21,6 +22,9 @@ public class Path {
 
 		private Node destination;
 		private Ssh link;
+		private Domain crossedDomain = null;
+
+
 
 		public Node getDestination() {
 			return destination;
@@ -45,6 +49,17 @@ public class Path {
 			String s = null;
 				s = "Ssh : " + getLink().getId() + " , " + "Node : " + getDestination().getId();				
 			return s;
+		}
+
+		public void crossDomain(Domain	domain) {
+			this.crossedDomain  = domain;
+		}
+		/**
+		 * 
+		 * @return the crossed domain. Null if cross no domain
+		 */
+		public Domain getCrossedDomain() {
+			return crossedDomain;
 		}
 	}
 

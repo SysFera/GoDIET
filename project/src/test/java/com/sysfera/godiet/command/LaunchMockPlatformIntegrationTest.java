@@ -11,6 +11,7 @@ import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.support.ManagedArray;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -41,6 +42,7 @@ import com.sysfera.godiet.model.validators.OmniNamesRuntimeValidatorImpl;
 import com.sysfera.godiet.model.validators.SedRuntimeValidatorImpl;
 import com.sysfera.godiet.remote.RemoteAccess;
 import com.sysfera.godiet.remote.RemoteConfigurationHelper;
+import com.sysfera.godiet.services.UserController;
 import com.sysfera.godiet.utils.xml.XmlScannerJaxbImpl;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -56,6 +58,8 @@ public class LaunchMockPlatformIntegrationTest {
 	@Autowired
 	RemoteAccess remoteAccess;
 
+	@Autowired
+	private UserController userController;
 	@Autowired
 	private SoftwareController softwareController;
 	@Before
@@ -115,11 +119,8 @@ public class LaunchMockPlatformIntegrationTest {
 		try {
 			User.Ssh.Key sshDesc = new User.Ssh.Key();
 			sshDesc.setPath(urlFile.getPath());
-			SSHKeyManager sshkey = new SSHKeyManager(sshDesc);
-			sshkey.setPassword("godiet");
-			this.rm.getUserManager().addManagedSSHKey(
-					new SSHKeyManager(sshDesc));
-			remoteAccess.addItentity(sshkey);
+		
+			SSHKeyManager keyManaged = this.userController.addSSHKey(sshDesc);
 		} catch (AddAuthentificationException e) {
 			Assert.fail("Unable to load testbed key");
 		}

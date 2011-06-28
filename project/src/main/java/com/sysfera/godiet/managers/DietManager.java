@@ -7,6 +7,7 @@ import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.sysfera.godiet.exceptions.DietResourceCreationException;
@@ -22,6 +23,7 @@ import com.sysfera.godiet.model.generated.OmniNames;
 import com.sysfera.godiet.model.generated.Sed;
 import com.sysfera.godiet.model.generated.Software;
 import com.sysfera.godiet.model.generated.Ssh;
+import com.sysfera.godiet.model.observer.PlatformObserver;
 
 /**
  * Diet platform manager.
@@ -30,7 +32,7 @@ import com.sysfera.godiet.model.generated.Ssh;
  * 
  */
 @Component
-public class DietManager {
+public class DietManager implements PlatformObservable{
 	private Logger log = LoggerFactory.getLogger(getClass());
 
 	private final List<DietResourceManaged<MasterAgent>> masterAgents;
@@ -38,13 +40,14 @@ public class DietManager {
 	private final List<DietResourceManaged<Sed>> seds;
 	private final List<OmniNamesManaged> omninames;
 	private final List<DietResourceManaged<Forwarder>> forwaders;
-	private final DomainsManager domainManager;
+	@Autowired
+	private  DomainsManager domainManager;
 
 	// Transient list to store all register's resourceId
 	private final Set<String> dietResourceId;
 
+	private final Set<PlatformObserver> observers;
 	public DietManager() {
-		this.domainManager = new DomainsManager();
 		this.masterAgents = new ArrayList<DietResourceManaged<MasterAgent>>();
 		this.localAgents = new ArrayList<DietResourceManaged<LocalAgent>>();
 		this.seds = new ArrayList<DietResourceManaged<Sed>>();
@@ -52,6 +55,7 @@ public class DietManager {
 		this.forwaders = new ArrayList<DietResourceManaged<Forwarder>>();
 
 		this.dietResourceId = new HashSet<String>();
+		this.observers = new HashSet<PlatformObserver>();
 	}
 
 	/**
@@ -150,6 +154,7 @@ public class DietManager {
 		// }
 		this.forwaders.add(forwarderClient);
 		this.forwaders.add(forwarderServer);
+		this.domainManager.addForwarders(forwarderClient, forwarderServer);
 	}
 
 	/**
@@ -236,5 +241,20 @@ public class DietManager {
 		}
 		log.error("Unable to found omniNames");
 		return null;
+	}
+
+	@Override
+	public void register(PlatformObserver observer) {
+		if(observers.contains(observer))
+		{
+			log.warn("Try to register an already registred observer"); 
+		}
+		observers.add(observer);
+	}
+
+	@Override
+	public void unregister(PlatformObserver observer) {
+		observers.remove(observer);
+		
 	}
 }

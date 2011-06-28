@@ -12,11 +12,11 @@ import com.sysfera.godiet.model.SoftwareManager;
 import com.sysfera.godiet.model.generated.Env;
 import com.sysfera.godiet.model.generated.Forwarder;
 import com.sysfera.godiet.model.generated.Forwarders;
-import com.sysfera.godiet.model.generated.Node;
 import com.sysfera.godiet.model.generated.ObjectFactory;
 import com.sysfera.godiet.model.generated.OmniNames;
 import com.sysfera.godiet.model.generated.Options;
 import com.sysfera.godiet.model.generated.Options.Option;
+import com.sysfera.godiet.model.generated.Resource;
 import com.sysfera.godiet.model.generated.Var;
 import com.sysfera.godiet.model.validators.RuntimeValidator;
 
@@ -63,8 +63,8 @@ public class ForwardersFactory {
 	 */
 
 	public DietResourceManaged<Forwarder>[] create(Forwarders forwarders,
-			Node clientPluggedOn, OmniNamesManaged omniNamesClient,
-			Node serverPluggedOn, OmniNamesManaged omniNamesServer) throws IncubateException, DietResourceCreationException
+			Resource clientPluggedOn, OmniNamesManaged omniNamesClient,
+			Resource serverPluggedOn, OmniNamesManaged omniNamesServer) throws IncubateException, DietResourceCreationException
 			 {
 
 		@SuppressWarnings("unchecked")
@@ -151,8 +151,8 @@ public class ForwardersFactory {
 	 * @param softManaged
 	 * @return
 	 */
-	private void buildForwarderCommand(SoftwareManager managedClient,
-			SoftwareManager managedServer, OmniNames omniNamesClient,
+	private void buildForwarderCommand(SoftwareManager<Forwarder> managedClient,
+			SoftwareManager<Forwarder> managedServer, OmniNames omniNamesClient,
 			OmniNames omniNamesServer) {
 		buildForwarderServerCommand(managedClient, managedServer,
 				omniNamesClient, omniNamesServer);
@@ -171,8 +171,8 @@ public class ForwardersFactory {
 	 * @param managedClient
 	 * @param managedServer
 	 */
-	private void buildForwarderServerCommand(SoftwareManager managedClient,
-			SoftwareManager managedServer, OmniNames omniNamesClient,
+	private void buildForwarderServerCommand(SoftwareManager<Forwarder> managedClient,
+			SoftwareManager<Forwarder> managedServer, OmniNames omniNamesClient,
 			OmniNames omniNamesServer) {
 		String command = "";
 		String scratchDir = managedServer.getPluggedOn().getScratch()

@@ -1,12 +1,14 @@
 package com.sysfera.godiet.managers;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.sysfera.godiet.exceptions.ResourceAddException;
@@ -42,15 +44,13 @@ public class InfrastructureManager {
 	private final List<Cluster> clusters;
 	private final List<Fronted> fronteds;
 	private final List<Link> links;
-	private final List<Domain> domains;
 	// FIXME:
 	private final TopologyManager topologyManager;
-	private final DomainsManager domainManager;
+	@Autowired
+	private DomainsManager domainManager;
 
 	public InfrastructureManager() {
-		this.domainManager = new DomainsManager();
 		this.topologyManager = new TopologyManagerGSImpl();
-		this.domains = new ArrayList<Domain>();
 		this.nodes = new ArrayList<Node>();
 		this.clusters = new ArrayList<Cluster>();
 		this.fronteds = new ArrayList<Fronted>();
@@ -90,8 +90,8 @@ public class InfrastructureManager {
 	/**
 	 * @return the domains
 	 */
-	public List<Domain> getDomains() {
-		return domains;
+	public Collection<Domain> getDomains() {
+		return domainManager.getDomains();
 	}
 
 	public void addLinks(List<Link> links) throws GraphDataException {
@@ -129,7 +129,7 @@ public class InfrastructureManager {
 			topologyManager.addDomain(domain);
 		}
 
-		this.domains.addAll(domains);
+		this.domainManager.addAll(domains);
 
 	}
 
@@ -179,6 +179,29 @@ public class InfrastructureManager {
 		}
 
 		return domainsCovered;
+	}
+
+	public Domain getDomains(String domain) {
+		return domainManager.getDomains(domain);
+	}
+
+	/**
+	 * Return the Ssh of resource corresponding to the given domain
+	 * 
+	 * @param resource
+	 *            the resource looked.
+	 * @param domain
+	 *            the domain
+	 * @return the Ssh or null if doesn't exist
+	 */
+	public Ssh getSsh(Resource resource, Domain domain) {
+		List<Ssh> sshs = resource.getSsh();
+		for (Ssh ssh : sshs) {
+			if (ssh.getDomain().equals(domain)) {
+				return ssh;
+			}
+		}
+		return null;
 	}
 
 	// public Domain getDomain(String server) {

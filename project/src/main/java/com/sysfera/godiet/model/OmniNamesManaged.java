@@ -11,6 +11,7 @@ import com.sysfera.godiet.model.generated.Domain;
 import com.sysfera.godiet.model.generated.Resource;
 import com.sysfera.godiet.model.validators.RuntimeValidator;
 import com.sysfera.godiet.model.generated.OmniNames;
+
 /**
  * Use to manage and control all DIET services (OmniNames ...)
  * 
@@ -19,11 +20,11 @@ import com.sysfera.godiet.model.generated.OmniNames;
  */
 public class OmniNamesManaged extends SoftwareManager<OmniNames> {
 
-
 	private List<Domain> domains = new ArrayList<Domain>();
 
 	/**
 	 * Return the list of domains covered by this OmninNames
+	 * 
 	 * @return a list of domains
 	 */
 	public List<Domain> getDomains() {
@@ -31,8 +32,11 @@ public class OmniNamesManaged extends SoftwareManager<OmniNames> {
 	}
 
 
-	public OmniNamesManaged(OmniNames description,Resource pluggedOn,
-			SoftwareController softwareController, RuntimeValidator<OmniNamesManaged> validator) throws IncubateException {
+
+	public OmniNamesManaged(OmniNames description, Resource pluggedOn,
+			SoftwareController softwareController,
+			RuntimeValidator<OmniNamesManaged> validator)
+			throws IncubateException {
 		super(description, pluggedOn, softwareController, validator);
 	}
 }

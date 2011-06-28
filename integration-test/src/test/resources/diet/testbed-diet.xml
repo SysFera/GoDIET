@@ -1,21 +1,43 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<godiet:diet xmlns:godiet="http://www.sysfera.com"
+<godiet:dietPlatform xmlns:godiet="http://www.sysfera.com"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.sysfera.com ../Diet.xsd">
 
-	<dietServices>
-		<omniNames id="omniNames1">
+	<services>
+
+		<omniNames id="omniNamesDomain1" domain="Domain1">
 			<config server="Node1" remoteBinary="omniNames" />
 		</omniNames>
-		<omniNames id="omniNames2">
+		<omniNames id="omniNamesDomain2" domain="Domain2">
 			<config server="Node2" remoteBinary="omniNames" />
 		</omniNames>
-		<omniNames id="omniNames3">
+		<omniNames id="omniNamesDomain3" domain="Domain3">
 			<config server="Node4" remoteBinary="omniNames" />
 		</omniNames>
-	</dietServices>
+		<!-- Inter-connect Domain1 and Domain2 -->
+		<forwarders>
+			<client id="client1" type="CLIENT">
+				<config server="Node1" remoteBinary="dietForwarder" />
+			</client>
+			<server id="server1" type="SERVER">
+				<config server="Node3" remoteBinary="dietForwarder" />
+			</server>
+		</forwarders>
+		<!-- Inter-connect Domain1 and Domain3 -->
+		<forwarders>
+			<client id="client2" type="CLIENT">
+				<config server="Node1" remoteBinary="dietForwarder" />
+			</client>
+			<server id="server2" type="SERVER">
+				<config server="Node5" remoteBinary="dietForwarder" />
+			</server>
+		</forwarders>
 
-	<dietInfrastructure>
+	</services>
+
+	<hierarchy>
+
+
 		<masterAgent id="MA1">
 			<config server="Node1" remoteBinary="dietAgent" />
 
@@ -25,6 +47,23 @@
 			</sed>
 			<sed id="sed2">
 				<config server="Node3" remoteBinary="dmat_manips_server" />
+				<cfgOptions>
+					<option key="batchName" value="eucalyptus" />
+					<option key="pathToNFS" value="/tmp" />
+					<option key="cloudURL" value="https://eu-west-1.ec2.amazonaws.com" />
+					<option key="emiName" value="ami-6e31041a" />
+					<option key="vmType" value="t1.micro" />
+					<option key="keyName" value="Ben" />
+					<option key="pathToSSHKey" value="/Users/bdepardo/SysFera/SC10/EC2/Ben.pem" />
+					<option key="instantiateVMs" value="1" />
+					<option key="vmMinCount" value="1" />
+					<option key="vmMaxCount" value="1" />
+					<option key="pathToCert"
+						value="/Users/bdepardo/SysFera/SC10/EC2/cert-2GFVV4EBDSYWYSIVXTZIDBLYZTAOX4KW.pem" />
+					<option key="pathToPK"
+						value="/Users/bdepardo/SysFera/SC10/EC2/pk-2GFVV4EBDSYWYSIVXTZIDBLYZTAOX4KW.pem" />
+					<option key="userName" value="ec2-user" />
+				</cfgOptions>
 				<parameters string="T" />
 			</sed>
 			<sed id="sed3">
@@ -32,5 +71,5 @@
 				<parameters string="T" />
 			</sed>
 		</masterAgent>
-	</dietInfrastructure>
-</godiet:diet>
+	</hierarchy>
+</godiet:dietPlatform>

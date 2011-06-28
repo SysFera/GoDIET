@@ -13,7 +13,6 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
  * 
  * 				The Omninames description. You need to have one
@@ -29,6 +28,7 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;complexContent>
  *     &lt;extension base="{http://www.sysfera.com}software">
  *       &lt;attribute name="port" type="{http://www.sysfera.com}portType" default="2809" />
+ *       &lt;attribute name="domain" use="required" type="{http://www.w3.org/2001/XMLSchema}string" />
  *     &lt;/extension>
  *   &lt;/complexContent>
  * &lt;/complexType>
@@ -44,6 +44,8 @@ public class OmniNames
 
     @XmlAttribute
     protected Integer port;
+    @XmlAttribute(required = true)
+    protected String domain;
 
     /**
      * Gets the value of the port property.
@@ -72,5 +74,30 @@ public class OmniNames
     public void setPort(Integer value) {
         this.port = value;
     }
+
+    /**
+     * Gets the value of the domain property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getDomain() {
+        return domain;
+    }
+
+    /**
+     * Sets the value of the domain property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setDomain(String value) {
+        this.domain = value;
+    }
+
 
 }

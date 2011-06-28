@@ -9,7 +9,6 @@ import com.sysfera.godiet.model.generated.Forwarder;
 import com.sysfera.godiet.model.generated.Forwarders;
 import com.sysfera.godiet.model.generated.LocalAgent;
 import com.sysfera.godiet.model.generated.MasterAgent;
-import com.sysfera.godiet.model.generated.Node;
 import com.sysfera.godiet.model.generated.OmniNames;
 import com.sysfera.godiet.model.generated.Resource;
 import com.sysfera.godiet.model.generated.Sed;
@@ -45,8 +44,8 @@ public class GodietMetaFactory {
 
 
 	public DietResourceManaged<Forwarder>[] create(Forwarders forwarders,
-			Node clientPluggedOn, OmniNamesManaged omniNamesClient,
-			Node serverPluggedOn, OmniNamesManaged omniNamesServer)
+			Resource clientPluggedOn, OmniNamesManaged omniNamesClient,
+			Resource serverPluggedOn, OmniNamesManaged omniNamesServer)
 			throws DietResourceCreationException, IncubateException {
 		return forwardersFactory.create(forwarders, clientPluggedOn, omniNamesClient, serverPluggedOn,
 				omniNamesServer);

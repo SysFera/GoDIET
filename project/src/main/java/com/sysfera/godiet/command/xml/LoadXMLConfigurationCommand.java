@@ -11,6 +11,7 @@ import com.sysfera.godiet.command.Command;
 import com.sysfera.godiet.exceptions.CommandExecutionException;
 import com.sysfera.godiet.exceptions.XMLParseException;
 import com.sysfera.godiet.exceptions.generics.GoDietConfigurationException;
+import com.sysfera.godiet.exceptions.remote.AddAuthentificationException;
 import com.sysfera.godiet.managers.ResourcesManager;
 import com.sysfera.godiet.managers.user.SSHKeyManager;
 import com.sysfera.godiet.managers.user.UserManager;
@@ -71,8 +72,12 @@ public class LoadXMLConfigurationCommand implements Command {
 				&& goDietConfiguration.getUser().getSsh().getKey() != null) {
 			List<Key> sshKeys = goDietConfiguration.getUser().getSsh().getKey();
 			for (Key key : sshKeys) {
-				SSHKeyManager managedKey = new SSHKeyManager(key);
-				um.addManagedSSHKey(managedKey);
+				try {
+					um.registerNewKey(key);
+				} catch (AddAuthentificationException e) {
+					log.error("Unable to add " + key.getPathPub() + " ssh key");
+					log.debug("Stacktrace : ",e);
+				}
 			}
 		}
 	}
