@@ -91,7 +91,7 @@ public class ChannelManagerJsch {
 			// Create the session with the last Node
 			Ssh last = null;
 			try {
-				last = (Ssh) hops.toArray()[hops.size() - 1];
+				last = ((Hop) hops.toArray()[hops.size() - 1]).getLink();
 			} catch (ClassCastException e) {
 				// TODO: Remove when the model will be stable
 				throw new RemoteAccessException(
@@ -175,7 +175,7 @@ public class ChannelManagerJsch {
 		}
 		NCProxy lastProxy = null;
 		// i = 0 is the source. Don't create a proxy
-		for (int i = 1; i <= resources.length - 2; i++) {
+		for (int i = 0; i <resources.length; i++) {
 			
 			Hop hop = resources[i];
 

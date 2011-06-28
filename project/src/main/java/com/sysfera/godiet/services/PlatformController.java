@@ -6,6 +6,7 @@ import com.sysfera.godiet.exceptions.generics.GoDietServiceException;
 import com.sysfera.godiet.exceptions.generics.StartException;
 import com.sysfera.godiet.exceptions.remote.IncubateException;
 import com.sysfera.godiet.exceptions.remote.StopException;
+import com.sysfera.godiet.model.generated.Forwarder;
 import com.sysfera.godiet.model.generated.LocalAgent;
 import com.sysfera.godiet.model.generated.MasterAgent;
 import com.sysfera.godiet.model.generated.OmniNames;
@@ -21,6 +22,17 @@ public interface PlatformController {
 			throws DietResourceCreationException,
 			DietResourceValidationException, IncubateException;
 
+	/**
+	 * Create forwarders if need. Listen add diet components event and create
+	 * forwarders if need.
+	 * 
+	 * @param value
+	 */
+	public abstract void autoLoadForwarders(boolean value);
+
+	public abstract void registerForwarders(Forwarder client, Forwarder server)
+			throws DietResourceCreationException, IncubateException;
+
 	public abstract void registerLocalAgent(LocalAgent localAgent)
 			throws DietResourceCreationException,
 			DietResourceValidationException, IncubateException;
@@ -32,15 +44,17 @@ public interface PlatformController {
 	public abstract void registerOmniNames(OmniNames omniNames)
 			throws DietResourceCreationException,
 			DietResourceValidationException, IncubateException;
+
 	/**
 	 * TODO: Currently only stop. Not useful. Destroy ? ORM ...
+	 * 
 	 * @param software
-	 * @throws GoDietServiceException. If software isn't managed by this resources manager.
+	 * @throws GoDietServiceException. If
+	 *             software isn't managed by this resources manager.
 	 */
-	public abstract void unregisterSoftware(Software software) throws GoDietServiceException,StopException;
-	
+	public abstract void unregisterSoftware(Software software)
+			throws GoDietServiceException, StopException;
+
 	public abstract ResourceState getSoftwareController(String id);
 
-	//TODO autoload on/off forwarders
-	//TODO control platform consistency
 }

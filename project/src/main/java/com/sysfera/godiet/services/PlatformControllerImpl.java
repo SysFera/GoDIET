@@ -21,6 +21,8 @@ import com.sysfera.godiet.model.OmniNamesManaged;
 import com.sysfera.godiet.model.SoftwareManager;
 import com.sysfera.godiet.model.factories.GodietMetaFactory;
 import com.sysfera.godiet.model.generated.Domain;
+import com.sysfera.godiet.model.generated.Forwarder;
+import com.sysfera.godiet.model.generated.Forwarders;
 import com.sysfera.godiet.model.generated.LocalAgent;
 import com.sysfera.godiet.model.generated.MasterAgent;
 import com.sysfera.godiet.model.generated.OmniNames;
@@ -54,6 +56,7 @@ public final class PlatformControllerImpl implements PlatformController {
 
 	@Autowired
 	private RemoteConfigurationHelper softwareController;
+
 	@Override
 	@PostConstruct
 	public void start() throws StartException {
@@ -62,7 +65,7 @@ public final class PlatformControllerImpl implements PlatformController {
 			throw new StartException(getClass().getName(), "0",
 					"Unable to init platform", null);
 		}
-		
+
 		godietMetaFactory = new GodietMetaFactory(softwareController,
 				new ForwarderRuntimeValidatorImpl(dietManager),
 				new MasterAgentRuntimeValidatorImpl(dietManager),
@@ -83,7 +86,7 @@ public final class PlatformControllerImpl implements PlatformController {
 			throw new DietResourceCreationException(
 					"Unable to find the physical resource "
 							+ masterAgent.getConfig().getServer());
-		OmniNamesManaged omniNames = getOmniNames( pluggedOn);
+		OmniNamesManaged omniNames = getOmniNames(pluggedOn);
 		if (omniNames == null)
 			throw new DietResourceCreationException("Unable to find omninames "
 					+ masterAgent.getConfig().getServer());
@@ -147,11 +150,11 @@ public final class PlatformControllerImpl implements PlatformController {
 					"Unable to find a registered domain for omninames with name: "
 							+ omniNames.getId());
 
-		OmniNamesManaged omniNameManaged = godietMetaFactory
-				.create(omniNames, pluggedOn);
-		
-			omniNameManaged.getDomains().addAll(domains);
-		
+		OmniNamesManaged omniNameManaged = godietMetaFactory.create(omniNames,
+				pluggedOn);
+
+		omniNameManaged.getDomains().addAll(domains);
+
 		dietManager.addOmniName(omniNameManaged);
 	}
 
@@ -173,8 +176,8 @@ public final class PlatformControllerImpl implements PlatformController {
 	public void unregisterSoftware(Software software)
 			throws GoDietServiceException, StopException {
 
-		SoftwareManager softManaged = dietManager.getManagedSoftware(software
-				.getId());
+		SoftwareManager<? extends Software> softManaged = dietManager
+				.getManagedSoftware(software.getId());
 		if (softManaged == null)
 			throw new GoDietServiceException("Unable to find :"
 					+ software.getId());
@@ -182,21 +185,62 @@ public final class PlatformControllerImpl implements PlatformController {
 
 	}
 
-	private OmniNamesManaged getOmniNames(Resource resource) throws DietResourceCreationException {
-		List<OmniNamesManaged> omniNamesManaged = dietManager
-				.getOmninames();
+	private OmniNamesManaged getOmniNames(Resource resource)
+			throws DietResourceCreationException {
+		List<OmniNamesManaged> omniNamesManaged = dietManager.getOmninames();
 		List<Domain> domains = infrastructureManager.getDomains(resource);
 
 		for (Domain domain : domains) {
 			for (OmniNamesManaged omniNameManaged : omniNamesManaged) {
-				if (domain == omniNameManaged.getDomains()) {
+				if (omniNameManaged.getDomains().contains(domain)) {
 					return omniNameManaged;
 				}
 			}
 		}
 		throw new DietResourceCreationException(
-				"Unable to find the omniNames for resource"
-						+ resource.getId());
+				"Unable to find the omniNames for resource " + resource.getId());
+	}
+
+	@Override
+	public void autoLoadForwarders(boolean value) {
+
+	}
+
+	@Override
+	public void registerForwarders(Forwarder client, Forwarder server)
+			throws DietResourceCreationException, IncubateException {
+
+		Resource clietnPluggedOn = infrastructureManager.getResource(client
+				.getConfig().getServer());
+		if (clietnPluggedOn == null)
+			throw new DietResourceCreationException(
+					"Unable to find the physical resource "
+							+ client.getConfig().getServer());
+		OmniNamesManaged omniNamesClient = getOmniNames(clietnPluggedOn);
+		if (omniNamesClient == null)
+			throw new DietResourceCreationException(
+					"Unable to find omninames for"
+							+ client.getConfig().getServer());
+
+		Resource serverPluggedOn = infrastructureManager.getResource(server
+				.getConfig().getServer());
+		if (serverPluggedOn == null)
+			throw new DietResourceCreationException(
+					"Unable to find the physical resource "
+							+ server.getConfig().getServer());
+		OmniNamesManaged omniNamesServer = getOmniNames(serverPluggedOn);
+		if (omniNamesServer == null)
+			throw new DietResourceCreationException(
+					"Unable to find omninames for"
+							+ server.getConfig().getServer());
+		Forwarders forwarders = new Forwarders();
+		forwarders.setClient(client);
+		forwarders.setServer(server);
+		DietResourceManaged<Forwarder>[] forwardersManaged = godietMetaFactory
+				.create(forwarders, clietnPluggedOn, omniNamesClient,
+						serverPluggedOn, omniNamesServer);
+		dietManager.addForwarders(forwardersManaged[0], forwardersManaged[1]);
+
 	}
 
 }
