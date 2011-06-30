@@ -1,6 +1,8 @@
 package com.sysfera.godiet.command;
 
+import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 
 import junit.framework.Assert;
 
@@ -14,98 +16,102 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.sysfera.godiet.command.init.util.XMLLoadingHelper;
-import com.sysfera.godiet.command.prepare.PrepareServicesCommand;
-import com.sysfera.godiet.command.start.StartServicesCommand;
-import com.sysfera.godiet.command.xml.LoadXMLDietCommand;
-import com.sysfera.godiet.exceptions.CommandExecutionException;
+import com.sysfera.godiet.exceptions.DietResourceCreationException;
+import com.sysfera.godiet.exceptions.ResourceAddException;
+import com.sysfera.godiet.exceptions.XMLParseException;
+import com.sysfera.godiet.exceptions.generics.DietResourceValidationException;
+import com.sysfera.godiet.exceptions.generics.GoDietConfigurationException;
+import com.sysfera.godiet.exceptions.graph.GraphDataException;
+import com.sysfera.godiet.exceptions.remote.IncubateException;
+import com.sysfera.godiet.exceptions.remote.LaunchException;
 import com.sysfera.godiet.managers.DietManager;
-import com.sysfera.godiet.managers.ResourcesManager;
-import com.sysfera.godiet.model.SoftwareController;
-import com.sysfera.godiet.model.factories.GodietMetaFactory;
-import com.sysfera.godiet.model.validators.ForwarderRuntimeValidatorImpl;
-import com.sysfera.godiet.model.validators.LocalAgentRuntimeValidatorImpl;
-import com.sysfera.godiet.model.validators.MasterAgentRuntimeValidatorImpl;
-import com.sysfera.godiet.model.validators.OmniNamesRuntimeValidatorImpl;
-import com.sysfera.godiet.model.validators.SedRuntimeValidatorImpl;
-import com.sysfera.godiet.remote.RemoteAccess;
-import com.sysfera.godiet.remote.RemoteConfigurationHelper;
-import com.sysfera.godiet.utils.xml.XmlScannerJaxbImpl;
+import com.sysfera.godiet.model.OmniNamesManaged;
+import com.sysfera.godiet.services.GoDietService;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @DirtiesContext
 @ContextConfiguration(locations = { "/spring/spring-config.xml",
-		"/spring/ssh-context.xml" })
+		"/spring/ssh-context.xml", "/spring/godiet-service.xml" })
 public class CommandLaunchServicesTest {
 
 	private Logger log = LoggerFactory.getLogger(getClass());
 	@Autowired
-	private ResourcesManager rm;
-	@Autowired
-	RemoteAccess remoteAccess;
-	@Autowired
-	SoftwareController softwareController;
-	@Before
-	public void init() {
+	private GoDietService godiet;
 
+	@Autowired
+	private DietManager dietModel;
+
+	@Before
+	public void init() throws IncubateException {
 		try {
-			// Loading configuration
 			{
+				// Loading configuration
 				String configurationFile = "configuration/configuration.xml";
 
 				InputStream inputStream = getClass().getClassLoader()
 						.getResourceAsStream(configurationFile);
-				XMLLoadingHelper.initConfig(rm, inputStream);
+
+				godiet.getXmlHelpController().registerConfigurationFile(
+						inputStream);
 			}
 			{
+				// Load infrastructure
 				String platformTestCase = "infrastructure/testbed.xml";
 				InputStream inputStreamPlatform = getClass().getClassLoader()
 						.getResourceAsStream(platformTestCase);
-				XMLLoadingHelper.initInfrastructure(rm, inputStreamPlatform);
+				godiet.getXmlHelpController().registerInfrastructureElements(
+						inputStreamPlatform);
 			}
 			{
-				// Init RM
+				// Load Diet scenarii
 				String testCaseFile = "diet/testbed-diet.xml";
 				InputStream inputStream = getClass().getClassLoader()
 						.getResourceAsStream(testCaseFile);
-				XmlScannerJaxbImpl scanner = new XmlScannerJaxbImpl();
-				LoadXMLDietCommand xmlLoadingCommand = new LoadXMLDietCommand();
-				xmlLoadingCommand.setRm(rm);
-				xmlLoadingCommand.setXmlInput(inputStream);
-				xmlLoadingCommand.setXmlParser(scanner);
-
-				DietManager dietModel = rm.getDietModel();
-				GodietMetaFactory godietAbstractFactory = new GodietMetaFactory(
-						softwareController, new ForwarderRuntimeValidatorImpl(
-								dietModel),
-						new MasterAgentRuntimeValidatorImpl(dietModel),
-						new LocalAgentRuntimeValidatorImpl(dietModel),
-						new SedRuntimeValidatorImpl(dietModel),
-						new OmniNamesRuntimeValidatorImpl(dietModel));
-
-				xmlLoadingCommand.setAbstractFactory(godietAbstractFactory);
-
-				xmlLoadingCommand.execute();
-
+				godiet.getXmlHelpController().registerDietElements(inputStream);
 			}
-		} catch (CommandExecutionException e) {
-			log.error("Test Fail", e);
-			Assert.fail(e.getMessage());
-		}
 
+		} catch (IOException e) {
+			log.error("", e);
+			Assert.fail("" + e.getMessage());
+
+		} catch (XMLParseException e) {
+			log.error("", e);
+			Assert.fail("" + e.getMessage());
+
+		} catch (GoDietConfigurationException e) {
+			log.error("", e);
+			Assert.fail("" + e.getMessage());
+
+		} catch (DietResourceValidationException e) {
+			log.error("", e);
+			Assert.fail("" + e.getMessage());
+
+		} catch (DietResourceCreationException e) {
+			log.error("", e);
+			Assert.fail("" + e.getMessage());
+
+		} catch (GraphDataException e) {
+			log.error("", e);
+			Assert.fail("" + e.getMessage());
+
+		} catch (ResourceAddException e) {
+			log.error("", e);
+			Assert.fail("" + e.getMessage());
+
+		}
 	}
 
 	@Test
 	@DirtiesContext
 	public void testLaunchBeforePrepare() {
-		StartServicesCommand launchServicesCommand = new StartServicesCommand();
-		launchServicesCommand.setRm(rm);
+		List<OmniNamesManaged> omniNames = dietModel.getOmninames();
 
+		if(omniNames.size() < 1) Assert.fail("Initialization failed");
 		Exception commandExecException = null;
 
 		try {
-			launchServicesCommand.execute();
-		} catch (CommandExecutionException e) {
+			omniNames.get(0).start();
+		} catch (LaunchException e) {
 			commandExecException = e;
 		}
 		// ass0et the exception object
@@ -115,15 +121,14 @@ public class CommandLaunchServicesTest {
 	@Test
 	@DirtiesContext
 	public void testLaunch() {
-		PrepareServicesCommand prepareCommand = new PrepareServicesCommand();
-		prepareCommand.setRm(rm);
-		StartServicesCommand launchServicesCommand = new StartServicesCommand();
-		launchServicesCommand.setRm(rm);
+		List<OmniNamesManaged> omniNames = dietModel.getOmninames();
+
+		if(omniNames.size() < 1) Assert.fail("Initialization failed");
 		try {
-			prepareCommand.execute();
-			launchServicesCommand.execute();
-		} catch (CommandExecutionException e) {
-			e.printStackTrace();
+			omniNames.get(0).prepare();
+			omniNames.get(0).start();
+		} catch (Exception e) {
+			log.error("Prepare or Launch test error",e);
 			Assert.fail(e.getMessage());
 		}
 	}

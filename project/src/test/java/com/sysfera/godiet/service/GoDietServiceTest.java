@@ -32,7 +32,6 @@ import com.sysfera.godiet.model.generated.LocalAgent;
 import com.sysfera.godiet.model.generated.MasterAgent;
 import com.sysfera.godiet.model.generated.Sed;
 import com.sysfera.godiet.services.GoDietService;
-import com.sysfera.godiet.services.PlatformController;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @DirtiesContext
@@ -44,8 +43,6 @@ public class GoDietServiceTest {
 	@Autowired
 	private GoDietService godiet;
 
-	@Autowired
-	private PlatformController platformController;
 
 	@Autowired
 	private DietManager dietModel;

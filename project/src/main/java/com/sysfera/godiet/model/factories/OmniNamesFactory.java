@@ -2,8 +2,6 @@ package com.sysfera.godiet.model.factories;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
-
 import com.sysfera.godiet.exceptions.DietResourceCreationException;
 import com.sysfera.godiet.exceptions.remote.IncubateException;
 import com.sysfera.godiet.managers.InfrastructureManager;
@@ -28,9 +26,9 @@ import com.sysfera.godiet.model.validators.RuntimeValidator;
  * @author phi
  * 
  */
+
 public class OmniNamesFactory {
 
-	@Autowired
 	private InfrastructureManager infrastructureManager;
 	private final SoftwareController softwareController;
 	private final RuntimeValidator<OmniNamesManaged> validator;
@@ -39,6 +37,11 @@ public class OmniNamesFactory {
 			RuntimeValidator<OmniNamesManaged> omniNamesValidator) {
 		this.softwareController = softwareController;
 		this.validator = omniNamesValidator;
+	}
+
+	public void setInfrastructureManager(
+			InfrastructureManager infrastructureManager) {
+		this.infrastructureManager = infrastructureManager;
 	}
 
 	/**
@@ -65,17 +68,19 @@ public class OmniNamesFactory {
 			throw new DietResourceCreationException(
 					"Unable to find domain with the name : "
 							+ omniNamesDescription.getDomain());
-		
-		List<Domain> domainsPluggedOn = infrastructureManager.getDomains(pluggedOn);
-		if(!domainsPluggedOn.contains(domain)){
-			throw new DietResourceCreationException(
-					"The resource "+ pluggedOn.getId()+" isn't in " + omniNamesDescription.getDomain());
+
+		List<Domain> domainsPluggedOn = infrastructureManager
+				.getDomains(pluggedOn);
+		if (!domainsPluggedOn.contains(domain)) {
+			throw new DietResourceCreationException("The resource "
+					+ pluggedOn.getId() + " isn't in "
+					+ omniNamesDescription.getDomain());
 		}
-		Ssh listenSsh  = infrastructureManager.getSsh(pluggedOn, domain);
+		Ssh listenSsh = infrastructureManager.getSsh(pluggedOn, domain);
 		String listenAddress = listenSsh.getServer();
 		OmniNamesManaged omniNamesManaged = new OmniNamesManaged(
 				omniNamesDescription, pluggedOn, softwareController, validator);
-		settingConfigurationOptions(omniNamesManaged,listenAddress);
+		settingConfigurationOptions(omniNamesManaged, listenAddress);
 		settingOmniNamesRunningCommand(omniNamesManaged);
 		return omniNamesManaged;
 	}

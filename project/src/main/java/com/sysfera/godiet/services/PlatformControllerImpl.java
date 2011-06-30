@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 import com.sysfera.godiet.exceptions.DietResourceCreationException;
 import com.sysfera.godiet.exceptions.generics.DietResourceValidationException;
 import com.sysfera.godiet.exceptions.generics.GoDietServiceException;
+import com.sysfera.godiet.exceptions.generics.PathException;
 import com.sysfera.godiet.exceptions.generics.StartException;
 import com.sysfera.godiet.exceptions.remote.IncubateException;
 import com.sysfera.godiet.exceptions.remote.StopException;
@@ -18,6 +19,8 @@ import com.sysfera.godiet.managers.DietManager;
 import com.sysfera.godiet.managers.InfrastructureManager;
 import com.sysfera.godiet.model.DietResourceManaged;
 import com.sysfera.godiet.model.OmniNamesManaged;
+import com.sysfera.godiet.model.Path;
+import com.sysfera.godiet.model.Path.Hop;
 import com.sysfera.godiet.model.SoftwareManager;
 import com.sysfera.godiet.model.factories.GodietMetaFactory;
 import com.sysfera.godiet.model.generated.Domain;
@@ -29,14 +32,8 @@ import com.sysfera.godiet.model.generated.OmniNames;
 import com.sysfera.godiet.model.generated.Resource;
 import com.sysfera.godiet.model.generated.Sed;
 import com.sysfera.godiet.model.generated.Software;
+import com.sysfera.godiet.model.generated.Ssh;
 import com.sysfera.godiet.model.states.ResourceState;
-import com.sysfera.godiet.model.validators.ForwarderRuntimeValidatorImpl;
-import com.sysfera.godiet.model.validators.LocalAgentRuntimeValidatorImpl;
-import com.sysfera.godiet.model.validators.MasterAgentRuntimeValidatorImpl;
-import com.sysfera.godiet.model.validators.OmniNamesRuntimeValidatorImpl;
-import com.sysfera.godiet.model.validators.SedRuntimeValidatorImpl;
-import com.sysfera.godiet.remote.RemoteAccess;
-import com.sysfera.godiet.remote.RemoteConfigurationHelper;
 
 @Component
 public final class PlatformControllerImpl implements PlatformController {
@@ -46,16 +43,11 @@ public final class PlatformControllerImpl implements PlatformController {
 	@Autowired
 	private InfrastructureManager infrastructureManager;
 
+	@Autowired
 	private GodietMetaFactory godietMetaFactory;
 
 	@Autowired
 	private ConfigurationManager goDietConfiguration;
-
-	@Autowired
-	private RemoteAccess remoteAccess;
-
-	@Autowired
-	private RemoteConfigurationHelper softwareController;
 
 	@Override
 	@PostConstruct
@@ -65,13 +57,13 @@ public final class PlatformControllerImpl implements PlatformController {
 			throw new StartException(getClass().getName(), "0",
 					"Unable to init platform", null);
 		}
-
-		godietMetaFactory = new GodietMetaFactory(softwareController,
-				new ForwarderRuntimeValidatorImpl(dietManager),
-				new MasterAgentRuntimeValidatorImpl(dietManager),
-				new LocalAgentRuntimeValidatorImpl(dietManager),
-				new SedRuntimeValidatorImpl(dietManager),
-				new OmniNamesRuntimeValidatorImpl(dietManager));
+		//
+		// godietMetaFactory = new GodietMetaFactory(softwareController,
+		// new ForwarderRuntimeValidatorImpl(dietManager),
+		// new MasterAgentRuntimeValidatorImpl(dietManager),
+		// new LocalAgentRuntimeValidatorImpl(dietManager),
+		// new SedRuntimeValidatorImpl(dietManager),
+		// new OmniNamesRuntimeValidatorImpl(dietManager));
 
 	}
 
@@ -233,14 +225,35 @@ public final class PlatformControllerImpl implements PlatformController {
 			throw new DietResourceCreationException(
 					"Unable to find omninames for"
 							+ server.getConfig().getServer());
+		// Check if there is a connection between source and destination
+		
+		Path path;
+		try {
+			path = infrastructureManager.findPath(clietnPluggedOn,
+					serverPluggedOn);
+		} catch (PathException e) {
+			throw new DietResourceCreationException(
+					"Unable to create forwarders C :" + client.getId() + "S : "
+							+ server.getId() + ". No path found between "
+							+ clietnPluggedOn.getId() + " and "
+							+ serverPluggedOn.getId(), e);
+		}
+		if (path.getPath().size() != 1) {
+			throw new DietResourceCreationException(
+					"Unable to create forwarders C :" + client.getId() + "S : "
+							+ server.getId() + ". " + clietnPluggedOn.getId()
+							+ " and " + serverPluggedOn.getId()
+							+ " are not directly connected");
+		}
+	
+		Ssh connection = ((Hop[])path.getPath().toArray(new Hop[0]))[0].getLink();
 		Forwarders forwarders = new Forwarders();
 		forwarders.setClient(client);
 		forwarders.setServer(server);
 		DietResourceManaged<Forwarder>[] forwardersManaged = godietMetaFactory
 				.create(forwarders, clietnPluggedOn, omniNamesClient,
-						serverPluggedOn, omniNamesServer);
+						serverPluggedOn, omniNamesServer, connection);
 		dietManager.addForwarders(forwardersManaged[0], forwardersManaged[1]);
 
 	}
-
 }

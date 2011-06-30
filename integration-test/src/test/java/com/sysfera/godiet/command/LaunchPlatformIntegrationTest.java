@@ -186,6 +186,12 @@ public class LaunchPlatformIntegrationTest {
 				dietResourceManaged.start();
 			}
 		}
+		try {
+			Thread.sleep(10000);
+		} catch (InterruptedException e) {
+			log.error("Test interruped",e);
+			Assert.fail("Interrupted ??");
+		}
 		for (DietResourceManaged<Forwarder> dietResourceManaged : forwarders) {
 			if (dietResourceManaged.getSoftwareDescription().getType()
 					.equals("CLIENT")) {
