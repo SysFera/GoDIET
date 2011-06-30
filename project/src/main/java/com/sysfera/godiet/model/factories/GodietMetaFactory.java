@@ -1,7 +1,14 @@
 package com.sysfera.godiet.model.factories;
 
+import javax.annotation.PostConstruct;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 import com.sysfera.godiet.exceptions.DietResourceCreationException;
 import com.sysfera.godiet.exceptions.remote.IncubateException;
+import com.sysfera.godiet.managers.DietManager;
+import com.sysfera.godiet.managers.InfrastructureManager;
 import com.sysfera.godiet.model.DietResourceManaged;
 import com.sysfera.godiet.model.OmniNamesManaged;
 import com.sysfera.godiet.model.SoftwareController;
@@ -12,43 +19,53 @@ import com.sysfera.godiet.model.generated.MasterAgent;
 import com.sysfera.godiet.model.generated.OmniNames;
 import com.sysfera.godiet.model.generated.Resource;
 import com.sysfera.godiet.model.generated.Sed;
-import com.sysfera.godiet.model.validators.RuntimeValidator;
+import com.sysfera.godiet.model.generated.Ssh;
+import com.sysfera.godiet.model.validators.ForwarderRuntimeValidatorImpl;
+import com.sysfera.godiet.model.validators.LocalAgentRuntimeValidatorImpl;
+import com.sysfera.godiet.model.validators.MasterAgentRuntimeValidatorImpl;
+import com.sysfera.godiet.model.validators.OmniNamesRuntimeValidatorImpl;
+import com.sysfera.godiet.model.validators.SedRuntimeValidatorImpl;
 
+@Component
 public class GodietMetaFactory {
 
-	private final OmniNamesFactory omniNamesFactory;
-	private final ForwardersFactory forwardersFactory;
-	private final LocalAgentFactory localAgentFactory;
-	private final MasterAgentFactory masterAgentFactory;
-	private final SedFactory sedFactory;
+	private  OmniNamesFactory omniNamesFactory;
+	private  ForwardersFactory forwardersFactory;
+	private  LocalAgentFactory localAgentFactory;
+	private  MasterAgentFactory masterAgentFactory;
+	private  SedFactory sedFactory;
 
 
+	@Autowired
+	private InfrastructureManager infrastructureManager;
+	
+	@Autowired
+	private DietManager dietManager;
+	@Autowired
+	private SoftwareController softwareController;
 
-
-	public GodietMetaFactory(SoftwareController softwareController,
-			RuntimeValidator<DietResourceManaged<Forwarder>> forwardersValidator, RuntimeValidator<DietResourceManaged<MasterAgent>> maValidator,
-			RuntimeValidator<DietResourceManaged<LocalAgent>> laValidator, RuntimeValidator<DietResourceManaged<Sed>> sedValidator,
-			RuntimeValidator<OmniNamesManaged> omniNamesValidator) {
+	@PostConstruct
+	public void init()
+	{
 		this.forwardersFactory = new ForwardersFactory(softwareController,
-				forwardersValidator);
+				new ForwarderRuntimeValidatorImpl(dietManager) );
 		this.localAgentFactory = new LocalAgentFactory(softwareController,
-				laValidator);
+				new LocalAgentRuntimeValidatorImpl(dietManager));
 		this.masterAgentFactory = new MasterAgentFactory(softwareController,
-				maValidator);
-		this.sedFactory = new SedFactory(softwareController, sedValidator);
+				new MasterAgentRuntimeValidatorImpl(dietManager));
+		this.sedFactory = new SedFactory(softwareController, new SedRuntimeValidatorImpl(dietManager));
 		this.omniNamesFactory = new OmniNamesFactory(softwareController,
-				omniNamesValidator);
+				new OmniNamesRuntimeValidatorImpl(dietManager));
+		this.omniNamesFactory.setInfrastructureManager(infrastructureManager);
 	}
-
-
 
 
 	public DietResourceManaged<Forwarder>[] create(Forwarders forwarders,
 			Resource clientPluggedOn, OmniNamesManaged omniNamesClient,
-			Resource serverPluggedOn, OmniNamesManaged omniNamesServer)
+			Resource serverPluggedOn, OmniNamesManaged omniNamesServer, Ssh connection)
 			throws DietResourceCreationException, IncubateException {
 		return forwardersFactory.create(forwarders, clientPluggedOn, omniNamesClient, serverPluggedOn,
-				omniNamesServer);
+				omniNamesServer,connection);
 	}
 
 	public DietResourceManaged<LocalAgent> create(LocalAgent localAgentDescription,Resource pluggedOn,

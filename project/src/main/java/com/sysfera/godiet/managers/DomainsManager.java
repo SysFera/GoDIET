@@ -59,15 +59,14 @@ public class DomainsManager {
 		Set<Domain> domainsServer = getDomains(server.getPluggedOn());
 		for (Domain domainServer : domainsServer) {
 			for (Domain domainClient : domainsClient) {
-				if (domainClient == domainServer)
-					break;
-
+				if(domainClient == domainServer) break;
+				
 				EdgeDomain edge1 = this.graph.new EdgeDomain();
 				edge1.source = domainClient;
 				edge1.destination = domainServer;
 				edge1.client = client;
 				edge1.server = server;
-
+				
 				graph.edges.add(edge1);
 
 				EdgeDomain edge2 = this.graph.new EdgeDomain();
@@ -76,8 +75,7 @@ public class DomainsManager {
 				edge2.client = client;
 				edge2.server = server;
 				graph.edges.add(edge2);
-				log.debug("Add edge between " + domainClient + " and "
-						+ domainServer);
+				log.debug("Add edge between " + domainClient + " and " +domainServer );
 			}
 		}
 	}
@@ -184,7 +182,7 @@ public class DomainsManager {
 
 	public Domain getDomains(String domainId) {
 		for (Domain domain : domains) {
-			if (domain.getId().equals(domainId)) {
+			if(domain.getId().equals(domainId)){
 				return domain;
 			}
 		}

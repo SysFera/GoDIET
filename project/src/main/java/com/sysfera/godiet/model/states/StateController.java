@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import com.sysfera.godiet.exceptions.remote.IncubateException;
 import com.sysfera.godiet.model.SoftwareController;
 import com.sysfera.godiet.model.SoftwareManager;
+import com.sysfera.godiet.model.generated.Software;
 import com.sysfera.godiet.model.validators.RuntimeValidator;
 
 /**
@@ -20,7 +21,7 @@ import com.sysfera.godiet.model.validators.RuntimeValidator;
 public class StateController {
 	private Logger log = LoggerFactory.getLogger(getClass());
 
-	final SoftwareManager softwareManaged;
+	final SoftwareManager<? extends Software> softwareManaged;
 	private final ReadyStateImpl ready;
 	private final DownStateImpl down;
 	private final IncubateStateImpl incubate;

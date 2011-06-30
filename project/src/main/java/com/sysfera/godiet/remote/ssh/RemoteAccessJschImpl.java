@@ -64,7 +64,7 @@ public class RemoteAccessJschImpl implements RemoteAccess {
 		ChannelExec channel = null;
 		StringBuilder sb = new StringBuilder();
 		try {
-			channel = channelManager.getExecChannel(path, false);
+			channel = channelManager.getExecChannel(path);
 			// TODO: Decor with tee to write on standard err and out stream and
 			// alse remote scratch file
 
@@ -176,7 +176,7 @@ public class RemoteAccessJschImpl implements RemoteAccess {
 
 		Channel channel = null;
 		try {
-			channel = channelManager.getExecChannel(path, true);
+			channel = channelManager.getExecChannel(path);
 			// exec 'scp -t rfile' remotely
 			String command = "scp -p -t " + remotePath + "/";
 			((ChannelExec) channel).setCommand(command);

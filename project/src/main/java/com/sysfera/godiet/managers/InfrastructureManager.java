@@ -44,7 +44,7 @@ public class InfrastructureManager {
 	private final List<Cluster> clusters;
 	private final List<Fronted> fronteds;
 	private final List<Link> links;
-	// FIXME:
+
 	private final TopologyManager topologyManager;
 	@Autowired
 	private DomainsManager domainManager;

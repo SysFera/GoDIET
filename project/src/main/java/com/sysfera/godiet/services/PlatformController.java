@@ -12,6 +12,7 @@ import com.sysfera.godiet.model.generated.MasterAgent;
 import com.sysfera.godiet.model.generated.OmniNames;
 import com.sysfera.godiet.model.generated.Sed;
 import com.sysfera.godiet.model.generated.Software;
+import com.sysfera.godiet.model.generated.Ssh;
 import com.sysfera.godiet.model.states.ResourceState;
 
 public interface PlatformController {

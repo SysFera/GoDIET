@@ -17,6 +17,7 @@ import com.sysfera.godiet.model.generated.OmniNames;
 import com.sysfera.godiet.model.generated.Options;
 import com.sysfera.godiet.model.generated.Options.Option;
 import com.sysfera.godiet.model.generated.Resource;
+import com.sysfera.godiet.model.generated.Ssh;
 import com.sysfera.godiet.model.generated.Var;
 import com.sysfera.godiet.model.validators.RuntimeValidator;
 
@@ -55,6 +56,7 @@ public class ForwardersFactory {
 	 * 
 	 * @param forwarders
 	 *            Forwarders description
+	 * @param connection 
 	 * @return The Managed forwarders. DietResourceManaged[0] the client and
 	 *         DietResourceManaged[1] the server
 	 * @throws IncubateException 
@@ -64,7 +66,7 @@ public class ForwardersFactory {
 
 	public DietResourceManaged<Forwarder>[] create(Forwarders forwarders,
 			Resource clientPluggedOn, OmniNamesManaged omniNamesClient,
-			Resource serverPluggedOn, OmniNamesManaged omniNamesServer) throws IncubateException, DietResourceCreationException
+			Resource serverPluggedOn, OmniNamesManaged omniNamesServer, Ssh connection) throws IncubateException, DietResourceCreationException
 			 {
 
 		@SuppressWarnings("unchecked")
@@ -81,7 +83,7 @@ public class ForwardersFactory {
 				serverForwarderManager);
 		buildForwarderCommand(clientForwarderManager, serverForwarderManager,
 				omniNamesClient.getSoftwareDescription(),
-				omniNamesServer.getSoftwareDescription());
+				omniNamesServer.getSoftwareDescription(),connection);
 
 			forwardersManager[0] = clientForwarderManager;
 			forwardersManager[1] = serverForwarderManager;
@@ -147,17 +149,18 @@ public class ForwardersFactory {
 	/**
 	 * Build the diet forwarder running command
 	 * OMNIORB_CONFIG={scratch_runtime}/{omniNamesId}.cfg TODO: What's the hell
+	 * @param connection 
 	 * 
 	 * @param softManaged
 	 * @return
 	 */
 	private void buildForwarderCommand(SoftwareManager<Forwarder> managedClient,
 			SoftwareManager<Forwarder> managedServer, OmniNames omniNamesClient,
-			OmniNames omniNamesServer) {
+			OmniNames omniNamesServer, Ssh connection) {
 		buildForwarderServerCommand(managedClient, managedServer,
 				omniNamesClient, omniNamesServer);
 		buildForwarderClientCommand(managedClient, managedServer,
-				omniNamesClient, omniNamesServer);
+				omniNamesClient, omniNamesServer,connection);
 	}
 
 	/**
@@ -236,7 +239,7 @@ public class ForwardersFactory {
 	private void buildForwarderClientCommand(SoftwareManager<Forwarder> managedClient,
 			SoftwareManager<Forwarder> managedServer, OmniNames omniNamesClient,
 
-			OmniNames omniNamesServer) {
+			OmniNames omniNamesServer,Ssh connection) {
 		String command = "";
 		String scratchDir = managedClient.getPluggedOn().getScratch()
 				.getDir();
@@ -272,13 +275,11 @@ public class ForwardersFactory {
 		command += "--peer-name "
 				+ managedServer.getSoftwareDescription().getId() + " ";
 		// --ssh-host {remoteHost}
-		
-//		FIXME:
-		//command += " --ssh-host "
-//				+ managedServer.getPluggedOn().getSsh().getServer() + " ";
-//		// --ssh-login {remoteLogin}
-//		command += "--ssh-login "
-//				+ managedServer.getPluggedOn().getSsh().getLogin() + " ";
+		command += " --ssh-host "
+				+ connection.getServer() + " ";
+		// --ssh-login {remoteLogin}
+		command += "--ssh-login "
+				+ connection.getLogin() + " ";
 		// --remote-port {remotePort} -C &
 
 		// --remote-host 127.0.0.1 -C

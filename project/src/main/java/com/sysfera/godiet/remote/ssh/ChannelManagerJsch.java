@@ -1,5 +1,6 @@
 package com.sysfera.godiet.remote.ssh;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
@@ -37,26 +38,25 @@ public class ChannelManagerJsch {
 	// FIXME. Do something better
 	@Autowired
 	private ConfigurationManager goDietConfiguration;
-	private final Map<Path, Session> bufferedSessions;
+	private final Map<String, Session> bufferedSessions;
 
 	public ChannelManagerJsch() {
 		this.jsch = new JSch();
 		this.trustedUI = new TrustedUserInfo();
-		this.bufferedSessions = new HashMap<Path, Session>();
+		this.bufferedSessions = new HashMap<String, Session>();
 	}
 
 	/**
 	 * Close all Sessions
 	 */
-	
+
 	public void destroy() {
-		for (Map.Entry<Path, Session> e : bufferedSessions.entrySet()) {
+		for (Map.Entry<String, Session> e : bufferedSessions.entrySet()) {
+
 			e.getValue().disconnect();
 		}
 
 	}
-
-
 
 	/**
 	 * Create an exec channel on the destination path. Create a new Session on
@@ -75,18 +75,13 @@ public class ChannelManagerJsch {
 	// TODO: remove isDisk when Disk will be take care in topology. Currently
 	// can't manage there is a bug if node.disk.ssh.ip != node.ssh.ip
 	// So need to modify (or remove ? ) the remoteAccessException condition here
-	public ChannelExec getExecChannel(Path path, boolean isDisk)
+	public ChannelExec getExecChannel(Path path)
 			throws RemoteAccessException, JSchException {
 		Session session = getSession(path);
 
 		if (session == null || !session.isConnected()) {
 
 			LinkedHashSet<Hop> hops = path.getPath();
-			//FIXME : handle localhost
-//			if (hops.size() < 2) {
-//				throw new RemoteAccessException(
-//						"Path length must be > 2 (source + destination)");
-//			}
 
 			// Create the session with the last Node
 			Ssh last = null;
@@ -99,15 +94,16 @@ public class ChannelManagerJsch {
 								+ hops.toArray()[hops.size() - 1].getClass()
 										.getCanonicalName());
 			}
-			
 
-			session = jsch.getSession(last.getLogin(),
-					last.getServer(), last.getPort());
+			session = jsch.getSession(last.getLogin(), last.getServer(),
+					last.getPort());
 			session.setUserInfo(trustedUI);
 			initProxiesPath(hops, session, trustedUI);
-
+			bufferedSessions.put(path.getDestination().getId(), session);
 			session.connect();
-			bufferedSessions.put(path, session);
+
+			
+
 		}
 		ChannelExec channelExec = (ChannelExec) session.openChannel("exec");
 		channelExec.setAgentForwarding(true);
@@ -116,14 +112,15 @@ public class ChannelManagerJsch {
 	}
 
 	/**
-	 * Return a Session or Null if doesn't exists
+	 * 
 	 * 
 	 * @param path
-	 * @return null if the session doesn't exist or are closed
+	 * @return buffered session or null if doesn't exists
 	 */
 	private Session getSession(Path path) {
 
-		Session session = bufferedSessions.get(path);
+		Session session = bufferedSessions.get(path.getDestination().getId());
+
 		if (session == null || !session.isConnected()) {
 			return null;
 		}
@@ -142,7 +139,6 @@ public class ChannelManagerJsch {
 	private NCProxy getShadowProxy(Resource destination, UserInfo ui) {
 		NCProxy shadowProxy = null;
 
-	
 		List<Proxy> proxies = goDietConfiguration.getShadowedProxy();
 
 		for (Proxy proxy : proxies) {
@@ -163,9 +159,8 @@ public class ChannelManagerJsch {
 	 * @throws JSchException
 	 * @throws RemoteAccessException
 	 */
-	private void initProxiesPath(LinkedHashSet<Hop> hops,
-			Session session, UserInfo ui) throws JSchException,
-			RemoteAccessException {
+	private void initProxiesPath(LinkedHashSet<Hop> hops, Session session,
+			UserInfo ui) throws JSchException, RemoteAccessException {
 
 		Hop[] resources = hops.toArray(new Hop[0]);
 		log.debug("hopsSize: " + resources.length);
@@ -175,16 +170,16 @@ public class ChannelManagerJsch {
 		}
 		NCProxy lastProxy = null;
 		// i = 0 is the source. Don't create a proxy
-		for (int i = 0; i <resources.length; i++) {
-			
+		for (int i = 0; i < resources.length; i++) {
+
 			Hop hop = resources[i];
 
 			// FIXME
 			NCProxy shadowProxy = getShadowProxy(hop.getDestination(), ui);
 			if (shadowProxy != null) {
 				if (lastProxy != null) {
-					log.debug("Add proxy " + hop.getDestination().getId() + " to "
-							+ lastProxy.getHost());
+					log.debug("Add proxy " + hop.getDestination().getId()
+							+ " to " + lastProxy.getHost());
 					shadowProxy.setProxy(lastProxy);
 				}
 
@@ -210,42 +205,42 @@ public class ChannelManagerJsch {
 	}
 
 	public void debug(boolean activate) {
-		 if (activate) {
-		 com.jcraft.jsch.Logger jschLog = new com.jcraft.jsch.Logger() {
-		
-		 @Override
-		 public void log(int level, String message) {
-		 switch (level) {
-		 case 0:
-		 log.debug(message);
-		 break;
-		 case 1:
-		 log.info(message);
-		 break;
-		 case 2:
-		 log.warn(message);
-		 break;
-		 case 3:
-		 log.error(message);
-		 break;
-		 case 4:
-		 log.error("FATAL" + message);
-		 break;
-		
-		 default:
-		 break;
-		 }
-		
-		 }
-		
-		 @Override
-		 public boolean isEnabled(int level) {
-		 return true;
-		 }
-		 };
-		 JSch.setLogger(jschLog);
-		 } else
-		 JSch.setLogger(null);
+		if (activate) {
+			com.jcraft.jsch.Logger jschLog = new com.jcraft.jsch.Logger() {
+
+				@Override
+				public void log(int level, String message) {
+					switch (level) {
+					case 0:
+						log.debug(message);
+						break;
+					case 1:
+						log.info(message);
+						break;
+					case 2:
+						log.warn(message);
+						break;
+					case 3:
+						log.error(message);
+						break;
+					case 4:
+						log.error("FATAL" + message);
+						break;
+
+					default:
+						break;
+					}
+
+				}
+
+				@Override
+				public boolean isEnabled(int level) {
+					return true;
+				}
+			};
+			JSch.setLogger(jschLog);
+		} else
+			JSch.setLogger(null);
 
 	}
 
