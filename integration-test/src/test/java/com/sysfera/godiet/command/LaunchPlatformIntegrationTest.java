@@ -40,7 +40,7 @@ import com.sysfera.godiet.model.generated.Sed;
 import com.sysfera.godiet.model.generated.Software;
 import com.sysfera.godiet.model.generated.User;
 import com.sysfera.godiet.services.GoDietService;
-import com.sysfera.godiet.services.UserController;
+import com.sysfera.godiet.services.UserService;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @DirtiesContext
@@ -56,7 +56,7 @@ public class LaunchPlatformIntegrationTest {
 	private DietManager dietModel;
 
 	@Autowired
-	private UserController userController;
+	private UserService userController;
 
 	@Before
 	public void init() throws IncubateException {
@@ -68,7 +68,7 @@ public class LaunchPlatformIntegrationTest {
 				InputStream inputStream = getClass().getClassLoader()
 						.getResourceAsStream(configurationFile);
 
-				godiet.getXmlHelpController().registerConfigurationFile(
+				godiet.getXmlHelpService().registerConfigurationFile(
 						inputStream);
 			}
 			{
@@ -76,7 +76,7 @@ public class LaunchPlatformIntegrationTest {
 				String platformTestCase = "infrastructure/testbed.xml";
 				InputStream inputStreamPlatform = getClass().getClassLoader()
 						.getResourceAsStream(platformTestCase);
-				godiet.getXmlHelpController().registerInfrastructureElements(
+				godiet.getXmlHelpService().registerInfrastructureElements(
 						inputStreamPlatform);
 			}
 			{
@@ -84,7 +84,7 @@ public class LaunchPlatformIntegrationTest {
 				String testCaseFile = "diet/testbed-diet.xml";
 				InputStream inputStream = getClass().getClassLoader()
 						.getResourceAsStream(testCaseFile);
-				godiet.getXmlHelpController().registerDietElements(inputStream);
+				godiet.getXmlHelpService().registerDietElements(inputStream);
 			}
 			String fakeKey = "fakeuser/testbedKey";
 			URL urlFile = getClass().getClassLoader().getResource(fakeKey);
