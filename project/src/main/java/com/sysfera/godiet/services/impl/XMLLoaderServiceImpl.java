@@ -1,4 +1,4 @@
-package com.sysfera.godiet.services;
+package com.sysfera.godiet.services.impl;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -30,29 +30,34 @@ import com.sysfera.godiet.model.generated.MasterAgent;
 import com.sysfera.godiet.model.generated.OmniNames;
 import com.sysfera.godiet.model.generated.Sed;
 import com.sysfera.godiet.model.generated.User.Ssh.Key;
+import com.sysfera.godiet.services.InfrastructureService;
+import com.sysfera.godiet.services.PlatformService;
+import com.sysfera.godiet.services.UserService;
+import com.sysfera.godiet.services.XMLLoaderService;
 import com.sysfera.godiet.utils.xml.XMLParser;
 import com.sysfera.godiet.utils.xml.XmlScannerJaxbImpl;
 
 @Component
-public class XMLHelpControllerImpl {
+public class XMLLoaderServiceImpl implements XMLLoaderService {
 	private Logger log = LoggerFactory.getLogger(getClass());
 
 	@Autowired
 	private ConfigurationManager configurationManager;
 	@Autowired
-	private PlatformController platformController;
+	private PlatformService platformController;
 	@Autowired
-	private InfrastructureController infrastructureController;
+	private InfrastructureService infrastructureController;
 	@Autowired
-	private UserController userController;
+	private UserService userController;
 
 	private final XMLParser xmlScanner;
 
-	public XMLHelpControllerImpl() {
+	public XMLLoaderServiceImpl() {
 
 		this.xmlScanner = new XmlScannerJaxbImpl();
 	}
 
+	@Override
 	public void registerConfigurationFile(InputStream xmlInput)
 			throws IOException, XMLParseException, GoDietConfigurationException {
 		GoDietConfiguration goDietConfiguration = xmlScanner
@@ -77,6 +82,7 @@ public class XMLHelpControllerImpl {
 	}
 
 	// TODO: Transactionnal
+	@Override
 	public void registerDietElements(InputStream xmlInput) throws IOException,
 			XMLParseException, DietResourceCreationException,
 			DietResourceValidationException, IncubateException {
@@ -85,6 +91,7 @@ public class XMLHelpControllerImpl {
 	}
 
 	// TODO: Transactionnal
+	@Override
 	public void registerInfrastructureElements(InputStream xmlInput)
 			throws IOException, XMLParseException, ResourceAddException,
 			GraphDataException {

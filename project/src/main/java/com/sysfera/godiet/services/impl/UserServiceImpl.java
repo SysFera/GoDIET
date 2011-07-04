@@ -1,4 +1,4 @@
-package com.sysfera.godiet.services;
+package com.sysfera.godiet.services.impl;
 
 import java.util.List;
 
@@ -9,9 +9,10 @@ import com.sysfera.godiet.exceptions.remote.AddAuthentificationException;
 import com.sysfera.godiet.managers.user.SSHKeyManager;
 import com.sysfera.godiet.managers.user.UserManager;
 import com.sysfera.godiet.model.generated.User.Ssh.Key;
+import com.sysfera.godiet.services.UserService;
 
 @Component
-public class UserControllerImpl implements UserController {
+public class UserServiceImpl implements UserService {
 
 	@Autowired
 	private UserManager userManager;

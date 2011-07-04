@@ -1,4 +1,4 @@
-package com.sysfera.godiet.services;
+package com.sysfera.godiet.services.impl;
 
 import java.util.List;
 
@@ -12,9 +12,10 @@ import com.sysfera.godiet.model.generated.Cluster;
 import com.sysfera.godiet.model.generated.Domain;
 import com.sysfera.godiet.model.generated.Link;
 import com.sysfera.godiet.model.generated.Node;
+import com.sysfera.godiet.services.InfrastructureService;
 
 @Component
-public class InfrastructureControllerImpl implements InfrastructureController{
+public class InfrastructureServiceImpl implements InfrastructureService{
 
 
 	@Autowired

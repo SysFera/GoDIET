@@ -1,82 +1,29 @@
 package com.sysfera.godiet.services;
 
-import javax.annotation.PostConstruct;
-
-import org.springframework.beans.factory.annotation.Autowired;
-
 import com.sysfera.godiet.exceptions.generics.StartException;
-import com.sysfera.godiet.managers.ConfigurationManager;
 import com.sysfera.godiet.managers.ResourcesManager;
-import com.sysfera.godiet.model.observer.ForwardersCreator;
 
-/**
- * Godiet core main interface. Store controllers
- * 
- * @author phi
- * 
- */
-public class GoDietService {
-
-	@Autowired
-	private ResourcesManager ressourceManager;
-	@Autowired
-	private ConfigurationManager configurationManager;
-
-	@Autowired
-	private UserControllerImpl userController;
-	@Autowired
-	private PlatformControllerImpl platformController;
-	@Autowired
-	private XMLHelpControllerImpl xmlHelpController;
-	@Autowired
-	private InfrastructureControllerImpl infrastructureController;
-
-	@Autowired
-	private ForwardersCreator forwarderAutoCreator;
-
-	public GoDietService() {
-		
-	}
+public interface GoDietService {
 
 	/**
 	 * Service lifecycle. Start: Initialize controllers
 	 * 
 	 * @throws StartException
 	 */
-	@PostConstruct
-	public void start() throws StartException {
-		if (ressourceManager == null || ressourceManager.getDietModel() == null
-				|| ressourceManager.getInfrastructureModel() == null) {
-			throw new StartException(getClass().getName(), "4",
-					"ressource manager isn't initialize", null);
-		}
+	
+	public abstract void start() throws StartException;
 
-	}
+	public abstract PlatformService getPlatformService();
 
-	public PlatformController getPlatformController() {
-		return platformController;
-	}
+	public abstract XMLLoaderService getXmlHelpService();
 
-	public XMLHelpControllerImpl getXmlHelpController() {
-		return xmlHelpController;
-	}
+	public abstract InfrastructureService getInfrastructureService();
 
-	public InfrastructureControllerImpl getInfrastructureController() {
-		return infrastructureController;
-	}
+	public abstract UserService getUserService();
 
-	public UserControllerImpl getUserController() {
-		return userController;
-	}
+	public abstract ConfigurationService getConfigurationService();
+	
+	public abstract ResourcesManager getModel();
 
-	public ResourcesManager getModel() {
-		return this.ressourceManager;
-	}
 
-	public void startForwarderCreator(boolean start) {
-		if (start)
-			this.forwarderAutoCreator.start();
-		else
-			this.forwarderAutoCreator.stop();
-	}
 }
