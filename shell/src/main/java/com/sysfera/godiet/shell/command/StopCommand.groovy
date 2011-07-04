@@ -7,8 +7,10 @@ import org.codehaus.groovy.tools.shell.util.Preferences
 
 import com.sysfera.godiet.Diet;
 import com.sysfera.godiet.exceptions.remote.StopException;
+import com.sysfera.godiet.managers.DietManager;
 import com.sysfera.godiet.managers.ResourcesManager
 import com.sysfera.godiet.model.SoftwareManager;
+import com.sysfera.godiet.model.generated.Software;
 import com.sysfera.godiet.model.states.ResourceState.State;
 import com.sysfera.godiet.shell.GoDietSh
 
@@ -34,7 +36,7 @@ extends ComplexCommandSupport {
 
 	def do_services = {
 		GoDietSh goDietShell = shell;
-		ResourcesManager rm = goDietShell.getDiet().getRm();
+		ResourcesManager rm = goDietShell.godiet.model
 		List<SoftwareManager> services = rm.dietModel.omninames
 		stopSoftwares(services)
 	}
@@ -50,26 +52,26 @@ extends ComplexCommandSupport {
 	}
 	private stopMa() {
 		GoDietSh goDietShell = shell;
-		ResourcesManager rm = goDietShell.getDiet().getRm();
+		ResourcesManager rm = goDietShell.godiet.model
 		List<SoftwareManager> mas = rm.dietModel.masterAgents
 		stopSoftwares(mas)
 	}
 	private stopLa() {
 		GoDietSh goDietShell = shell;
-		ResourcesManager rm = goDietShell.getDiet().getRm();
+		ResourcesManager rm = goDietShell.godiet.model
 		List<SoftwareManager> la = rm.dietModel.localAgents
 		stopSoftwares(la)
 	}
 	private stopForwarders() {
 		GoDietSh goDietShell = shell;
-		ResourcesManager rm = goDietShell.getDiet().getRm();
+		ResourcesManager rm = goDietShell.godiet.model
 		List<SoftwareManager> forwarders = rm.dietModel.forwarders
 		stopSoftwares(forwarders)
 	}
 
 	private stopSeds() {
 		GoDietSh goDietShell = shell;
-		ResourcesManager rm = goDietShell.getDiet().getRm();
+		ResourcesManager rm = goDietShell.godiet.model
 		List<SoftwareManager> seds = rm.dietModel.seds
 		stopSoftwares(seds)
 	}
@@ -91,19 +93,22 @@ extends ComplexCommandSupport {
 	}
 
 	def do_all = {
-		GoDietSh goDietShell = shell;
-		Diet rm = goDietShell.getDiet();
-		rm.stopServices();
-		rm.stopAgents();
+		do_seds
+		do_agents
+		do_services
 	}
 
 	def do_software = { arg ->
 		assert arg.size() == 1 , 'Command stop software requires at least one argument : the software id'
 		String argument = arg.head()
 
-		GoDietSh goDietShell = shell;
-		Diet rm = goDietShell.getDiet();
-		rm.stopSoftware(arg)
+		DietManager diet = ((GoDietSh)shell).godiet.model.dietModel
+		SoftwareManager<? extends Software>  software = diet.getManagedSoftware(arg)
+		if (software == null){
+			io.err.println("Unable to find " + arg);
+			return;
+		}
+		stopSoftware(software)
 	}
 }
 

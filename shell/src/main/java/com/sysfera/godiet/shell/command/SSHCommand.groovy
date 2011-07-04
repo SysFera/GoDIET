@@ -13,7 +13,11 @@ import org.codehaus.groovy.tools.shell.Shell
 
 import com.sysfera.godiet.managers.user.SSHKeyManager;
 import com.sysfera.godiet.managers.user.SSHKeyManager.Status;
+import com.sysfera.godiet.model.generated.User.Ssh.Key;
+import com.sysfera.godiet.services.GoDietService;
+import com.sysfera.godiet.services.UserService;
 import com.sysfera.godiet.shell.GoDietSh
+import com.sysfera.godiet.model.generated.User.Ssh.Key;
 
 
 class SSHCommand extends ComplexCommandSupport {
@@ -27,17 +31,7 @@ class SSHCommand extends ComplexCommandSupport {
 			'initpasswords'
 		]
 	}
-	//
-	//
-	//	protected List createCompletors() {
-	//		io.out.println("Test: Custom ssh completor")
-	//		SimpleCompletor sc1 = new SimpleCompletor (["foo", "bar", "baz"]as String[])
-	//		SimpleCompletor sc2 = new SimpleCompletor (["xxx", "yyy", "xxx"]as String[] )
-	//		Completor sc3 = new ComplexCompl SimpleCompletor (["Load,Unload"]as String[] )
-	//		//		MultiCompletor mc1 = new MultiCompletor(new MultiCompletor(new SimpleCompletor(["loadkeys"]as String[]), new FileNameCompletor(),new NullCompletor()),new SimpleCompletor(["keypath"]as String[]),new NullCompletor())
-	//		//		SimpleCompletor mc2 = new SimpleCompletor(["status"]as String[])
-	//		return []
-	//	}
+
 
 	private String askPassword() {
 		io.out.println "Passphrase: "
@@ -62,7 +56,12 @@ class SSHCommand extends ComplexCommandSupport {
 		io.out.println "Enter public key path (${privKeyPath}.pub): "
 		String pubkeyPath = consoleFileCompletor.readLine()
 		String password = askPassword()
-		((GoDietSh)shell).getDiet().addSshKey(privKeyPath,pubkeyPath,password)
+		Key newKey = new Key()
+		newKey.pathPub = pubkeyPath
+		newKey.path = privKeyPath
+		SSHKeyManager newManagedkey = ((GoDietSh)shell).godiet.userService.addSSHKey(privKeyPath,pubkeyPath,password)
+		newManagedkey.password = password
+		((GoDietSh)shell).godiet.userService.registerSSHKey(newManagedkey)
 	}
 
 	private void modifyKeyForm(SSHKeyManager key){
@@ -80,8 +79,7 @@ class SSHCommand extends ComplexCommandSupport {
 		key.sshDesc.path = privKeyPath
 		key.sshDesc.pathPub = pubkeyPath
 		key.password = password
-		((GoDietSh)shell).getDiet().modifySshKey(key,privKeyPath,pubkeyPath,password)
-		((GoDietSh)shell).getDiet().registerKey(key);
+		((GoDietSh)shell).diet.userService.registerSSHKey(key)
 	}
 
 	def do_modifykey = {
@@ -106,7 +104,9 @@ class SSHCommand extends ComplexCommandSupport {
 
 
 	def do_status = {
-		def keys = ((GoDietSh)shell).getDiet().managedKeys
+		UserService godiet = ((GoDietSh)shell).godiet.userService
+		
+		def keys = godiet.managedKeys
 		if(keys.size() == 0){
 			io.out.println("No key loaded")
 			return
@@ -135,13 +135,14 @@ class SSHCommand extends ComplexCommandSupport {
 	}
 
 	def do_initpasswords = {
-		Set<SSHKeyManager> keys = ((GoDietSh)shell).getDiet().managedKeys
+		UserService godiet = ((GoDietSh)shell).godiet.userService
+		def keys = godiet.managedKeys
 		keys.each { SSHKeyManager key ->
-			io.out.println("${key.pubKeyPath}");
 			if(key.state == Status.PASSWORDNOTSET) {
+				io.out.println("${key.pubKeyPath}");
 				String password = askPassword()
-				((GoDietSh)shell).getDiet().modifySshKey(key,key.privKeyPath,key.pubKeyPath,password)
-				((GoDietSh)shell).getDiet().registerKey(key)
+				key.password = password
+				((GoDietSh)shell).godiet.userService.registerSSHKey(key)
 			}
 		}
 	}

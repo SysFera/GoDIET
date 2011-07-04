@@ -6,6 +6,7 @@ import org.codehaus.groovy.tools.shell.Shell
 import org.codehaus.groovy.tools.shell.util.Preferences
 
 import com.sysfera.godiet.Diet;
+import com.sysfera.godiet.managers.DietManager;
 import com.sysfera.godiet.managers.ResourcesManager
 import com.sysfera.godiet.model.SoftwareManager;
 import com.sysfera.godiet.model.generated.Software;
@@ -78,29 +79,29 @@ extends ComplexCommandSupport {
 	}
 
 	def do_services = {
-		Diet diet = ((GoDietSh)shell).getDiet()
-		List omniNames = diet.getRm().getDietModel().omninames
+		DietManager diet = ((GoDietSh)shell).godiet.model.dietModel
+		List omniNames = diet.omninames
 		printStatus("OmniNames",omniNames)
 	}
 
 	def do_sed = {
-		Diet diet = ((GoDietSh)shell).getDiet()
-		List seds = diet.getRm().getDietModel().seds
+		DietManager diet = ((GoDietSh)shell).godiet.model.dietModel
+		List seds = diet.seds
 		printStatus("Seds",seds)
 	}
 	def do_forwarders = {
-		Diet diet = ((GoDietSh)shell).getDiet()
-		List forwarders = diet.getRm().getDietModel().forwaders
+		DietManager diet = ((GoDietSh)shell).godiet.model.dietModel
+		List forwarders = diet.forwarders
 		printStatus("Forwarders",forwarders)
 	}
 	def do_ma = {
-		Diet diet = ((GoDietSh)shell).getDiet()
-		List mas = diet.getRm().getDietModel().masterAgents
+		DietManager diet = ((GoDietSh)shell).godiet.model.dietModel
+		List mas = diet.masterAgents
 		printStatus("Master agents",mas)
 	}
 	def do_la = {
-		Diet diet = ((GoDietSh)shell).getDiet()
-		List las = diet.getRm().getDietModel().localAgents
+		DietManager diet = ((GoDietSh)shell).godiet.model.dietModel
+		List las = diet.localAgents
 		printStatus("Local agents",las)
 	}
 	def do_all = {

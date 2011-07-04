@@ -10,8 +10,8 @@ import org.codehaus.groovy.tools.shell.CommandSupport
 import org.codehaus.groovy.tools.shell.Shell
 
 import com.sysfera.godiet.Diet;
-import com.sysfera.godiet.command.xml.LoadXMLDietCommand
 import com.sysfera.godiet.managers.ResourcesManager
+import com.sysfera.godiet.services.GoDietService;
 import com.sysfera.godiet.shell.GoDietSh
 import com.sysfera.godiet.utils.xml.XmlScannerJaxbImpl
 
@@ -71,9 +71,14 @@ extends CommandSupport {
 			io.out.println("Loading: $url")
 		}
 
-		Diet diet = ((GoDietSh)shell).getDiet()
-		assert diet != null;
-		diet.initInfrastructure(url)
+		GoDietSh goDietShell = shell;
+		GoDietService godiet = goDietShell.godiet
+
+		assert godiet != null;
+		def inputStream = url.openConnection().inputStream;
+
+		godiet.xmlHelpService.registerInfrastructureElements (inputStream)
+
 	}
 }
 class LoadDietCommand
@@ -120,17 +125,11 @@ extends CommandSupport {
 		if (io.verbose) {
 			io.out.println("Loading: $url")
 		}
+		GoDietSh goDietShell = shell;
+		GoDietService godiet = goDietShell.godiet
 
-		Diet diet = ((GoDietSh)shell).getDiet()
-		assert diet != null;
-		diet.initDiet(url)
-
-		diet.initForwarders();
-		Integer forwardersSize = diet.getRm().dietModel.forwaders.size
-		if(forwardersSize == 0) {
-			io.out.println 'No DIET forwarders loaded'
-		} else {
-			io.out.println("${forwardersSize} forwarders created")
-		}
+		assert godiet != null;
+		def inputStream = url.openConnection().inputStream;
+		godiet.xmlHelpService.registerDietElements(inputStream)
 	}
 }
