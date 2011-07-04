@@ -9,7 +9,7 @@ import com.sysfera.godiet.model.generated.Domain;
 import com.sysfera.godiet.model.generated.Link;
 import com.sysfera.godiet.model.generated.Node;
 
-public interface InfrastructureController {
+public interface InfrastructureService {
 
 
 	void registerDomains(List<Domain> domains) throws ResourceAddException, GraphDataException;

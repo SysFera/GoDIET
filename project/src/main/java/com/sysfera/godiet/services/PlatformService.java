@@ -12,10 +12,9 @@ import com.sysfera.godiet.model.generated.MasterAgent;
 import com.sysfera.godiet.model.generated.OmniNames;
 import com.sysfera.godiet.model.generated.Sed;
 import com.sysfera.godiet.model.generated.Software;
-import com.sysfera.godiet.model.generated.Ssh;
 import com.sysfera.godiet.model.states.ResourceState;
 
-public interface PlatformController {
+public interface PlatformService {
 
 	public abstract void start() throws StartException;
 
@@ -45,6 +44,8 @@ public interface PlatformController {
 	public abstract void registerOmniNames(OmniNames omniNames)
 			throws DietResourceCreationException,
 			DietResourceValidationException, IncubateException;
+	
+	
 
 	/**
 	 * TODO: Currently only stop. Not useful. Destroy ? ORM ...

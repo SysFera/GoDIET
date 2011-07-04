@@ -1,4 +1,4 @@
-package com.sysfera.godiet.services;
+package com.sysfera.godiet.services.impl;
 
 import java.util.List;
 
@@ -34,9 +34,10 @@ import com.sysfera.godiet.model.generated.Sed;
 import com.sysfera.godiet.model.generated.Software;
 import com.sysfera.godiet.model.generated.Ssh;
 import com.sysfera.godiet.model.states.ResourceState;
+import com.sysfera.godiet.services.PlatformService;
 
 @Component
-public final class PlatformControllerImpl implements PlatformController {
+public final class PlatformServiceImpl implements PlatformService {
 
 	@Autowired
 	private DietManager dietManager;
