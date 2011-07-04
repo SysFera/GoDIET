@@ -45,6 +45,8 @@ import org.fusesource.jansi.AnsiConsole
 import org.fusesource.jansi.AnsiRenderer
 
 import com.sysfera.godiet.Diet
+import com.sysfera.godiet.managers.DietManager;
+import com.sysfera.godiet.services.GoDietService;
 
 /**
  * An interactive shell for evaluating Groovy code from the command-line (aka. groovysh).
@@ -59,13 +61,12 @@ extends Shell {
 		AnsiConsole.systemInstall()
 
 		// Register jline ansi detector
-		Ansi.setDetector(new AnsiDetector())
 	}
 
 	private static final MessageSource messages = new MessageSource(GoDietSh.class)
 
 	//Newbie with Groovy
-	Diet diet;
+	private GoDietService godiet;
 
 	final BufferManager buffers = new BufferManager()
 
@@ -90,18 +91,20 @@ extends Shell {
 
 		interp = new Interpreter(classLoader, binding)
 		registrar.call(this)
-		
-		
+
+
 		log.debug("Godiet shell started")
-		
+
 	}
-	public 	Diet getDiet() {
-		return diet
+	public 	GoDietService getGoDiet() {
+		return godiet
 	}
-	public void setDiet(Diet d)
+	public void setGoDiet(GoDietService d)
 	{
-		this.diet = d
+		this.godiet = d;
 	}
+
+
 	private static Closure createDefaultRegistrar() {
 		return { shell ->
 			def r = new XmlCommandRegistrar(shell, classLoader)
@@ -209,7 +212,7 @@ extends Shell {
 
 		buffer.eachWithIndex { line, index ->
 			def lineNum = formatLineNumber(index)
-			
+
 			io.out.println(" ${lineNum}@|bold >|@ $line")
 		}
 	}
@@ -221,7 +224,7 @@ extends Shell {
 	private String renderPrompt() {
 		//def lineNum = formatLineNumber(buffers.current().size())
 
-		def localnode = diet.rm.godietConfiguration.goDietConfiguration.localNode
+		def localnode = godiet.getConfigurationService().serverNodeLabel
 		return AnsiRenderer.render("@|bold godiet@${localnode}:>|@ ")
 	}
 
@@ -317,7 +320,7 @@ extends Shell {
 
 		if (showLastResult) {
 			// Need to use String.valueOf() here to avoid icky exceptions causes by GString coercion
-		//	io.out.println("@|bold ===>|@ ${String.valueOf(result)}")
+			//	io.out.println("@|bold ===>|@ ${String.valueOf(result)}")
 		}
 	}
 
@@ -351,38 +354,38 @@ extends Shell {
 			// If we have debug enabled then skip the fancy bits below
 			log.debug(cause)
 		}
-//		else {
-//			boolean sanitize = Preferences.sanitizeStackTrace
-//
-//			// Sanitize the stack trace unless we are inverbose mode, or the user has request otherwise
-//			if (!io.verbose && sanitize) {
-//				cause = StackTraceUtils.deepSanitize(cause);
-//			}
-//
-//			def trace = cause.stackTrace
-//
-//			def buff = new StringBuffer()
-//
-//			for (e in trace) {
-//				buff << "        @|bold at|@ ${e.className}.${e.methodName} (@|bold "
-//
-//				buff << (e.nativeMethod ? 'Native Method' :
-//						(e.fileName != null && e.lineNumber != -1 ? "${e.fileName}:${e.lineNumber}" :
-//						(e.fileName != null ? e.fileName : 'Unknown Source')))
-//
-//				buff << '|@)'
-//
-//				io.err.println(buff)
-//
-//				buff.setLength(0) // Reset the buffer
-//
-//				// Stop the trace once we find the root of the evaluated script
-//				if (e.className == Interpreter.SCRIPT_FILENAME && e.methodName == 'run') {
-//					io.err.println('        @|bold ...|@')
-//					break
-//				}
-//			}
-//		}
+		//		else {
+		//			boolean sanitize = Preferences.sanitizeStackTrace
+		//
+		//			// Sanitize the stack trace unless we are inverbose mode, or the user has request otherwise
+		//			if (!io.verbose && sanitize) {
+		//				cause = StackTraceUtils.deepSanitize(cause);
+		//			}
+		//
+		//			def trace = cause.stackTrace
+		//
+		//			def buff = new StringBuffer()
+		//
+		//			for (e in trace) {
+		//				buff << "        @|bold at|@ ${e.className}.${e.methodName} (@|bold "
+		//
+		//				buff << (e.nativeMethod ? 'Native Method' :
+		//						(e.fileName != null && e.lineNumber != -1 ? "${e.fileName}:${e.lineNumber}" :
+		//						(e.fileName != null ? e.fileName : 'Unknown Source')))
+		//
+		//				buff << '|@)'
+		//
+		//				io.err.println(buff)
+		//
+		//				buff.setLength(0) // Reset the buffer
+		//
+		//				// Stop the trace once we find the root of the evaluated script
+		//				if (e.className == Interpreter.SCRIPT_FILENAME && e.methodName == 'run') {
+		//					io.err.println('        @|bold ...|@')
+		//					break
+		//				}
+		//			}
+		//		}
 	}
 
 	Closure errorHook = defaultErrorHook
@@ -425,7 +428,7 @@ extends Shell {
 		}
 
 		def code
-
+		boolean shell = true
 		try {
 			loadUserScript('groovysh.profile')
 
@@ -434,12 +437,17 @@ extends Shell {
 			if (commandLine != null && commandLine.trim().size() > 0) {
 				// Run the given commands
 				def commands = commandLine.split('--')
-				commands.each { 
-					execute(it)
+				commands.each {
+					if(it == 'noshell')
+					{
+						shell =false
+					}else{
+						execute(it)
+					}
 				}
-				
+
 			}
-			else {
+			if(shell) {
 				loadUserScript('groovysh.rc')
 
 				// Setup the interactive runner
@@ -494,5 +502,5 @@ extends Shell {
 	}
 
 
-	
+
 }

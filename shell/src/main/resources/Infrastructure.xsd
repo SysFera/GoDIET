@@ -4,13 +4,9 @@
 	elementFormDefault="unqualified">
 	<xs:include schemaLocation="GoDietModel.xsd" />
 
-	<xs:element name="platform">
-		<xs:complexType>
-			<xs:sequence>
-				<xs:element name="infrastructure" type="infrastructure" />
-			</xs:sequence>
-		</xs:complexType>
-	</xs:element>
+	<xs:element name="infrastructure" type="infrastructure"/>
+		
+	
 
 
 </xs:schema>
