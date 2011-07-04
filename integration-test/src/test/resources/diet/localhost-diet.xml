@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<godiet:diet xmlns:godiet="http://www.sysfera.com"
+<godiet:dietPlatform xmlns:godiet="http://www.sysfera.com"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.sysfera.com ../Diet.xsd">
 
-	<dietServices>
-		<omniNames id="omniNames1">
+	<services>
+
+		<omniNames id="omniNames1" domain="Domain1">
 			<config server="daoudaMachina" remoteBinary="omniNames" />
 		</omniNames>
-	</dietServices>
 
-	<dietInfrastructure>
+	</services>
+	<hierarchy>
 		<masterAgent id="MA1">
 			<config server="daoudaMachina" remoteBinary="dietAgent" />
 
@@ -30,5 +31,5 @@
 			</sed>
 
 		</masterAgent>
-	</dietInfrastructure>
-</godiet:diet>
+	</hierarchy>
+</godiet:dietPlatform>

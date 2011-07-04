@@ -39,19 +39,19 @@
 
 
 		<masterAgent id="MA1">
-			<config server="Node1" remoteBinary="dietAgent" />
+			<config server="Node2" remoteBinary="dietAgent" />
 
 			<sed id="sed1">
 				<config server="Node2" remoteBinary="dmat_manips_server" />
 				<parameters string="T" />
 			</sed>
 			<sed id="sed2">
-				<config server="Node3" remoteBinary="dmat_manips_server" />
+				<config server="Node2" remoteBinary="dmat_manips_server" />
 				
 				<parameters string="T" />
 			</sed>
 			<sed id="sed3">
-				<config server="Node4" remoteBinary="dmat_manips_server" />
+				<config server="Node3" remoteBinary="dmat_manips_server" />
 				<parameters string="T" />
 			</sed>
 		</masterAgent>
