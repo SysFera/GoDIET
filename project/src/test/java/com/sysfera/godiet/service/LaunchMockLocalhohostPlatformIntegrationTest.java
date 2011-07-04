@@ -1,4 +1,4 @@
-package com.sysfera.godiet.command;
+package com.sysfera.godiet.service;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -60,7 +60,7 @@ public class LaunchMockLocalhohostPlatformIntegrationTest {
 				InputStream inputStream = getClass().getClassLoader()
 						.getResourceAsStream(configurationFile);
 
-				godiet.getXmlHelpController().registerConfigurationFile(
+				godiet.getXmlHelpService().registerConfigurationFile(
 						inputStream);
 			}
 			{
@@ -68,7 +68,7 @@ public class LaunchMockLocalhohostPlatformIntegrationTest {
 				String platformTestCase = "infrastructure/testbed.xml";
 				InputStream inputStreamPlatform = getClass().getClassLoader()
 						.getResourceAsStream(platformTestCase);
-				godiet.getXmlHelpController().registerInfrastructureElements(
+				godiet.getXmlHelpService().registerInfrastructureElements(
 						inputStreamPlatform);
 			}
 			{
@@ -76,7 +76,7 @@ public class LaunchMockLocalhohostPlatformIntegrationTest {
 				String testCaseFile = "diet/testbed-diet.xml";
 				InputStream inputStream = getClass().getClassLoader()
 						.getResourceAsStream(testCaseFile);
-				godiet.getXmlHelpController().registerDietElements(inputStream);
+				godiet.getXmlHelpService().registerDietElements(inputStream);
 			}
 
 		} catch (IOException e) {

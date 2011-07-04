@@ -1,5 +1,6 @@
 package com.sysfera.godiet.managers.topology;
 
+import java.io.IOException;
 import java.io.InputStream;
 
 import junit.framework.Assert;
@@ -14,42 +15,55 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.sysfera.godiet.command.init.util.XMLLoadingHelper;
 import com.sysfera.godiet.exceptions.CommandExecutionException;
+import com.sysfera.godiet.exceptions.XMLParseException;
+import com.sysfera.godiet.exceptions.generics.GoDietConfigurationException;
 import com.sysfera.godiet.exceptions.generics.PathException;
+import com.sysfera.godiet.exceptions.remote.IncubateException;
+import com.sysfera.godiet.managers.DietManager;
 import com.sysfera.godiet.managers.InfrastructureManager;
 import com.sysfera.godiet.managers.ResourcesManager;
 import com.sysfera.godiet.model.Path;
 import com.sysfera.godiet.model.Path.Hop;
 import com.sysfera.godiet.model.generated.Resource;
+import com.sysfera.godiet.services.GoDietService;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @DirtiesContext
 @ContextConfiguration(locations = { "/spring/spring-config.xml",
-		"/spring/ssh-context.xml" })
+		"/spring/ssh-context.xml", "/spring/godiet-service.xml" })
 public class TopologyManagerTest {
+
 	private Logger log = LoggerFactory.getLogger(getClass());
 	@Autowired
-	private ResourcesManager rm;
+	private GoDietService godiet;
 
-	private TopologyManagerGSImpl tm;
+	@Autowired
+	private DietManager dietModel;
 
 	@Before
-	public void setupTest() {
+	public void init() throws IncubateException {
 
-		try {
+		{
 			// Loading configuration
-			{
-				String configurationFile = "configuration/configuration.xml";
-				InputStream inputStream = getClass().getClassLoader()
-						.getResourceAsStream(configurationFile);
-				XMLLoadingHelper.initConfig(rm, inputStream);
-			}
+			String configurationFile = "configuration/configuration.xml";
 
-			
-		} catch (CommandExecutionException e) {
-			log.error("Test Fail", e);
-			Assert.fail(e.getMessage());
+			InputStream inputStream = getClass().getClassLoader()
+					.getResourceAsStream(configurationFile);
+
+			try {
+				godiet.getXmlHelpService().registerConfigurationFile(
+						inputStream);
+			} catch (IOException e) {
+				log.error("", e);
+				Assert.fail(e.getMessage());
+			} catch (XMLParseException e) {
+				log.error("", e);
+				Assert.fail(e.getMessage());
+			} catch (GoDietConfigurationException e) {
+				log.error("", e);
+				Assert.fail(e.getMessage());
+			}
 		}
 	}
 
@@ -62,10 +76,10 @@ public class TopologyManagerTest {
 					.getResourceAsStream(infrastructureTestCase);
 
 			try {
-				XMLLoadingHelper.initInfrastructure(rm,
+				godiet.getXmlHelpService().registerInfrastructureElements(
 						infrastructureInputStream);
 
-				InfrastructureManager infrastructureModel = rm
+				InfrastructureManager infrastructureModel = godiet.getModel()
 						.getInfrastructureModel();
 				TopologyManager topologyManager = infrastructureModel
 						.getTopologyManager();
@@ -123,7 +137,6 @@ public class TopologyManagerTest {
 					exceptionPathNotExist3 = true;
 				}
 				Assert.assertEquals(exceptionPathNotExist3, true);
-
 
 				/** Source qui n'existe pas et dest qui existe **/
 				source = infrastructureModel.getResource("Fake1");
@@ -194,12 +207,13 @@ public class TopologyManagerTest {
 				}
 				Assert.assertEquals(exceptionPathNotExist5, true);
 
-			} catch (CommandExecutionException e) {
+			} catch (Exception e) {
 				log.error("Test Fail", e);
 				Assert.fail(e.getMessage());
 			}
 		}
 	}
+
 	@DirtiesContext
 	@Test
 	public void searchPath2() {
@@ -208,8 +222,9 @@ public class TopologyManagerTest {
 			InputStream platforInputStream = getClass().getClassLoader()
 					.getResourceAsStream(platformTestCase);
 			try {
-				XMLLoadingHelper.initInfrastructure(rm, platforInputStream);
-				InfrastructureManager infrastructureModel = rm
+				godiet.getXmlHelpService().registerInfrastructureElements(
+						platforInputStream);
+				InfrastructureManager infrastructureModel = godiet.getModel()
 						.getInfrastructureModel();
 				TopologyManager topologyManager = infrastructureModel
 						.getTopologyManager();
@@ -341,7 +356,7 @@ public class TopologyManagerTest {
 						.getDestination().getId(), "Node2");
 				Assert.assertEquals(((Hop) path.getPath().toArray()[0])
 						.getLink().getId(), "node2interface1");
-				
+
 				/** Source et dest non joignable **/
 				source = infrastructureModel.getResource("Node2");
 				destination = infrastructureModel.getResource("miaou");
@@ -355,7 +370,7 @@ public class TopologyManagerTest {
 				}
 				Assert.assertEquals(exceptionPathNotExist5, true);
 
-			} catch (CommandExecutionException e) {
+			} catch (Exception e) {
 				log.error("Test Fail", e);
 				Assert.fail(e.getMessage());
 			}

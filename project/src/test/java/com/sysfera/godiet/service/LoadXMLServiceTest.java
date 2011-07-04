@@ -1,4 +1,4 @@
-package com.sysfera.godiet.command;
+package com.sysfera.godiet.service;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -17,9 +17,6 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.sysfera.godiet.command.init.util.XMLLoadingHelper;
-import com.sysfera.godiet.command.xml.LoadXMLDietCommand;
-import com.sysfera.godiet.exceptions.CommandExecutionException;
 import com.sysfera.godiet.exceptions.ResourceAddException;
 import com.sysfera.godiet.exceptions.XMLParseException;
 import com.sysfera.godiet.exceptions.generics.GoDietConfigurationException;
@@ -29,25 +26,16 @@ import com.sysfera.godiet.managers.DietManager;
 import com.sysfera.godiet.managers.InfrastructureManager;
 import com.sysfera.godiet.managers.ResourcesManager;
 import com.sysfera.godiet.model.DietResourceManaged;
-import com.sysfera.godiet.model.SoftwareController;
-import com.sysfera.godiet.model.factories.GodietMetaFactory;
 import com.sysfera.godiet.model.generated.LocalAgent;
 import com.sysfera.godiet.model.generated.MasterAgent;
 import com.sysfera.godiet.model.generated.Sed;
-import com.sysfera.godiet.model.validators.ForwarderRuntimeValidatorImpl;
-import com.sysfera.godiet.model.validators.LocalAgentRuntimeValidatorImpl;
-import com.sysfera.godiet.model.validators.MasterAgentRuntimeValidatorImpl;
-import com.sysfera.godiet.model.validators.OmniNamesRuntimeValidatorImpl;
-import com.sysfera.godiet.model.validators.SedRuntimeValidatorImpl;
 import com.sysfera.godiet.services.GoDietService;
-import com.sysfera.godiet.utils.xml.XMLParser;
-import com.sysfera.godiet.utils.xml.XmlScannerJaxbImpl;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @DirtiesContext
 @ContextConfiguration(locations = { "/spring/spring-config.xml",
 		"/spring/ssh-context.xml", "/spring/godiet-service.xml" })
-public class CommandLoadXMLImplTest {
+public class LoadXMLServiceTest {
 
 	private Logger log = LoggerFactory.getLogger(getClass());
 	@Autowired
@@ -67,7 +55,7 @@ public class CommandLoadXMLImplTest {
 					.getResourceAsStream(configurationFile);
 
 			try {
-				godiet.getXmlHelpController().registerConfigurationFile(
+				godiet.getXmlHelpService().registerConfigurationFile(
 						inputStream);
 			} catch (IOException e) {
 				log.error("", e);
@@ -95,7 +83,7 @@ public class CommandLoadXMLImplTest {
 		InputStream inputStreamPlatform = getClass().getClassLoader()
 				.getResourceAsStream(infraCaseFiles);
 		try {
-			godiet.getXmlHelpController().registerInfrastructureElements(
+			godiet.getXmlHelpService().registerInfrastructureElements(
 					inputStreamPlatform);
 		} catch (IOException e) {
 			log.error("", e);
@@ -118,7 +106,7 @@ public class CommandLoadXMLImplTest {
 
 				InputStream inputStream = getClass().getClassLoader()
 						.getResourceAsStream(testCaseFile);
-				godiet.getXmlHelpController().registerDietElements(inputStream);
+				godiet.getXmlHelpService().registerDietElements(inputStream);
 			} catch (Exception e) {
 				log.error("Test fail for file: " + testCaseFile, e);
 				Assert.fail();
@@ -137,7 +125,7 @@ public class CommandLoadXMLImplTest {
 				String infra = "infrastructure/3D-5N-3G-3L.xml";
 				InputStream inputStreamInfra = getClass().getClassLoader()
 						.getResourceAsStream(infra);
-				godiet.getXmlHelpController().registerInfrastructureElements(
+				godiet.getXmlHelpService().registerInfrastructureElements(
 						inputStreamInfra);
 			}
 
@@ -147,7 +135,7 @@ public class CommandLoadXMLImplTest {
 				String testCaseFile = "diet/1MA-3LA-10SED.xml";
 				InputStream inputStream = getClass().getClassLoader()
 						.getResourceAsStream(testCaseFile);
-				godiet.getXmlHelpController().registerDietElements(inputStream);
+				godiet.getXmlHelpService().registerDietElements(inputStream);
 			}
 			ResourcesManager rm = godiet.getModel();
 			InfrastructureManager platform = rm.getInfrastructureModel();
@@ -189,7 +177,8 @@ public class CommandLoadXMLImplTest {
 
 		}catch(Exception e )
 		{
-			log.error(e);
+			Assert.fail(e.getMessage());
+			log.error("",e);
 		}
 
 	}
@@ -197,36 +186,29 @@ public class CommandLoadXMLImplTest {
 	@Test
 	@DirtiesContext
 	public void testCountDietElement2() {
-
-		try {
+		try{
 			{
-				String platformTestCase = "infrastructure/3D-5N-3G-3L.xml";
-				InputStream inputStreamPlatform = getClass().getClassLoader()
-						.getResourceAsStream(platformTestCase);
-				XMLLoadingHelper.initInfrastructure(rm, inputStreamPlatform);
+				String infra = "infrastructure/3D-5N-3G-3L.xml";
+				InputStream inputStreamInfra = getClass().getClassLoader()
+						.getResourceAsStream(infra);
+				godiet.getXmlHelpService().registerInfrastructureElements(
+						inputStreamInfra);
 			}
 
-			String testCaseFile = "diet/2MA-1LA-6SED.xml";
-			InputStream inputStream = getClass().getClassLoader()
-					.getResourceAsStream(testCaseFile);
-			XmlScannerJaxbImpl scanner = new XmlScannerJaxbImpl();
-			LoadXMLDietCommand xmlLoadingCommand = new LoadXMLDietCommand();
-			xmlLoadingCommand.setRm(rm);
-			xmlLoadingCommand.setXmlInput(inputStream);
-			xmlLoadingCommand.setXmlParser(scanner);
-
-			DietManager dietModel = rm.getDietModel();
-			GodietMetaFactory godietAbstractFactory = new GodietMetaFactory(
-					softwareController, new ForwarderRuntimeValidatorImpl(
-							dietModel), new MasterAgentRuntimeValidatorImpl(
-							dietModel), new LocalAgentRuntimeValidatorImpl(
-							dietModel), new SedRuntimeValidatorImpl(dietModel),
-					new OmniNamesRuntimeValidatorImpl(dietModel));
-
-			xmlLoadingCommand.setAbstractFactory(godietAbstractFactory);
-
-			xmlLoadingCommand.execute();
+			
+			{
+				// Load Diet scenarii
+				String testCaseFile = "diet/2MA-1LA-6SED.xml";
+				InputStream inputStream = getClass().getClassLoader()
+						.getResourceAsStream(testCaseFile);
+				godiet.getXmlHelpService().registerDietElements(inputStream);
+			}
+			ResourcesManager rm = godiet.getModel();
 			InfrastructureManager platform = rm.getInfrastructureModel();
+	
+
+		
+		
 			// if (platform.getClusters().size() != 0)
 			// Assert.fail();
 			if (platform.getDomains().size() != 4)
@@ -262,7 +244,7 @@ public class CommandLoadXMLImplTest {
 					Assert.fail();
 			}
 
-		} catch (CommandExecutionException e) {
+		} catch (Exception e) {
 			log.error("Test testCountDietElement2 Fail", e);
 			Assert.fail();
 		}

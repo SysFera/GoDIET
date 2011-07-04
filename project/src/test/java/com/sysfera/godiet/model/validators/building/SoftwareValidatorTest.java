@@ -5,34 +5,55 @@ import java.io.InputStream;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.sysfera.godiet.command.init.util.XMLLoadingHelper;
 import com.sysfera.godiet.exceptions.generics.DietResourceValidationException;
-import com.sysfera.godiet.managers.ResourcesManager;
+import com.sysfera.godiet.exceptions.remote.IncubateException;
+import com.sysfera.godiet.managers.DietManager;
 import com.sysfera.godiet.model.generated.MasterAgent;
 import com.sysfera.godiet.model.generated.ObjectFactory;
 import com.sysfera.godiet.model.validators.BuildingValidator;
+import com.sysfera.godiet.services.GoDietService;
 
+@RunWith(SpringJUnit4ClassRunner.class)
+@DirtiesContext
+@ContextConfiguration(locations = { "/spring/spring-config.xml",
+		"/spring/ssh-context.xml", "/spring/godiet-service.xml" })
 public class SoftwareValidatorTest {
-	private ResourcesManager rm = new ResourcesManager();
+
+	private Logger log = LoggerFactory.getLogger(getClass());
+	@Autowired
+	private GoDietService godiet;
+
+	@Autowired
+	private DietManager dietModel;
 
 	@Before
-	public void init() {
-
+	public void init() throws IncubateException {
 		try {
-			// Loading configuration
 			{
+				// Loading configuration
 				String configurationFile = "configuration/configuration.xml";
 
 				InputStream inputStream = getClass().getClassLoader()
 						.getResourceAsStream(configurationFile);
-				XMLLoadingHelper.initConfig(rm, inputStream);
+
+				godiet.getXmlHelpService().registerConfigurationFile(
+						inputStream);
 			}
 			{
-				String platformTestCase = "infrastructure/testbed-platform.xml";
+				// Load infrastructure
+				String platformTestCase = "infrastructure/testbed.xml";
 				InputStream inputStreamPlatform = getClass().getClassLoader()
 						.getResourceAsStream(platformTestCase);
-				XMLLoadingHelper.initInfrastructure(rm, inputStreamPlatform);
+				godiet.getXmlHelpService().registerInfrastructureElements(
+						inputStreamPlatform);
 			}
 		} catch (Exception e) {
 
@@ -48,7 +69,7 @@ public class SoftwareValidatorTest {
 		ma.setId("MA1");
 
 		try {
-			BuildingValidator.validate(ma, rm.getDietModel());
+			BuildingValidator.validate(ma, godiet.getModel().getDietModel());
 		} catch (DietResourceValidationException e) {
 			Assert.fail("");
 		}
