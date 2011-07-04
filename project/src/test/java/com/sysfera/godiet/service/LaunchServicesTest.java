@@ -1,4 +1,4 @@
-package com.sysfera.godiet.command;
+package com.sysfera.godiet.service;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -32,7 +32,7 @@ import com.sysfera.godiet.services.GoDietService;
 @DirtiesContext
 @ContextConfiguration(locations = { "/spring/spring-config.xml",
 		"/spring/ssh-context.xml", "/spring/godiet-service.xml" })
-public class CommandLaunchServicesTest {
+public class LaunchServicesTest {
 
 	private Logger log = LoggerFactory.getLogger(getClass());
 	@Autowired
@@ -51,7 +51,7 @@ public class CommandLaunchServicesTest {
 				InputStream inputStream = getClass().getClassLoader()
 						.getResourceAsStream(configurationFile);
 
-				godiet.getXmlHelpController().registerConfigurationFile(
+				godiet.getXmlHelpService().registerConfigurationFile(
 						inputStream);
 			}
 			{
@@ -59,7 +59,7 @@ public class CommandLaunchServicesTest {
 				String platformTestCase = "infrastructure/testbed.xml";
 				InputStream inputStreamPlatform = getClass().getClassLoader()
 						.getResourceAsStream(platformTestCase);
-				godiet.getXmlHelpController().registerInfrastructureElements(
+				godiet.getXmlHelpService().registerInfrastructureElements(
 						inputStreamPlatform);
 			}
 			{
@@ -67,7 +67,7 @@ public class CommandLaunchServicesTest {
 				String testCaseFile = "diet/testbed-diet.xml";
 				InputStream inputStream = getClass().getClassLoader()
 						.getResourceAsStream(testCaseFile);
-				godiet.getXmlHelpController().registerDietElements(inputStream);
+				godiet.getXmlHelpService().registerDietElements(inputStream);
 			}
 
 		} catch (IOException e) {
