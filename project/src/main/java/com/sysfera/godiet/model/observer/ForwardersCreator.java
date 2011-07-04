@@ -31,7 +31,7 @@ import com.sysfera.godiet.model.generated.ObjectFactory;
 import com.sysfera.godiet.model.generated.Resource;
 import com.sysfera.godiet.model.generated.Sed;
 import com.sysfera.godiet.model.generated.Software;
-import com.sysfera.godiet.services.PlatformController;
+import com.sysfera.godiet.services.PlatformService;
 
 /**
  * 
@@ -50,7 +50,7 @@ public class ForwardersCreator implements PlatformObserver {
 	private TopologyManager tm;
 
 	@Autowired
-	private PlatformController platformController;
+	private PlatformService platformController;
 
 	/**
 	 * First get all already resources register and create forwarder and
