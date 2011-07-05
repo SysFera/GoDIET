@@ -164,10 +164,7 @@ public class ChannelManagerJsch {
 
 		Hop[] resources = hops.toArray(new Hop[0]);
 		log.debug("hopsSize: " + resources.length);
-		if (resources.length < 3) {
-			return; // no need to create proxy. Path contains source and
-					// destination which are in the same domain
-		}
+
 		NCProxy lastProxy = null;
 		// i = 0 is the source. Don't create a proxy
 		for (int i = 0; i < resources.length; i++) {
@@ -188,10 +185,11 @@ public class ChannelManagerJsch {
 			// END
 
 			Ssh link = hop.getLink();
+			log.debug("Create Proxy: " + link.getLogin()+ "@" +link.getServer()+":"+link.getPort());
 			NCProxy proxy = new NCProxy(link.getLogin(), link.getServer(),
 					link.getPort(), jsch, ui);
 			if (lastProxy != null) {
-				log.debug("Add proxy " + link.getServer() + " to "
+				log.debug("Add proxy " + link.getServer() + " to proxy"
 						+ lastProxy.getHost());
 				proxy.setProxy(lastProxy);
 			}
