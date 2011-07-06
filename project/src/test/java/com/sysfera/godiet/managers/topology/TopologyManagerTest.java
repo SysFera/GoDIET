@@ -233,8 +233,9 @@ public class TopologyManagerTest {
 				Path path = null;
 
 				/** Source = Destination **/
-				source = infrastructureModel.getResource("miaou");
-				destination = infrastructureModel.getResource("miaou");
+				//TODO: Need to throw exception like domainTopology
+				source = infrastructureModel.getResource("testbedVM");
+				destination = infrastructureModel.getResource("testbedVM");
 				try {
 					path = topologyManager.findPath(source, destination);
 				} catch (PathException e) {
@@ -243,7 +244,7 @@ public class TopologyManagerTest {
 				// We expect to find a path'size of 1 pointed at the source node
 				Assert.assertEquals(path.getPath().size(), 1);
 				Assert.assertEquals(((Hop) path.getPath().toArray()[0])
-						.getDestination().getId(), "miaou");
+						.getDestination().getId(), "testbedVM");
 
 				/** Source et Dest n'existent pas **/
 				source = infrastructureModel.getResource("Fake1");
@@ -356,6 +357,21 @@ public class TopologyManagerTest {
 						.getDestination().getId(), "Node2");
 				Assert.assertEquals(((Hop) path.getPath().toArray()[0])
 						.getLink().getId(), "node2interface1");
+
+				
+				
+				source = infrastructureModel.getResource("graal");
+				destination = infrastructureModel.getResource("Node1");
+				try {
+					path = topologyManager.findPath(source, destination);
+				} catch (PathException e) {
+					Assert.fail(e.getMessage());
+				}
+				Assert.assertEquals(path.getPath().size(), 2);
+				Assert.assertEquals(((Hop) path.getPath().toArray()[0])
+						.getDestination().getId(), "testbedVM");
+				Assert.assertEquals(((Hop) path.getPath().toArray()[0])
+						.getLink().getId(), "testbedVMinterface1");
 
 				/** Source et dest non joignable **/
 				source = infrastructureModel.getResource("Node2");

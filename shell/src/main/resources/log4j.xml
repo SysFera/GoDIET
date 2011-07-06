@@ -31,11 +31,6 @@
 	</category>
 
 	<category
-		name="com.sysfera.godiet.managers.topology.TopologyManagerNeo4jImpl">
-		<priority value="INFO" />
-		<appender-ref ref="file" />
-	</category>
-	<category
 		name="com.sysfera.godiet.model.states.StateController">
 		<priority value="INFO" />
 		<appender-ref ref="file" />
