@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<godiet:dietPlatform xmlns:godiet="http://www.sysfera.com"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.sysfera.com ../Diet.xsd">
+
+	<services>
+		<omniNames id="omniNamesVishnu" domain="Domain1">
+			<config server="Node1" remoteBinary="omniNames" />
+		</omniNames>
+	</services>
+
+	<hierarchy>
+		<masterAgent id="MA1">
+			<config server="Node1" remoteBinary="dietAgent" />
+
+			<sed id="sed1">
+				<config server="VishnuGodiet" remoteBinary="ummssed" />
+				<file id="umsseddiet" template="sed"></file>
+				<file id="umssedconf" template="ummsed"></file>
+				<commandLine>
+					<parameters string="T" />
+				</commandLine>
+			</sed>
+			<sed id="sed2">
+				<config server="VishnuGodiet" remoteBinary="immssed" />
+				<parameters string="T" />
+			</sed>
+			<sed id="sed3">
+				<config server="VishnuGodiet" remoteBinary="" />
+				<parameters string="T" />
+			</sed>
+		</masterAgent>
+	</hierarchy>
+</godiet:dietPlatform>
