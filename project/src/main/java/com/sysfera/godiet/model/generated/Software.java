@@ -23,42 +23,20 @@ import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-/**
- * Abstract representation of Diet agent.
- * 
- * 
- * <p>
- * Java class for software complex type.
- * 
- * <p>
- * The following schema fragment specifies the expected content contained within
- * this class.
- * 
- * <pre>
- * &lt;complexType name="software">
- *   &lt;complexContent>
- *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- *       &lt;sequence>
- *         &lt;element name="config" type="{http://www.sysfera.com}config"/>
- *         &lt;element name="cfgOptions" type="{http://www.sysfera.com}options" minOccurs="0"/>
- *         &lt;sequence>
- *           &lt;element name="parameters" type="{http://www.sysfera.com}parameters" maxOccurs="unbounded" minOccurs="0"/>
- *         &lt;/sequence>
- *       &lt;/sequence>
- *       &lt;attribute name="id" use="required" type="{http://www.w3.org/2001/XMLSchema}ID" />
- *       &lt;attribute name="stats" type="{http://www.w3.org/2001/XMLSchema}boolean" default="false" />
- *     &lt;/restriction>
- *   &lt;/complexContent>
- * &lt;/complexType>
- * </pre>
- * 
- * 
- */
-@XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "software", propOrder = { "config", "cfgOptions", "parameters" })
-@XmlSeeAlso({ LocalAgent.class, MaDag.class, MasterAgent.class,
-		OmniNames.class, Sed.class, Forwarder.class })
+
 public abstract class Software {
+
+	@XmlElement(required = true)
+	protected Config config;
+	protected List<ConfigurationFile> file;
+	protected List<CommandLine> commandLine;
+	@XmlAttribute(required = true)
+	@XmlJavaTypeAdapter(CollapsedStringAdapter.class)
+	@XmlID
+	@XmlSchemaType(name = "ID")
+	protected String id;
+	@XmlAttribute
+	protected Boolean stats;
 	@XmlTransient
 	protected Software parent;
 
@@ -74,18 +52,6 @@ public abstract class Software {
 		if (parent instanceof Software)
 			this.parent = (Software) parent;
 	}
-
-	@XmlElement(required = true)
-	protected Config config;
-	protected Options cfgOptions;
-	protected List<Parameters> parameters;
-	@XmlAttribute(required = true)
-	@XmlJavaTypeAdapter(CollapsedStringAdapter.class)
-	@XmlID
-	@XmlSchemaType(name = "ID")
-	protected String id;
-	@XmlAttribute
-	protected Boolean stats;
 
 	/**
 	 * Gets the value of the config property.
@@ -109,54 +75,63 @@ public abstract class Software {
 	}
 
 	/**
-	 * Gets the value of the cfgOptions property.
-	 * 
-	 * @return possible object is {@link Options }
-	 * 
-	 */
-	public Options getCfgOptions() {
-		return cfgOptions;
-	}
-
-	/**
-	 * Sets the value of the cfgOptions property.
-	 * 
-	 * @param value
-	 *            allowed object is {@link Options }
-	 * 
-	 */
-	public void setCfgOptions(Options value) {
-		this.cfgOptions = value;
-	}
-
-	/**
-	 * Gets the value of the parameters property.
+	 * Gets the value of the file property.
 	 * 
 	 * <p>
 	 * This accessor method returns a reference to the live list, not a
 	 * snapshot. Therefore any modification you make to the returned list will
 	 * be present inside the JAXB object. This is why there is not a
-	 * <CODE>set</CODE> method for the parameters property.
+	 * <CODE>set</CODE> method for the file property.
 	 * 
 	 * <p>
 	 * For example, to add a new item, do as follows:
 	 * 
 	 * <pre>
-	 * getParameters().add(newItem);
+	 * getFile().add(newItem);
 	 * </pre>
 	 * 
 	 * 
 	 * <p>
 	 * Objects of the following type(s) are allowed in the list
-	 * {@link Parameters }
+	 * {@link ConfigurationFile }
 	 * 
 	 * 
 	 */
-	public List<Parameters> getParameters() {
-		if (parameters == null) {
-			parameters = new ArrayList<Parameters>();
+	public List<ConfigurationFile> getFile() {
+		if (file == null) {
+			file = new ArrayList<ConfigurationFile>();
 		}
-		return this.parameters;
+		return this.file;
+	}
+
+	/**
+	 * Gets the value of the commandLine property.
+	 * 
+	 * <p>
+	 * This accessor method returns a reference to the live list, not a
+	 * snapshot. Therefore any modification you make to the returned list will
+	 * be present inside the JAXB object. This is why there is not a
+	 * <CODE>set</CODE> method for the commandLine property.
+	 * 
+	 * <p>
+	 * For example, to add a new item, do as follows:
+	 * 
+	 * <pre>
+	 * getCommandLine().add(newItem);
+	 * </pre>
+	 * 
+	 * 
+	 * <p>
+	 * Objects of the following type(s) are allowed in the list
+	 * {@link CommandLine }
+	 * 
+	 * 
+	 */
+	public List<CommandLine> getCommandLine() {
+		if (commandLine == null) {
+			commandLine = new ArrayList<CommandLine>();
+		}
+		return this.commandLine;
 	}
 
 	/**

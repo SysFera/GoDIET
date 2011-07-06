@@ -18,16 +18,24 @@
 				<file id="umsseddiet" template="sed"></file>
 				<file id="umssedconf" template="ummsed"></file>
 				<commandLine>
-					<parameters string="T" />
+					<parameter string="${file.ummsedconf.path}" />
 				</commandLine>
 			</sed>
 			<sed id="sed2">
 				<config server="VishnuGodiet" remoteBinary="immssed" />
-				<parameters string="T" />
+				<file id="imsseddiet" template="sed"></file>
+				<file id="imssedconf" template="immsed"></file>
+				<commandLine>
+					<parameter string="${file.imssedconf.path}" />
+				</commandLine>
 			</sed>
 			<sed id="sed3">
-				<config server="VishnuGodiet" remoteBinary="" />
-				<parameters string="T" />
+				<config server="VishnuGodiet" remoteBinary="fmssed" />
+				<file id="fmsseddiet" template="sed"></file>
+				<file id="fmssedconf" template="fmssed"></file>
+				<commandLine>
+					<parameter string="${file.fmssedconf.path}" />
+				</commandLine>
 			</sed>
 		</masterAgent>
 	</hierarchy>
