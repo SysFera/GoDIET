@@ -346,17 +346,32 @@
 		</xs:annotation>
 		<xs:sequence>
 			<xs:element name="config" type="config" />
-			<xs:element name="cfgOptions" type="options" minOccurs="0"
-				maxOccurs="1" />
-			<xs:sequence>
-				<xs:element name="parameters" type="parameters"
-					maxOccurs="unbounded" minOccurs="0" />
-			</xs:sequence>
+			<xs:element name="file" type="configurationFile"
+				minOccurs="0" maxOccurs="unbounded" />
+
+			<xs:element name="commandLine" type="commandLine"
+				minOccurs="0" maxOccurs="unbounded" />
+
 		</xs:sequence>
 		<xs:attribute name="id" type="xs:ID" use="required" />
 		<xs:attribute name="stats" type="xs:boolean" default="false" />
 	</xs:complexType>
 
+
+	<xs:complexType name="configurationFile">
+		<xs:attribute name="id" type="xs:ID" use="required" />
+		<xs:attribute name="template" type="xs:string" use="required" />
+	</xs:complexType>
+
+	<xs:complexType name="commandLine">
+		<xs:sequence>
+			<xs:element name="parameter">
+				<xs:complexType>
+					<xs:attribute name="string" />
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
 
 	<xs:complexType name="masterAgent">
 		<xs:annotation>
@@ -420,7 +435,7 @@
 
 	<xs:complexType name="forwarders">
 		<xs:sequence>
-			<xs:element name="client" type="forwarder"  />
+			<xs:element name="client" type="forwarder" />
 			<xs:element name="server" type="forwarder" />
 		</xs:sequence>
 	</xs:complexType>
