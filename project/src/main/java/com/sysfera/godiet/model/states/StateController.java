@@ -7,9 +7,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.sysfera.godiet.exceptions.remote.IncubateException;
-import com.sysfera.godiet.model.SoftwareController;
-import com.sysfera.godiet.model.SoftwareManager;
 import com.sysfera.godiet.model.generated.Software;
+import com.sysfera.godiet.model.softwares.SoftwareController;
+import com.sysfera.godiet.model.softwares.SoftwareManager;
 import com.sysfera.godiet.model.validators.RuntimeValidator;
 
 /**

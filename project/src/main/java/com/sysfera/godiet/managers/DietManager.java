@@ -11,9 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.sysfera.godiet.exceptions.DietResourceCreationException;
-import com.sysfera.godiet.model.DietResourceManaged;
-import com.sysfera.godiet.model.OmniNamesManaged;
-import com.sysfera.godiet.model.SoftwareManager;
 import com.sysfera.godiet.model.generated.Domain;
 import com.sysfera.godiet.model.generated.Forwarder;
 import com.sysfera.godiet.model.generated.LocalAgent;
@@ -24,6 +21,9 @@ import com.sysfera.godiet.model.generated.Sed;
 import com.sysfera.godiet.model.generated.Software;
 import com.sysfera.godiet.model.generated.Ssh;
 import com.sysfera.godiet.model.observer.PlatformObserver;
+import com.sysfera.godiet.model.softwares.DietResourceManaged;
+import com.sysfera.godiet.model.softwares.OmniNamesManaged;
+import com.sysfera.godiet.model.softwares.SoftwareManager;
 
 /**
  * Diet platform manager.

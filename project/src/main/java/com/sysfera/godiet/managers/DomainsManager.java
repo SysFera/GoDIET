@@ -9,12 +9,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import com.sysfera.godiet.managers.DomainsManager.DomainGraph.EdgeDomain;
-import com.sysfera.godiet.model.DietResourceManaged;
-import com.sysfera.godiet.model.OmniNamesManaged;
 import com.sysfera.godiet.model.generated.Domain;
 import com.sysfera.godiet.model.generated.Forwarder;
 import com.sysfera.godiet.model.generated.Resource;
 import com.sysfera.godiet.model.generated.Ssh;
+import com.sysfera.godiet.model.softwares.DietResourceManaged;
+import com.sysfera.godiet.model.softwares.OmniNamesManaged;
 
 /**
  * 

@@ -5,9 +5,6 @@ import java.util.List;
 import com.sysfera.godiet.exceptions.DietResourceCreationException;
 import com.sysfera.godiet.exceptions.remote.IncubateException;
 import com.sysfera.godiet.managers.InfrastructureManager;
-import com.sysfera.godiet.model.OmniNamesManaged;
-import com.sysfera.godiet.model.SoftwareController;
-import com.sysfera.godiet.model.SoftwareManager;
 import com.sysfera.godiet.model.generated.Domain;
 import com.sysfera.godiet.model.generated.Env;
 import com.sysfera.godiet.model.generated.ObjectFactory;
@@ -18,6 +15,9 @@ import com.sysfera.godiet.model.generated.Resource;
 import com.sysfera.godiet.model.generated.Software;
 import com.sysfera.godiet.model.generated.Ssh;
 import com.sysfera.godiet.model.generated.Var;
+import com.sysfera.godiet.model.softwares.OmniNamesManaged;
+import com.sysfera.godiet.model.softwares.SoftwareController;
+import com.sysfera.godiet.model.softwares.SoftwareManager;
 import com.sysfera.godiet.model.validators.RuntimeValidator;
 
 /**

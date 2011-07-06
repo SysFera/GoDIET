@@ -1,10 +1,10 @@
 package com.sysfera.godiet.model.observer;
 
-import com.sysfera.godiet.model.DietResourceManaged;
-import com.sysfera.godiet.model.OmniNamesManaged;
 import com.sysfera.godiet.model.generated.LocalAgent;
 import com.sysfera.godiet.model.generated.MasterAgent;
 import com.sysfera.godiet.model.generated.Sed;
+import com.sysfera.godiet.model.softwares.DietResourceManaged;
+import com.sysfera.godiet.model.softwares.OmniNamesManaged;
 
 public interface PlatformObserver {
 

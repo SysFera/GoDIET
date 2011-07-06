@@ -1,4 +1,4 @@
-package com.sysfera.godiet.model;
+package com.sysfera.godiet.model.softwares;
 
 import com.sysfera.godiet.exceptions.remote.IncubateException;
 import com.sysfera.godiet.exceptions.remote.LaunchException;
