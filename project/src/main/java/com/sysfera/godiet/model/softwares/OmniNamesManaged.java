@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.sysfera.godiet.model;
+package com.sysfera.godiet.model.softwares;
 
 import java.util.ArrayList;
 import java.util.List;

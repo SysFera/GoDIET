@@ -2,13 +2,13 @@ package com.sysfera.godiet.model.factories;
 
 import com.sysfera.godiet.exceptions.DietResourceCreationException;
 import com.sysfera.godiet.exceptions.remote.IncubateException;
-import com.sysfera.godiet.model.DietResourceManaged;
-import com.sysfera.godiet.model.OmniNamesManaged;
-import com.sysfera.godiet.model.SoftwareController;
 import com.sysfera.godiet.model.generated.MasterAgent;
 import com.sysfera.godiet.model.generated.Node;
 import com.sysfera.godiet.model.generated.OmniNames;
 import com.sysfera.godiet.model.generated.Resource;
+import com.sysfera.godiet.model.softwares.DietResourceManaged;
+import com.sysfera.godiet.model.softwares.OmniNamesManaged;
+import com.sysfera.godiet.model.softwares.SoftwareController;
 import com.sysfera.godiet.model.validators.RuntimeValidator;
 
 /**

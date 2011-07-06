@@ -1,4 +1,4 @@
-package com.sysfera.godiet.model;
+package com.sysfera.godiet.model.softwares;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

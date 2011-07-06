@@ -25,10 +25,10 @@ import com.sysfera.godiet.exceptions.remote.IncubateException;
 import com.sysfera.godiet.managers.DietManager;
 import com.sysfera.godiet.managers.InfrastructureManager;
 import com.sysfera.godiet.managers.ResourcesManager;
-import com.sysfera.godiet.model.DietResourceManaged;
 import com.sysfera.godiet.model.generated.LocalAgent;
 import com.sysfera.godiet.model.generated.MasterAgent;
 import com.sysfera.godiet.model.generated.Sed;
+import com.sysfera.godiet.model.softwares.DietResourceManaged;
 import com.sysfera.godiet.services.GoDietService;
 
 @RunWith(SpringJUnit4ClassRunner.class)

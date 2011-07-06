@@ -6,7 +6,7 @@ import org.slf4j.LoggerFactory;
 import com.sysfera.godiet.exceptions.remote.IncubateException;
 import com.sysfera.godiet.exceptions.remote.LaunchException;
 import com.sysfera.godiet.exceptions.remote.PrepareException;
-import com.sysfera.godiet.model.SoftwareController;
+import com.sysfera.godiet.model.softwares.SoftwareController;
 
 /**
  * Init State. The remote agent isn't yet bind. Call prepare to state ready.

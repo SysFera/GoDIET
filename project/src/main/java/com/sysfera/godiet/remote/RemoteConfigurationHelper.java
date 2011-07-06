@@ -21,13 +21,13 @@ import com.sysfera.godiet.exceptions.remote.StopException;
 import com.sysfera.godiet.managers.ConfigurationManager;
 import com.sysfera.godiet.managers.InfrastructureManager;
 import com.sysfera.godiet.model.Path;
-import com.sysfera.godiet.model.SoftwareController;
-import com.sysfera.godiet.model.SoftwareManager;
 import com.sysfera.godiet.model.generated.Node;
 import com.sysfera.godiet.model.generated.Options;
 import com.sysfera.godiet.model.generated.Options.Option;
 import com.sysfera.godiet.model.generated.Resource;
 import com.sysfera.godiet.model.generated.Scratch;
+import com.sysfera.godiet.model.softwares.SoftwareController;
+import com.sysfera.godiet.model.softwares.SoftwareManager;
 
 /**
  * Agent configuration and remote access helper.
