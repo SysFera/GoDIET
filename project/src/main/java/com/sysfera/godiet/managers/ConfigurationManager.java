@@ -50,6 +50,7 @@ public class ConfigurationManager {
 	public void setLocalScratch(Scratch localScratch)
 			throws GoDietConfigurationException {
 		// TODO: Test if could write in
+		new File(localScratch.getDir()).mkdirs();
 		if (!(new File(localScratch.getDir())).isDirectory())
 			throw new GoDietConfigurationException("Unable to write in "
 					+ localScratch.getDir() + " directory");
