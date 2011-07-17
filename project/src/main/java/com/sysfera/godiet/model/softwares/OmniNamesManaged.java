@@ -7,10 +7,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.sysfera.godiet.exceptions.remote.IncubateException;
+import com.sysfera.godiet.model.configurator.ConfigurationFileBuilderService;
 import com.sysfera.godiet.model.generated.Domain;
+import com.sysfera.godiet.model.generated.OmniNames;
 import com.sysfera.godiet.model.generated.Resource;
 import com.sysfera.godiet.model.validators.RuntimeValidator;
-import com.sysfera.godiet.model.generated.OmniNames;
 
 /**
  * Use to manage and control all DIET services (OmniNames ...)
@@ -22,6 +23,7 @@ public class OmniNamesManaged extends SoftwareManager<OmniNames> {
 
 	private List<Domain> domains = new ArrayList<Domain>();
 
+	private String address = null;
 	/**
 	 * Return the list of domains covered by this OmninNames
 	 * 
@@ -35,8 +37,16 @@ public class OmniNamesManaged extends SoftwareManager<OmniNames> {
 
 	public OmniNamesManaged(OmniNames description, Resource pluggedOn,
 			SoftwareController softwareController,
-			RuntimeValidator<OmniNamesManaged> validator)
+			RuntimeValidator<OmniNamesManaged> validator )
 			throws IncubateException {
 		super(description, pluggedOn, softwareController, validator);
+	}
+	
+	public String getAddress() {
+		return address;
+	}
+	
+	public void setAddress(String address) {
+		this.address = address;
 	}
 }

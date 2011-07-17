@@ -5,38 +5,49 @@
 
 	<services>
 		<omniNames id="omniNamesVishnu" domain="Domain1">
-			<config server="Node1" remoteBinary="omniNames" />
+			<config server="Node1" />
 		</omniNames>
+		<forwarders>
+			<client id="client1" type="CLIENT">
+				<config server="Node1" />
+			</client>
+			<server id="server1" type="SERVER">
+				<config server="Node3" />
+			</server>
+		</forwarders>
 	</services>
 
 	<hierarchy>
 		<masterAgent id="MA1">
-			<config server="Node1" remoteBinary="dietAgent" />
-
-			<sed id="sed1">
-				<config server="VishnuGodiet" remoteBinary="ummssed" />
-				<file id="umsseddiet" template="sed"></file>
-				<file id="umssedconf" template="ummsed"></file>
-				<commandLine>
-					<parameter string="${file.ummsedconf.path}" />
-				</commandLine>
-			</sed>
-			<sed id="sed2">
-				<config server="VishnuGodiet" remoteBinary="immssed" />
-				<file id="imsseddiet" template="sed"></file>
-				<file id="imssedconf" template="immsed"></file>
-				<commandLine>
-					<parameter string="${file.imssedconf.path}" />
-				</commandLine>
-			</sed>
-			<sed id="sed3">
-				<config server="VishnuGodiet" remoteBinary="fmssed" />
-				<file id="fmsseddiet" template="sed"></file>
-				<file id="fmssedconf" template="fmssed"></file>
-				<commandLine>
-					<parameter string="${file.fmssedconf.path}" />
-				</commandLine>
-			</sed>
+			<config server="Node1" />
+			<localAgent id="LA1">
+				<config server="Node1" />
+				<sed id="sed1">
+					<config server="VishnuGodiet" />
+					<file id="sendmailscript">
+						<copy name="sendmail.py" />
+					</file>
+					<file id="umsseddiet">
+						<template name="sed_template.config" />
+					</file>
+					<file id="umssedconf">
+						<template name="umssed_template.config" />
+					</file>
+					<binary name="umssed">
+						<commandLine>
+							<parameter string="${this.configurationFiles.umssedconf.absolutePath}" />
+						</commandLine>
+					</binary>
+				</sed>
+				<!-- <sed id="sed2"> <config server="VishnuGodiet" remoteBinary="immssed" 
+					/> <file id="imsseddiet" template="sed_template.config"></file> <file id="imssedconf" 
+					template="immsed"></file> <commandLine> <parameter string="${file.imssedconf.path}" 
+					/> </commandLine> </sed> <sed id="sed3"> <config server="VishnuGodiet" remoteBinary="fmssed" 
+					/> <file id="fmsseddiet" template="sed_template.config"></file> <file id="fmssedconf" 
+					template="fmssed"></file> <commandLine> <parameter string="${file.fmssedconf.path}" 
+					/> </commandLine> </sed> -->
+			</localAgent>
 		</masterAgent>
+
 	</hierarchy>
 </godiet:dietPlatform>

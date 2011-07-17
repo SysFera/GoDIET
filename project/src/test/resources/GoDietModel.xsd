@@ -346,26 +346,40 @@
 		</xs:annotation>
 		<xs:sequence>
 			<xs:element name="config" type="config" />
-			<xs:element name="file" type="configurationFile"
+			<xs:element name="file" type="softwareFile"
 				minOccurs="0" maxOccurs="unbounded" />
-
-			<xs:element name="commandLine" type="commandLine"
-				minOccurs="0" maxOccurs="unbounded" />
-
+			<xs:element name="binary" type="binary" minOccurs="0" />
 		</xs:sequence>
 		<xs:attribute name="id" type="xs:ID" use="required" />
 		<xs:attribute name="stats" type="xs:boolean" default="false" />
 	</xs:complexType>
 
 
-	<xs:complexType name="configurationFile">
-		<xs:attribute name="id" type="xs:ID" use="required" />
-		<xs:attribute name="template" type="xs:string" use="required" />
+	<xs:complexType name="softwareFile">
+		<xs:choice>
+			<xs:element name="template">
+				<xs:complexType>
+					<xs:attribute name="name" type="xs:string" use="required" />
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="copy">
+				<xs:complexType>
+					<xs:attribute name="name" type="xs:string" use="required" />
+				</xs:complexType>
+			</xs:element>
+		</xs:choice>
+		<xs:attribute name="id" type="xs:ID" />
 	</xs:complexType>
 
+	<xs:complexType name="binary">
+		<xs:sequence>
+			<xs:element name="commandLine" type="commandLine" />
+		</xs:sequence>
+		<xs:attribute name="name" use="required" />
+	</xs:complexType>
 	<xs:complexType name="commandLine">
 		<xs:sequence>
-			<xs:element name="parameter">
+			<xs:element name="parameter" maxOccurs="unbounded">
 				<xs:complexType>
 					<xs:attribute name="string" />
 				</xs:complexType>
@@ -466,7 +480,6 @@
 		</xs:simpleType> </xs:attribute> -->
 
 	<xs:complexType name="config">
-		<xs:attribute name="remoteBinary" type="xs:string" use="required" />
 		<xs:attribute name="server" type="xs:string" use="required" />
 	</xs:complexType>
 

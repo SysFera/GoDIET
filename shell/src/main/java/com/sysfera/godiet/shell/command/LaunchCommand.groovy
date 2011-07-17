@@ -14,9 +14,9 @@ import com.sysfera.godiet.exceptions.remote.LaunchException;
 import com.sysfera.godiet.exceptions.remote.PrepareException;
 import com.sysfera.godiet.managers.DietManager;
 import com.sysfera.godiet.managers.ResourcesManager
-import com.sysfera.godiet.model.DietResourceManaged;
-import com.sysfera.godiet.model.SoftwareManager;
 import com.sysfera.godiet.model.generated.Forwarder;
+import com.sysfera.godiet.model.softwares.DietResourceManaged;
+import com.sysfera.godiet.model.softwares.SoftwareManager;
 import com.sysfera.godiet.model.states.ResourceState;
 import com.sysfera.godiet.model.states.ResourceState.State;
 import com.sysfera.godiet.shell.GoDietSh

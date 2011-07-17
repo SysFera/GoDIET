@@ -5,28 +5,40 @@
 
 	<services>
 		<omniNames id="omniNames1" domain="domain1">
-			<config server="local" remoteBinary="omniNames" />
+			<config server="local" />
 		</omniNames>
 	</services>
 
 	<hierarchy>
 		<masterAgent id="MA0">
-			<config server="local" remoteBinary="dietAgent" />
+			<config server="local" />
 
 			<sed id="UMS">
 
 				<!-- # Configuration of the VISHNU UMS SeD dietConfigFile=/tmp/godiet_scratch/UMS.cfg 
 					vishnuId=1 databaseType=postgresql databaseHost=daoudasys databaseName=vishnu 
 					databaseUserName=vishnu_user databaseUserPassword=Daouda sendmailScriptPath=/home/traore/VishnuProject/vishnu/core/src/utils/sendmail.py -->
-				<config server="local" remoteBinary="umssed" />
-				<parameters
-					string="/home/traore/VishnuProject/vishnu/TMS/util_build/godiet_ums_config.cfg" />
-
+				<config server="local" />
+				<file id="ums_config">
+					<copy name="godiet_ums_config.cfg" />
+				</file>
+				<binary name="umseed">
+					<commandLine>
+						<parameter string="${this.configFiles.umsconfig.absolutePath}" />
+					</commandLine>
+				</binary>
 			</sed>
 			<sed id="TMS">
-				<config server="local" remoteBinary="tmssed" />
-				<parameters
-					string="/home/traore/VishnuProject/vishnu/TMS/util_build/godiet_tms_config.cfg" />
+				<config server="local" />
+				<file id="tms_config">
+					<copy name="godiet_tms_config.cfg" />
+				</file>
+				<binary name="tmssed">
+					<commandLine>
+						<parameter string="${this.configFiles.tmsconfig.absolutePath}" />
+					</commandLine>
+				</binary>
+
 			</sed>
 
 		</masterAgent>

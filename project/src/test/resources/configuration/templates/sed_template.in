@@ -1,2 +1,0 @@
-#default sed template file
-parentName=${sed.parent.id}

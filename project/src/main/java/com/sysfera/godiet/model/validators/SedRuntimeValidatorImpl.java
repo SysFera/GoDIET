@@ -13,12 +13,13 @@ import com.sysfera.godiet.model.states.ResourceState;
 import com.sysfera.godiet.model.states.ResourceState.State;
 
 /**
- * MA Runtime Validation
+ * Sed Runtime Validation
  * 
  * @author phi
  * 
  */
-public class SedRuntimeValidatorImpl extends  RuntimeValidator<DietResourceManaged<Sed>> {
+public class SedRuntimeValidatorImpl extends
+		RuntimeValidator<DietResourceManaged<Sed>> {
 
 	public SedRuntimeValidatorImpl(DietManager dietManager) {
 		super(dietManager);
@@ -29,7 +30,9 @@ public class SedRuntimeValidatorImpl extends  RuntimeValidator<DietResourceManag
 	 */
 	@Override
 	public void wantLaunch(DietResourceManaged<Sed> sed) throws LaunchException {
-		SoftwareManager<? extends Software> managedParent = dietManager.getManagedSoftware(sed.getSoftwareDescription().getParent().getId());
+		SoftwareManager<? extends Software> managedParent = dietManager
+				.getManagedSoftware(sed.getSoftwareDescription().getParent()
+						.getId());
 		ResourceState parentMaState = managedParent.getState();
 		synchronized (parentMaState) {
 			if (!parentMaState.getStatus().equals(State.UP)) {
@@ -42,21 +45,24 @@ public class SedRuntimeValidatorImpl extends  RuntimeValidator<DietResourceManag
 		}
 	}
 
-	
 	@Override
-	public void wantStop(DietResourceManaged<Sed> managedResource) throws StopException {
-		//Nothing to do
+	public void wantStop(DietResourceManaged<Sed> managedResource)
+			throws StopException {
+		// Nothing to do
 	}
 
 	@Override
 	public void wantIncubate(DietResourceManaged<Sed> managedResource)
 			throws IncubateException {
 		try {
-			BuildingValidator.validate((Sed)managedResource.getSoftwareDescription(), dietManager);
+			BuildingValidator
+					.validate((Sed) managedResource.getSoftwareDescription(),
+							dietManager);
 		} catch (DietResourceValidationException e) {
-			throw new IncubateException("Software description unvalide. Can't incubate it.",e);
+			throw new IncubateException(
+					"Software description unvalide. Can't incubate it.", e);
 		}
-		
+
 	}
 
 }

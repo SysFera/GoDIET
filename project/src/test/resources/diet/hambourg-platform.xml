@@ -5,55 +5,60 @@
 
 	<services>
 		<omniNames id="omniNames1" domain="domain1">
-			<config server="MacLaptop" remoteBinary="omniNames" />
+			<config server="MacLaptop" />
 		</omniNames>
 		<omniNames id="omniNames2" domain="Grid5000">
-			<config server="gateway" remoteBinary="omniNames" />
+			<config server="gateway" />
 		</omniNames>
 	</services>
 
 	<hierarchy>
 		<masterAgent id="MA">
-			<config server="MacLaptop" remoteBinary="dietAgent" />
-			<cfgOptions>
-				<option key="traceLevel" value="10" />
-				<option key="initRequestID" value="1308404064" />
-				<!-- date "+%s" -->
-			</cfgOptions>
-
+			<config server="MacLaptop" />
+			<!-- TODO: <cfgOptions> <option key="traceLevel" value="10" /> <option 
+				key="initRequestID" value="1308404064" /> date "+%s" </cfgOptions> -->
 			<sed id="SeD-classic">
-				<config server="MacLaptop"
-					remoteBinary="/Users/bdepardo/soft/DietDemo/bin/decrypthon_diet_server" />
-				<parameters
-					string="/Users/bdepardo/CVSIMPORT/SYSFERA/startup/devel/SC10_demo/scripts_cfg/blastp/service_blastp.cfg" />
+				<config server="MacLaptop" />
+				<file id="blastp">
+					<copy name="blastp/service_blastp.cfg" />
+				</file>
+				<binary name="decrypthon_diet_server">
+					<commandLine>
+						<parameter string="${this.configFiles.blastp.absolutPath}"></parameter>
+					</commandLine>
+				</binary>
+
 			</sed>
 
 			<sed id="SeD-cloud">
-				<config server="MacLaptop"
-					remoteBinary="/Users/bdepardo/soft/Diet/bin/examples/cloud/cloud_server" />
-				<cfgOptions>
-					<option key="batchName" value="eucalyptus" />
-					<option key="pathToNFS" value="/tmp" />
-					<option key="cloudURL" value="https://eu-west-1.ec2.amazonaws.com" />
-					<option key="emiName" value="ami-6e31041a" />
-					<option key="vmType" value="t1.micro" />
-					<option key="keyName" value="Ben" />
-					<option key="pathToSSHKey" value="/Users/bdepardo/SysFera/SC10/EC2/Ben.pem" />
-					<option key="instantiateVMs" value="1" />
-					<option key="vmMinCount" value="1" />
-					<option key="vmMaxCount" value="1" />
-					<option key="pathToCert"
-						value="/Users/bdepardo/SysFera/SC10/EC2/cert-2GFVV4EBDSYWYSIVXTZIDBLYZTAOX4KW.pem" />
-					<option key="pathToPK"
-						value="/Users/bdepardo/SysFera/SC10/EC2/pk-2GFVV4EBDSYWYSIVXTZIDBLYZTAOX4KW.pem" />
-					<option key="userName" value="ec2-user" />
-				</cfgOptions>
+				<config server="MacLaptop" />
+				<binary name="cloud_server">
+					<commandLine>
+						<parameter />
+					</commandLine>
+				</binary>
+				<!-- TODO <cfgOptions> <option key="batchName" value="eucalyptus" /> 
+					<option key="pathToNFS" value="/tmp" /> <option key="cloudURL" value="https://eu-west-1.ec2.amazonaws.com" 
+					/> <option key="emiName" value="ami-6e31041a" /> <option key="vmType" value="t1.micro" 
+					/> <option key="keyName" value="Ben" /> <option key="pathToSSHKey" value="/Users/bdepardo/SysFera/SC10/EC2/Ben.pem" 
+					/> <option key="instantiateVMs" value="1" /> <option key="vmMinCount" value="1" 
+					/> <option key="vmMaxCount" value="1" /> <option key="pathToCert" value="/Users/bdepardo/SysFera/SC10/EC2/cert-2GFVV4EBDSYWYSIVXTZIDBLYZTAOX4KW.pem" 
+					/> <option key="pathToPK" value="/Users/bdepardo/SysFera/SC10/EC2/pk-2GFVV4EBDSYWYSIVXTZIDBLYZTAOX4KW.pem" 
+					/> <option key="userName" value="ec2-user" /> </cfgOptions> -->
 			</sed>
 
 			<sed id="sedG5k">
-				<config server="frontend"
-					remoteBinary="/home/diet/soft/CosmoDiet/bin/SeD_GalaxyMaker" />
-				<parameters string="/home/diet/tmp/scratch_runtime/GalaxyMaker.cfg" />
+				<config server="frontend" />
+				<file id="galaxyMaker">
+					<copy name="GalaxyMaker.cfg" />
+				</file>
+				<binary name="SeD_GalaxyMaker">
+					<commandLine>
+						<parameter string="${this.configFiles.galaxyMaker.absolutePath}" />
+					</commandLine>
+				</binary>
+
+
 			</sed>
 		</masterAgent>
 	</hierarchy>

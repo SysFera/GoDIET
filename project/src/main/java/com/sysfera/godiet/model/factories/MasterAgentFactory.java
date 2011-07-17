@@ -1,11 +1,17 @@
 package com.sysfera.godiet.model.factories;
 
 import com.sysfera.godiet.exceptions.DietResourceCreationException;
+import com.sysfera.godiet.exceptions.generics.ConfigurationBuildingException;
 import com.sysfera.godiet.exceptions.remote.IncubateException;
+import com.sysfera.godiet.model.configurator.ConfigurationFileBuilderService;
+import com.sysfera.godiet.model.generated.Binary;
+import com.sysfera.godiet.model.generated.CommandLine;
+import com.sysfera.godiet.model.generated.CommandLine.Parameter;
 import com.sysfera.godiet.model.generated.MasterAgent;
-import com.sysfera.godiet.model.generated.Node;
-import com.sysfera.godiet.model.generated.OmniNames;
+import com.sysfera.godiet.model.generated.ObjectFactory;
 import com.sysfera.godiet.model.generated.Resource;
+import com.sysfera.godiet.model.generated.SoftwareFile;
+import com.sysfera.godiet.model.generated.SoftwareFile.Template;
 import com.sysfera.godiet.model.softwares.DietResourceManaged;
 import com.sysfera.godiet.model.softwares.OmniNamesManaged;
 import com.sysfera.godiet.model.softwares.SoftwareController;
@@ -18,12 +24,20 @@ import com.sysfera.godiet.model.validators.RuntimeValidator;
  * 
  */
 public class MasterAgentFactory {
+	private static final String DEFAULT_BINARYNAME = "dietAgent";
+
 	private final SoftwareController softwareController;
+	private final ConfigurationFileBuilderService configurationFileBuilderService;
 
 	private final RuntimeValidator<DietResourceManaged<MasterAgent>> validator;
-	public MasterAgentFactory(SoftwareController softwareController,RuntimeValidator<DietResourceManaged<MasterAgent>> maValidator) {
+
+	public MasterAgentFactory(SoftwareController softwareController,
+			RuntimeValidator<DietResourceManaged<MasterAgent>> maValidator,
+			ConfigurationFileBuilderService configurationFileBuilderService) {
 		this.softwareController = softwareController;
 		this.validator = maValidator;
+		this.configurationFileBuilderService = configurationFileBuilderService;
+
 	}
 
 	/**
@@ -33,15 +47,47 @@ public class MasterAgentFactory {
 	 * @param masterAgentDescription
 	 * @return The managed MasterAgent
 	 * @throws DietResourceCreationException
-	 * @throws IncubateException 
+	 * @throws IncubateException
 	 */
-	public DietResourceManaged<MasterAgent> create(MasterAgent masterAgentDescription,Resource pluggedOn,OmniNamesManaged omniNames) throws DietResourceCreationException, IncubateException
-	{
-		DietResourceManaged<MasterAgent> MAManaged = new DietResourceManaged<MasterAgent>(masterAgentDescription,pluggedOn, softwareController, validator,omniNames);
-		
-		AgentFactoryUtil.settingConfigurationOptions(MAManaged,"DIET_MASTER_AGENT");
-		AgentFactoryUtil.settingRunningCommand(omniNames.getSoftwareDescription(),MAManaged);
-		return MAManaged;
+	public DietResourceManaged<MasterAgent> create(
+			MasterAgent masterAgentDescription, Resource pluggedOn,
+			OmniNamesManaged omniNames) throws DietResourceCreationException,
+			IncubateException {
+
+		DietResourceManaged<MasterAgent> masterAgentManaged = new DietResourceManaged<MasterAgent>(
+				masterAgentDescription, pluggedOn, softwareController,
+				validator, omniNames);
+
+		// TODO:something better with optional overloading ...
+		// Add default configuration file
+		try {
+
+			SoftwareFile sf = new ObjectFactory().createSoftwareFile();
+			Template template = new ObjectFactory()
+					.createSoftwareFileTemplate();
+			template.setName("ma_template.config");
+			sf.setId(masterAgentManaged.getSoftwareDescription().getId());
+			sf.setTemplate(template);
+			masterAgentManaged.getSoftwareDescription().getFile().add(sf);
+			configurationFileBuilderService.build(masterAgentManaged);
+
+		} catch (ConfigurationBuildingException e) {
+			new IncubateException("Unable to create configurations file ", e);
+		}
+		// Add default commandLine parameter (configuration file)
+		Binary b = new ObjectFactory().createBinary();
+		CommandLine commandLine = new ObjectFactory().createCommandLine();
+		Parameter paramConfigurationFile = new ObjectFactory()
+				.createCommandLineParameter();
+		paramConfigurationFile.setString(masterAgentManaged.getConfigurationFiles().get(masterAgentDescription.getId()).getAbsolutePath());
+		commandLine.getParameter().add(paramConfigurationFile);
+		b.setCommandLine(commandLine);
+		b.setName(DEFAULT_BINARYNAME);
+
+		masterAgentDescription.setBinary(b);
+		AgentFactoryUtil.settingRunningCommand(
+				omniNames.getSoftwareDescription(), masterAgentManaged);
+		return masterAgentManaged;
 	}
 
 }

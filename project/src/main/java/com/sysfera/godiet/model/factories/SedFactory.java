@@ -1,15 +1,27 @@
 package com.sysfera.godiet.model.factories;
 
+import java.util.List;
+
+import javax.annotation.PostConstruct;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import com.sysfera.godiet.exceptions.generics.ConfigurationBuildingException;
 import com.sysfera.godiet.exceptions.remote.IncubateException;
-import com.sysfera.godiet.model.generated.ObjectFactory;
-import com.sysfera.godiet.model.generated.Options;
-import com.sysfera.godiet.model.generated.Options.Option;
+import com.sysfera.godiet.managers.DietManager;
+import com.sysfera.godiet.model.configurator.CommandLineBuilderService;
+import com.sysfera.godiet.model.configurator.ConfigurationFileBuilderService;
+import com.sysfera.godiet.model.generated.Env;
 import com.sysfera.godiet.model.generated.Resource;
 import com.sysfera.godiet.model.generated.Sed;
+import com.sysfera.godiet.model.generated.Var;
+import com.sysfera.godiet.model.generated.CommandLine.Parameter;
 import com.sysfera.godiet.model.softwares.DietResourceManaged;
 import com.sysfera.godiet.model.softwares.OmniNamesManaged;
 import com.sysfera.godiet.model.softwares.SoftwareController;
 import com.sysfera.godiet.model.validators.RuntimeValidator;
+import com.sysfera.godiet.model.validators.SedRuntimeValidatorImpl;
 
 /**
  * Managed sed factory
@@ -17,16 +29,24 @@ import com.sysfera.godiet.model.validators.RuntimeValidator;
  * @author phi
  * 
  */
+@Component
 public class SedFactory {
 
-	private final SoftwareController softwareController;
-	private final RuntimeValidator<DietResourceManaged<Sed>> validator;
-
-	public SedFactory(SoftwareController softwareController,
-			RuntimeValidator<DietResourceManaged<Sed>> sedValidator) {
-
-		this.softwareController = softwareController;
-		this.validator = sedValidator;
+	@Autowired
+	private DietManager dietManager;
+	@Autowired
+	private SoftwareController softwareController;
+	
+	private RuntimeValidator<DietResourceManaged<Sed>> validator;
+	@Autowired
+	private ConfigurationFileBuilderService configurationFileBuilderService;
+	
+	@Autowired
+	private CommandLineBuilderService commandLineBuilderService;
+	
+	@PostConstruct
+	public void postConstruct() {
+		this.validator = new SedRuntimeValidatorImpl(dietManager);
 	}
 
 	/**
@@ -35,41 +55,62 @@ public class SedFactory {
 	 * 
 	 * @param sedDescription
 	 * @return The managed Sed
-	 * @throws IncubateException 
+	 * @throws IncubateException
 	 */
 
+	public DietResourceManaged<Sed> create(Sed sedDescription,
+			Resource pluggedOn, OmniNamesManaged omniNames)
+			throws IncubateException {
+		DietResourceManaged<Sed> sedManaged = new DietResourceManaged<Sed>(
+				sedDescription, pluggedOn, softwareController, validator,
+				omniNames);
+		try {
+			configurationFileBuilderService.build(sedManaged);
+			commandLineBuilderService.build(sedManaged);
+			//TODO: DO something better
+			//Decorate the commandline with the deployement context
+			String scratchDir = sedManaged.getPluggedOn().getScratch()
+			.getDir();
+			String prefix = "";
+			{
+				
+				//Add all environment node
+				Env env = sedManaged.getPluggedOn().getEnv();
+				if(env != null) {
+					List<Var> vars = env.getVar();
+					if(vars != null)
+					{
+						for (Var var : vars) {
+							prefix+= " " + var.getName() +"=" +var.getValue()+" "; 
+						}
+					}
+				}
+				// find the OmniOrbConfig file on the remote host to set OmniOrb.cfg
+				String omniOrbconfig = "OMNIORB_CONFIG=" + scratchDir + "/"
+						+ omniNames.getSoftwareDescription().getId() + ".cfg";
+				prefix += omniOrbconfig + " ";
 
-	public DietResourceManaged<Sed> create(Sed sedDescription, Resource pluggedOn,
-			OmniNamesManaged omniNames) throws IncubateException {
-		DietResourceManaged<Sed> sedManaged = new DietResourceManaged<Sed>(sedDescription,
-				pluggedOn, softwareController, validator, omniNames);
-		
-		settingConfigurationOptions(sedManaged);
-
-		AgentFactoryUtil.settingRunningCommand(
-				omniNames.getSoftwareDescription(), sedManaged);
+				// nohup {binaryName}
+				prefix += "nohup ";
+			}
+			String suffix="";
+			{
+			
+				// > {phyNode.scratchdir}/{MAName}.out
+				suffix += "> " + scratchDir + "/" + sedDescription.getId()
+						+ ".out ";
+				// 2> {phyNode.scratchdir}/{MAName}.err
+				suffix += "2> " + scratchDir + "/" + sedDescription.getId()
+						+ ".err &";
+				
+			}
+			String commandLine = prefix +sedManaged.getRunningCommand() + suffix;
+			sedManaged.setRunningCommand(commandLine);
+			
+		} catch (ConfigurationBuildingException e) {
+			throw new IncubateException("Unable to create configurations file ", e);
+		}
 		return sedManaged;
 	}
 
-	/**
-	 * Set the parentName. Could be the name of a LocalAgent or MasterAgent
-	 * 
-	 * @param sedManaged
-	 */
-
-	private void settingConfigurationOptions(DietResourceManaged<Sed> sedManaged) {
-
-		Options opts = sedManaged.getSoftwareDescription().getCfgOptions();
-		if (opts == null) {
-			opts = new ObjectFactory().createOptions();
-		}
-
-
-		Option parent = new Option();
-		parent.setKey("parentName");
-		parent.setValue(sedManaged.getSoftwareDescription().getParent().getId());
-
-		opts.getOption().add(parent);
-		sedManaged.getSoftwareDescription().setCfgOptions(opts);
-	}
 }

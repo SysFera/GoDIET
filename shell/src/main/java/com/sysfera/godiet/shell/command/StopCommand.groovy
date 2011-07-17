@@ -9,8 +9,8 @@ import com.sysfera.godiet.Diet;
 import com.sysfera.godiet.exceptions.remote.StopException;
 import com.sysfera.godiet.managers.DietManager;
 import com.sysfera.godiet.managers.ResourcesManager
-import com.sysfera.godiet.model.SoftwareManager;
 import com.sysfera.godiet.model.generated.Software;
+import com.sysfera.godiet.model.softwares.SoftwareManager;
 import com.sysfera.godiet.model.states.ResourceState.State;
 import com.sysfera.godiet.shell.GoDietSh
 

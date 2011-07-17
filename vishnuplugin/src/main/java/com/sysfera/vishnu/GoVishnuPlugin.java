@@ -11,10 +11,10 @@ import com.sysfera.godiet.exceptions.remote.LaunchException;
 import com.sysfera.godiet.exceptions.remote.PrepareException;
 import com.sysfera.godiet.exceptions.remote.StopException;
 import com.sysfera.godiet.managers.DietManager;
-import com.sysfera.godiet.model.DietResourceManaged;
 import com.sysfera.godiet.model.generated.Config;
 import com.sysfera.godiet.model.generated.ObjectFactory;
 import com.sysfera.godiet.model.generated.Sed;
+import com.sysfera.godiet.model.softwares.DietResourceManaged;
 import com.sysfera.vishnu.api.ims.stub.ProcessIF;
 
 public class GoVishnuPlugin {
