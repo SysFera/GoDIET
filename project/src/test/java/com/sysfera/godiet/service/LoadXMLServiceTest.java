@@ -41,8 +41,7 @@ public class LoadXMLServiceTest {
 	@Autowired
 	private GoDietService godiet;
 
-	@Autowired
-	private DietManager dietModel;
+
 
 	@Before
 	public void init() throws IncubateException {

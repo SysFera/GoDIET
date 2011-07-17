@@ -1,9 +1,12 @@
 package com.sysfera.godiet.model.softwares;
 
+import java.util.Map;
+
 import com.sysfera.godiet.exceptions.remote.IncubateException;
 import com.sysfera.godiet.exceptions.remote.LaunchException;
 import com.sysfera.godiet.exceptions.remote.PrepareException;
 import com.sysfera.godiet.exceptions.remote.StopException;
+import com.sysfera.godiet.model.configurator.ConfigurationFile;
 import com.sysfera.godiet.model.generated.Resource;
 import com.sysfera.godiet.model.generated.Software;
 import com.sysfera.godiet.model.states.ResourceState;
@@ -23,14 +26,22 @@ public abstract class SoftwareManager<T extends Software> {
 	// Software description
 	private T softwareDescription;
 	private final Resource pluggedOn;
-	
+
 	private Integer pid;
 	protected final StateController stateController;
 
-	public SoftwareManager(T description, Resource pluggedOn,SoftwareController softwareController, RuntimeValidator<? extends SoftwareManager<T>> validator) throws IncubateException {
+
+	private Map<String,ConfigurationFile> configurationFiles;
+
+	public SoftwareManager(T description, Resource pluggedOn,
+			SoftwareController softwareController,
+			RuntimeValidator<? extends SoftwareManager<T>> validator)
+			throws IncubateException {
+	
 		this.softwareDescription = description;
 		this.pluggedOn = pluggedOn;
-		stateController = new StateController(this, softwareController,validator);
+		stateController = new StateController(this, softwareController,
+				validator);
 	}
 
 	/**
@@ -38,11 +49,9 @@ public abstract class SoftwareManager<T extends Software> {
 	 * 
 	 * @return the pluggedOn resource or null if not yet plugged
 	 */
-	public Resource getPluggedOn(){
+	public Resource getPluggedOn() {
 		return pluggedOn;
 	}
-	
-	
 
 	/**
 	 * 
@@ -52,10 +61,10 @@ public abstract class SoftwareManager<T extends Software> {
 		return stateController;
 	}
 
-
 	public T getSoftwareDescription() {
 		return softwareDescription;
 	}
+
 	public void setPid(Integer pid) {
 		this.pid = pid;
 	}
@@ -86,6 +95,7 @@ public abstract class SoftwareManager<T extends Software> {
 
 	/**
 	 * Use carrefully: could be modify in indenpendant thread
+	 * 
 	 * @return
 	 */
 	public ResourceState getState() {
@@ -110,7 +120,12 @@ public abstract class SoftwareManager<T extends Software> {
 		currentState.stop();
 	}
 
+	public Map<String,ConfigurationFile> getConfigurationFiles() {
+		return this.configurationFiles;
+	}
 
-
-
+	public void setConfigurationFiles(Map<String,ConfigurationFile> configurationFiles) {
+		this.configurationFiles = configurationFiles;
+	}
+	
 }

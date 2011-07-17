@@ -2,10 +2,10 @@ package com.sysfera.godiet.remote;
 
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.util.Collection;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,11 +21,12 @@ import com.sysfera.godiet.exceptions.remote.StopException;
 import com.sysfera.godiet.managers.ConfigurationManager;
 import com.sysfera.godiet.managers.InfrastructureManager;
 import com.sysfera.godiet.model.Path;
+import com.sysfera.godiet.model.configurator.ConfigurationFile;
+import com.sysfera.godiet.model.generated.Config;
 import com.sysfera.godiet.model.generated.Node;
-import com.sysfera.godiet.model.generated.Options;
-import com.sysfera.godiet.model.generated.Options.Option;
 import com.sysfera.godiet.model.generated.Resource;
 import com.sysfera.godiet.model.generated.Scratch;
+import com.sysfera.godiet.model.generated.Software;
 import com.sysfera.godiet.model.softwares.SoftwareController;
 import com.sysfera.godiet.model.softwares.SoftwareManager;
 
@@ -40,32 +41,30 @@ public class RemoteConfigurationHelper implements SoftwareController {
 	private Logger log = LoggerFactory.getLogger(getClass());
 
 	@Autowired
-	private  RemoteAccess remoteAccess;
-	
+	private RemoteAccess remoteAccess;
+
 	@Autowired
-	private  ConfigurationManager configuration;
+	private ConfigurationManager configuration;
 	@Autowired
 	private InfrastructureManager platform;
 
-		
-
-	
 	/**
 	 * Prepare physical resource to launch the Software - Search the physical
 	 * resource to run the diet agent - Create remote directory - Create
 	 * configuration file on local scratch directory - Copy configuration files
 	 * on remote physical resource
 	 * 
-	 * @param resource
+	 * @param managedSoftware
 	 * 
 	 * @throws PrepareException
 	 *             if create local files or can't copy files on remote host.
 	 */
 	@Override
-	public void configure(SoftwareManager resource) throws PrepareException {
+	public void configure(SoftwareManager<? extends Software> managedSoftware)
+			throws PrepareException {
 
 		// the remote physical node to configure
-		Resource remoteNode = resource.getPluggedOn();
+		Resource remoteNode = managedSoftware.getPluggedOn();
 		if (remoteNode == null) {
 			log.error("Unable to configure remote resource. Resource not plugged on physial resource");
 			throw new PrepareException(
@@ -74,7 +73,8 @@ public class RemoteConfigurationHelper implements SoftwareController {
 
 		// the local node. From where the command is launch.
 		// TODO : Path findpath(FromDomain, ToNode); Move this code
-		Resource localNode = platform.getResource(configuration.getLocalNodeId());
+		Resource localNode = platform.getResource(configuration
+				.getLocalNodeId());
 		if (localNode == null || !(localNode instanceof Node)) {
 			log.error("Unable to find the local resource.");
 			throw new PrepareException("Unable to find the resource: "
@@ -99,83 +99,26 @@ public class RemoteConfigurationHelper implements SoftwareController {
 			command = "mkdir -p " + remoteNode.getScratch().getDir();
 			remoteAccess.launch(command, path);
 
-			// Create local config file
-			// TODO: not to be here ?
-			File file = createConfigFile(resource);
+
 
 			// Copy file on remote host
-			remoteAccess.copy(file, remoteNode.getScratch().getDir(),
-					path);
+			Collection<ConfigurationFile> cfiles = managedSoftware.getConfigurationFiles().values();
+			for (ConfigurationFile configurationFile : cfiles) {
+				remoteAccess.copy(configurationFile, remoteNode.getScratch().getDir(), path);
+			}
+			
 		} catch (RemoteAccessException e) {
 			log.error("Unable to configure "
-					+ resource.getSoftwareDescription().getId() + " on "
+					+ managedSoftware.getSoftwareDescription().getId() + " on "
 					+ remoteNode.getId() + " commmand " + command, e);
 			throw new PrepareException("Unable to run configure "
-					+ resource.getSoftwareDescription().getId() + " on "
+					+ managedSoftware.getSoftwareDescription().getId() + " on "
 					+ remoteNode.getId() + " .Commmand: " + command, e);
 		}
 
 	}
 
-	/**
-	 * 
-	 * Create the resource configuration file on local scratch directory
-	 * 
-	 * TODO: Move this code in prepare app
-	 * 
-	 * @param resource
-	 * @throws PrepareException
-	 *             if unable write on local scratch directory
-	 */
-	private File createConfigFile(SoftwareManager resource)
-			throws PrepareException {
-		Scratch scratch = configuration.getLocalScratch();
-		File file = new File(scratch.getDir());
-		if (!file.exists()) {
-
-			if (!file.mkdirs()) {
-				throw new PrepareException(
-						"Unable to create local directories "
-								+ scratch.getDir());
-			}
-		}
-		String filename = getConfigFileName(resource);
-		File retFile = new File(scratch.getDir() + "/" + filename);
-
-		BufferedWriter writerFile = null;
-		try {
-
-			writerFile = new BufferedWriter(new OutputStreamWriter(
-					new FileOutputStream(retFile)));
-			Options options = resource.getSoftwareDescription().getCfgOptions();
-
-			if (options != null) {
-				for (Option option : options.getOption()) {
-					writerFile.write(option.getKey() + " = "
-							+ option.getValue());
-					writerFile.newLine();
-				}
-			}
-			writerFile.flush();
-			writerFile.close();
-		} catch (FileNotFoundException e) {
-			throw new PrepareException("Unable to create file "
-					+ scratch.getDir() + filename, e);
-		} catch (IOException e) {
-			throw new PrepareException("Unable to write on file "
-					+ scratch.getDir() + filename, e);
-		} finally {
-			if (writerFile != null) {
-				try {
-					writerFile.close();
-				} catch (IOException e) {
-				}
-			}
-
-		}
-		return retFile;
-	}
-
+	
 	/**
 	 * Launch software on the physical resource - Search the physical resource
 	 * to run the diet agent - Launch command
@@ -186,7 +129,7 @@ public class RemoteConfigurationHelper implements SoftwareController {
 	 */
 	@Override
 	public void launch(SoftwareManager managedSofware) throws LaunchException {
-	
+
 		// the remote physical node to configure
 		Resource remoteNode = managedSofware.getPluggedOn();
 		if (remoteNode == null) {
@@ -196,7 +139,8 @@ public class RemoteConfigurationHelper implements SoftwareController {
 		}
 		// the local node. From where the command is launch.
 		// TODO : Path findpath(FromDomain, ToNode); Move this code
-		Resource localNode = platform.getResource(configuration.getLocalNodeId());
+		Resource localNode = platform.getResource(configuration
+				.getLocalNodeId());
 		if (localNode == null || !(localNode instanceof Node)) {
 			log.error("Unable to find the local resource.");
 			throw new LaunchException(
@@ -243,9 +187,8 @@ public class RemoteConfigurationHelper implements SoftwareController {
 	 */
 	@Override
 	public void stop(SoftwareManager resource) throws StopException {
-		
+
 		// TODO: Duplicate code with configure, start
-		
 
 		// the remote physical node to configure
 		Resource remoteNode = resource.getPluggedOn();
@@ -256,7 +199,8 @@ public class RemoteConfigurationHelper implements SoftwareController {
 
 		// the local node. From where the command is launch.
 		// TODO : Path findpath(FromDomain, ToNode); Move this code
-		Resource localNode = platform.getResource(configuration.getLocalNodeId());
+		Resource localNode = platform.getResource(configuration
+				.getLocalNodeId());
 		if (localNode == null || !(localNode instanceof Node)) {
 			log.error("Unable to find the local resource.");
 			throw new StopException("Unable to find the resource: "
@@ -313,7 +257,8 @@ public class RemoteConfigurationHelper implements SoftwareController {
 
 		// the local node. From where the command is launch.
 		// TODO : Path findpath(FromDomain, ToNode); Move this code
-		Resource localNode = platform.getResource(configuration.getLocalNodeId());
+		Resource localNode = platform.getResource(configuration
+				.getLocalNodeId());
 		if (localNode == null || !(localNode instanceof Node)) {
 			log.error("Unable to find the local resource.");
 			throw new CheckException("Unable to find the resource: "
@@ -350,17 +295,6 @@ public class RemoteConfigurationHelper implements SoftwareController {
 					+ resource.getSoftwareDescription().getId(), e);
 		}
 
-	}
-
-
-
-
-	private String getFileName(SoftwareManager resource) {
-		return resource.getSoftwareDescription().getId();
-	}
-
-	private String getConfigFileName(SoftwareManager resource) {
-		return getFileName(resource) + ".cfg";
 	}
 
 }

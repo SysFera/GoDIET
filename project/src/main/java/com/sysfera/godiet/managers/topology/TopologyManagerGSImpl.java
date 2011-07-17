@@ -8,6 +8,7 @@ import org.graphstream.algorithm.APSP;
 import org.graphstream.algorithm.APSP.APSPInfo;
 import org.graphstream.graph.Edge;
 import org.graphstream.graph.Graph;
+import org.graphstream.graph.IdAlreadyInUseException;
 import org.graphstream.graph.implementations.MultiGraph;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,64 +52,84 @@ public class TopologyManagerGSImpl implements TopologyManager {
 
 	@Override
 	public void addLink(Link link) throws GraphDataException {
-		String nodeFrom;
-		// Whether the from node is a node or a domain
-		if (link.getFrom() != null) {
-			nodeFrom = link.getFrom().getId();
-		} else {
-			nodeFrom = link.getFromDomain().getId();
+		try {
+			String nodeFrom;
+			// Whether the from node is a node or a domain
+			if (link.getFrom() != null) {
+				nodeFrom = link.getFrom().getId();
+			} else {
+				nodeFrom = link.getFromDomain().getId();
+			}
+			String nodeTo = link.getTo().getId();
+			String idLink = nodeFrom + "_" + nodeTo;
+			Edge edge = gs.addEdge(idLink, nodeFrom, nodeTo, true); // oriented
+																	// edge
+			edge.addAttribute("ui.class", "nodeToNode"); // link node > node
+			edge.addAttribute("ssh", link.getAccessref()); // Storage of the ssh
+															// in
+															// the edge
+		} catch (IdAlreadyInUseException e) {
+			throw new GraphDataException("Link between "
+					+ link.getFrom().getId() + " and " + link.getTo().getId()
+					+ "already exist", e);
 		}
-		String nodeTo = link.getTo().getId();
-		String idLink = nodeFrom + "_" + nodeTo;
-		Edge edge = gs.addEdge(idLink, nodeFrom, nodeTo, true); // oriented edge
-		edge.addAttribute("ui.class", "nodeToNode"); // link node > node
-		edge.addAttribute("ssh", link.getAccessref()); // Storage of the ssh in
-														// the edge
 	}
 
 	@Override
 	public void addNode(Node n) throws GraphDataException {
 		String idNode = n.getId();
-		org.graphstream.graph.Node node = gs.addNode(idNode); // adding
-		node.addAttribute("ui.label", idNode);
-		node.addAttribute("ui.class", "noeud"); // for the management of the
-												// node's display
-		node.addAttribute("id", idNode); // Storage of the id of the node
-		node.addAttribute("node", n); // Storage of the node under the id "node"
-		// Add the link node > domain
-		List<Ssh> sshs = n.getSsh();
-		if (sshs != null) {
-			for (Ssh ssh : sshs) {
-				String idDomain = ssh.getDomain().getId();
-				// Oriented edge
-				// TODO : 1 edge unoriented like DOMAIN > NODE instead of 2
-				// orientend edge or 1 unoriented NODE > DOMAIN ??
-				// maybe that's enough to handle what we need ?
-				String idLink1 = idNode + "_" + idDomain;
-				String idLink2 = idDomain + "_" + idNode;
-				Edge edge1 = gs.addEdge(idLink1, idNode, idDomain, true);
-				Edge edge2 = gs.addEdge(idLink2, idDomain, idNode, true);
-				// Storage of the id of the link node > domain
-				edge1.addAttribute("id", idLink1);
-				edge2.addAttribute("id", idLink2);
-				// Storage of the ssh in the edge
-				edge1.addAttribute("ssh", ssh);
-				edge2.addAttribute("ssh", ssh);
-				edge1.addAttribute("ui.class", "nodeToDomain");
-				edge2.addAttribute("ui.class", "nodeToDomain");
+		try {
+			org.graphstream.graph.Node node = gs.addNode(idNode); // adding
+			node.addAttribute("ui.label", idNode);
+			node.addAttribute("ui.class", "noeud"); // for the management of the
+													// node's display
+			node.addAttribute("id", idNode); // Storage of the id of the node
+			node.addAttribute("node", n); // Storage of the node under the id
+											// "node"
+			// Add the link node > domain
+			List<Ssh> sshs = n.getSsh();
+			if (sshs != null) {
+				for (Ssh ssh : sshs) {
+					String idDomain = ssh.getDomain().getId();
+					// Oriented edge
+					// TODO : 1 edge unoriented like DOMAIN > NODE instead of 2
+					// orientend edge or 1 unoriented NODE > DOMAIN ??
+					// maybe that's enough to handle what we need ?
+					String idLink1 = idNode + "_" + idDomain;
+					String idLink2 = idDomain + "_" + idNode;
+					Edge edge1 = gs.addEdge(idLink1, idNode, idDomain, true);
+					Edge edge2 = gs.addEdge(idLink2, idDomain, idNode, true);
+					// Storage of the id of the link node > domain
+					edge1.addAttribute("id", idLink1);
+					edge2.addAttribute("id", idLink2);
+					// Storage of the ssh in the edge
+					edge1.addAttribute("ssh", ssh);
+					edge2.addAttribute("ssh", ssh);
+					edge1.addAttribute("ui.class", "nodeToDomain");
+					edge2.addAttribute("ui.class", "nodeToDomain");
+				}
 			}
+		} catch (IdAlreadyInUseException e) {
+			throw new GraphDataException("Node " + idNode + " already exist.je con");
 		}
 	}
 
 	@Override
 	public void addDomain(Domain d) throws GraphDataException {
-		String idDomain = d.getId();
-		org.graphstream.graph.Node node = gs.addNode(idDomain); // adding
-		node.addAttribute("ui.label", idDomain);
-		node.addAttribute("ui.class", "domain"); // for the management of the
-													// domain's display
-		node.addAttribute("id", idDomain); // Storage of the id of the domain
-		node.addAttribute(ATTRIBUTEKEY_DOMAIN, d);
+		try {
+			String idDomain = d.getId();
+			org.graphstream.graph.Node node = gs.addNode(idDomain); // adding
+			node.addAttribute("ui.label", idDomain);
+			node.addAttribute("ui.class", "domain"); // for the management of
+														// the
+														// domain's display
+			node.addAttribute("id", idDomain); // Storage of the id of the
+												// domain
+			node.addAttribute(ATTRIBUTEKEY_DOMAIN, d);
+		} catch (IdAlreadyInUseException e) {
+			throw new GraphDataException("Domain " + d.getId()
+					+ " already exist", e);
+		}
 	}
 
 	@Override
@@ -193,7 +214,7 @@ public class TopologyManagerGSImpl implements TopologyManager {
 				}
 				hop.crossDomain(crossedDomain);
 				crossedDomain = null;
-				
+
 			} else if (nGS.hasAttribute(ATTRIBUTEKEY_DOMAIN)) {
 				crossedDomain = (Domain) nGS.getAttribute(ATTRIBUTEKEY_DOMAIN);
 

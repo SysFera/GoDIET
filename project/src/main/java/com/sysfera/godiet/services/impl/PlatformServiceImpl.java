@@ -58,14 +58,6 @@ public final class PlatformServiceImpl implements PlatformService {
 			throw new StartException(getClass().getName(), "0",
 					"Unable to init platform", null);
 		}
-		//
-		// godietMetaFactory = new GodietMetaFactory(softwareController,
-		// new ForwarderRuntimeValidatorImpl(dietManager),
-		// new MasterAgentRuntimeValidatorImpl(dietManager),
-		// new LocalAgentRuntimeValidatorImpl(dietManager),
-		// new SedRuntimeValidatorImpl(dietManager),
-		// new OmniNamesRuntimeValidatorImpl(dietManager));
-
 	}
 
 	@Override
@@ -123,7 +115,7 @@ public final class PlatformServiceImpl implements PlatformService {
 					"Unable to find omninames for"
 							+ sedAgent.getConfig().getServer());
 		DietResourceManaged<Sed> sedAgentManaged = godietMetaFactory.create(
-				sedAgent, pluggedOn, omniNames);
+				sedAgent,  pluggedOn, omniNames);
 		dietManager.addSed(sedAgentManaged);
 	}
 

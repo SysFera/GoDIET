@@ -4,11 +4,13 @@ import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import com.sysfera.godiet.exceptions.DietResourceCreationException;
 import com.sysfera.godiet.exceptions.remote.IncubateException;
 import com.sysfera.godiet.managers.DietManager;
 import com.sysfera.godiet.managers.InfrastructureManager;
+import com.sysfera.godiet.model.configurator.ConfigurationFileBuilderService;
 import com.sysfera.godiet.model.generated.Forwarder;
 import com.sysfera.godiet.model.generated.Forwarders;
 import com.sysfera.godiet.model.generated.LocalAgent;
@@ -27,15 +29,19 @@ import com.sysfera.godiet.model.validators.OmniNamesRuntimeValidatorImpl;
 import com.sysfera.godiet.model.validators.SedRuntimeValidatorImpl;
 
 @Component
+@Service
 public class GodietMetaFactory {
 
 	private  OmniNamesFactory omniNamesFactory;
 	private  ForwardersFactory forwardersFactory;
 	private  LocalAgentFactory localAgentFactory;
 	private  MasterAgentFactory masterAgentFactory;
+	@Autowired
 	private  SedFactory sedFactory;
 
-
+	@Autowired
+	private ConfigurationFileBuilderService configurationFileBuilderService;
+	
 	@Autowired
 	private InfrastructureManager infrastructureManager;
 	
@@ -48,14 +54,13 @@ public class GodietMetaFactory {
 	public void init()
 	{
 		this.forwardersFactory = new ForwardersFactory(softwareController,
-				new ForwarderRuntimeValidatorImpl(dietManager) );
+				new ForwarderRuntimeValidatorImpl(dietManager) ,configurationFileBuilderService);
 		this.localAgentFactory = new LocalAgentFactory(softwareController,
-				new LocalAgentRuntimeValidatorImpl(dietManager));
+				new LocalAgentRuntimeValidatorImpl(dietManager),configurationFileBuilderService);
 		this.masterAgentFactory = new MasterAgentFactory(softwareController,
-				new MasterAgentRuntimeValidatorImpl(dietManager));
-		this.sedFactory = new SedFactory(softwareController, new SedRuntimeValidatorImpl(dietManager));
+				new MasterAgentRuntimeValidatorImpl(dietManager),configurationFileBuilderService);
 		this.omniNamesFactory = new OmniNamesFactory(softwareController,
-				new OmniNamesRuntimeValidatorImpl(dietManager));
+				new OmniNamesRuntimeValidatorImpl(dietManager),configurationFileBuilderService);
 		this.omniNamesFactory.setInfrastructureManager(infrastructureManager);
 	}
 

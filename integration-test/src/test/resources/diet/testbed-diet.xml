@@ -6,30 +6,30 @@
 	<services>
 
 		<omniNames id="omniNamesDomain1" domain="Domain1">
-			<config server="Node1" remoteBinary="omniNames" />
+			<config server="Node1" />
 		</omniNames>
 		<omniNames id="omniNamesDomain2" domain="Domain2">
-			<config server="Node2" remoteBinary="omniNames" />
+			<config server="Node2" />
 		</omniNames>
 		<omniNames id="omniNamesDomain3" domain="Domain3">
-			<config server="Node4" remoteBinary="omniNames" />
+			<config server="Node4" />
 		</omniNames>
 		<!-- Inter-connect Domain1 and Domain2 -->
 		<forwarders>
 			<client id="client1" type="CLIENT">
-				<config server="Node1" remoteBinary="dietForwarder" />
+				<config server="Node1" />
 			</client>
 			<server id="server1" type="SERVER">
-				<config server="Node3" remoteBinary="dietForwarder" />
+				<config server="Node3" />
 			</server>
 		</forwarders>
 		<!-- Inter-connect Domain1 and Domain3 -->
 		<forwarders>
 			<client id="client2" type="CLIENT">
-				<config server="Node1" remoteBinary="dietForwarder" />
+				<config server="Node1" />
 			</client>
 			<server id="server2" type="SERVER">
-				<config server="Node5" remoteBinary="dietForwarder" />
+				<config server="Node5" />
 			</server>
 		</forwarders>
 
@@ -39,20 +39,32 @@
 
 
 		<masterAgent id="MA1">
-			<config server="Node2" remoteBinary="dietAgent" />
+			<config server="Node1" />
 
 			<sed id="sed1">
-				<config server="Node2" remoteBinary="dmat_manips_server" />
-				<parameters string="T" />
+				<config server="Node2" />
+				<binary name="dmat_manips_server">
+					<commandLine>
+						<parameter string="T" />
+					</commandLine>
+				</binary>
 			</sed>
 			<sed id="sed2">
-				<config server="Node2" remoteBinary="dmat_manips_server" />
-				
-				<parameters string="T" />
+				<config server="Node3" />
+				<binary name="dmat_manips_server">
+					<commandLine>
+						<parameter string="T" />
+					</commandLine>
+				</binary>
 			</sed>
 			<sed id="sed3">
-				<config server="Node3" remoteBinary="dmat_manips_server" />
-				<parameters string="T" />
+				<config server="Node4" />
+			
+				<binary name="dmat_manips_server">
+					<commandLine>
+						<parameter string="T" />
+					</commandLine>
+				</binary>
 			</sed>
 		</masterAgent>
 	</hierarchy>

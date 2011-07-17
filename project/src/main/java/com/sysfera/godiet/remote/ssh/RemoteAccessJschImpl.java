@@ -1,6 +1,6 @@
  package com.sysfera.godiet.remote.ssh;
 
-import java.io.File;
+import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -9,7 +9,6 @@ import java.util.Properties;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import com.jcraft.jsch.Channel;
 import com.jcraft.jsch.ChannelExec;
@@ -19,6 +18,7 @@ import com.sysfera.godiet.exceptions.remote.AddAuthentificationException;
 import com.sysfera.godiet.exceptions.remote.RemoveAuthentificationException;
 import com.sysfera.godiet.managers.user.SSHKeyManager;
 import com.sysfera.godiet.model.Path;
+import com.sysfera.godiet.model.configurator.ConfigurationFile;
 import com.sysfera.godiet.remote.RemoteAccess;
 
 /**
@@ -170,9 +170,9 @@ public class RemoteAccessJschImpl implements RemoteAccess {
 	 * java.lang.String, int)
 	 */
 	@Override
-	public void copy(File localFile, String remotePath, Path path)
+	public void copy(ConfigurationFile localFile, String remotePath, Path path)
 			throws RemoteAccessException {
-		FileInputStream fis = null;
+		InputStream fis = null;
 
 		Channel channel = null;
 		try {
@@ -194,8 +194,8 @@ public class RemoteAccessJschImpl implements RemoteAccess {
 
 			// send "C0644 filesize filename", where filename should not include
 			// '/'
-			long filesize = localFile.length();
-			String localFileName = localFile.getName();
+			long filesize = localFile.getContents().getBytes().length;
+			String localFileName = localFile.getAbsolutePath();
 			command = "C0644 " + filesize + " ";
 			if (localFileName.lastIndexOf('/') > 0) {
 				command += localFileName.substring(localFileName
@@ -212,7 +212,7 @@ public class RemoteAccessJschImpl implements RemoteAccess {
 			}
 
 			// send a content of lfile
-			fis = new FileInputStream(localFile);
+			fis = new  ByteArrayInputStream(localFile.getContents().getBytes());
 			byte[] buf = new byte[1024];
 			while (true) {
 				int len = fis.read(buf, 0, buf.length);

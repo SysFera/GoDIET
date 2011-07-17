@@ -19,6 +19,8 @@ import com.sysfera.godiet.model.Path;
 import com.sysfera.godiet.model.Path.Hop;
 import com.sysfera.godiet.model.factories.ForwardersFactory;
 import com.sysfera.godiet.model.factories.ForwardersFactory.ForwarderType;
+import com.sysfera.godiet.model.generated.Binary;
+import com.sysfera.godiet.model.generated.CommandLine;
 import com.sysfera.godiet.model.generated.Config;
 import com.sysfera.godiet.model.generated.Domain;
 import com.sysfera.godiet.model.generated.Forwarder;
@@ -211,8 +213,11 @@ public class ForwardersCreator implements PlatformObserver {
 			ForwardersFactory.ForwarderType type) {
 		Forwarder clientForwarder = factory.createForwarder();
 
+		Binary b = factory.createBinary();
+		b.setName("dietForwarder");
+		clientForwarder.setBinary(b);
+		
 		Config clientconfig = factory.createConfig();
-		clientconfig.setRemoteBinary("dietForwarder");
 		clientForwarder.setConfig(clientconfig);
 		String name = "DietForwarder-" + from.getId() + "-" + to.getId() + "-";
 		if (type == ForwarderType.CLIENT) {

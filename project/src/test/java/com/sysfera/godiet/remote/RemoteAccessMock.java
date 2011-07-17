@@ -3,22 +3,18 @@
  */
 package com.sysfera.godiet.remote;
 
-import java.io.File;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.jcraft.jsch.Channel;
 import com.sysfera.godiet.exceptions.generics.RemoteAccessException;
 import com.sysfera.godiet.exceptions.remote.RemoveAuthentificationException;
 import com.sysfera.godiet.managers.user.SSHKeyManager;
 import com.sysfera.godiet.model.Path;
 import com.sysfera.godiet.model.Path.Hop;
-import com.sysfera.godiet.model.generated.Resource;
+import com.sysfera.godiet.model.configurator.ConfigurationFile;
 import com.sysfera.godiet.model.generated.Ssh;
 
 /**
@@ -71,7 +67,7 @@ public class RemoteAccessMock implements RemoteAccess {
 	 * java.lang.String, java.lang.String, int)
 	 */
 	@Override
-	public void copy(File file, String remotePath, Path path)
+	public void copy(ConfigurationFile file, String remotePath, Path path)
 			throws RemoteAccessException {
 		Hop[] pathResources = ((Hop[]) path.getPath().toArray(new Hop[0]));
 		if (pathResources == null || pathResources.length == 0)
@@ -91,7 +87,7 @@ public class RemoteAccessMock implements RemoteAccess {
 
 		if (remoteAccessDown)
 			throw new RemoteAccessException("Unable to copy file "
-					+ file.getName() + " on " + remoteNode.getPort()
+					+ file.getId() + " on " + remoteNode.getPort()
 					+ " . Login: " + remoteNode.getPort());
 
 		log.debug("scp " + file.getAbsolutePath() + " "

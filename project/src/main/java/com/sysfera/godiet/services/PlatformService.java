@@ -25,7 +25,7 @@ public interface PlatformService {
 	/**
 	 * Create forwarders if need. Listen add diet components event and create
 	 * forwarders if need.
-	 * 
+	 * TODO: Not yet implemented
 	 * @param value
 	 */
 	public abstract void autoLoadForwarders(boolean value);

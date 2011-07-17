@@ -8,6 +8,7 @@ import com.sysfera.godiet.exceptions.remote.CheckException;
 import com.sysfera.godiet.exceptions.remote.RemoveAuthentificationException;
 import com.sysfera.godiet.managers.user.SSHKeyManager;
 import com.sysfera.godiet.model.Path;
+import com.sysfera.godiet.model.configurator.ConfigurationFile;
 
 /**
  * Interface to execute and copy file on a host remote
@@ -34,7 +35,7 @@ public interface RemoteAccess {
 	/**
 	 * Copy a file on remote host
 	 * 
-	 * @param file
+	 * @param configurationFile
 	 *            The file to copy
 	 * @param remotePath
 	 *            The remote path where file must be copied
@@ -43,7 +44,7 @@ public interface RemoteAccess {
 	 * @throws RemoteAccessException
 	 *             if can't copy file on remote host
 	 */
-	public abstract void copy(File file, String remotePath, Path path)
+	public abstract void copy(ConfigurationFile configurationFile, String remotePath, Path path)
 			throws RemoteAccessException;
 
 	/**
