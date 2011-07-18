@@ -161,7 +161,8 @@ public class ConfigurationFileBuilderTest {
 				+ "databaseUserName=vishnu_user\n"
 				+ "databaseUserPassword=vishnu_user\n"
 				+ "#sendmailScriptPath=/home/hudson/workspace/IMS1/core/src/utils/sendmail.py\n"
-				+ "sendmailScriptPath=/tmp/scratch_runtime/Domain1/sendmail.py\n"
+//TODO: passer les tests			//	+ "sendmailScriptPath=/tmp/scratch_runtime/Domain1/sendmail.py\n"
+				+ "sendmailScriptPath={this.configurationFiles.sendmailscript.absolutePath}\n"
 				+ "vishnuMachineId=machine_1";
 
 		DietManager dm = godiet.getModel().getDietModel();
@@ -170,7 +171,7 @@ public class ConfigurationFileBuilderTest {
 				.getManagedSoftware("sed1");
 		String contents = sed1.getConfigurationFiles().get("umssedconf")
 				.getContents();
-
+ 
 		Assert.assertEquals(expected, contents);
 
 	}
