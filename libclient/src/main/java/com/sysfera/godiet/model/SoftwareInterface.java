@@ -1,5 +1,6 @@
 package com.sysfera.godiet.model;
 
+import java.util.Date;
 import java.util.List;
 
 import com.sysfera.godiet.exceptions.remote.LaunchException;
@@ -42,5 +43,11 @@ public interface SoftwareInterface<T extends Software> {
 	public abstract void stop() throws StopException;
 
 	public abstract List<ConfigurationFile> getFiles();
+
+	public abstract Date getLastTransition();
+
+	public abstract String getErrorMessage();
+
+	public abstract String getErrorMessageDetails();
 
 }

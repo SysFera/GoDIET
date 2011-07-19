@@ -35,11 +35,11 @@ import com.sysfera.godiet.model.softwares.OmniNamesManaged;
 public class DietManager implements PlatformObservable{
 	private Logger log = LoggerFactory.getLogger(getClass());
 
-	private final List<SoftwareInterface<MasterAgent>> masterAgents;
-	private final List<SoftwareInterface<LocalAgent>> localAgents;
-	private final List<SoftwareInterface<Sed>> seds;
+	private final List<DietResourceManaged<MasterAgent>> masterAgents;
+	private final List<DietResourceManaged<LocalAgent>> localAgents;
+	private final List<DietResourceManaged<Sed>> seds;
 	private final List<OmniNamesManaged> omninames;
-	private final List<SoftwareInterface<Forwarder>> forwaders;
+	private final List<DietResourceManaged<Forwarder>> forwaders;
 	@Autowired
 	private  DomainsManager domainManager;
 
@@ -48,11 +48,11 @@ public class DietManager implements PlatformObservable{
 
 	private final Set<PlatformObserver> observers;
 	public DietManager() {
-		this.masterAgents = new ArrayList<SoftwareInterface<MasterAgent>>();
-		this.localAgents = new ArrayList<SoftwareInterface<LocalAgent>>();
-		this.seds = new ArrayList<SoftwareInterface<Sed>>();
+		this.masterAgents = new ArrayList<DietResourceManaged<MasterAgent>>();
+		this.localAgents = new ArrayList<DietResourceManaged<LocalAgent>>();
+		this.seds = new ArrayList<DietResourceManaged<Sed>>();
 		this.omninames = new ArrayList<OmniNamesManaged>();
-		this.forwaders = new ArrayList<SoftwareInterface<Forwarder>>();
+		this.forwaders = new ArrayList<DietResourceManaged<Forwarder>>();
 
 		this.dietResourceId = new HashSet<String>();
 		this.observers = new HashSet<PlatformObserver>();
@@ -61,21 +61,21 @@ public class DietManager implements PlatformObservable{
 	/**
 	 * @return the masterAgents
 	 */
-	public List<SoftwareInterface<MasterAgent>> getMasterAgents() {
+	public List<DietResourceManaged<MasterAgent>> getMasterAgents() {
 		return masterAgents;
 	}
 
 	/**
 	 * @return the localAgents
 	 */
-	public List<SoftwareInterface<LocalAgent>> getLocalAgents() {
+	public List<DietResourceManaged<LocalAgent>> getLocalAgents() {
 		return localAgents;
 	}
 
 	/**
 	 * @return the seds
 	 */
-	public List<SoftwareInterface<Sed>> getSeds() {
+	public List<DietResourceManaged<Sed>> getSeds() {
 		return seds;
 	}
 
@@ -83,7 +83,7 @@ public class DietManager implements PlatformObservable{
 	 * 
 	 * @return list of forwarders
 	 */
-	public List<SoftwareInterface<Forwarder>> getForwarders() {
+	public List<DietResourceManaged<Forwarder>> getForwarders() {
 		return forwaders;
 	}
 

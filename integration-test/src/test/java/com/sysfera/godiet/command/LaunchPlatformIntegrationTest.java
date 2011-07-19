@@ -17,6 +17,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import com.sysfera.godiet.controllers.SSHKeyController;
 import com.sysfera.godiet.exceptions.DietResourceCreationException;
 import com.sysfera.godiet.exceptions.ResourceAddException;
 import com.sysfera.godiet.exceptions.XMLParseException;
@@ -29,17 +30,17 @@ import com.sysfera.godiet.exceptions.remote.LaunchException;
 import com.sysfera.godiet.exceptions.remote.PrepareException;
 import com.sysfera.godiet.exceptions.remote.StopException;
 import com.sysfera.godiet.managers.DietManager;
-import com.sysfera.godiet.managers.user.SSHKeyManager;
+import com.sysfera.godiet.model.SoftwareInterface;
 import com.sysfera.godiet.model.generated.Forwarder;
 import com.sysfera.godiet.model.generated.LocalAgent;
 import com.sysfera.godiet.model.generated.MasterAgent;
+import com.sysfera.godiet.model.generated.OmniNames;
 import com.sysfera.godiet.model.generated.Sed;
 import com.sysfera.godiet.model.generated.Software;
 import com.sysfera.godiet.model.generated.User;
-import com.sysfera.godiet.model.softwares.DietResourceManaged;
 import com.sysfera.godiet.model.softwares.OmniNamesManaged;
-import com.sysfera.godiet.model.softwares.SoftwareManager;
 import com.sysfera.godiet.services.GoDietService;
+import com.sysfera.godiet.services.PlatformService;
 import com.sysfera.godiet.services.UserService;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -53,7 +54,7 @@ public class LaunchPlatformIntegrationTest {
 	private GoDietService godiet;
 
 	@Autowired
-	private DietManager dietModel;
+	private PlatformService dietModel;
 
 	@Autowired
 	private UserService userController;
@@ -94,8 +95,8 @@ public class LaunchPlatformIntegrationTest {
 			try {
 				User.Ssh.Key sshDesc = new User.Ssh.Key();
 				sshDesc.setPath(urlFile.getPath());
-				SSHKeyManager managedKey = userController.addSSHKey(sshDesc);
-				managedKey.setPassword("godiet");
+				SSHKeyController managedKey = userController.addSSHKey(sshDesc);
+				managedKey.setPassword("godiet"); 
 				userController.registerSSHKey(managedKey);
 
 			} catch (AddAuthentificationException e) {
@@ -105,7 +106,7 @@ public class LaunchPlatformIntegrationTest {
 			try {
 				// My local Graal access key
 				mykeyDesc.setPath("/home/phi/tmp/id_dsa");
-				SSHKeyManager managedKey = userController.addSSHKey(mykeyDesc);
+				SSHKeyController managedKey = userController.addSSHKey(mykeyDesc);
 				managedKey.setPassword("godiet");
 				userController.registerSSHKey(managedKey);
 
@@ -168,8 +169,8 @@ public class LaunchPlatformIntegrationTest {
 	}
 
 	private void launchOmniNames() throws PrepareException, LaunchException {
-		List<OmniNamesManaged> omniNames = dietModel.getOmninames();
-		for (OmniNamesManaged dietServiceManaged : omniNames) {
+		List<SoftwareInterface<OmniNames>> omniNames = dietModel.getOmninames();
+		for (SoftwareInterface<OmniNames> dietServiceManaged : omniNames) {
 			dietServiceManaged.prepare();
 			dietServiceManaged.start();
 		}
@@ -177,9 +178,9 @@ public class LaunchPlatformIntegrationTest {
 	}
 
 	private void launchForwarders() throws PrepareException, LaunchException {
-		List<DietResourceManaged<Forwarder>> forwarders = dietModel
+		List<SoftwareInterface<Forwarder>> forwarders = dietModel
 				.getForwarders();
-		for (DietResourceManaged<Forwarder> dietResourceManaged : forwarders) {
+		for (SoftwareInterface<Forwarder> dietResourceManaged : forwarders) {
 			if (dietResourceManaged.getSoftwareDescription().getType()
 					.equals("SERVER")) {
 				dietResourceManaged.prepare();
@@ -192,7 +193,7 @@ public class LaunchPlatformIntegrationTest {
 			log.error("Test interruped",e);
 			Assert.fail("Interrupted ??");
 		}
-		for (DietResourceManaged<Forwarder> dietResourceManaged : forwarders) {
+		for (SoftwareInterface<Forwarder> dietResourceManaged : forwarders) {
 			if (dietResourceManaged.getSoftwareDescription().getType()
 					.equals("CLIENT")) {
 				dietResourceManaged.prepare();
@@ -202,26 +203,26 @@ public class LaunchPlatformIntegrationTest {
 	}
 
 	private void launchMasterAgents() throws PrepareException, LaunchException {
-		List<DietResourceManaged<MasterAgent>> masterAgents = dietModel
+		List<SoftwareInterface<MasterAgent>> masterAgents = dietModel
 				.getMasterAgents();
-		for (DietResourceManaged<MasterAgent> ma : masterAgents) {
+		for (SoftwareInterface<MasterAgent> ma : masterAgents) {
 			ma.prepare();
 			ma.start();
 		}
 	}
 
 	private void launchLocalAgents() throws PrepareException, LaunchException {
-		List<DietResourceManaged<LocalAgent>> localAgents = dietModel
+		List<SoftwareInterface<LocalAgent>> localAgents = dietModel
 				.getLocalAgents();
-		for (DietResourceManaged<LocalAgent> la : localAgents) {
+		for (SoftwareInterface<LocalAgent> la : localAgents) {
 			la.prepare();
 			la.start();
 		}
 	}
 
 	private void launchSedsAgents() throws PrepareException, LaunchException {
-		List<DietResourceManaged<Sed>> seds = dietModel.getSeds();
-		for (DietResourceManaged<Sed> sed : seds) {
+		List<SoftwareInterface<Sed>> seds = dietModel.getSeds();
+		for (SoftwareInterface<Sed> sed : seds) {
 			sed.prepare();
 			sed.start();
 		}
@@ -229,10 +230,10 @@ public class LaunchPlatformIntegrationTest {
 
 	private boolean stopAll() {
 		boolean failed = false;
-		List<SoftwareManager<? extends Software>> softwares = dietModel
-				.getAllManagedSoftware();
+		List<SoftwareInterface<? extends Software>> softwares = dietModel
+				.getAllSoftwares();
 
-		for (SoftwareManager<? extends Software> softwareManager : softwares) {
+		for (SoftwareInterface<? extends Software> softwareManager : softwares) {
 			try {
 				softwareManager.stop();
 			} catch (StopException e) {

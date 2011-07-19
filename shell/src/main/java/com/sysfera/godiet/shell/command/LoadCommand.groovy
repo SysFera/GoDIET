@@ -10,10 +10,9 @@ import org.codehaus.groovy.tools.shell.CommandSupport
 import org.codehaus.groovy.tools.shell.Shell
 
 import com.sysfera.godiet.Diet;
-import com.sysfera.godiet.managers.ResourcesManager
 import com.sysfera.godiet.services.GoDietService;
 import com.sysfera.godiet.shell.GoDietSh
-import com.sysfera.godiet.utils.xml.XmlScannerJaxbImpl
+
 
 
 /**

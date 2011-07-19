@@ -24,15 +24,14 @@ import com.sysfera.godiet.exceptions.graph.GraphDataException;
 import com.sysfera.godiet.exceptions.remote.IncubateException;
 import com.sysfera.godiet.exceptions.remote.LaunchException;
 import com.sysfera.godiet.exceptions.remote.PrepareException;
-import com.sysfera.godiet.managers.DietManager;
 import com.sysfera.godiet.model.SoftwareInterface;
 import com.sysfera.godiet.model.generated.Forwarder;
 import com.sysfera.godiet.model.generated.LocalAgent;
 import com.sysfera.godiet.model.generated.MasterAgent;
+import com.sysfera.godiet.model.generated.OmniNames;
 import com.sysfera.godiet.model.generated.Sed;
-import com.sysfera.godiet.model.softwares.DietResourceManaged;
-import com.sysfera.godiet.model.softwares.OmniNamesManaged;
 import com.sysfera.godiet.services.GoDietService;
+import com.sysfera.godiet.services.PlatformService;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @DirtiesContext
@@ -46,7 +45,7 @@ public class GoDietServiceTest {
 
 
 	@Autowired
-	private DietManager dietModel;
+	private PlatformService platformService;
 
 	@Before
 	public void init() throws IncubateException {
@@ -111,7 +110,7 @@ public class GoDietServiceTest {
 	@Test
 	public void testMockIntegrationTest() {
 
-		List<SoftwareInterface<Forwarder>> forw = dietModel.getForwarders();
+		List<SoftwareInterface<Forwarder>> forw = platformService.getForwarders();
 		for (SoftwareInterface<Forwarder> dietResourceManaged : forw) {
 			System.err.println(dietResourceManaged.getSoftwareDescription()
 					.getId()
@@ -119,11 +118,11 @@ public class GoDietServiceTest {
 					+ dietResourceManaged.getPluggedOn().getId());
 
 		}
-		Assert.assertEquals(3, dietModel.getOmninames().size());
-		Assert.assertEquals(4, dietModel.getForwarders().size());
-		Assert.assertEquals(1, dietModel.getMasterAgents().size());
-		Assert.assertEquals(0, dietModel.getLocalAgents().size());
-		Assert.assertEquals(3, dietModel.getSeds().size());
+		Assert.assertEquals(3, platformService.getOmninames().size());
+		Assert.assertEquals(4, platformService.getForwarders().size());
+		Assert.assertEquals(1, platformService.getMasterAgents().size());
+		Assert.assertEquals(0, platformService.getLocalAgents().size());
+		Assert.assertEquals(3, platformService.getSeds().size());
 
 		try {
 			launchOmniNames();
@@ -141,8 +140,8 @@ public class GoDietServiceTest {
 	}
 
 	private void launchOmniNames() throws PrepareException, LaunchException {
-		List<OmniNamesManaged> omniNames = dietModel.getOmninames();
-		for (OmniNamesManaged dietServiceManaged : omniNames) {
+		List<SoftwareInterface<OmniNames>> omniNames = platformService.getOmninames();
+		for (SoftwareInterface<OmniNames> dietServiceManaged : omniNames) {
 			dietServiceManaged.prepare();
 			dietServiceManaged.start();
 		}
@@ -150,7 +149,7 @@ public class GoDietServiceTest {
 	}
 
 	private void launchForwarders() throws PrepareException, LaunchException {
-		List<SoftwareInterface<Forwarder>> forwarders = dietModel
+		List<SoftwareInterface<Forwarder>> forwarders = platformService
 				.getForwarders();
 		for (SoftwareInterface<Forwarder> dietResourceManaged : forwarders) {
 			if (dietResourceManaged.getSoftwareDescription().getType()
@@ -169,7 +168,7 @@ public class GoDietServiceTest {
 	}
 
 	private void launchMasterAgents() throws PrepareException, LaunchException {
-		List<SoftwareInterface<MasterAgent>> masterAgents = dietModel.getMasterAgents();
+		List<SoftwareInterface<MasterAgent>> masterAgents = platformService.getMasterAgents();
 		for (SoftwareInterface<MasterAgent> ma : masterAgents) {
 			ma.prepare();
 			ma.start();
@@ -177,7 +176,7 @@ public class GoDietServiceTest {
 	}
 
 	private void launchLocalAgents() throws PrepareException, LaunchException {
-		List<SoftwareInterface<LocalAgent>> localAgents = dietModel.getLocalAgents();
+		List<SoftwareInterface<LocalAgent>> localAgents = platformService.getLocalAgents();
 		for (SoftwareInterface<LocalAgent> la : localAgents) {
 			la.prepare();
 			la.start();
@@ -185,7 +184,7 @@ public class GoDietServiceTest {
 	}
 
 	private void launchSedsAgents() throws PrepareException, LaunchException {
-		List<SoftwareInterface<Sed>> seds = dietModel.getSeds();
+		List<SoftwareInterface<Sed>> seds = platformService.getSeds();
 		for (SoftwareInterface<Sed> sed : seds) {
 			sed.prepare();
 			sed.start();

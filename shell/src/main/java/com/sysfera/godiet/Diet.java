@@ -14,21 +14,21 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.sysfera.godiet.controllers.SSHKeyController;
 import com.sysfera.godiet.exceptions.CommandExecutionException;
 import com.sysfera.godiet.exceptions.remote.AddAuthentificationException;
 import com.sysfera.godiet.exceptions.remote.LaunchException;
 import com.sysfera.godiet.exceptions.remote.PrepareException;
 import com.sysfera.godiet.exceptions.remote.StopException;
-import com.sysfera.godiet.managers.DietManager;
-import com.sysfera.godiet.managers.user.SSHKeyManager;
+
+import com.sysfera.godiet.model.SoftwareInterface;
 import com.sysfera.godiet.model.generated.LocalAgent;
 import com.sysfera.godiet.model.generated.MasterAgent;
+import com.sysfera.godiet.model.generated.OmniNames;
 import com.sysfera.godiet.model.generated.Sed;
 import com.sysfera.godiet.model.generated.Software;
 import com.sysfera.godiet.model.generated.User.Ssh.Key;
-import com.sysfera.godiet.model.softwares.DietResourceManaged;
-import com.sysfera.godiet.model.softwares.OmniNamesManaged;
-import com.sysfera.godiet.model.softwares.SoftwareManager;
+
 import com.sysfera.godiet.services.GoDietService;
 
 public class Diet {
@@ -37,16 +37,12 @@ public class Diet {
 	@Autowired
 	private GoDietService godiet;
 
-	private DietManager dietManager;
-	public List<SSHKeyManager> getManagedKeys() {
-		return this.godiet.getModel().getUserManager().getManagedKeys();
+
+	public List<SSHKeyController> getManagedKeys() {
+		return this.godiet.getUserService().getManagedKeys();
 
 	}
 
-	@PostConstruct
-	public void postConstruct(){
-		this.dietManager = godiet.getModel().getDietModel();
-	}
 	public void registerKey(Key key) {
 		try {
 			this.godiet.getUserService().addSSHKey(key);
@@ -124,8 +120,8 @@ public class Diet {
 
 	// LAUNCH
 	public void launchOmniNames() throws PrepareException, LaunchException {
-		List<OmniNamesManaged> omniNames = this.dietManager.getOmninames();
-		for (OmniNamesManaged dietServiceManaged : omniNames) {
+		List<SoftwareInterface<OmniNames>> omniNames = this.godiet.getPlatformService().getOmninames();
+		for (SoftwareInterface<OmniNames> dietServiceManaged : omniNames) {
 			dietServiceManaged.prepare();
 			dietServiceManaged.start();
 		}
@@ -134,26 +130,26 @@ public class Diet {
 
 
 	public void launchMasterAgents() throws PrepareException, LaunchException {
-		List<DietResourceManaged<MasterAgent>> masterAgents = this.dietManager
+		List<SoftwareInterface<MasterAgent>> masterAgents = this.godiet.getPlatformService()
 				.getMasterAgents();
-		for (DietResourceManaged<MasterAgent> ma : masterAgents) {
+		for (SoftwareInterface<MasterAgent> ma : masterAgents) {
 			ma.prepare();
 			ma.start();
 		}
 	}
 
 	public void launchLocalAgents() throws PrepareException, LaunchException {
-		List<DietResourceManaged<LocalAgent>> localAgents = this.dietManager
+		List<SoftwareInterface<LocalAgent>> localAgents = this.godiet.getPlatformService()
 				.getLocalAgents();
-		for (DietResourceManaged<LocalAgent> la : localAgents) {
+		for (SoftwareInterface<LocalAgent> la : localAgents) {
 			la.prepare();
 			la.start();
 		}
 	}
 
 	public void launchSedsAgents() throws PrepareException, LaunchException {
-		List<DietResourceManaged<Sed>> seds = this.dietManager.getSeds();
-		for (DietResourceManaged<Sed> sed : seds) {
+		List<SoftwareInterface<Sed>> seds = this.godiet.getPlatformService().getSeds();
+		for (SoftwareInterface<Sed> sed : seds) {
 			sed.prepare();
 			sed.start();
 		}
@@ -162,8 +158,8 @@ public class Diet {
 
 
 	public void stopServices() throws  StopException {
-		List<OmniNamesManaged> omniNames = this.dietManager.getOmninames();
-		for (OmniNamesManaged sed : omniNames) {
+		List<SoftwareInterface<OmniNames>> omniNames = this.godiet.getPlatformService().getOmninames();
+		for (SoftwareInterface<OmniNames> sed : omniNames) {
 			sed.stop();
 			
 		}
@@ -173,7 +169,7 @@ public class Diet {
 	public void stopSoftware(String softwareId) throws PrepareException,
 			StopException, CommandExecutionException {
 
-		SoftwareManager<? extends Software> software = this.dietManager
+		SoftwareInterface<? extends Software> software = this.godiet.getPlatformService()
 				.getManagedSoftware(softwareId);
 		if (software == null)
 			throw new CommandExecutionException("Unable to find " + softwareId);

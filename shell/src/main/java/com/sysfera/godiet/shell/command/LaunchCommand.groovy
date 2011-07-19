@@ -1,24 +1,18 @@
 
 package com.sysfera.godiet.shell.command
 
-import java.util.List;
-import com.sysfera.godiet.model.generated.Software;
+import java.util.List
 
-import org.codehaus.groovy.runtime.MethodClosure
 import org.codehaus.groovy.tools.shell.ComplexCommandSupport
 import org.codehaus.groovy.tools.shell.Shell
-import org.codehaus.groovy.tools.shell.util.Preferences
 
-import com.sysfera.godiet.Diet;
-import com.sysfera.godiet.exceptions.remote.LaunchException;
-import com.sysfera.godiet.exceptions.remote.PrepareException;
-import com.sysfera.godiet.managers.DietManager;
-import com.sysfera.godiet.managers.ResourcesManager
-import com.sysfera.godiet.model.generated.Forwarder;
-import com.sysfera.godiet.model.softwares.DietResourceManaged;
-import com.sysfera.godiet.model.softwares.SoftwareManager;
-import com.sysfera.godiet.model.states.ResourceState;
-import com.sysfera.godiet.model.states.ResourceState.State;
+import com.sysfera.godiet.exceptions.remote.LaunchException
+import com.sysfera.godiet.exceptions.remote.PrepareException
+import com.sysfera.godiet.model.SoftwareInterface
+import com.sysfera.godiet.model.generated.Software
+import com.sysfera.godiet.model.states.ResourceState
+import com.sysfera.godiet.model.states.ResourceState.State
+import com.sysfera.godiet.services.PlatformService
 import com.sysfera.godiet.shell.GoDietSh
 
 
@@ -42,7 +36,7 @@ extends ComplexCommandSupport {
 
 
 
-	private launchSoftware(SoftwareManager soft) {
+	private launchSoftware(SoftwareInterface soft) {
 		try{
 			if(soft.state.status.equals(State.INCUBATE)) {
 				io.println("Prepare ${soft.softwareDescription.id}");
@@ -62,32 +56,29 @@ extends ComplexCommandSupport {
 		}
 	}
 
-	private launchSoftwares(List<SoftwareManager> softwares) {
+	private launchSoftwares(List<SoftwareInterface> softwares) {
 		softwares.each { launchSoftware(it) }
 	}
 	private launchMa() {
 		GoDietSh goDietShell = shell;
-		ResourcesManager rm = goDietShell.godiet.model
-		List<SoftwareManager> mas = rm.dietModel.masterAgents
+		PlatformService ps = goDietShell.godiet.platformService
+		def mas = ps.masterAgents
 		launchSoftwares(mas)
 	}
 	private launchLa() {
 		GoDietSh goDietShell = shell;
-		ResourcesManager rm = goDietShell.godiet.model
-		List<SoftwareManager> la = rm.dietModel.localAgents
+		PlatformService ps = goDietShell.godiet.platformService
+		def la = ps.localAgents
 		launchSoftwares(la)
 	}
 
 
 	private launchForwarders() {
 		GoDietSh goDietShell = shell;
-		ResourcesManager rm = goDietShell.godiet.model
-		List<DietResourceManaged<Forwarder>> forwarders = dietManager.getForwarders();
-		forwarders.each {
-			if (it.getType()
-			.equals("SERVER")) {
-				launchSoftware(it)
-			}
+		PlatformService ps = goDietShell.godiet.platformService
+		def forwardersServer = ps.forwardersServer
+		forwardersServer.each {
+			launchSoftware(it)
 		}
 
 		try {
@@ -97,27 +88,27 @@ extends ComplexCommandSupport {
 			log.error("FATAL: Launching thread have been interrupt",e);
 			return;
 		}
-		forwarders.each {
-			if (it.getType()
-			.equals("CLIENT")) {
+		
+		def forwardersClient = ps.forwardersClient
+		forwardersClient.each {
 				launchSoftware(it)
 			}
-		}
+		
 	}
 
 
 	private launchSeds() {
 		GoDietSh goDietShell = shell;
-		ResourcesManager rm = goDietShell.godiet.model
-		List<SoftwareManager> seds = rm.dietModel.seds
+		PlatformService ps = goDietShell.godiet.platformService
+		def seds = ps.seds
 		launchSoftwares(seds)
 	}
 
 
 	def do_services = {
 		GoDietSh goDietShell = shell;
-		ResourcesManager rm = goDietShell.godiet.model
-		List<SoftwareManager> services = rm.dietModel.omninames
+		PlatformService ps = goDietShell.godiet.platformService
+		def services = ps.getOmninames()
 		launchSoftwares(services)
 	}
 	def do_agents = {
@@ -143,8 +134,10 @@ extends ComplexCommandSupport {
 
 		assert arg.size() == 1 , 'Command start software requires at least one argument: the software id'
 		String argument = arg.head()
-		DietManager diet = ((GoDietSh)shell).godiet.model.dietModel
-		SoftwareManager<? extends Software>  software = diet.getManagedSoftware(arg)
+		GoDietSh goDietShell = shell;
+		PlatformService ps = goDietShell.godiet.platformService
+		
+		SoftwareInterface<? extends Software>  software = ps.getManagedSoftware(arg)
 		if (software == null){
 			io.err.println("Unable to find " + arg);
 			return;

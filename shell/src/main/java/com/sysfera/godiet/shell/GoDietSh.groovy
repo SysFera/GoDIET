@@ -45,7 +45,6 @@ import org.fusesource.jansi.AnsiConsole
 import org.fusesource.jansi.AnsiRenderer
 
 import com.sysfera.godiet.Diet
-import com.sysfera.godiet.managers.DietManager;
 import com.sysfera.godiet.services.GoDietService;
 
 /**

@@ -11,12 +11,12 @@ import jline.SimpleCompletor
 import org.codehaus.groovy.tools.shell.ComplexCommandSupport
 import org.codehaus.groovy.tools.shell.Shell
 
-import com.sysfera.godiet.managers.user.SSHKeyManager;
-import com.sysfera.godiet.managers.user.SSHKeyManager.Status;
 import com.sysfera.godiet.model.generated.User.Ssh.Key;
 import com.sysfera.godiet.services.GoDietService;
 import com.sysfera.godiet.services.UserService;
 import com.sysfera.godiet.shell.GoDietSh
+import com.sysfera.godiet.controllers.SSHKeyController;
+import com.sysfera.godiet.controllers.SSHKeyController.Status;
 import com.sysfera.godiet.model.generated.User.Ssh.Key;
 
 
@@ -59,12 +59,12 @@ class SSHCommand extends ComplexCommandSupport {
 		Key newKey = new Key()
 		newKey.pathPub = pubkeyPath
 		newKey.path = privKeyPath
-		SSHKeyManager newManagedkey = ((GoDietSh)shell).godiet.userService.addSSHKey(privKeyPath,pubkeyPath,password)
+		SSHKeyController newManagedkey = ((GoDietSh)shell).godiet.userService.addSSHKey(privKeyPath,pubkeyPath,password)
 		newManagedkey.password = password
 		((GoDietSh)shell).godiet.userService.registerSSHKey(newManagedkey)
 	}
 
-	private void modifyKeyForm(SSHKeyManager key){
+	private void modifyKeyForm(SSHKeyController key){
 		assert key != null
 		io.out.println "Enter private key path"
 		ConsoleReader consoleFileCompletor = new jline.ConsoleReader();
@@ -76,10 +76,10 @@ class SSHCommand extends ComplexCommandSupport {
 		consoleFileCompletor.putString("${privKeyPath}.pub")
 		String pubkeyPath = consoleFileCompletor.readLine()
 		String password = askPassword()
-		key.sshDesc.path = privKeyPath
-		key.sshDesc.pathPub = pubkeyPath
+		key.privKeyPath = privKeyPath
+		key.pubKeyPath = pubkeyPath
 		key.password = password
-		((GoDietSh)shell).diet.userService.registerSSHKey(key)
+		((GoDietSh)shell).godiet.userService.registerSSHKey(key)
 	}
 
 	def do_modifykey = {
@@ -121,12 +121,12 @@ class SSHCommand extends ComplexCommandSupport {
 
 		keys.eachWithIndex { obj, i ->
 			def coloredStatus
-			switch (obj.state) {
+			switch (obj.status) {
 				case Status.LOADED:
-					coloredStatus =  "@|green ${obj.state}|@"
+					coloredStatus =  "@|green ${obj.status}|@"
 					break;
 				default:
-					coloredStatus = "@|red ${obj.state}|@"	
+					coloredStatus = "@|red ${obj.status}|@"	
 					break;
 			}
 			io.out.println "${i}\t${coloredStatus}\t${obj.pubKeyPath}"
@@ -137,8 +137,8 @@ class SSHCommand extends ComplexCommandSupport {
 	def do_initpasswords = {
 		UserService godiet = ((GoDietSh)shell).godiet.userService
 		def keys = godiet.managedKeys
-		keys.each { SSHKeyManager key ->
-			if(key.state == Status.PASSWORDNOTSET) {
+		keys.each { SSHKeyController key ->
+			if(key.status == Status.PASSWORDNOTSET) {
 				io.out.println("${key.pubKeyPath}");
 				String password = askPassword()
 				key.password = password
