@@ -1,13 +1,11 @@
 package com.sysfera.godiet.model.factories;
 
 import java.util.List;
-import java.util.Map;
 
 import com.sysfera.godiet.exceptions.DietResourceCreationException;
 import com.sysfera.godiet.exceptions.generics.ConfigurationBuildingException;
 import com.sysfera.godiet.exceptions.remote.IncubateException;
 import com.sysfera.godiet.managers.InfrastructureManager;
-import com.sysfera.godiet.model.configurator.ConfigurationFile;
 import com.sysfera.godiet.model.configurator.ConfigurationFileBuilderService;
 import com.sysfera.godiet.model.generated.Binary;
 import com.sysfera.godiet.model.generated.Domain;
@@ -16,6 +14,8 @@ import com.sysfera.godiet.model.generated.ObjectFactory;
 import com.sysfera.godiet.model.generated.OmniNames;
 import com.sysfera.godiet.model.generated.Resource;
 import com.sysfera.godiet.model.generated.Software;
+import com.sysfera.godiet.model.generated.SoftwareFile;
+import com.sysfera.godiet.model.generated.SoftwareFile.Template;
 import com.sysfera.godiet.model.generated.Ssh;
 import com.sysfera.godiet.model.generated.Var;
 import com.sysfera.godiet.model.softwares.OmniNamesManaged;
@@ -89,13 +89,20 @@ public class OmniNamesFactory {
 		OmniNamesManaged omniNamesManaged = new OmniNamesManaged(
 				omniNamesDescription, pluggedOn, softwareController, validator);
 		omniNamesManaged.setAddress(listenAddress);
-		settingOmniNamesRunningCommand(omniNamesManaged);
+		
 		try {
+			SoftwareFile sf = new ObjectFactory().createSoftwareFile();
+			Template template = new ObjectFactory()
+					.createSoftwareFileTemplate();
+			template.setName("omninames_template.config");
+			sf.setId(omniNamesManaged.getSoftwareDescription().getId());
+			sf.setTemplate(template);
+			omniNamesManaged.getSoftwareDescription().getFile().add(sf);
 			configurationFileBuilderService.build(omniNamesManaged);
 		} catch (ConfigurationBuildingException e) {
 			new IncubateException("Unable to create configurations file ", e);
 		}
-
+		settingOmniNamesRunningCommand(omniNamesManaged);
 		return omniNamesManaged;
 	}
 

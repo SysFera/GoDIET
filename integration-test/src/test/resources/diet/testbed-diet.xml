@@ -43,25 +43,37 @@
 
 			<sed id="sed1">
 				<config server="Node2" />
+				<file id="sed1_config">
+					<template name="sed_template.config" />
+				</file>
 				<binary name="dmat_manips_server">
 					<commandLine>
+						<parameter string="${this.configurationFiles.sed1_config.absolutePath}" />
 						<parameter string="T" />
 					</commandLine>
 				</binary>
 			</sed>
 			<sed id="sed2">
 				<config server="Node3" />
+				<file id="sed2_config">
+					<template name="sed_template.config" />
+				</file>
+
 				<binary name="dmat_manips_server">
 					<commandLine>
+						<parameter string="${this.configurationFiles.sed2_config.absolutePath}" />
 						<parameter string="T" />
 					</commandLine>
 				</binary>
 			</sed>
 			<sed id="sed3">
 				<config server="Node4" />
-			
+				<file id="sed3_config">
+					<template name="sed_template.config" />
+				</file>
 				<binary name="dmat_manips_server">
 					<commandLine>
+						<parameter string="${this.configurationFiles.sed3_config.absolutePath}" />
 						<parameter string="T" />
 					</commandLine>
 				</binary>

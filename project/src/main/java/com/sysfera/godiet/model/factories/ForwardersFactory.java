@@ -99,7 +99,11 @@ public class ForwardersFactory {
 				sf.setTemplate(template);
 				clientForwarderManager.getSoftwareDescription().getFile()
 						.add(sf);
+				
+				
 				configurationFileBuilderService.build(clientForwarderManager);
+				clientForwarderManager.getConfigurationFiles().putAll(omniNamesClient.getConfigurationFiles());
+
 			}
 			{// Server
 				SoftwareFile sf = new ObjectFactory().createSoftwareFile();
@@ -111,7 +115,10 @@ public class ForwardersFactory {
 				sf.setTemplate(template);
 				serverForwarderManager.getSoftwareDescription().getFile()
 						.add(sf);
+				
+				
 				configurationFileBuilderService.build(serverForwarderManager);
+				serverForwarderManager.getConfigurationFiles().putAll(omniNamesServer.getConfigurationFiles());
 			}
 
 		} catch (ConfigurationBuildingException e) {

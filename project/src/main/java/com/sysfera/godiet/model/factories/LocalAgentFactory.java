@@ -1,19 +1,16 @@
 package com.sysfera.godiet.model.factories;
 
-import java.util.Map;
-
 import com.sysfera.godiet.exceptions.DietResourceCreationException;
 import com.sysfera.godiet.exceptions.generics.ConfigurationBuildingException;
 import com.sysfera.godiet.exceptions.remote.IncubateException;
-import com.sysfera.godiet.model.configurator.ConfigurationFile;
 import com.sysfera.godiet.model.configurator.ConfigurationFileBuilderService;
 import com.sysfera.godiet.model.generated.Binary;
 import com.sysfera.godiet.model.generated.CommandLine;
+import com.sysfera.godiet.model.generated.CommandLine.Parameter;
 import com.sysfera.godiet.model.generated.LocalAgent;
 import com.sysfera.godiet.model.generated.ObjectFactory;
 import com.sysfera.godiet.model.generated.Resource;
 import com.sysfera.godiet.model.generated.SoftwareFile;
-import com.sysfera.godiet.model.generated.CommandLine.Parameter;
 import com.sysfera.godiet.model.generated.SoftwareFile.Template;
 import com.sysfera.godiet.model.softwares.DietResourceManaged;
 import com.sysfera.godiet.model.softwares.OmniNamesManaged;
@@ -71,7 +68,13 @@ public class LocalAgentFactory {
 			sf.setId(localAgentManaged.getSoftwareDescription().getId());
 			sf.setTemplate(template);
 			localAgentManaged.getSoftwareDescription().getFile().add(sf);
+			
+
 			configurationFileBuilderService.build(localAgentManaged);
+			
+			//Add a ref to the omniNames's config file
+			localAgentManaged.getConfigurationFiles().putAll(omniNames.getConfigurationFiles());
+
 
 		} catch (ConfigurationBuildingException e) {
 			new IncubateException("Unable to create configurations file ", e);

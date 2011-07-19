@@ -29,7 +29,6 @@ import com.sysfera.godiet.model.validators.OmniNamesRuntimeValidatorImpl;
 import com.sysfera.godiet.model.validators.SedRuntimeValidatorImpl;
 
 @Component
-@Service
 public class GodietMetaFactory {
 
 	private  OmniNamesFactory omniNamesFactory;

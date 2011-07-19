@@ -69,7 +69,10 @@ public class MasterAgentFactory {
 			sf.setId(masterAgentManaged.getSoftwareDescription().getId());
 			sf.setTemplate(template);
 			masterAgentManaged.getSoftwareDescription().getFile().add(sf);
+
 			configurationFileBuilderService.build(masterAgentManaged);
+			//Add a ref to the omniNames's config file
+			masterAgentManaged.getConfigurationFiles().putAll(omniNames.getConfigurationFiles());
 
 		} catch (ConfigurationBuildingException e) {
 			new IncubateException("Unable to create configurations file ", e);
