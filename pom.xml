@@ -6,6 +6,7 @@
 	<version>2.7.BETA-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<modules>
+		<module>godietlib</module>
 		<module>project</module>
 		<module>integration-test</module>
 		<module>shell</module>
