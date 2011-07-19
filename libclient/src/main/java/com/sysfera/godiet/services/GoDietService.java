@@ -1,7 +1,6 @@
 package com.sysfera.godiet.services;
 
 import com.sysfera.godiet.exceptions.generics.StartException;
-import com.sysfera.godiet.managers.ResourcesManager;
 
 public interface GoDietService {
 
@@ -23,7 +22,7 @@ public interface GoDietService {
 
 	public abstract ConfigurationService getConfigurationService();
 	
-	public abstract ResourcesManager getModel();
+//	public abstract ResourcesManager getModel();
 
 
 }

@@ -1,10 +1,5 @@
 package com.sysfera.godiet.remote;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
 import java.util.Collection;
 
 import org.slf4j.Logger;
@@ -21,11 +16,10 @@ import com.sysfera.godiet.exceptions.remote.StopException;
 import com.sysfera.godiet.managers.ConfigurationManager;
 import com.sysfera.godiet.managers.InfrastructureManager;
 import com.sysfera.godiet.model.Path;
-import com.sysfera.godiet.model.configurator.ConfigurationFile;
-import com.sysfera.godiet.model.generated.Config;
+import com.sysfera.godiet.model.SoftwareInterface;
+import com.sysfera.godiet.model.configurator.ConfigurationFileImpl;
 import com.sysfera.godiet.model.generated.Node;
 import com.sysfera.godiet.model.generated.Resource;
-import com.sysfera.godiet.model.generated.Scratch;
 import com.sysfera.godiet.model.generated.Software;
 import com.sysfera.godiet.model.softwares.SoftwareController;
 import com.sysfera.godiet.model.softwares.SoftwareManager;
@@ -100,9 +94,9 @@ public class RemoteConfigurationHelper implements SoftwareController {
 			remoteAccess.launch(command, path);
 
 			// Copy file on remote host
-			Collection<ConfigurationFile> cfiles = managedSoftware
+			Collection<ConfigurationFileImpl> cfiles = managedSoftware
 					.getConfigurationFiles().values();
-			for (ConfigurationFile configurationFile : cfiles) {
+			for (ConfigurationFileImpl configurationFile : cfiles) {
 				// TODO: See fixme lack of design
 				if (!configurationFile.isCopiedOn(remoteNode)) {
 					log.debug("Copy file " + configurationFile.getId() + " on "

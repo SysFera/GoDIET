@@ -6,6 +6,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.sysfera.godiet.model.SoftwareInterface;
 import com.sysfera.godiet.model.generated.Resource;
 import com.sysfera.godiet.model.generated.Software;
 import com.sysfera.godiet.model.softwares.SoftwareManager;
@@ -54,7 +55,7 @@ public class TemplateModel {
 	 * @return Null if software = null
 	 */
 	public static Map<Object, Object> buildModel(
-			SoftwareManager<? extends Software> software) {
+			SoftwareInterface<? extends Software> software) {
 		Map<Object, Object> freemarkerModel = new HashMap<Object, Object>();
 		if(software == null){
 			log.error("Try to build model with an nill resource");

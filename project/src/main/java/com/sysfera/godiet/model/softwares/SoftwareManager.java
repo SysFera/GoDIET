@@ -1,12 +1,16 @@
 package com.sysfera.godiet.model.softwares;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import com.sysfera.godiet.exceptions.remote.IncubateException;
 import com.sysfera.godiet.exceptions.remote.LaunchException;
 import com.sysfera.godiet.exceptions.remote.PrepareException;
 import com.sysfera.godiet.exceptions.remote.StopException;
-import com.sysfera.godiet.model.configurator.ConfigurationFile;
+import com.sysfera.godiet.model.ConfigurationFile;
+import com.sysfera.godiet.model.SoftwareInterface;
+import com.sysfera.godiet.model.configurator.ConfigurationFileImpl;
 import com.sysfera.godiet.model.generated.Resource;
 import com.sysfera.godiet.model.generated.Software;
 import com.sysfera.godiet.model.states.ResourceState;
@@ -20,7 +24,7 @@ import com.sysfera.godiet.model.validators.RuntimeValidator;
  * @author phi
  * 
  */
-public abstract class SoftwareManager<T extends Software> {
+public abstract class SoftwareManager<T extends Software> implements SoftwareInterface<T> {
 	private String runningCommand;
 
 	// Software description
@@ -31,11 +35,11 @@ public abstract class SoftwareManager<T extends Software> {
 	protected final StateController stateController;
 
 
-	private Map<String,ConfigurationFile> configurationFiles;
+	private Map<String,ConfigurationFileImpl> configurationFiles;
 
 	public SoftwareManager(T description, Resource pluggedOn,
 			SoftwareController softwareController,
-			RuntimeValidator<? extends SoftwareManager<T>> validator)
+			RuntimeValidator<?> validator)
 			throws IncubateException {
 	
 		this.softwareDescription = description;
@@ -44,11 +48,10 @@ public abstract class SoftwareManager<T extends Software> {
 				validator);
 	}
 
-	/**
-	 * Return the physical resource on which agent is plugged on
-	 * 
-	 * @return the pluggedOn resource or null if not yet plugged
+	/* (non-Javadoc)
+	 * @see com.sysfera.godiet.model.softwares.SoftwareInterface#getPluggedOn()
 	 */
+	@Override
 	public Resource getPluggedOn() {
 		return pluggedOn;
 	}
@@ -61,6 +64,10 @@ public abstract class SoftwareManager<T extends Software> {
 		return stateController;
 	}
 
+	/* (non-Javadoc)
+	 * @see com.sysfera.godiet.model.softwares.SoftwareInterface#getSoftwareDescription()
+	 */
+	@Override
 	public T getSoftwareDescription() {
 		return softwareDescription;
 	}
@@ -73,12 +80,10 @@ public abstract class SoftwareManager<T extends Software> {
 		return pid;
 	}
 
-	/**
-	 * Return the command to run the software on the remote physical resource
-	 * 
-	 * @return the command to run the managed software or null if it doesn't
-	 *         plugged.s
+	/* (non-Javadoc)
+	 * @see com.sysfera.godiet.model.softwares.SoftwareInterface#getRunningCommand()
 	 */
+	@Override
 	public String getRunningCommand() {
 		return runningCommand;
 	}
@@ -93,15 +98,18 @@ public abstract class SoftwareManager<T extends Software> {
 		this.runningCommand = runningCommand;
 	}
 
-	/**
-	 * Use carrefully: could be modify in indenpendant thread
-	 * 
-	 * @return
+	/* (non-Javadoc)
+	 * @see com.sysfera.godiet.model.softwares.SoftwareInterface#getState()
 	 */
+	@Override
 	public ResourceState getState() {
 		return stateController.getState();
 	}
 
+	/* (non-Javadoc)
+	 * @see com.sysfera.godiet.model.softwares.SoftwareInterface#start()
+	 */
+	@Override
 	public synchronized void start() throws LaunchException {
 
 		ResourceState currentState = this.stateController.getState();
@@ -109,22 +117,38 @@ public abstract class SoftwareManager<T extends Software> {
 
 	}
 
+	/* (non-Javadoc)
+	 * @see com.sysfera.godiet.model.softwares.SoftwareInterface#prepare()
+	 */
+	@Override
 	public synchronized void prepare() throws PrepareException {
 		ResourceState currentState = this.stateController.getState();
 		currentState.prepare();
 
 	}
 
+	/* (non-Javadoc)
+	 * @see com.sysfera.godiet.model.softwares.SoftwareInterface#stop()
+	 */
+	@Override
 	public synchronized void stop() throws StopException {
 		ResourceState currentState = this.stateController.getState();
 		currentState.stop();
 	}
 
-	public Map<String,ConfigurationFile> getConfigurationFiles() {
+	
+	public Map<String,ConfigurationFileImpl> getConfigurationFiles() {
 		return this.configurationFiles;
 	}
 
-	public void setConfigurationFiles(Map<String,ConfigurationFile> configurationFiles) {
+	@Override
+	public List<ConfigurationFile> getFiles()
+	{
+		List<ConfigurationFile> configurationsFiles = new ArrayList<ConfigurationFile>();
+		configurationsFiles.addAll(this.configurationFiles.values());
+		return configurationsFiles;
+	}
+	public void setConfigurationFiles(Map<String,ConfigurationFileImpl> configurationFiles) {
 		this.configurationFiles = configurationFiles;
 	}
 	

@@ -3,6 +3,7 @@ package com.sysfera.godiet.model.configurator;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.sysfera.godiet.model.ConfigurationFile;
 import com.sysfera.godiet.model.generated.Resource;
 
 
@@ -12,7 +13,7 @@ import com.sysfera.godiet.model.generated.Resource;
  * @author phi
  *
  */
-public class ConfigurationFile {
+public class ConfigurationFileImpl implements ConfigurationFile {
 
 	//TODO: Do something better.
 	private List<Resource> copiedOn = new ArrayList<Resource>();
@@ -20,6 +21,10 @@ public class ConfigurationFile {
 	private String contents;
 	private String absolutePath;
 	
+	/* (non-Javadoc)
+	 * @see com.sysfera.godiet.model.configurator.ConfigurationFile#getId()
+	 */
+	@Override
 	public String getId() {
 		return id;
 	}
@@ -28,6 +33,10 @@ public class ConfigurationFile {
 		this.id = id;
 	}
 
+	/* (non-Javadoc)
+	 * @see com.sysfera.godiet.model.configurator.ConfigurationFile#getContents()
+	 */
+	@Override
 	public String getContents() {
 		return contents;
 	}
@@ -36,6 +45,10 @@ public class ConfigurationFile {
 		this.contents = contents;
 	}
 	
+	/* (non-Javadoc)
+	 * @see com.sysfera.godiet.model.configurator.ConfigurationFile#getAbsolutePath()
+	 */
+	@Override
 	public String getAbsolutePath() {
 		return absolutePath;
 	}

@@ -2,13 +2,14 @@ package com.sysfera.godiet.remote;
 
 import java.io.File;
 
+import com.sysfera.godiet.controllers.SSHKeyController.Status;
 import com.sysfera.godiet.exceptions.generics.RemoteAccessException;
 import com.sysfera.godiet.exceptions.remote.AddAuthentificationException;
 import com.sysfera.godiet.exceptions.remote.CheckException;
 import com.sysfera.godiet.exceptions.remote.RemoveAuthentificationException;
 import com.sysfera.godiet.managers.user.SSHKeyManager;
+import com.sysfera.godiet.model.ConfigurationFile;
 import com.sysfera.godiet.model.Path;
-import com.sysfera.godiet.model.configurator.ConfigurationFile;
 
 /**
  * Interface to execute and copy file on a host remote

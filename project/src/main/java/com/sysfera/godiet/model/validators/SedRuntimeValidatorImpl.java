@@ -5,10 +5,10 @@ import com.sysfera.godiet.exceptions.remote.IncubateException;
 import com.sysfera.godiet.exceptions.remote.LaunchException;
 import com.sysfera.godiet.exceptions.remote.StopException;
 import com.sysfera.godiet.managers.DietManager;
+import com.sysfera.godiet.model.SoftwareInterface;
 import com.sysfera.godiet.model.generated.Sed;
 import com.sysfera.godiet.model.generated.Software;
 import com.sysfera.godiet.model.softwares.DietResourceManaged;
-import com.sysfera.godiet.model.softwares.SoftwareManager;
 import com.sysfera.godiet.model.states.ResourceState;
 import com.sysfera.godiet.model.states.ResourceState.State;
 
@@ -30,7 +30,7 @@ public class SedRuntimeValidatorImpl extends
 	 */
 	@Override
 	public void wantLaunch(DietResourceManaged<Sed> sed) throws LaunchException {
-		SoftwareManager<? extends Software> managedParent = dietManager
+		SoftwareInterface<? extends Software> managedParent = dietManager
 				.getManagedSoftware(sed.getSoftwareDescription().getParent()
 						.getId());
 		ResourceState parentMaState = managedParent.getState();

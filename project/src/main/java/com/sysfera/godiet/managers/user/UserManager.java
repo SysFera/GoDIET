@@ -8,9 +8,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.sysfera.godiet.controllers.SSHKeyController;
+import com.sysfera.godiet.controllers.SSHKeyController.Status;
 import com.sysfera.godiet.exceptions.remote.AddAuthentificationException;
 import com.sysfera.godiet.exceptions.remote.RemoveAuthentificationException;
-import com.sysfera.godiet.managers.user.SSHKeyManager.Status;
 import com.sysfera.godiet.model.generated.User.Ssh.Key;
 import com.sysfera.godiet.remote.RemoteAccess;
 
@@ -46,34 +47,39 @@ public class UserManager {
 	 * Register a key in the remote access manager if his password is
 	 * initialized
 	 * 
-	 * @param key
+	 * @param managedKey
 	 * @throws AddAuthentificationException
 	 */
 	
-	public void registerKey(SSHKeyManager key)
+	public void registerKey(SSHKeyController key)
 			throws AddAuthentificationException {
-		if (key.state == Status.LOADED || key.state == Status.ERROR) {
-			log.error("Unable to register " + key.getPubKeyPath()
-					+ ". This key is in " + key.state + " state.");
+		
+		//TODO: cast moche
+		SSHKeyManager managedKey = (SSHKeyManager)key;
+		if (managedKey.getStatus() == Status.LOADED || managedKey.getStatus() == Status.ERROR) {
+			log.error("Unable to register " + managedKey.getPubKeyPath()
+					+ ". This key is in " + managedKey.getStatus() + " state.");
 			return;
 		}
-		if (key.state == Status.PASSWORDINITIALIZE
-				|| !key.getKeyDesc().isEncrypted()) {
+		if (managedKey.getStatus() == Status.PASSWORDINITIALIZE
+				|| !managedKey.getKeyDesc().isEncrypted()) {
 			try {
-				remoteAccessor.addItentity(key);
-				key.state = Status.LOADED;
+				remoteAccessor.addItentity(managedKey);
+				managedKey.state = Status.LOADED;
 			} catch (AddAuthentificationException e) {
 				log.error(e.getMessage(), e);
-				key.state = Status.ERROR;
-				key.errorCause = e;
+				managedKey.state = Status.ERROR;
+				managedKey.errorCause = e;
 				throw e;
 			}
 		}
 
 	}
 
-	public List<SSHKeyManager> getManagedKeys() {
-		return managedKeys;
+	public List<SSHKeyController> getManagedKeys() {
+		List<SSHKeyController> sshKeys = new ArrayList<SSHKeyController>();
+		sshKeys.addAll(managedKeys);
+		return sshKeys;
 	}
 
 	/**
