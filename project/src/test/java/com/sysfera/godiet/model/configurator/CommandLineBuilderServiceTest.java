@@ -21,8 +21,8 @@ import com.sysfera.godiet.exceptions.generics.DietResourceValidationException;
 import com.sysfera.godiet.exceptions.generics.GoDietConfigurationException;
 import com.sysfera.godiet.exceptions.graph.GraphDataException;
 import com.sysfera.godiet.exceptions.remote.IncubateException;
+import com.sysfera.godiet.model.SoftwareInterface;
 import com.sysfera.godiet.model.generated.Software;
-import com.sysfera.godiet.model.softwares.SoftwareManager;
 import com.sysfera.godiet.services.GoDietService;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -101,8 +101,7 @@ public class CommandLineBuilderServiceTest {
 	@Test
 	@DirtiesContext
 	public void testMA1() {
-		SoftwareManager<? extends Software> MA1 = godiet.getModel()
-				.getDietModel().getManagedSoftware("MA1");
+		SoftwareInterface<? extends Software> MA1 = godiet.getPlatformService().getManagedSoftware("MA1");
 
 		Assert.assertEquals(
 				" PATH=/home/godiet/GRAAL/build/bin:/home/godiet/GRAAL/build/bin/examples/dmat_manips/:$PATH  LD_LIBRARY_PATH=/home/godiet/GRAAL/build/lib OMNIORB_CONFIG=/tmp/scratch_runtime/Domain1/omniNamesVishnu.cfg nohup dietAgent /tmp/scratch_runtime/Domain1/MA1.cfg > /tmp/scratch_runtime/Domain1/MA1.out 2> /tmp/scratch_runtime/Domain1/MA1.err &",
@@ -112,8 +111,7 @@ public class CommandLineBuilderServiceTest {
 	@Test
 	@DirtiesContext
 	public void testLA1() {
-		SoftwareManager<? extends Software> LA1 = godiet.getModel()
-				.getDietModel().getManagedSoftware("LA1");
+		SoftwareInterface<? extends Software> LA1 = godiet.getPlatformService().getManagedSoftware("LA1");
 
 		Assert.assertEquals(
 				" PATH=/home/godiet/GRAAL/build/bin:/home/godiet/GRAAL/build/bin/examples/dmat_manips/:$PATH  LD_LIBRARY_PATH=/home/godiet/GRAAL/build/lib OMNIORB_CONFIG=/tmp/scratch_runtime/Domain1/omniNamesVishnu.cfg nohup dietAgent /tmp/scratch_runtime/Domain1/LA1.cfg > /tmp/scratch_runtime/Domain1/LA1.out 2> /tmp/scratch_runtime/Domain1/LA1.err &",
@@ -124,16 +122,14 @@ public class CommandLineBuilderServiceTest {
 	@DirtiesContext
 	public void testForwarders() {
 		{
-			SoftwareManager<? extends Software> client1 = godiet.getModel()
-					.getDietModel().getManagedSoftware("client1");
+			SoftwareInterface<? extends Software> client1 = godiet.getPlatformService().getManagedSoftware("client1");
 
 			Assert.assertEquals(
 					" PATH=/home/godiet/GRAAL/build/bin:/home/godiet/GRAAL/build/bin/examples/dmat_manips/:$PATH  LD_LIBRARY_PATH=/home/godiet/GRAAL/build/lib OMNIORB_CONFIG=/tmp/scratch_runtime/Domain1/omniNamesVishnu.cfg nohup dietForwarder --name client1 --net-config /tmp/scratch_runtime/Domain1/client1.cfg --peer-name server1  --ssh-host 192.169.1.2 --ssh-login godiet --remote-host 127.0.0.1 -C > /tmp/scratch_runtime/Domain1/client1.out 2> /tmp/scratch_runtime/Domain1/client1.err &",
 					client1.getRunningCommand().toString());
 		}
 		{
-			SoftwareManager<? extends Software> server1 = godiet.getModel()
-					.getDietModel().getManagedSoftware("server1");
+			SoftwareInterface<? extends Software> server1 = godiet.getPlatformService().getManagedSoftware("server1");
 
 			Assert.assertEquals(
 					" PATH=/home/godiet/GRAAL/build/bin:/home/godiet/GRAAL/build/bin/examples/dmat_manips/:$PATH  LD_LIBRARY_PATH=/home/godiet/GRAAL/build/lib OMNIORB_CONFIG=/tmp/scratch_runtime/Domain2/omniNamesVishnu.cfg nohup dietForwarder --name server1 --net-config /tmp/scratch_runtime/Domain2/server1.cfg > /tmp/scratch_runtime/Domain2/server1.out 2> /tmp/scratch_runtime/Domain2/server1.err &",
@@ -144,8 +140,7 @@ public class CommandLineBuilderServiceTest {
 	@Test
 	@DirtiesContext
 	public void testCommandLineSed1() {
-		SoftwareManager<? extends Software> sed1 = godiet.getModel()
-				.getDietModel().getManagedSoftware("sed1");
+		SoftwareInterface<? extends Software> sed1 = godiet.getPlatformService().getManagedSoftware("sed1");
 		String server1command = sed1.getRunningCommand();
 
 		Assert.assertEquals(
@@ -158,8 +153,7 @@ public class CommandLineBuilderServiceTest {
 	@Test
 	@DirtiesContext
 	public void testCommandLineOmniNames() {
-		SoftwareManager<? extends Software> omninames = godiet.getModel()
-				.getDietModel().getManagedSoftware("omniNamesVishnu");
+		SoftwareInterface<? extends Software> omninames = godiet.getPlatformService().getManagedSoftware("omniNamesVishnu");
 		String omninamescommand = omninames.getRunningCommand();
 
 		// Take care of the last space

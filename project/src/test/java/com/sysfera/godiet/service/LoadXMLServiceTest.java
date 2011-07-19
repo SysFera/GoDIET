@@ -25,10 +25,10 @@ import com.sysfera.godiet.exceptions.remote.IncubateException;
 import com.sysfera.godiet.managers.DietManager;
 import com.sysfera.godiet.managers.InfrastructureManager;
 import com.sysfera.godiet.managers.ResourcesManager;
+import com.sysfera.godiet.model.SoftwareInterface;
 import com.sysfera.godiet.model.generated.LocalAgent;
 import com.sysfera.godiet.model.generated.MasterAgent;
 import com.sysfera.godiet.model.generated.Sed;
-import com.sysfera.godiet.model.softwares.DietResourceManaged;
 import com.sysfera.godiet.services.GoDietService;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -40,7 +40,8 @@ public class LoadXMLServiceTest {
 	private Logger log = LoggerFactory.getLogger(getClass());
 	@Autowired
 	private GoDietService godiet;
-
+	@Autowired
+	private ResourcesManager rm ;
 
 
 	@Before
@@ -136,7 +137,7 @@ public class LoadXMLServiceTest {
 						.getResourceAsStream(testCaseFile);
 				godiet.getXmlHelpService().registerDietElements(inputStream);
 			}
-			ResourcesManager rm = godiet.getModel();
+			
 			InfrastructureManager platform = rm.getInfrastructureModel();
 			// if (platform.getClusters().size() != 0)
 			// Assert.fail();
@@ -159,16 +160,16 @@ public class LoadXMLServiceTest {
 				Assert.fail();
 
 			// check if all Diet are pluged on physical resources
-			for (DietResourceManaged ma : diet.getMasterAgents()) {
+			for (SoftwareInterface<MasterAgent> ma : diet.getMasterAgents()) {
 				if (ma.getPluggedOn() == null)
 					Assert.fail();
 			}
-			for (DietResourceManaged la : diet.getLocalAgents()) {
+			for (SoftwareInterface<LocalAgent> la : diet.getLocalAgents()) {
 				if (la.getPluggedOn() == null)
 					Assert.fail();
 			}
 
-			for (DietResourceManaged sed : diet.getSeds()) {
+			for (SoftwareInterface<Sed> sed : diet.getSeds()) {
 				if (sed.getPluggedOn() == null)
 					Assert.fail();
 			}
@@ -202,7 +203,6 @@ public class LoadXMLServiceTest {
 						.getResourceAsStream(testCaseFile);
 				godiet.getXmlHelpService().registerDietElements(inputStream);
 			}
-			ResourcesManager rm = godiet.getModel();
 			InfrastructureManager platform = rm.getInfrastructureModel();
 	
 
@@ -229,16 +229,16 @@ public class LoadXMLServiceTest {
 				Assert.fail();
 
 			// check if all Diet are pluged on physical resources
-			for (DietResourceManaged<MasterAgent> ma : diet.getMasterAgents()) {
+			for (SoftwareInterface<MasterAgent> ma : diet.getMasterAgents()) {
 				if (ma.getPluggedOn() == null)
 					Assert.fail();
 			}
-			for (DietResourceManaged<LocalAgent> la : diet.getLocalAgents()) {
+			for (SoftwareInterface<LocalAgent> la : diet.getLocalAgents()) {
 				if (la.getPluggedOn() == null)
 					Assert.fail();
 			}
 
-			for (DietResourceManaged<Sed> sed : diet.getSeds()) {
+			for (SoftwareInterface<Sed> sed : diet.getSeds()) {
 				if (sed.getPluggedOn() == null)
 					Assert.fail();
 			}

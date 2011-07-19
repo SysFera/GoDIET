@@ -3,13 +3,12 @@ package com.sysfera.godiet.managers.user;
 import java.io.File;
 import java.io.FileNotFoundException;
 
+import com.sysfera.godiet.controllers.SSHKeyController;
 import com.sysfera.godiet.model.generated.User;
 import com.sysfera.godiet.model.generated.User.Ssh.Key;
 
-public class SSHKeyManager {
-	static enum Status {
-		PASSWORDINITIALIZE, PASSWORDNOTSET, LOADED, ERRORPRIVKEYNOTFOUND, ERRORPUBKEYNOTFOUND, ERROR
-	}
+public class SSHKeyManager implements SSHKeyController{
+
 
 	Throwable errorCause = null;
 	private final User.Ssh.Key sshDesc;
@@ -41,6 +40,7 @@ public class SSHKeyManager {
 		return true;
 	}
 	
+	@Override
 	public void setPubKeyPath(String keyPath)
 	{
 		if (keyPath  == null) {
@@ -55,6 +55,7 @@ public class SSHKeyManager {
 		}
 		
 	}
+	@Override
 	public void setPrivKeyPath(String keyPath)
 	{
 		if (!fileExist(keyPath)) {
@@ -64,25 +65,29 @@ public class SSHKeyManager {
 			
 		}
 	}
+	@Override
 	public String getPubKeyPath() {
 		return sshDesc.getPathPub();
 	}
 
+	@Override
 	public String getPrivKeyPath() {
 		return sshDesc.getPath();
 	}
 
+	@Override
 	public String getPassword() {
 		return password;
 	}
 
 	//TODO if already loaded unload , change pass and reload
+	@Override
 	public void setPassword(String password) {
 		if (state == Status.ERRORPRIVKEYNOTFOUND
 				|| state == Status.ERRORPUBKEYNOTFOUND || state == Status.LOADED)
 			return;
 		this.password = password;
-		state = SSHKeyManager.Status.PASSWORDINITIALIZE;
+		state = Status.PASSWORDINITIALIZE;
 	}
 
 	Key getKeyDesc() {
@@ -90,7 +95,10 @@ public class SSHKeyManager {
 		return sshDesc;
 	}
 
-	public Status getState() {
+	@Override
+	public Status getStatus() {
 		return state;
 	}
+
+	
 }

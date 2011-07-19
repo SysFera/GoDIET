@@ -32,7 +32,7 @@ public class SoftwareValidatorTest {
 	private GoDietService godiet;
 
 	@Autowired
-	private DietManager dietModel;
+	private DietManager dietManager;
 
 	@Before
 	public void init() throws IncubateException {
@@ -69,7 +69,7 @@ public class SoftwareValidatorTest {
 		ma.setId("MA1");
 
 		try {
-			BuildingValidator.validate(ma, godiet.getModel().getDietModel());
+			BuildingValidator.validate(ma,dietManager);
 		} catch (DietResourceValidationException e) {
 			Assert.fail("");
 		}

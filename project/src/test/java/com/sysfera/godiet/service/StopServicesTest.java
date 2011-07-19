@@ -23,7 +23,6 @@ import com.sysfera.godiet.exceptions.generics.DietResourceValidationException;
 import com.sysfera.godiet.exceptions.generics.GoDietConfigurationException;
 import com.sysfera.godiet.exceptions.graph.GraphDataException;
 import com.sysfera.godiet.exceptions.remote.IncubateException;
-import com.sysfera.godiet.exceptions.remote.LaunchException;
 import com.sysfera.godiet.managers.DietManager;
 import com.sysfera.godiet.model.softwares.OmniNamesManaged;
 import com.sysfera.godiet.services.GoDietService;

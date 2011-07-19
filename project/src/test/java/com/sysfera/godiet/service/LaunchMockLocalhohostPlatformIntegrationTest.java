@@ -27,6 +27,7 @@ import com.sysfera.godiet.exceptions.remote.LaunchException;
 import com.sysfera.godiet.exceptions.remote.PrepareException;
 import com.sysfera.godiet.exceptions.remote.StopException;
 import com.sysfera.godiet.managers.DietManager;
+import com.sysfera.godiet.model.SoftwareInterface;
 import com.sysfera.godiet.model.generated.Forwarder;
 import com.sysfera.godiet.model.generated.LocalAgent;
 import com.sysfera.godiet.model.generated.MasterAgent;
@@ -143,16 +144,16 @@ public class LaunchMockLocalhohostPlatformIntegrationTest {
 	}
 
 	private void launchForwarders() throws PrepareException, LaunchException {
-		List<DietResourceManaged<Forwarder>> forwarders = dietModel
+		List<SoftwareInterface<Forwarder>> forwarders = dietModel
 				.getForwarders();
-		for (DietResourceManaged<Forwarder> dietResourceManaged : forwarders) {
+		for (SoftwareInterface<Forwarder> dietResourceManaged : forwarders) {
 			if (dietResourceManaged.getSoftwareDescription().getType()
 					.equals("SERVER")) {
 				dietResourceManaged.prepare();
 				dietResourceManaged.start();
 			}
 		}
-		for (DietResourceManaged<Forwarder> dietResourceManaged : forwarders) {
+		for (SoftwareInterface<Forwarder> dietResourceManaged : forwarders) {
 			if (dietResourceManaged.getSoftwareDescription().getType()
 					.equals("CLIENT")) {
 				dietResourceManaged.prepare();
@@ -162,26 +163,26 @@ public class LaunchMockLocalhohostPlatformIntegrationTest {
 	}
 
 	private void launchMasterAgents() throws PrepareException, LaunchException {
-		List<DietResourceManaged<MasterAgent>> masterAgents = dietModel
+		List<SoftwareInterface<MasterAgent>> masterAgents = dietModel
 				.getMasterAgents();
-		for (DietResourceManaged<MasterAgent> ma : masterAgents) {
+		for (SoftwareInterface<MasterAgent> ma : masterAgents) {
 			ma.prepare();
 			ma.start();
 		}
 	}
 
 	private void launchLocalAgents() throws PrepareException, LaunchException {
-		List<DietResourceManaged<LocalAgent>> localAgents = dietModel
+		List<SoftwareInterface<LocalAgent>> localAgents = dietModel
 				.getLocalAgents();
-		for (DietResourceManaged<LocalAgent> la : localAgents) {
+		for (SoftwareInterface<LocalAgent> la : localAgents) {
 			la.prepare();
 			la.start();
 		}
 	}
 
 	private void launchSedsAgents() throws PrepareException, LaunchException {
-		List<DietResourceManaged<Sed>> seds = dietModel.getSeds();
-		for (DietResourceManaged<Sed> sed : seds) {
+		List<SoftwareInterface<Sed>> seds = dietModel.getSeds();
+		for (SoftwareInterface<Sed> sed : seds) {
 			sed.prepare();
 			sed.start();
 		}
@@ -189,10 +190,10 @@ public class LaunchMockLocalhohostPlatformIntegrationTest {
 
 	private boolean stopAll() {
 		boolean failed = false;
-		List<SoftwareManager<? extends Software>> softwares = dietModel
+		List<SoftwareInterface<? extends Software>> softwares = dietModel
 				.getAllManagedSoftware();
 
-		for (SoftwareManager<? extends Software> softwareManager : softwares) {
+		for (SoftwareInterface<? extends Software> softwareManager : softwares) {
 			try {
 				softwareManager.stop();
 			} catch (StopException e) {

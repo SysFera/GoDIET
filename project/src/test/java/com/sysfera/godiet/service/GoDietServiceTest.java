@@ -25,6 +25,7 @@ import com.sysfera.godiet.exceptions.remote.IncubateException;
 import com.sysfera.godiet.exceptions.remote.LaunchException;
 import com.sysfera.godiet.exceptions.remote.PrepareException;
 import com.sysfera.godiet.managers.DietManager;
+import com.sysfera.godiet.model.SoftwareInterface;
 import com.sysfera.godiet.model.generated.Forwarder;
 import com.sysfera.godiet.model.generated.LocalAgent;
 import com.sysfera.godiet.model.generated.MasterAgent;
@@ -110,8 +111,8 @@ public class GoDietServiceTest {
 	@Test
 	public void testMockIntegrationTest() {
 
-		List<DietResourceManaged<Forwarder>> forw = dietModel.getForwarders();
-		for (DietResourceManaged<Forwarder> dietResourceManaged : forw) {
+		List<SoftwareInterface<Forwarder>> forw = dietModel.getForwarders();
+		for (SoftwareInterface<Forwarder> dietResourceManaged : forw) {
 			System.err.println(dietResourceManaged.getSoftwareDescription()
 					.getId()
 					+ " on "
@@ -149,16 +150,16 @@ public class GoDietServiceTest {
 	}
 
 	private void launchForwarders() throws PrepareException, LaunchException {
-		List<DietResourceManaged<Forwarder>> forwarders = dietModel
+		List<SoftwareInterface<Forwarder>> forwarders = dietModel
 				.getForwarders();
-		for (DietResourceManaged<Forwarder> dietResourceManaged : forwarders) {
+		for (SoftwareInterface<Forwarder> dietResourceManaged : forwarders) {
 			if (dietResourceManaged.getSoftwareDescription().getType()
 					.equals("SERVER")) {
 				dietResourceManaged.prepare();
 				dietResourceManaged.start();
 			}
 		}
-		for (DietResourceManaged<Forwarder> dietResourceManaged : forwarders) {
+		for (SoftwareInterface<Forwarder> dietResourceManaged : forwarders) {
 			if (dietResourceManaged.getSoftwareDescription().getType()
 					.equals("CLIENT")) {
 				dietResourceManaged.prepare();
@@ -168,24 +169,24 @@ public class GoDietServiceTest {
 	}
 
 	private void launchMasterAgents() throws PrepareException, LaunchException {
-		List<DietResourceManaged<MasterAgent>> masterAgents = dietModel.getMasterAgents();
-		for (DietResourceManaged<MasterAgent> ma : masterAgents) {
+		List<SoftwareInterface<MasterAgent>> masterAgents = dietModel.getMasterAgents();
+		for (SoftwareInterface<MasterAgent> ma : masterAgents) {
 			ma.prepare();
 			ma.start();
 		}
 	}
 
 	private void launchLocalAgents() throws PrepareException, LaunchException {
-		List<DietResourceManaged<LocalAgent>> localAgents = dietModel.getLocalAgents();
-		for (DietResourceManaged<LocalAgent> la : localAgents) {
+		List<SoftwareInterface<LocalAgent>> localAgents = dietModel.getLocalAgents();
+		for (SoftwareInterface<LocalAgent> la : localAgents) {
 			la.prepare();
 			la.start();
 		}
 	}
 
 	private void launchSedsAgents() throws PrepareException, LaunchException {
-		List<DietResourceManaged<Sed>> seds = dietModel.getSeds();
-		for (DietResourceManaged<Sed> sed : seds) {
+		List<SoftwareInterface<Sed>> seds = dietModel.getSeds();
+		for (SoftwareInterface<Sed> sed : seds) {
 			sed.prepare();
 			sed.start();
 		}
