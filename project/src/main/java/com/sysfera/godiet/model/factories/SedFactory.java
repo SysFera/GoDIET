@@ -15,8 +15,8 @@ import com.sysfera.godiet.model.configurator.ConfigurationFileBuilderService;
 import com.sysfera.godiet.model.generated.Env;
 import com.sysfera.godiet.model.generated.Resource;
 import com.sysfera.godiet.model.generated.Sed;
+import com.sysfera.godiet.model.generated.SoftwareFile;
 import com.sysfera.godiet.model.generated.Var;
-import com.sysfera.godiet.model.generated.CommandLine.Parameter;
 import com.sysfera.godiet.model.softwares.DietResourceManaged;
 import com.sysfera.godiet.model.softwares.OmniNamesManaged;
 import com.sysfera.godiet.model.softwares.SoftwareController;
@@ -65,7 +65,13 @@ public class SedFactory {
 				sedDescription, pluggedOn, softwareController, validator,
 				omniNames);
 		try {
+			
+			
 			configurationFileBuilderService.build(sedManaged);
+			
+			//Add a ref to the omniNames's config file
+			sedManaged.getConfigurationFiles().putAll(omniNames.getConfigurationFiles());
+
 			commandLineBuilderService.build(sedManaged);
 			//TODO: DO something better
 			//Decorate the commandline with the deployement context

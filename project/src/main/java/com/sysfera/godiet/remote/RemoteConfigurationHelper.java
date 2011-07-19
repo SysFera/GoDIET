@@ -99,14 +99,23 @@ public class RemoteConfigurationHelper implements SoftwareController {
 			command = "mkdir -p " + remoteNode.getScratch().getDir();
 			remoteAccess.launch(command, path);
 
-
-
 			// Copy file on remote host
-			Collection<ConfigurationFile> cfiles = managedSoftware.getConfigurationFiles().values();
+			Collection<ConfigurationFile> cfiles = managedSoftware
+					.getConfigurationFiles().values();
 			for (ConfigurationFile configurationFile : cfiles) {
-				remoteAccess.copy(configurationFile, remoteNode.getScratch().getDir(), path);
+				// TODO: See fixme lack of design
+				if (!configurationFile.isCopiedOn(remoteNode)) {
+					log.debug("Copy file " + configurationFile.getId() + " on "
+							+ remoteNode.getId());
+					remoteAccess.copy(configurationFile, remoteNode
+							.getScratch().getDir(), path);
+					configurationFile.copied(remoteNode);
+				} else {
+					log.debug("File " + configurationFile.getId()
+							+ " already copied on " + remoteNode.getId());
+				}
 			}
-			
+
 		} catch (RemoteAccessException e) {
 			log.error("Unable to configure "
 					+ managedSoftware.getSoftwareDescription().getId() + " on "
@@ -118,7 +127,6 @@ public class RemoteConfigurationHelper implements SoftwareController {
 
 	}
 
-	
 	/**
 	 * Launch software on the physical resource - Search the physical resource
 	 * to run the diet agent - Launch command
