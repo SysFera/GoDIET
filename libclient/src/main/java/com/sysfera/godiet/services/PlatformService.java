@@ -65,6 +65,8 @@ public interface PlatformService {
 	public abstract List<SoftwareInterface<? extends Software>> getAllSoftwares();
 
 	public abstract List<SoftwareInterface<Forwarder>> getForwarders();
+	public abstract List<SoftwareInterface<Forwarder>> getForwardersServer();
+	public abstract List<SoftwareInterface<Forwarder>> getForwardersClient();
 
 	public abstract List<SoftwareInterface<LocalAgent>> getLocalAgents();
 
@@ -72,7 +74,11 @@ public interface PlatformService {
 
 	public abstract List<SoftwareInterface<Sed>> getSeds();
 
+	public abstract List<SoftwareInterface<OmniNames>> getOmninames();
+	
 	public abstract SoftwareInterface<? extends Software> getManagedSoftware(
 			String id);
+
+
 
 }

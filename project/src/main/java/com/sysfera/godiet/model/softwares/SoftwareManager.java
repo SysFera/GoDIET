@@ -1,6 +1,7 @@
 package com.sysfera.godiet.model.softwares;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -150,6 +151,29 @@ public abstract class SoftwareManager<T extends Software> implements SoftwareInt
 	}
 	public void setConfigurationFiles(Map<String,ConfigurationFileImpl> configurationFiles) {
 		this.configurationFiles = configurationFiles;
+	}
+	
+	/**
+	 * Return the Date of the last transition
+	 * 
+	 * 
+	 * 
+	 */
+	@Override
+	public Date getLastTransition() {
+		return this.stateController.getLastTransition();
+	}
+	
+	@Override
+	public String getErrorMessage()
+	{
+		return this.stateController.getErrorCause().getMessage();
+	}
+	@Override
+	public String getErrorMessageDetails()
+	{
+		//TODO
+		throw new IllegalAccessError("Not yet implemented");
 	}
 	
 }

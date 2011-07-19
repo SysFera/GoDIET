@@ -1,11 +1,13 @@
 package com.sysfera.godiet.services.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.util.set.Array;
 
 import com.sysfera.godiet.exceptions.DietResourceCreationException;
 import com.sysfera.godiet.exceptions.generics.DietResourceValidationException;
@@ -253,25 +255,58 @@ public final class PlatformServiceImpl implements PlatformService {
 
 	@Override
 	public List<SoftwareInterface<Sed>> getSeds() {
-		return this.dietManager.getSeds();
+		List<SoftwareInterface<Sed>> seds = new ArrayList<SoftwareInterface<Sed>>();
+		seds.addAll(this.dietManager.getSeds());
+		return seds;
 	}
 	
 	@Override
 	public List<SoftwareInterface<MasterAgent>> getMasterAgents()
 	{
-		return this.dietManager.getMasterAgents();
+		List<SoftwareInterface<MasterAgent>> masterAgents = new ArrayList<SoftwareInterface<MasterAgent>>(); 
+		masterAgents.addAll(this.dietManager.getMasterAgents());
+		return masterAgents;
 	}
 	@Override
 	public List<SoftwareInterface<LocalAgent>> getLocalAgents()
 	{
-		return this.dietManager.getLocalAgents();
+		List<SoftwareInterface<LocalAgent>> localAgents = new ArrayList<SoftwareInterface<LocalAgent>>();
+		localAgents.addAll(this.dietManager.getLocalAgents());
+		return localAgents;
 	}
 	@Override
 	public List<SoftwareInterface<Forwarder>> getForwarders()
 	{
-		return this.dietManager.getForwarders();
+		List<SoftwareInterface<Forwarder>> forwarders = new ArrayList<SoftwareInterface<Forwarder>>();
+		forwarders.addAll(this.dietManager.getForwarders());
+		return forwarders;
 	}
-	
+	@Override
+	public List<SoftwareInterface<Forwarder>> getForwardersServer() {
+		List<SoftwareInterface<Forwarder>> forwardersServer = new ArrayList<SoftwareInterface<Forwarder>>();
+		List<DietResourceManaged<Forwarder>> forwarders = this.dietManager.getForwarders();
+		for (DietResourceManaged<Forwarder> forwarder : forwarders) {
+			if(forwarder.getSoftwareDescription().getType().equals("SERVER"))
+			{
+				forwardersServer.add(forwarder);
+			}
+		}
+		
+		return forwardersServer;
+	}
+
+	@Override
+	public List<SoftwareInterface<Forwarder>> getForwardersClient() {
+		List<SoftwareInterface<Forwarder>> forwardersClient = new ArrayList<SoftwareInterface<Forwarder>>();
+		List<DietResourceManaged<Forwarder>> forwarders = this.dietManager.getForwarders();
+		for (DietResourceManaged<Forwarder> forwarder : forwarders) {
+			if(forwarder.getSoftwareDescription().getType().equals("CLIENT"))
+			{
+				forwardersClient.add(forwarder);
+			}
+		}
+		return forwardersClient;
+	}
 	@Override
 	public List<SoftwareInterface<? extends Software>> getAllSoftwares()
 	{
@@ -282,4 +317,13 @@ public final class PlatformServiceImpl implements PlatformService {
 	public SoftwareInterface<? extends Software> getManagedSoftware(String id) {
 		return this.dietManager.getManagedSoftware(id);
 	}
+
+	@Override
+	public List<SoftwareInterface<OmniNames>> getOmninames() {
+		List<SoftwareInterface<OmniNames>> omninames = new ArrayList<SoftwareInterface<OmniNames>>();
+		omninames.addAll(this.dietManager.getOmninames());
+		return omninames;
+	}
+
+
 }

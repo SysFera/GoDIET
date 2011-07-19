@@ -7,11 +7,11 @@ import org.codehaus.groovy.tools.shell.util.Preferences
 
 import com.sysfera.godiet.Diet;
 import com.sysfera.godiet.exceptions.remote.StopException;
-import com.sysfera.godiet.managers.DietManager;
-import com.sysfera.godiet.managers.ResourcesManager
+
+import com.sysfera.godiet.model.SoftwareInterface;
 import com.sysfera.godiet.model.generated.Software;
-import com.sysfera.godiet.model.softwares.SoftwareManager;
 import com.sysfera.godiet.model.states.ResourceState.State;
+import com.sysfera.godiet.services.PlatformService;
 import com.sysfera.godiet.shell.GoDietSh
 
 
@@ -35,44 +35,39 @@ extends ComplexCommandSupport {
 	}
 
 	def do_services = {
-		GoDietSh goDietShell = shell;
-		ResourcesManager rm = goDietShell.godiet.model
-		List<SoftwareManager> services = rm.dietModel.omninames
+		PlatformService diet = ((GoDietSh)shell).godiet.platformService
+		List<SoftwareInterface<? extends Software>> services = diet.omninames
 		stopSoftwares(services)
 	}
 
-	private stopSoftware(SoftwareManager soft) {
+	private stopSoftware(SoftwareInterface<? extends Software> soft) {
 		io.print("Stop ${soft.softwareDescription.id}")
 		soft.stop();
 		io.println(" Done")
 	}
 
-	private stopSoftwares(List<SoftwareManager> softwares) {
+	private stopSoftwares(List<SoftwareInterface<? extends Software>> softwares) {
 		softwares.each { stopSoftware(it) }
 	}
 	private stopMa() {
-		GoDietSh goDietShell = shell;
-		ResourcesManager rm = goDietShell.godiet.model
-		List<SoftwareManager> mas = rm.dietModel.masterAgents
+		PlatformService diet = ((GoDietSh)shell).godiet.platformService
+		List<SoftwareInterface<? extends Software>> mas = diet.masterAgents
 		stopSoftwares(mas)
 	}
 	private stopLa() {
-		GoDietSh goDietShell = shell;
-		ResourcesManager rm = goDietShell.godiet.model
-		List<SoftwareManager> la = rm.dietModel.localAgents
-		stopSoftwares(la)
+		PlatformService diet = ((GoDietSh)shell).godiet.platformService
+		List<SoftwareInterface<? extends Software>> las = diet.localAgents
+		stopSoftwares(las)
 	}
 	private stopForwarders() {
-		GoDietSh goDietShell = shell;
-		ResourcesManager rm = goDietShell.godiet.model
-		List<SoftwareManager> forwarders = rm.dietModel.forwarders
+		PlatformService diet = ((GoDietSh)shell).godiet.platformService
+		List<SoftwareInterface<? extends Software>> forwarders = diet.forwarders
 		stopSoftwares(forwarders)
 	}
 
 	private stopSeds() {
-		GoDietSh goDietShell = shell;
-		ResourcesManager rm = goDietShell.godiet.model
-		List<SoftwareManager> seds = rm.dietModel.seds
+		PlatformService diet = ((GoDietSh)shell).godiet.platformService
+		List<SoftwareInterface<? extends Software>> seds = diet.seds
 		stopSoftwares(seds)
 	}
 	def do_agents = {
@@ -102,8 +97,8 @@ extends ComplexCommandSupport {
 		assert arg.size() == 1 , 'Command stop software requires at least one argument : the software id'
 		String argument = arg.head()
 
-		DietManager diet = ((GoDietSh)shell).godiet.model.dietModel
-		SoftwareManager<? extends Software>  software = diet.getManagedSoftware(arg)
+		PlatformService diet = ((GoDietSh)shell).godiet.platformService
+		SoftwareInterface<? extends Software> software = diet.getManagedSoftware(arg)
 		if (software == null){
 			io.err.println("Unable to find " + arg);
 			return;

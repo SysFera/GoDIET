@@ -18,7 +18,7 @@
 
 		<dependency>
 			<groupId>com.sysfera</groupId>
-			<artifactId>godietlib</artifactId>
+			<artifactId>goDiet</artifactId>
 			<version>${version}</version>
 		</dependency>
 
