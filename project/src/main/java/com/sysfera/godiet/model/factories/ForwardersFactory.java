@@ -6,6 +6,7 @@ import java.util.List;
 import com.sysfera.godiet.exceptions.DietResourceCreationException;
 import com.sysfera.godiet.exceptions.generics.ConfigurationBuildingException;
 import com.sysfera.godiet.exceptions.remote.IncubateException;
+import com.sysfera.godiet.model.SoftwareInterface;
 import com.sysfera.godiet.model.configurator.ConfigurationFileBuilderService;
 import com.sysfera.godiet.model.generated.Binary;
 import com.sysfera.godiet.model.generated.CommandLine;
@@ -167,7 +168,7 @@ public class ForwardersFactory {
 	 * @param managedServer
 	 */
 	private void buildForwarderServerCommand(
-			SoftwareManager<Forwarder> managedClient,
+			SoftwareInterface<Forwarder> managedClient,
 			SoftwareManager<Forwarder> managedServer,
 			OmniNames omniNamesClient, OmniNames omniNamesServer) {
 		String command = "";
@@ -234,7 +235,7 @@ public class ForwardersFactory {
 
 	private void buildForwarderClientCommand(
 			SoftwareManager<Forwarder> managedClient,
-			SoftwareManager<Forwarder> managedServer,
+			SoftwareInterface<Forwarder> managedServer,
 			OmniNames omniNamesClient,
 
 			OmniNames omniNamesServer, Ssh connection) {

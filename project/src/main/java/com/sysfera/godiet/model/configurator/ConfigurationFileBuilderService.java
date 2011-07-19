@@ -20,6 +20,8 @@ import org.springframework.stereotype.Service;
 
 import com.sysfera.godiet.exceptions.generics.ConfigurationBuildingException;
 import com.sysfera.godiet.managers.ConfigurationManager;
+import com.sysfera.godiet.model.ConfigurationFile;
+import com.sysfera.godiet.model.SoftwareInterface;
 import com.sysfera.godiet.model.generated.Software;
 import com.sysfera.godiet.model.generated.SoftwareFile;
 import com.sysfera.godiet.model.softwares.SoftwareManager;
@@ -78,15 +80,15 @@ public class ConfigurationFileBuilderService {
 			return;
 		}
 
-		Map<String, ConfigurationFile> configurationFiles = new HashMap<String, ConfigurationFile>();
+		Map<String, ConfigurationFileImpl> configurationFiles = new HashMap<String, ConfigurationFileImpl>();
 		managedSoftware.setConfigurationFiles(configurationFiles);
 		for (SoftwareFile softwareFile : templatedConfigurationFiles) {
 			if (softwareFile.getTemplate() != null) {
-				ConfigurationFile configurationFile = buildTemplatedFile(
+				ConfigurationFileImpl configurationFile = buildTemplatedFile(
 						managedSoftware, softwareFile);
 				configurationFiles.put(softwareFile.getId(), configurationFile);
 			} else if (softwareFile.getCopy() != null) {
-				ConfigurationFile configurationFile = buildCopyFile(
+				ConfigurationFileImpl configurationFile = buildCopyFile(
 						managedSoftware, softwareFile);
 				configurationFiles.put(softwareFile.getId(), configurationFile);
 			} else {
@@ -106,10 +108,10 @@ public class ConfigurationFileBuilderService {
 	 * @return
 	 * @throws ConfigurationBuildingException
 	 */
-	private ConfigurationFile buildTemplatedFile(
-			SoftwareManager<? extends Software> managedSoftware,
+	private ConfigurationFileImpl buildTemplatedFile(
+			SoftwareInterface<? extends Software> managedSoftware,
 			SoftwareFile softwareFile) throws ConfigurationBuildingException {
-		ConfigurationFile configurationFile = new ConfigurationFile();
+		ConfigurationFileImpl configurationFile = new ConfigurationFileImpl();
 		configurationFile.setId(softwareFile.getId());
 		try {
 			// Search the template in templateManager
@@ -130,7 +132,7 @@ public class ConfigurationFileBuilderService {
 				template.process(templateModel, contentsWriter);
 			} catch (TemplateException e) {
 				throw new ConfigurationBuildingException(
-						"Error during building configuration file procession. File : "
+						"Error during building configuration file process. File : "
 								+ softwareFile.getId() + ". Template : "
 								+ softwareFile.getTemplate().getName(), e);
 			}
@@ -160,10 +162,10 @@ public class ConfigurationFileBuilderService {
 	 * @return
 	 * @throws ConfigurationBuildingException
 	 */
-	private ConfigurationFile buildCopyFile(
-			SoftwareManager<? extends Software> managedSoftware,
+	private ConfigurationFileImpl buildCopyFile(
+			SoftwareInterface<? extends Software> managedSoftware,
 			SoftwareFile softwareFile) throws ConfigurationBuildingException {
-		ConfigurationFile configurationFile = new ConfigurationFile();
+		ConfigurationFileImpl configurationFile = new ConfigurationFileImpl();
 		configurationFile.setId(softwareFile.getId());
 
 		// Read and copy contents

@@ -5,11 +5,11 @@ import com.sysfera.godiet.exceptions.remote.IncubateException;
 import com.sysfera.godiet.exceptions.remote.LaunchException;
 import com.sysfera.godiet.exceptions.remote.StopException;
 import com.sysfera.godiet.managers.DietManager;
+import com.sysfera.godiet.model.SoftwareInterface;
 import com.sysfera.godiet.model.generated.LocalAgent;
 import com.sysfera.godiet.model.generated.MasterAgent;
 import com.sysfera.godiet.model.generated.Software;
 import com.sysfera.godiet.model.softwares.DietResourceManaged;
-import com.sysfera.godiet.model.softwares.SoftwareManager;
 import com.sysfera.godiet.model.states.ResourceState;
 import com.sysfera.godiet.model.states.ResourceState.State;
 
@@ -30,7 +30,7 @@ public class LocalAgentRuntimeValidatorImpl extends RuntimeValidator<DietResourc
 	 */
 	@Override
 	public void wantLaunch(DietResourceManaged<LocalAgent> ma) throws LaunchException {
-		SoftwareManager parentMa = dietManager.getManagedSoftware(ma
+		SoftwareInterface parentMa = dietManager.getManagedSoftware(ma
 				.getSoftwareDescription().getParent().getId());
 		ResourceState parentMaState = parentMa.getState();
 		synchronized (parentMaState) {
