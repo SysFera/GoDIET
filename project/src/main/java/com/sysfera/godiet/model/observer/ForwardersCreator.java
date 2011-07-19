@@ -16,6 +16,7 @@ import com.sysfera.godiet.managers.DomainsManager;
 import com.sysfera.godiet.managers.ResourcesManager;
 import com.sysfera.godiet.managers.topology.TopologyManager;
 import com.sysfera.godiet.model.Path;
+import com.sysfera.godiet.model.SoftwareInterface;
 import com.sysfera.godiet.model.Path.Hop;
 import com.sysfera.godiet.model.factories.ForwardersFactory;
 import com.sysfera.godiet.model.factories.ForwardersFactory.ForwarderType;
@@ -94,14 +95,14 @@ public class ForwardersCreator implements PlatformObserver {
 	}
 
 	private void init() {
-		List<SoftwareManager<? extends Software>> managedSoftwaresFrom = this.rm
+		List<SoftwareInterface<? extends Software>> managedSoftwaresFrom = this.rm
 				.getDietModel().getAllManagedSoftware();
-		List<SoftwareManager<? extends Software>> managedSoftwaresTo = this.rm
+		List<SoftwareInterface<? extends Software>> managedSoftwaresTo = this.rm
 				.getDietModel().getAllManagedSoftware();
 		if (managedSoftwaresFrom != null) {
 
 			// TODO improve
-			for (SoftwareManager<? extends Software> softwareManagerFrom : managedSoftwaresFrom) {
+			for (SoftwareInterface<? extends Software> softwareManagerFrom : managedSoftwaresFrom) {
 				Resource from = softwareManagerFrom.getPluggedOn();
 				if (from == null) {
 					// TODO error handler
@@ -111,7 +112,7 @@ public class ForwardersCreator implements PlatformObserver {
 					continue;
 
 				}
-				for (SoftwareManager<? extends Software> softwareManagerTo : managedSoftwaresTo) {
+				for (SoftwareInterface<? extends Software> softwareManagerTo : managedSoftwaresTo) {
 					Resource to = softwareManagerTo.getPluggedOn();
 					if (to == null) {
 						// TODO error handler

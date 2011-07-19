@@ -36,7 +36,7 @@ public class GoDietServiceImpl implements GoDietService {
 	@Autowired
 	private UserServiceImpl userController;
 	@Autowired
-	private PlatformServiceImpl platformController;
+	private PlatformService platformController;
 	@Autowired
 	private XMLLoaderService xmlHelpController;
 	@Autowired
@@ -133,7 +133,7 @@ public class GoDietServiceImpl implements GoDietService {
 		return userController;
 	}
 
-	@Override
+	//@Override
 	public ResourcesManager getModel() {
 		return this.ressourceManager;
 	}

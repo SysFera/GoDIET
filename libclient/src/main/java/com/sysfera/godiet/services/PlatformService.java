@@ -1,11 +1,14 @@
 package com.sysfera.godiet.services;
 
+import java.util.List;
+
 import com.sysfera.godiet.exceptions.DietResourceCreationException;
 import com.sysfera.godiet.exceptions.generics.DietResourceValidationException;
 import com.sysfera.godiet.exceptions.generics.GoDietServiceException;
 import com.sysfera.godiet.exceptions.generics.StartException;
 import com.sysfera.godiet.exceptions.remote.IncubateException;
 import com.sysfera.godiet.exceptions.remote.StopException;
+import com.sysfera.godiet.model.SoftwareInterface;
 import com.sysfera.godiet.model.generated.Forwarder;
 import com.sysfera.godiet.model.generated.LocalAgent;
 import com.sysfera.godiet.model.generated.MasterAgent;
@@ -58,5 +61,18 @@ public interface PlatformService {
 			throws GoDietServiceException, StopException;
 
 	public abstract ResourceState getSoftwareController(String id);
+
+	public abstract List<SoftwareInterface<? extends Software>> getAllSoftwares();
+
+	public abstract List<SoftwareInterface<Forwarder>> getForwarders();
+
+	public abstract List<SoftwareInterface<LocalAgent>> getLocalAgents();
+
+	public abstract List<SoftwareInterface<MasterAgent>> getMasterAgents();
+
+	public abstract List<SoftwareInterface<Sed>> getSeds();
+
+	public abstract SoftwareInterface<? extends Software> getManagedSoftware(
+			String id);
 
 }

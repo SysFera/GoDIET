@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.sysfera.godiet.exceptions.DietResourceCreationException;
+import com.sysfera.godiet.model.SoftwareInterface;
 import com.sysfera.godiet.model.generated.Domain;
 import com.sysfera.godiet.model.generated.Forwarder;
 import com.sysfera.godiet.model.generated.LocalAgent;
@@ -23,7 +24,6 @@ import com.sysfera.godiet.model.generated.Ssh;
 import com.sysfera.godiet.model.observer.PlatformObserver;
 import com.sysfera.godiet.model.softwares.DietResourceManaged;
 import com.sysfera.godiet.model.softwares.OmniNamesManaged;
-import com.sysfera.godiet.model.softwares.SoftwareManager;
 
 /**
  * Diet platform manager.
@@ -35,11 +35,11 @@ import com.sysfera.godiet.model.softwares.SoftwareManager;
 public class DietManager implements PlatformObservable{
 	private Logger log = LoggerFactory.getLogger(getClass());
 
-	private final List<DietResourceManaged<MasterAgent>> masterAgents;
-	private final List<DietResourceManaged<LocalAgent>> localAgents;
-	private final List<DietResourceManaged<Sed>> seds;
+	private final List<SoftwareInterface<MasterAgent>> masterAgents;
+	private final List<SoftwareInterface<LocalAgent>> localAgents;
+	private final List<SoftwareInterface<Sed>> seds;
 	private final List<OmniNamesManaged> omninames;
-	private final List<DietResourceManaged<Forwarder>> forwaders;
+	private final List<SoftwareInterface<Forwarder>> forwaders;
 	@Autowired
 	private  DomainsManager domainManager;
 
@@ -48,11 +48,11 @@ public class DietManager implements PlatformObservable{
 
 	private final Set<PlatformObserver> observers;
 	public DietManager() {
-		this.masterAgents = new ArrayList<DietResourceManaged<MasterAgent>>();
-		this.localAgents = new ArrayList<DietResourceManaged<LocalAgent>>();
-		this.seds = new ArrayList<DietResourceManaged<Sed>>();
+		this.masterAgents = new ArrayList<SoftwareInterface<MasterAgent>>();
+		this.localAgents = new ArrayList<SoftwareInterface<LocalAgent>>();
+		this.seds = new ArrayList<SoftwareInterface<Sed>>();
 		this.omninames = new ArrayList<OmniNamesManaged>();
-		this.forwaders = new ArrayList<DietResourceManaged<Forwarder>>();
+		this.forwaders = new ArrayList<SoftwareInterface<Forwarder>>();
 
 		this.dietResourceId = new HashSet<String>();
 		this.observers = new HashSet<PlatformObserver>();
@@ -61,21 +61,21 @@ public class DietManager implements PlatformObservable{
 	/**
 	 * @return the masterAgents
 	 */
-	public List<DietResourceManaged<MasterAgent>> getMasterAgents() {
+	public List<SoftwareInterface<MasterAgent>> getMasterAgents() {
 		return masterAgents;
 	}
 
 	/**
 	 * @return the localAgents
 	 */
-	public List<DietResourceManaged<LocalAgent>> getLocalAgents() {
+	public List<SoftwareInterface<LocalAgent>> getLocalAgents() {
 		return localAgents;
 	}
 
 	/**
 	 * @return the seds
 	 */
-	public List<DietResourceManaged<Sed>> getSeds() {
+	public List<SoftwareInterface<Sed>> getSeds() {
 		return seds;
 	}
 
@@ -83,7 +83,7 @@ public class DietManager implements PlatformObservable{
 	 * 
 	 * @return list of forwarders
 	 */
-	public List<DietResourceManaged<Forwarder>> getForwarders() {
+	public List<SoftwareInterface<Forwarder>> getForwarders() {
 		return forwaders;
 	}
 
@@ -176,8 +176,8 @@ public class DietManager implements PlatformObservable{
 	 * 
 	 * @return A list of all softwares managed by godiet
 	 */
-	public List<SoftwareManager<? extends Software>> getAllManagedSoftware() {
-		List<SoftwareManager<? extends Software>> softwaresManaged = new ArrayList<SoftwareManager<? extends Software>>(
+	public List<SoftwareInterface<? extends Software>> getAllManagedSoftware() {
+		List<SoftwareInterface<? extends Software>> softwaresManaged = new ArrayList<SoftwareInterface<? extends Software>>(
 				forwaders.size() + localAgents.size() + masterAgents.size()
 						+ seds.size() + omninames.size());
 		softwaresManaged.addAll(forwaders);
@@ -207,9 +207,9 @@ public class DietManager implements PlatformObservable{
 	 *            the Id of software
 	 * @return the managed software or null if doesn't exist
 	 */
-	public SoftwareManager<? extends Software> getManagedSoftware(String id) {
-		List<SoftwareManager<? extends Software>> softwaresManaged = getAllManagedSoftware();
-		for (SoftwareManager<? extends Software> softwareManager : softwaresManaged) {
+	public SoftwareInterface<? extends Software> getManagedSoftware(String id) {
+		List<SoftwareInterface<? extends Software>> softwaresManaged = getAllManagedSoftware();
+		for (SoftwareInterface<? extends Software> softwareManager : softwaresManaged) {
 			if (softwareManager.getSoftwareDescription().getId().equals(id)) {
 				return softwareManager;
 			}

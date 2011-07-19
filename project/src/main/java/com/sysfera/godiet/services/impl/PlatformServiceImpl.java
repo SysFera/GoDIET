@@ -18,6 +18,7 @@ import com.sysfera.godiet.managers.ConfigurationManager;
 import com.sysfera.godiet.managers.DietManager;
 import com.sysfera.godiet.managers.InfrastructureManager;
 import com.sysfera.godiet.model.Path;
+import com.sysfera.godiet.model.SoftwareInterface;
 import com.sysfera.godiet.model.Path.Hop;
 import com.sysfera.godiet.model.factories.GodietMetaFactory;
 import com.sysfera.godiet.model.generated.Domain;
@@ -32,7 +33,6 @@ import com.sysfera.godiet.model.generated.Software;
 import com.sysfera.godiet.model.generated.Ssh;
 import com.sysfera.godiet.model.softwares.DietResourceManaged;
 import com.sysfera.godiet.model.softwares.OmniNamesManaged;
-import com.sysfera.godiet.model.softwares.SoftwareManager;
 import com.sysfera.godiet.model.states.ResourceState;
 import com.sysfera.godiet.services.PlatformService;
 
@@ -115,7 +115,7 @@ public final class PlatformServiceImpl implements PlatformService {
 					"Unable to find omninames for"
 							+ sedAgent.getConfig().getServer());
 		DietResourceManaged<Sed> sedAgentManaged = godietMetaFactory.create(
-				sedAgent,  pluggedOn, omniNames);
+				sedAgent, pluggedOn, omniNames);
 		dietManager.addSed(sedAgentManaged);
 	}
 
@@ -161,7 +161,7 @@ public final class PlatformServiceImpl implements PlatformService {
 	public void unregisterSoftware(Software software)
 			throws GoDietServiceException, StopException {
 
-		SoftwareManager<? extends Software> softManaged = dietManager
+		SoftwareInterface<? extends Software> softManaged = dietManager
 				.getManagedSoftware(software.getId());
 		if (softManaged == null)
 			throw new GoDietServiceException("Unable to find :"
@@ -219,7 +219,7 @@ public final class PlatformServiceImpl implements PlatformService {
 					"Unable to find omninames for"
 							+ server.getConfig().getServer());
 		// Check if there is a connection between source and destination
-		
+
 		Path path;
 		try {
 			path = infrastructureManager.findPath(clietnPluggedOn,
@@ -238,8 +238,9 @@ public final class PlatformServiceImpl implements PlatformService {
 							+ " and " + serverPluggedOn.getId()
 							+ " are not directly connected");
 		}
-	
-		Ssh connection = ((Hop[])path.getPath().toArray(new Hop[0]))[0].getLink();
+
+		Ssh connection = ((Hop[]) path.getPath().toArray(new Hop[0]))[0]
+				.getLink();
 		Forwarders forwarders = new Forwarders();
 		forwarders.setClient(client);
 		forwarders.setServer(server);
@@ -248,5 +249,37 @@ public final class PlatformServiceImpl implements PlatformService {
 						serverPluggedOn, omniNamesServer, connection);
 		dietManager.addForwarders(forwardersManaged[0], forwardersManaged[1]);
 
+	}
+
+	@Override
+	public List<SoftwareInterface<Sed>> getSeds() {
+		return this.dietManager.getSeds();
+	}
+	
+	@Override
+	public List<SoftwareInterface<MasterAgent>> getMasterAgents()
+	{
+		return this.dietManager.getMasterAgents();
+	}
+	@Override
+	public List<SoftwareInterface<LocalAgent>> getLocalAgents()
+	{
+		return this.dietManager.getLocalAgents();
+	}
+	@Override
+	public List<SoftwareInterface<Forwarder>> getForwarders()
+	{
+		return this.dietManager.getForwarders();
+	}
+	
+	@Override
+	public List<SoftwareInterface<? extends Software>> getAllSoftwares()
+	{
+		return this.dietManager.getAllManagedSoftware();
+	}
+
+	@Override
+	public SoftwareInterface<? extends Software> getManagedSoftware(String id) {
+		return this.dietManager.getManagedSoftware(id);
 	}
 }

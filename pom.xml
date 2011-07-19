@@ -6,7 +6,7 @@
 	<version>2.7.BETA-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<modules>
-		<module>godietlib</module>
+		<module>libclient</module>
 		<module>project</module>
 		<module>integration-test</module>
 		<module>shell</module>
@@ -38,7 +38,7 @@
 		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
-			<artifactId>jcl-over-slf4j</artifactId>
+				<artifactId>jcl-over-slf4j</artifactId>
 			<version>1.5.8</version>
 			<scope>compile</scope>
 		</dependency>

@@ -3,6 +3,7 @@ package com.sysfera.godiet.model.configurator;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -22,12 +23,15 @@ import com.sysfera.godiet.exceptions.generics.DietResourceValidationException;
 import com.sysfera.godiet.exceptions.generics.GoDietConfigurationException;
 import com.sysfera.godiet.exceptions.graph.GraphDataException;
 import com.sysfera.godiet.exceptions.remote.IncubateException;
+import com.sysfera.godiet.managers.ConfigurationManager;
 import com.sysfera.godiet.managers.DietManager;
+import com.sysfera.godiet.model.ConfigurationFile;
+import com.sysfera.godiet.model.SoftwareInterface;
 import com.sysfera.godiet.model.generated.ObjectFactory;
 import com.sysfera.godiet.model.generated.Scratch;
 import com.sysfera.godiet.model.generated.Software;
-import com.sysfera.godiet.model.softwares.SoftwareManager;
 import com.sysfera.godiet.services.GoDietService;
+import com.sysfera.godiet.services.PlatformService;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @DirtiesContext
@@ -38,6 +42,10 @@ public class ConfigurationFileBuilderTest {
 	private Logger log = LoggerFactory.getLogger(getClass());
 	@Autowired
 	private GoDietService godiet;
+	
+	//To configure scratch
+	@Autowired
+	private ConfigurationManager configurationManager;
 
 	@Before
 	public void init() {
@@ -73,7 +81,7 @@ public class ConfigurationFileBuilderTest {
 				Scratch s = new ObjectFactory().createScratch();
 
 				s.setDir(f.getPath());
-				godiet.getModel().getGodietConfiguration().setLocalScratch(s);
+				configurationManager.setLocalScratch(s);
 			}
 		} catch (IncubateException e) {
 			log.error("", e);
@@ -113,41 +121,29 @@ public class ConfigurationFileBuilderTest {
 	@Test
 	public void testMA() {
 		String expected = "name = MA1\n" + "agentType = DIET_MASTER_AGENT";
-		DietManager dm = godiet.getModel().getDietModel();
 
-		SoftwareManager<? extends Software> MA1 = dm.getManagedSoftware("MA1");
-		ConfigurationFile cf = MA1.getConfigurationFiles().get("MA1");
-		if (cf == null)
-			Assert.fail("MA1 config file not created");
-
-		Assert.assertEquals(expected, cf.getContents());
+		String contents = getContent("MA1","MA1");
+		if(contents == null) Assert.fail("Unable to find configuration file");
+		Assert.assertEquals(expected, contents);
 	}
 
 	@Test
 	public void testLA() {
 		String expected = "name = LA1\n" + "parentName = MA1\n"
 				+ "agentType = DIET_LOCAL_AGENT";
-		DietManager dm = godiet.getModel().getDietModel();
 
-		SoftwareManager<? extends Software> LA1 = dm.getManagedSoftware("LA1");
-		ConfigurationFile cf = LA1.getConfigurationFiles().get("LA1");
-		if (cf == null)
-			Assert.fail("LA1 config file not created");
-
-		Assert.assertEquals(expected, cf.getContents());
+		String contents = getContent("LA1","LA1");
+		if(contents == null) Assert.fail("Unable to find configuration file");
+		Assert.assertEquals(expected, contents);
 	}
 
 	@Test
 	public void testForwarder() {
 		String expected = "accept = .*\n" + "reject = localhost";
-		DietManager dm = godiet.getModel().getDietModel();
 
-		SoftwareManager<? extends Software> LA1 = dm.getManagedSoftware("server1");
-		ConfigurationFile cf = LA1.getConfigurationFiles().get("server1");
-		if (cf == null)
-			Assert.fail("server1 config file not created");
-
-		Assert.assertEquals(expected, cf.getContents());
+		String contents = getContent("server1","server1");
+		if(contents == null) Assert.fail("Unable to find configuration file");
+		Assert.assertEquals(expected, contents);
 	}
 
 	@Test
@@ -165,15 +161,31 @@ public class ConfigurationFileBuilderTest {
 				+ "sendmailScriptPath={this.configurationFiles.sendmailscript.absolutePath}\n"
 				+ "vishnuMachineId=machine_1";
 
-		DietManager dm = godiet.getModel().getDietModel();
-
-		SoftwareManager<? extends Software> sed1 = dm
-				.getManagedSoftware("sed1");
-		String contents = sed1.getConfigurationFiles().get("umssedconf")
-				.getContents();
- 
+	
+		String contents = getContent("sed1","umssedconf");
+		if(contents == null) Assert.fail("Unable to find configuration file");
+		
 		Assert.assertEquals(expected, contents);
 
+	}
+	private String getContent(String softwareId,String configurationFileId)
+	{
+		PlatformService dm = godiet.getPlatformService();
+
+		SoftwareInterface<? extends Software> sed1 = dm
+				.getManagedSoftware(softwareId);
+		List<ConfigurationFile> configurationsFile = sed1.getFiles();
+		
+		if(configurationsFile == null) Assert.fail("No configuration file");
+		
+		
+		for (ConfigurationFile configurationFile : configurationsFile) {
+			if(configurationFile.getId().equals(configurationFileId))
+			{
+				return configurationFile.getContents();
+			}
+		}
+		return null;
 	}
 
 }

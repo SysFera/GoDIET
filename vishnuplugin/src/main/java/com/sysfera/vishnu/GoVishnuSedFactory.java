@@ -6,7 +6,9 @@ import com.sysfera.godiet.exceptions.remote.LaunchException;
 import com.sysfera.godiet.exceptions.remote.PrepareException;
 import com.sysfera.godiet.exceptions.remote.StopException;
 import com.sysfera.godiet.managers.DietManager;
+import com.sysfera.godiet.model.SoftwareInterface;
 import com.sysfera.godiet.model.generated.Sed;
+import com.sysfera.godiet.model.generated.Software;
 import com.sysfera.godiet.model.softwares.DietResourceManaged;
 import com.sysfera.godiet.model.softwares.SoftwareController;
 import com.sysfera.godiet.model.softwares.SoftwareManager;
@@ -73,7 +75,7 @@ public class GoVishnuSedFactory {
 	class EmptySoftwareController implements SoftwareController{
 
 		@Override
-		public void configure(SoftwareManager resource) throws PrepareException {
+		public void configure(SoftwareInterface<? extends Software> resource) throws PrepareException {
 			
 		}
 

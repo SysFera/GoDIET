@@ -15,14 +15,11 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.sysfera.godiet.exceptions.CommandExecutionException;
 import com.sysfera.godiet.exceptions.XMLParseException;
 import com.sysfera.godiet.exceptions.generics.GoDietConfigurationException;
 import com.sysfera.godiet.exceptions.generics.PathException;
 import com.sysfera.godiet.exceptions.remote.IncubateException;
-import com.sysfera.godiet.managers.DietManager;
 import com.sysfera.godiet.managers.InfrastructureManager;
-import com.sysfera.godiet.managers.ResourcesManager;
 import com.sysfera.godiet.model.Path;
 import com.sysfera.godiet.model.Path.Hop;
 import com.sysfera.godiet.model.generated.Resource;
@@ -37,9 +34,8 @@ public class TopologyManagerTest {
 	private Logger log = LoggerFactory.getLogger(getClass());
 	@Autowired
 	private GoDietService godiet;
-
 	@Autowired
-	private DietManager dietModel;
+	InfrastructureManager infrastructureModel;
 
 	@Before
 	public void init() throws IncubateException {
@@ -79,8 +75,6 @@ public class TopologyManagerTest {
 				godiet.getXmlHelpService().registerInfrastructureElements(
 						infrastructureInputStream);
 
-				InfrastructureManager infrastructureModel = godiet.getModel()
-						.getInfrastructureModel();
 				TopologyManager topologyManager = infrastructureModel
 						.getTopologyManager();
 				Resource source;
@@ -91,7 +85,7 @@ public class TopologyManagerTest {
 				source = infrastructureModel.getResource("Node1");
 				destination = infrastructureModel.getResource("Node1");
 				try {
-					path = topologyManager.findPath(source, destination);
+					path = infrastructureModel.findPath(source, destination);
 				} catch (PathException e) {
 					Assert.fail(e.getMessage());
 				}
@@ -105,7 +99,7 @@ public class TopologyManagerTest {
 				destination = infrastructureModel.getResource("Fake2");
 				boolean exceptionPathNotExist = false;
 				try {
-					topologyManager.findPath(source, destination);
+					infrastructureModel.findPath(source, destination);
 				} catch (PathException e) {
 					// Comportement recherche
 					exceptionPathNotExist = true;
@@ -117,7 +111,7 @@ public class TopologyManagerTest {
 				destination = infrastructureModel.getResource("Fake1");
 				boolean exceptionPathNotExist2 = false;
 				try {
-					topologyManager.findPath(source, destination);
+					infrastructureModel.findPath(source, destination);
 				} catch (PathException e) {
 					// Comportement recherche
 					log.debug(e.getMessage());
@@ -130,7 +124,7 @@ public class TopologyManagerTest {
 				destination = infrastructureModel.getResource("Fake1");
 				boolean exceptionPathNotExist3 = false;
 				try {
-					topologyManager.findPath(source, destination);
+					infrastructureModel.findPath(source, destination);
 				} catch (PathException e) {
 					// Comportement recherche
 					log.debug(e.getMessage());
@@ -143,7 +137,7 @@ public class TopologyManagerTest {
 				destination = infrastructureModel.getResource("Node6");
 				boolean exceptionPathNotExist4 = false;
 				try {
-					topologyManager.findPath(source, destination);
+					infrastructureModel.findPath(source, destination);
 				} catch (PathException e) {
 					// Comportement recherche
 					log.debug(e.getMessage());
@@ -157,7 +151,7 @@ public class TopologyManagerTest {
 				source = infrastructureModel.getResource("Node1");
 				destination = infrastructureModel.getResource("Node8");
 				try {
-					path = topologyManager.findPath(source, destination);
+					path = infrastructureModel.findPath(source, destination);
 				} catch (PathException e) {
 					Assert.fail(e.getMessage());
 				}
@@ -184,7 +178,7 @@ public class TopologyManagerTest {
 				source = infrastructureModel.getResource("Node4");
 				destination = infrastructureModel.getResource("Node5");
 				try {
-					path = topologyManager.findPath(source, destination);
+					path = infrastructureModel.findPath(source, destination);
 				} catch (PathException e) {
 					Assert.fail(e.getMessage());
 				}
@@ -199,7 +193,7 @@ public class TopologyManagerTest {
 				destination = infrastructureModel.getResource("Node1");
 				boolean exceptionPathNotExist5 = false;
 				try {
-					topologyManager.findPath(source, destination);
+					infrastructureModel.findPath(source, destination);
 				} catch (PathException e) {
 					// Comportement recherche
 					log.debug(e.getMessage());
@@ -224,10 +218,7 @@ public class TopologyManagerTest {
 			try {
 				godiet.getXmlHelpService().registerInfrastructureElements(
 						platforInputStream);
-				InfrastructureManager infrastructureModel = godiet.getModel()
-						.getInfrastructureModel();
-				TopologyManager topologyManager = infrastructureModel
-						.getTopologyManager();
+
 				Resource source;
 				Resource destination;
 				Path path = null;
@@ -237,7 +228,7 @@ public class TopologyManagerTest {
 				source = infrastructureModel.getResource("testbedVM");
 				destination = infrastructureModel.getResource("testbedVM");
 				try {
-					path = topologyManager.findPath(source, destination);
+					path = infrastructureModel.findPath(source, destination);
 				} catch (PathException e) {
 					Assert.fail(e.getMessage());
 				}
@@ -251,7 +242,7 @@ public class TopologyManagerTest {
 				destination = infrastructureModel.getResource("Fake2");
 				boolean exceptionPathNotExist = false;
 				try {
-					topologyManager.findPath(source, destination);
+					infrastructureModel.findPath(source, destination);
 				} catch (PathException e) {
 					// Comportement recherche
 					log.debug(e.getMessage());
@@ -264,7 +255,7 @@ public class TopologyManagerTest {
 				destination = infrastructureModel.getResource("Fake1");
 				boolean exceptionPathNotExist2 = false;
 				try {
-					topologyManager.findPath(source, destination);
+					infrastructureModel.findPath(source, destination);
 				} catch (PathException e) {
 					// Comportement recherche
 					log.debug(e.getMessage());
@@ -277,7 +268,7 @@ public class TopologyManagerTest {
 				destination = infrastructureModel.getResource("Fake1");
 				boolean exceptionPathNotExist3 = false;
 				try {
-					topologyManager.findPath(source, destination);
+					infrastructureModel.findPath(source, destination);
 				} catch (PathException e) {
 					// Comportement recherche
 					log.debug(e.getMessage());
@@ -290,7 +281,7 @@ public class TopologyManagerTest {
 				destination = infrastructureModel.getResource("Node1");
 				boolean exceptionPathNotExist4 = false;
 				try {
-					topologyManager.findPath(source, destination);
+					infrastructureModel.findPath(source, destination);
 				} catch (PathException e) {
 					// Comportement recherche
 					log.debug(e.getMessage());
@@ -304,7 +295,7 @@ public class TopologyManagerTest {
 				source = infrastructureModel.getResource("phi-laptop");
 				destination = infrastructureModel.getResource("Node4");
 				try {
-					path = topologyManager.findPath(source, destination);
+					path = infrastructureModel.findPath(source, destination);
 				} catch (PathException e) {
 					Assert.fail(e.getMessage());
 				}
@@ -335,7 +326,7 @@ public class TopologyManagerTest {
 				source = infrastructureModel.getResource("Node2");
 				destination = infrastructureModel.getResource("Node3");
 				try {
-					path = topologyManager.findPath(source, destination);
+					path = infrastructureModel.findPath(source, destination);
 				} catch (PathException e) {
 					Assert.fail(e.getMessage());
 				}
@@ -348,7 +339,7 @@ public class TopologyManagerTest {
 				source = infrastructureModel.getResource("Node3");
 				destination = infrastructureModel.getResource("Node2");
 				try {
-					path = topologyManager.findPath(source, destination);
+					path = infrastructureModel.findPath(source, destination);
 				} catch (PathException e) {
 					Assert.fail(e.getMessage());
 				}
@@ -363,7 +354,7 @@ public class TopologyManagerTest {
 				source = infrastructureModel.getResource("graal");
 				destination = infrastructureModel.getResource("Node1");
 				try {
-					path = topologyManager.findPath(source, destination);
+					path = infrastructureModel.findPath(source, destination);
 				} catch (PathException e) {
 					Assert.fail(e.getMessage());
 				}
@@ -378,7 +369,7 @@ public class TopologyManagerTest {
 				destination = infrastructureModel.getResource("miaou");
 				boolean exceptionPathNotExist5 = false;
 				try {
-					topologyManager.findPath(source, destination);
+					infrastructureModel.findPath(source, destination);
 				} catch (PathException e) {
 					// Comportement recherche
 					log.debug(e.getMessage());
