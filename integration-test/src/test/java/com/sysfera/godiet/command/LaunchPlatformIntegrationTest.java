@@ -53,8 +53,6 @@ public class LaunchPlatformIntegrationTest {
 	@Autowired
 	private GoDietService godiet;
 
-	@Autowired
-	private PlatformService dietModel;
 
 	@Autowired
 	private UserService userController;
@@ -169,7 +167,7 @@ public class LaunchPlatformIntegrationTest {
 	}
 
 	private void launchOmniNames() throws PrepareException, LaunchException {
-		List<SoftwareInterface<OmniNames>> omniNames = dietModel.getOmninames();
+		List<SoftwareInterface<OmniNames>> omniNames = godiet.getPlatformService().getOmninames();
 		for (SoftwareInterface<OmniNames> dietServiceManaged : omniNames) {
 			dietServiceManaged.prepare();
 			dietServiceManaged.start();
@@ -178,7 +176,7 @@ public class LaunchPlatformIntegrationTest {
 	}
 
 	private void launchForwarders() throws PrepareException, LaunchException {
-		List<SoftwareInterface<Forwarder>> forwarders = dietModel
+		List<SoftwareInterface<Forwarder>> forwarders = godiet.getPlatformService()
 				.getForwarders();
 		for (SoftwareInterface<Forwarder> dietResourceManaged : forwarders) {
 			if (dietResourceManaged.getSoftwareDescription().getType()
@@ -203,7 +201,7 @@ public class LaunchPlatformIntegrationTest {
 	}
 
 	private void launchMasterAgents() throws PrepareException, LaunchException {
-		List<SoftwareInterface<MasterAgent>> masterAgents = dietModel
+		List<SoftwareInterface<MasterAgent>> masterAgents = godiet.getPlatformService()
 				.getMasterAgents();
 		for (SoftwareInterface<MasterAgent> ma : masterAgents) {
 			ma.prepare();
@@ -212,7 +210,7 @@ public class LaunchPlatformIntegrationTest {
 	}
 
 	private void launchLocalAgents() throws PrepareException, LaunchException {
-		List<SoftwareInterface<LocalAgent>> localAgents = dietModel
+		List<SoftwareInterface<LocalAgent>> localAgents = godiet.getPlatformService()
 				.getLocalAgents();
 		for (SoftwareInterface<LocalAgent> la : localAgents) {
 			la.prepare();
@@ -221,7 +219,7 @@ public class LaunchPlatformIntegrationTest {
 	}
 
 	private void launchSedsAgents() throws PrepareException, LaunchException {
-		List<SoftwareInterface<Sed>> seds = dietModel.getSeds();
+		List<SoftwareInterface<Sed>> seds = godiet.getPlatformService().getSeds();
 		for (SoftwareInterface<Sed> sed : seds) {
 			sed.prepare();
 			sed.start();
@@ -230,7 +228,7 @@ public class LaunchPlatformIntegrationTest {
 
 	private boolean stopAll() {
 		boolean failed = false;
-		List<SoftwareInterface<? extends Software>> softwares = dietModel
+		List<SoftwareInterface<? extends Software>> softwares = godiet.getPlatformService()
 				.getAllSoftwares();
 
 		for (SoftwareInterface<? extends Software> softwareManager : softwares) {
