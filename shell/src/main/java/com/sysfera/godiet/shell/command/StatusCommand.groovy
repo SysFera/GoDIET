@@ -5,13 +5,12 @@ import org.codehaus.groovy.tools.shell.ComplexCommandSupport
 import org.codehaus.groovy.tools.shell.Shell
 import org.codehaus.groovy.tools.shell.util.Preferences
 
-import com.sysfera.godiet.Diet;
 
-import com.sysfera.godiet.model.SoftwareInterface;
-import com.sysfera.godiet.model.generated.Software;
-import com.sysfera.godiet.model.states.ResourceState;
-import com.sysfera.godiet.model.states.ResourceState.State;
-import com.sysfera.godiet.services.PlatformService;
+import com.sysfera.godiet.common.model.SoftwareInterface;
+import com.sysfera.godiet.common.model.generated.Software;
+import com.sysfera.godiet.common.model.states.ResourceState;
+import com.sysfera.godiet.common.model.states.ResourceState.State;
+import com.sysfera.godiet.common.services.PlatformService;
 import com.sysfera.godiet.shell.GoDietSh
 import java.text.SimpleDateFormat;
 

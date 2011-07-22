@@ -1,3 +1,5 @@
+package com.sysfera.godiet.shell 
+
 /*
  * Copyright 2003-2007 the original author or authors.
  *
@@ -14,7 +16,6 @@
  * limitations under the License.
  */
 
-package com.sysfera.godiet.shell
 
 import java.util.concurrent.Callable
 
@@ -124,9 +125,7 @@ class Main {
 		// Boot up the shell... :-)
 		GoDietSh shell = new GoDietSh(io)
 		def ctx = new ClassPathXmlApplicationContext( [
-			"/spring/spring-config.xml",
-			"/spring/ssh-context.xml",
-			"/spring/godiet-service.xml" ]
+			"/spring/spring-config.xml","/spring/godiet-rmi-client.xml" ,"/spring/godiet-service.xml" ]
 		as String[])
 		def diet = ctx.getBean('godiet')
 

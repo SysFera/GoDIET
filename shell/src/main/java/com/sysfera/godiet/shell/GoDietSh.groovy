@@ -44,8 +44,7 @@ import org.fusesource.jansi.Ansi
 import org.fusesource.jansi.AnsiConsole
 import org.fusesource.jansi.AnsiRenderer
 
-import com.sysfera.godiet.Diet
-import com.sysfera.godiet.services.GoDietService;
+import com.sysfera.godiet.common.services.GoDietService;
 
 /**
  * An interactive shell for evaluating Groovy code from the command-line (aka. groovysh).

@@ -11,13 +11,13 @@ import jline.SimpleCompletor
 import org.codehaus.groovy.tools.shell.ComplexCommandSupport
 import org.codehaus.groovy.tools.shell.Shell
 
-import com.sysfera.godiet.model.generated.User.Ssh.Key;
-import com.sysfera.godiet.services.GoDietService;
-import com.sysfera.godiet.services.UserService;
+import com.sysfera.godiet.common.model.generated.User.Ssh.Key;
+import com.sysfera.godiet.common.services.GoDietService;
+import com.sysfera.godiet.common.services.UserService;
 import com.sysfera.godiet.shell.GoDietSh
-import com.sysfera.godiet.controllers.SSHKeyController;
-import com.sysfera.godiet.controllers.SSHKeyController.Status;
-import com.sysfera.godiet.model.generated.User.Ssh.Key;
+import com.sysfera.godiet.common.controllers.SSHKeyController;
+import com.sysfera.godiet.common.controllers.SSHKeyController.Status;
+import com.sysfera.godiet.common.model.generated.User.Ssh.Key;
 
 
 class SSHCommand extends ComplexCommandSupport {
