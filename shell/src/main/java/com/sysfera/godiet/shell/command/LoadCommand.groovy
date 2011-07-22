@@ -9,8 +9,7 @@ import jline.FileNameCompletor
 import org.codehaus.groovy.tools.shell.CommandSupport
 import org.codehaus.groovy.tools.shell.Shell
 
-import com.sysfera.godiet.Diet;
-import com.sysfera.godiet.services.GoDietService;
+import com.sysfera.godiet.common.services.GoDietService;
 import com.sysfera.godiet.shell.GoDietSh
 
 

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+         http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+         http://www.springframework.org/schema/context
+         http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+	<bean id="godiet" class="com.sysfera.godiet.core.services.impl.GoDietServiceImpl" />
+
+	<!-- <bean name="testService" class="com.sysfera.godiet.services.rmi.TestRMIServiceImpl"/> -->
+	<!-- <bean class="org.springframework.remoting.rmi.RmiServiceExporter"> 
+		does not necessarily have to be the same name as the bean to be exported 
+		<property name="serviceName" value="GodietService" /> <property name="service" 
+		ref="testService" /> <property name="serviceInterface" value="com.sysfera.godiet.rmi.TestService" 
+		/> defaults to 1099 <property name="registryPort" value="1199" /> </bean> -->
+	<!-- Infrastructure  -->
+	<bean class="org.springframework.remoting.rmi.RmiServiceExporter">
+		<property name="serviceName" value="InfrastructureService" />
+		<property name="service" ref="infrastructureServiceImpl" />
+		<property name="serviceInterface"
+			value="com.sysfera.godiet.common.services.InfrastructureService" />
+		<property name="registryPort" value="1199" />
+	</bean>
+	<!-- Platform  -->
+	<bean class="org.springframework.remoting.rmi.RmiServiceExporter">
+		<property name="serviceName" value="PlatformService" />
+		<property name="service" ref="platformServiceImpl" />
+		<property name="serviceInterface" value="com.sysfera.godiet.common.services.PlatformService" />
+		<property name="registryPort" value="1199" />
+	</bean>
+	<!-- User  -->
+	<bean class="org.springframework.remoting.rmi.RmiServiceExporter">
+		<property name="serviceName" value="UserService" />
+		<property name="service" ref="userServiceImpl" />
+		<property name="serviceInterface" value="com.sysfera.godiet.common.services.UserService" />
+		<property name="registryPort" value="1199" />
+	</bean>
+	<!-- XML Loader  -->
+	<bean class="org.springframework.remoting.rmi.RmiServiceExporter">
+		<property name="serviceName" value="XMLLoaderService" />
+		<property name="service" ref="XMLLoaderServiceImpl" />
+		<property name="serviceInterface" value="com.sysfera.godiet.common.services.XMLLoaderService" />
+		<property name="registryPort" value="1199" />
+	</bean>
+	<!-- Configuration  -->
+ 	<bean class="org.springframework.remoting.rmi.RmiServiceExporter">
+		<property name="serviceName" value="ConfigurationService" />
+		<property name="service" ref="configurationServiceImpl" />
+		<property name="serviceInterface" value="com.sysfera.godiet.common.services.ConfigurationService" />
+		<property name="registryPort" value="1199" />
+	</bean>
+</beans>

@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<godiet:dietPlatform xmlns:godiet="http://www.sysfera.com"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.sysfera.com ../Diet.xsd">
+
+	<services>
+
+		<omniNames id="omniNamesDomain1" domain="Domain1">
+			<config server="Node1" />
+		</omniNames>
+		<omniNames id="omniNamesDomain2" domain="Domain2">
+			<config server="Node2" />
+		</omniNames>
+		<omniNames id="omniNamesDomain3" domain="Domain3">
+			<config server="Node4" />
+		</omniNames>
+		<!-- Inter-connect Domain1 and Domain2 -->
+		<forwarders>
+			<client id="client1" type="CLIENT">
+				<config server="Node1" />
+			</client>
+			<server id="server1" type="SERVER">
+				<config server="Node3" />
+			</server>
+		</forwarders>
+		<!-- Inter-connect Domain1 and Domain3 -->
+		<forwarders>
+			<client id="client2" type="CLIENT">
+				<config server="Node1" />
+			</client>
+			<server id="server2" type="SERVER">
+				<config server="Node5" />
+			</server>
+		</forwarders>
+
+	</services>
+
+	<hierarchy>
+
+
+		<masterAgent id="MA1">
+			<config server="Node1" />
+
+			<sed id="sed1">
+				<config server="Node2" />
+				<file id="sed1_config">
+					<template name="sed_template.config" />
+				</file>
+				<binary name="dmat_manips_server">
+					<commandLine>
+						<parameter string="${this.configurationFiles.sed1_config.absolutePath}" />
+						<parameter string="T" />
+					</commandLine>
+				</binary>
+			</sed>
+			<sed id="sed2">
+				<config server="Node3" />
+				<file id="sed2_config">
+					<template name="sed_template.config" />
+				</file>
+
+				<binary name="dmat_manips_server">
+					<commandLine>
+						<parameter string="${this.configurationFiles.sed2_config.absolutePath}" />
+						<parameter string="T" />
+					</commandLine>
+				</binary>
+			</sed>
+			<sed id="sed3">
+				<config server="Node4" />
+				<file id="sed3_config">
+					<template name="sed_template.config" />
+				</file>
+				<binary name="dmat_manips_server">
+					<commandLine>
+						<parameter string="${this.configurationFiles.sed3_config.absolutePath}" />
+						<parameter string="T" />
+					</commandLine>
+				</binary>
+			</sed>
+		</masterAgent>
+	</hierarchy>
+</godiet:dietPlatform>

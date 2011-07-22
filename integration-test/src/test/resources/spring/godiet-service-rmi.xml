@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+         http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+         http://www.springframework.org/schema/context
+         http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+
+	<bean id="godiet"
+		class="com.sysfera.godiet.integrationtests.services.rmi.GodietServiceProxyImpl" />
+	<!-- Infrastructure -->
+	<bean id="infrastructureServiceRMIProxy" class="org.springframework.remoting.rmi.RmiProxyFactoryBean">
+		<property name="serviceUrl" value="rmi://localhost:1199/InfrastructureService" />
+		<property name="serviceInterface"
+			value="com.sysfera.godiet.common.services.InfrastructureService" />
+	</bean>
+	<!-- Platform -->
+	<bean id="platformServiceRMIProxy" class="org.springframework.remoting.rmi.RmiProxyFactoryBean">
+		<property name="serviceUrl" value="rmi://localhost:1199/PlatformService" />
+		<property name="serviceInterface"
+			value="com.sysfera.godiet.common.services.PlatformService" />
+	</bean>
+	<!-- User -->
+	<bean id="userServiceRMIProxy" class="org.springframework.remoting.rmi.RmiProxyFactoryBean">
+		<property name="serviceUrl" value="rmi://localhost:1199/UserService" />
+		<property name="serviceInterface"
+			value="com.sysfera.godiet.common.services.UserService" />
+	</bean>
+	<!-- XML Loader -->
+	<bean id="xMLLoaderRMIProxy" class="org.springframework.remoting.rmi.RmiProxyFactoryBean">
+		<property name="serviceUrl" value="rmi://localhost:1199/XMLLoaderService" />
+		<property name="serviceInterface"
+			value="com.sysfera.godiet.common.services.XMLLoaderService" />
+	</bean>
+
+	<!-- Configuration -->
+	<bean id="configurationServiceRMIProxy" class="org.springframework.remoting.rmi.RmiProxyFactoryBean">
+		<property name="serviceUrl" value="rmi://localhost:1199/ConfigurationService" />
+		<property name="serviceInterface"
+			value="com.sysfera.godiet.common.services.ConfigurationService" />
+	</bean>
+
+
+</beans>

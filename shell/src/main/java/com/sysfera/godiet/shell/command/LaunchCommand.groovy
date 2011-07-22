@@ -1,18 +1,15 @@
 
 package com.sysfera.godiet.shell.command
 
-import java.util.List
-
 import org.codehaus.groovy.tools.shell.ComplexCommandSupport
 import org.codehaus.groovy.tools.shell.Shell
 
-import com.sysfera.godiet.exceptions.remote.LaunchException
-import com.sysfera.godiet.exceptions.remote.PrepareException
-import com.sysfera.godiet.model.SoftwareInterface
-import com.sysfera.godiet.model.generated.Software
-import com.sysfera.godiet.model.states.ResourceState
-import com.sysfera.godiet.model.states.ResourceState.State
-import com.sysfera.godiet.services.PlatformService
+import com.sysfera.godiet.common.exceptions.remote.LaunchException
+import com.sysfera.godiet.common.exceptions.remote.PrepareException
+import com.sysfera.godiet.common.model.SoftwareInterface
+import com.sysfera.godiet.common.model.generated.Software
+import com.sysfera.godiet.common.model.states.ResourceState.State
+import com.sysfera.godiet.common.services.PlatformService
 import com.sysfera.godiet.shell.GoDietSh
 
 
@@ -22,7 +19,7 @@ import com.sysfera.godiet.shell.GoDietSh
  * 
  * @author phi
  */
-class LaunchCommand
+class LaunchCommand 
 extends ComplexCommandSupport {
 	LaunchCommand(final Shell shell) {
 		super(shell, "start", "run");
