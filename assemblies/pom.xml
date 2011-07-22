@@ -2,8 +2,10 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.sysfera</groupId>
-	<artifactId>goDiet-bin</artifactId>
-	<packaging>jar</packaging>
+	<artifactId>goDiet-bin-parent</artifactId>
+	<version>2.7.0.GAMMA-SNAPSHOT</version>
+
+	<packaging>pom</packaging>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -15,25 +17,12 @@
 			<url>http://maven.springframework.org/snapshot</url>
 		</pluginRepository>
 	</pluginRepositories>
-	<dependencies>
 
-		<dependency>
-			<groupId>com.sysfera</groupId>
-			<artifactId>goDiet</artifactId>
-			<version>${project.version}</version>
-		</dependency>
+	<modules>
+		<module>server</module>
+		<module>client</module>
+	</modules>
 
-
-		<dependency>
-			<groupId>com.sysfera</groupId>
-			<artifactId>shell</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-
-
-	</dependencies>
-
-	<version>2.7.BETA-SNAPSHOT</version>
 	<organization>
 		<name>Sysfera</name>
 		<url>http://www.sysfera.com</url>
@@ -51,13 +40,8 @@
 					<descriptors>
 						<descriptor>distribution.xml</descriptor>
 					</descriptors>
-				<!-- 	<archive>
-						<manifest>
-							<classpathPrefix>lib/</classpathPrefix>
-							<addClasspath>true</addClasspath>
-							<mainClass>com.sysfera.godiet.shell.Main</mainClass>
-						</manifest>
-					</archive> -->
+					<!-- <archive> <manifest> <classpathPrefix>lib/</classpathPrefix> <addClasspath>true</addClasspath> 
+						<mainClass>com.sysfera.godiet.shell.Main</mainClass> </manifest> </archive> -->
 
 				</configuration>
 			</plugin>
