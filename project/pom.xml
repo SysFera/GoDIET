@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>com.sysfera</groupId>
 		<artifactId>goDiet-parent</artifactId>
-		<version>2.7.BETA-SNAPSHOT</version>
+		<version>2.7.0.GAMMA-SNAPSHOT</version>
 
 	</parent>
 	<artifactId>goDiet</artifactId>
@@ -40,7 +40,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>com.sysfera</groupId>
-			<artifactId>godietlib</artifactId>
+			<artifactId>goDietlib</artifactId>
 			<version>${version}</version>
 		</dependency>
 	
