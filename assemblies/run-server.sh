@@ -1,0 +1,1 @@
+java -classpath classes:lib/* com.sysfera.godiet.core.GodietServerMain

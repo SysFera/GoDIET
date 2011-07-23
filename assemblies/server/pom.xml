@@ -1,0 +1,42 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.sysfera</groupId>
+		<artifactId>goDiet-bin-parent</artifactId>
+		<version>2.7.0.GAMMA-SNAPSHOT</version>
+
+	</parent>
+
+	<groupId>com.sysfera</groupId>
+	<artifactId>goDiet-server</artifactId>
+	<packaging>jar</packaging>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+
+	<pluginRepositories>
+		<pluginRepository>
+			<id>springsource</id>
+			<url>http://maven.springframework.org/snapshot</url>
+		</pluginRepository>
+	</pluginRepositories>
+
+	<dependencies>
+
+		<dependency>
+			<groupId>com.sysfera</groupId>
+			<artifactId>goDiet</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+
+
+	</dependencies>
+
+	
+
+	
+
+
+</project>
