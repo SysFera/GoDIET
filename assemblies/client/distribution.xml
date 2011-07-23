@@ -1,0 +1,97 @@
+<assembly
+	xmlns="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2 http://maven.apache.org/xsd/assembly-1.1.2.xsd">
+	<id>client-with-dependencies</id>
+
+	<formats>
+		<format>tar</format>
+	</formats>
+	<includeBaseDirectory>false</includeBaseDirectory>
+
+	<dependencySets>
+		<dependencySet>
+			<outputDirectory>lib/</outputDirectory>
+			<unpack>false</unpack>
+			<scope>runtime</scope>
+			<useProjectArtifact>false</useProjectArtifact>
+		</dependencySet>
+
+	</dependencySets>
+
+	<fileSets>
+		<fileSet>
+			<directory>${project.build.outputDirectory}</directory>
+			<outputDirectory>/</outputDirectory>
+
+		</fileSet>
+		<!-- Embedding launching scripts -->
+		<fileSet>
+			<directory>${project.basedir}/..</directory>
+			<includes>
+				<include>run-client.sh</include>
+
+			</includes>
+		</fileSet>
+		<!-- Embedding PDF -->
+		<fileSet>
+			<directory>${project.basedir}/../../doc</directory>
+			<includes>
+				<include>*.pdf</include>
+			</includes>
+			<outputDirectory>/doc</outputDirectory>
+		</fileSet>
+		<!-- Embedding XSD -->
+		<fileSet>
+			<directory>${project.basedir}/../../shell/src/main/resources</directory>
+			<includes>
+				<include>GoDietNG.xsd</include>
+				<include>Configuration.xsd</include>
+				<include>Diet.xsd</include>
+				<include>Infrastructure.xsd</include>
+			</includes>
+			<outputDirectory>/</outputDirectory>
+		</fileSet>
+		<!-- Embedding samples -->
+		<fileSet>
+			<directory>${project.basedir}/../../doc/rsrc</directory>
+			<includes>
+				<include>godiet-configuration.xml</include>
+				<include>godiet-infrastructure.xml</include>
+				<include>godiet-platform.xml</include>
+			</includes>
+			<outputDirectory>/examples</outputDirectory>
+		</fileSet>
+		<!-- Embedding VISHNU samples -->
+		<fileSet>
+			<directory>${project.basedir}/../../project/src/test/resources/diet</directory>
+			<includes>
+				<include>localhost-vishnu-platform.xml</include>
+			</includes>
+			<outputDirectory>/vishnu</outputDirectory>
+		</fileSet>
+		<fileSet>
+			<directory>${project.basedir}/../../project/src/test/resources/infrastructure</directory>
+			<includes>
+				<include>localhost-infrastructure.xml</include>
+			</includes>
+			<outputDirectory>/vishnu</outputDirectory>
+		</fileSet>
+		<!-- Embedding Hambourg samples -->
+		<fileSet>
+			<directory>${project.basedir}/../../project/src/test/resources/diet</directory>
+			<includes>
+				<include>hambourg-platform.xml</include>
+			</includes>
+			<outputDirectory>/hambourg</outputDirectory>
+		</fileSet>
+		<fileSet>
+			<directory>${project.basedir}/../../project/src/test/resources/infrastructure</directory>
+			<includes>
+				<include>hambourg-g5k-infrastructure.xml</include>
+			</includes>
+			<outputDirectory>/hambourg</outputDirectory>
+		</fileSet>
+	</fileSets>
+
+</assembly>
