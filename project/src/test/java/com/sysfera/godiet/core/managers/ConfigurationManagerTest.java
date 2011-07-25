@@ -8,7 +8,6 @@ import org.junit.Test;
 
 import com.sysfera.godiet.common.exceptions.generics.GoDietConfigurationException;
 import com.sysfera.godiet.common.model.generated.Scratch;
-import com.sysfera.godiet.core.managers.ConfigurationManager;
 
 public class ConfigurationManagerTest {
 
