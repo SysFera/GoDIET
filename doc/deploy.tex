@@ -90,8 +90,10 @@
 %* explain how to copy cfgs file in install_dir/etc directory and correct my english
 %****************************************************************************%
 
+\newcommand{\bla}{}
 \chapter{Deploying a \diet platform}
 \label{ch:deploying}
+
 
 Deployment is the process of launching a \diet platform including agents and
 servers. For \diet, this process includes writing configuration files for each
@@ -125,7 +127,8 @@ will save you time!
 management procedures for a \diet platform. It manages
 the creation of configuration files, the staging of files, the launch of software components, the monitoring and the reporting. \godiet is extremely useful for large deployments on a complex physical infrastructure. The main features are:
 \begin{itemize}
-  \item complete command-line interface;
+  \item \bla Complete running application customization. Infrastructure agnostic approach;
+  \item command-line interface;
   \item distributed command execution via SSH;
   \item real-time monitoring of applications' states;
   \item handling of complex physical infrastructure, with firewalls and multiple local- and wide-area networks.
@@ -139,6 +142,8 @@ the creation of configuration files, the staging of files, the launch of softwar
 
 \subsection{Installing \godiet}
 
+\bla\subsubsection{Requirement}
+
 The following operating systems are known to support GoDiet:
 \begin{itemize}
     \item Linux: the most recent distributions are likely to work;
@@ -146,14 +151,16 @@ The following operating systems are known to support GoDiet:
 \end{itemize}
 
 You need to have Sun Java 6 or OpenJDK6 installed.
-Download \godiet on the project's website\footnote{http://graal.ens-lyon.fr/DIET/godiet.html}.
+Download \godiet core and shell on the project's website\footnote{http://graal.ens-lyon.fr/DIET/godiet.html}.
 Check that the run.sh script works: it should display something similar to figure~\ref{fig:GODIETShell}.
 
 % This platform must be describe in a XML file based on \textit{Platform.xsd} grammar. You can find an simple file in the example directory 
 
-\subsection{Quickstart}
-The four steps for people in a hurry:
+\subsubsection{Quickstart}
+\bla The steps for people in a hurry:
 \begin{itemize}
+\bla \item running the server : execute run-server.sh
+\bla \item running the client : execute run-client.sh
 \item create your \godiet configuration file in \verb+${HOME}/.godiet/configuration.xml+~\ref{GODIETConfiguration}. It contains information for remote connection;
 \item create your infrastructure description file~\ref{GODIETInfrastructureDescription}. It describes your compute nodes, gateways and storage nodes;
 \item create your \diet platform description file~\ref{GODIETPlatform}. It describes all the \diet elements (agents and SeDs) that you want to deploy and manage;
@@ -161,7 +168,22 @@ The four steps for people in a hurry:
 \end{itemize}
 And that's it!
 
-\subsection{\godiet setup}
+
+\bla \subsubsection{\godiet server setup}
+
+distribution.layout
+RMI configuration
+run-server.sh read configuration.xml\label{GODIETConfiguration}
+
+
+\bla \subsubsection{\godiet client setup}
+
+distribution.layout
+RMI configuration
+run-client.sh
+
+
+\subsection{\bla Running Diet}
 
 Before using \godiet, you need to create three files: one to describe \godiet's configuration, one to describe your infrastructure and one that contains your \diet platform's description.
 These files use an XML-format and conform to the Configuration.xsd, Infrastructure.xsd and Diet.xsd grammar files (provide with \godiet), repectively.
@@ -170,6 +192,7 @@ Sample files are provided in the \verb+examples+ directory.
 \subsubsection{Configuration.xml}
 \label{GODIETConfiguration}
 
+\bla Ce fichier regroupe les informations indispensables pour que le serveur puisse se connecter et executer les applications sur les machines distantes.
 This file aggregates information about the local node from where \godiet was launched. It also contains information about user authentication.
 By default, \godiet looks in the \verb+${HOME}/.godiet/configuration.xml+ directory.
 
@@ -184,16 +207,16 @@ The mains elements are:
 \vspace{1cm}
 General layout of the configuration description (some parts are omitted):
 \begin{verbatim}
-<configuration schema="Configuration.xsd">
-<goDietConfiguration localNode="local">
-<localScratch dir="/tmp/scratch_godiet" />
+<godiet:configuration localNode="local" schema="Configuration.xsd">
+
+  <localscratch dir="/tmp/scratch_godiet" />
   <user>
      <ssh>
        <key path="/home/.ssh/id_dsa"/>
        <key path="/home/.ssh/admin_cluster2"/>
      </ssh>
   </user>
-</goDietConfiguration>
+</godiet:configuration>
 \end{verbatim}
 
 \subsubsection{Infrastructure.xml}
@@ -204,33 +227,40 @@ General layout of the configuration description (some parts are omitted):
 \vspace{1cm}
 You can find the full list of options in the \verb+Infrastructure.xsd+ grammar file. You can also look in the \verb+examples+ directory.
 
-The most important fields are:
+The fields are:
+
+\paragraph{Domain:} aggregates a set of infrastructure elements (nodes, gateways, storage) which are able to communicate with \diet's exchange protocol (i.e., CORBA). Typically, elements separated by a firewall and/or a router must be described in separate domains;
+\paragraph{Node:} describe a computing node where agents or SeDs will be running. It could be either a physical or virtual machine;
+
+\paragraph{Link:} defines a directional link par lequel les communications SSH sont possibles. Il existe deux types de liens
 \begin{itemize}
-\item \textbf{Domain}: aggregates a set of infrastructure elements (nodes, gateways, storage) which are able to communicate with \diet's exchange protocol (i.e., CORBA). Typically, elements separated by a firewall and/or a router must be described in separate domains;
-\item \textbf{Storage}: describes a remote disk access;
-\item \textbf{Node}: describe a computing node where agents or SeDs will be running. It could be either a physical or virtual machine;
-\item \textbf{Gateway}: describes an access point for a domain.
-\item \textbf{Link}: defines a directional link through which two gateways can communicate, using SSH.
+ \item Entre un domaine et une machine : typiquement des machines derrière un nat (en violet sur la figure).
+ \item Entre deux machines : la source est un routeur.
 \end{itemize}
 
 \vspace{1cm}
 
 General layout of the infrastructure description (details are omitted):
 \begin{verbatim}
-<infrastructure schema="Infrastructure.xsd">
- <domain id="idDomain1">
- ..
-    <storage id="idStorage">..</storage>
-    <node id="idNode" storageRefId="idStorage">..</node>
-    <gateway id="idGateway1">..</gateway>
+<godiet:infrastructure schema="Infrastructure.xsd">
+  <domain id="idDomain1"/>
+  <domain id="idDomain2"/>
+  ..
+  <node id="idNode">
+    <ssh id="idInterface" domain="idDomainRef" login="login" 
+       server="ip/hostname" port="2022" />
+    <scratch dir="/tmp/scratch_runtime/" />
+    <ssh id="idInterface" domain="idDomainRef" login="login"
+       server="ip/hostname" />
+    <scratch dir="/tmp/scratch_runtime/" />
+  </node>
 
- </domain id="idDomain2">
- ..
-   <gateway id="idGateway2"/>
- ..
- </domain>
- <link from="idGateway1" to="idGateway2"/>
-</infrastructure>
+  ..
+  <link fromDomain="DomainSysferaLB" to="graal" accessref="graalinterface1"/>
+  <link from="graal" to="testbedVM" accessref="testbedVMinterface1" />
+  ..
+
+</godiet:infrastructure>
 \end{verbatim}
 
 
@@ -240,7 +270,7 @@ General layout of the infrastructure description (details are omitted):
   \caption{Example of the representation of a three-domain infrastructure.\label{fig:GODIETInfrastructure}}
 \end{figure}
 
-\subsubsection{DIET-platform.xml}
+\subsubsection{Platform.xml}
 \label{GODIETPlatform}
 
 A \godiet user can describe the desired deployment in an XML file including all the external services needed (\eg omniNames and LogService). The desired hierarchical organization of agents and servers is expressed directly using the hierarchical organization of XML. 
@@ -255,23 +285,55 @@ The most important fields are:
 \vspace{1cm}
 
 General layout of the \diet platform description (details are omitted):
+
+
 \begin{verbatim}
-<dietPlatform schema="Diet.xsd">
-  <dietServices>
-    <omniNames id="omniNames1" server="refIdNode"/>
-  </dietServices>
-  <dietArchitecture>
-     <ma id="ma1" server="refIdNode1">
-       <la id="la1" server="refIdNode1">
-          ..
-          <sed id="sed1" server="refIdNode2"/>
+<godiet:dietPlatform schema="Diet.xsd">
+   <services>
+
+    <omniNames id="omniNames1" domain="DomainId1">
+	<config server="refIdNode"/>
+    </omniNames>
+    <omniNames id="omniNames1" domain="DomainId2">
+	<config server="refIdNode"/>
+    </omniNames>
+    <!-- Inter-connect Domain1 and Domain2 -->
+    <forwarders>
+        <client id="client1" type="CLIENT">
+            <config server="refIdNode" />
+        </client>
+        <server id="server1" type="SERVER">
+            <config server="refIdNode" />
+        </server>
+  <services>
+
+
+  <hierarchy>
+    <ma id="ma1">
+ 	<config server="refIdNode"/>
+	<la id="la1" server="refIdNode">
+   	  <config server="refIdNode"/>          
+   	  ..
+          <sed id="sed1">
+	    <config server="refIdNode"/>
+	    <file id="sed1_config">
+	      <template name="sed_template.config" />
+	    </file>
+	    <binary name="dmat_manips_server">
+	      <commandLine>
+	        <parameter string="${this.configurationFiles.sed1_config.absolutePath}" />
+	        <parameter string="T" />
+	      </commandLine>
+	    </binary>
+	  </sed>
           ..
        </la>
        ...
      </ma>
      <ma id="ma2" server="refIdNode3">..</ma>
-  </dietArchitecture>
-<dietPlatform>
+  </hierarchy>
+
+</godiet:dietPlatform>
 \end{verbatim}
 
 
