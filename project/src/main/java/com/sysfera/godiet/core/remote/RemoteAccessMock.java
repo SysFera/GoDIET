@@ -16,7 +16,6 @@ import com.sysfera.godiet.common.model.generated.Ssh;
 import com.sysfera.godiet.core.managers.user.SSHKeyManager;
 import com.sysfera.godiet.core.model.Path;
 import com.sysfera.godiet.core.model.Path.Hop;
-import com.sysfera.godiet.core.remote.RemoteAccess;
 
 /**
  * 

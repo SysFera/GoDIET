@@ -5,10 +5,8 @@ import com.sysfera.godiet.common.exceptions.remote.IncubateException;
 import com.sysfera.godiet.common.exceptions.remote.LaunchException;
 import com.sysfera.godiet.common.exceptions.remote.StopException;
 import com.sysfera.godiet.common.model.generated.OmniNames;
-import com.sysfera.godiet.common.model.generated.Software;
 import com.sysfera.godiet.core.managers.DietManager;
 import com.sysfera.godiet.core.model.softwares.OmniNamesManaged;
-import com.sysfera.godiet.core.model.softwares.SoftwareManager;
 
 public class OmniNamesRuntimeValidatorImpl extends RuntimeValidator<OmniNamesManaged>{
 

@@ -1,7 +1,6 @@
 package com.sysfera.godiet.core.utils.xml;
 
 import java.io.IOException;
-import java.io.InputStream;
 
 import com.sysfera.godiet.common.exceptions.XMLParseException;
 import com.sysfera.godiet.common.model.generated.DietPlatform;

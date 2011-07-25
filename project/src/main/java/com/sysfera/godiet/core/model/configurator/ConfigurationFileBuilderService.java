@@ -19,7 +19,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.sysfera.godiet.common.exceptions.generics.ConfigurationBuildingException;
-import com.sysfera.godiet.common.model.ConfigurationFile;
 import com.sysfera.godiet.common.model.SoftwareInterface;
 import com.sysfera.godiet.common.model.generated.Software;
 import com.sysfera.godiet.common.model.generated.SoftwareFile;

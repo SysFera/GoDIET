@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.sysfera.godiet.common.exceptions.DietResourceCreationException;
-import com.sysfera.godiet.common.model.SoftwareInterface;
 import com.sysfera.godiet.common.model.generated.Domain;
 import com.sysfera.godiet.common.model.generated.Forwarder;
 import com.sysfera.godiet.common.model.generated.LocalAgent;

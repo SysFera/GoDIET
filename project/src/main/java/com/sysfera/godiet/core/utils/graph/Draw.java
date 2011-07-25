@@ -10,7 +10,6 @@ import org.graphstream.algorithm.generator.Generator;
 import org.graphstream.graph.Edge;
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.Path;
-import org.graphstream.graph.implementations.SingleGraph;
 
 import com.sysfera.godiet.common.exceptions.generics.PathException;
 import com.sysfera.godiet.core.managers.topology.TopologyManagerGSImpl;

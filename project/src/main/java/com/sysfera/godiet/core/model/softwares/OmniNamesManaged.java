@@ -10,7 +10,6 @@ import com.sysfera.godiet.common.exceptions.remote.IncubateException;
 import com.sysfera.godiet.common.model.generated.Domain;
 import com.sysfera.godiet.common.model.generated.OmniNames;
 import com.sysfera.godiet.common.model.generated.Resource;
-import com.sysfera.godiet.core.model.configurator.ConfigurationFileBuilderService;
 import com.sysfera.godiet.core.model.validators.RuntimeValidator;
 
 /**
