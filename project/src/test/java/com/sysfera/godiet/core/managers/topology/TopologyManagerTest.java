@@ -23,7 +23,6 @@ import com.sysfera.godiet.common.model.generated.Resource;
 import com.sysfera.godiet.common.services.GoDietService;
 import com.sysfera.godiet.common.utils.StringUtils;
 import com.sysfera.godiet.core.managers.InfrastructureManager;
-import com.sysfera.godiet.core.managers.topology.TopologyManager;
 import com.sysfera.godiet.core.model.Path;
 import com.sysfera.godiet.core.model.Path.Hop;
 

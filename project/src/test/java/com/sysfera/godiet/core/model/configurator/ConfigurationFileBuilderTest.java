@@ -32,7 +32,6 @@ import com.sysfera.godiet.common.services.GoDietService;
 import com.sysfera.godiet.common.services.PlatformService;
 import com.sysfera.godiet.common.utils.StringUtils;
 import com.sysfera.godiet.core.managers.ConfigurationManager;
-import com.sysfera.godiet.core.managers.DietManager;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @DirtiesContext

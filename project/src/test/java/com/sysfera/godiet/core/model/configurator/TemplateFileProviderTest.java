@@ -6,8 +6,6 @@ import junit.framework.Assert;
 
 import org.junit.Test;
 
-import com.sysfera.godiet.core.model.configurator.TemplateFilesProvider;
-
 public class TemplateFileProviderTest {
 
 	@Test

@@ -11,7 +11,6 @@ import org.slf4j.LoggerFactory;
 
 import com.sysfera.godiet.common.exceptions.XMLParseException;
 import com.sysfera.godiet.common.utils.StringUtils;
-import com.sysfera.godiet.core.utils.xml.XmlScannerJaxbImpl;
 
 
 public class XMLScannerJaxbImplTest {
