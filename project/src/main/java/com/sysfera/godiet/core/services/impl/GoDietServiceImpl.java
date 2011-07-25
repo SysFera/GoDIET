@@ -1,11 +1,9 @@
 package com.sysfera.godiet.core.services.impl;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.net.URISyntaxException;
 import java.net.URL;
 
@@ -18,10 +16,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.sysfera.godiet.common.exceptions.generics.StartException;
 import com.sysfera.godiet.common.services.ConfigurationService;
 import com.sysfera.godiet.common.services.GoDietService;
+import com.sysfera.godiet.common.services.InfrastructureService;
 import com.sysfera.godiet.common.services.PlatformService;
 import com.sysfera.godiet.common.services.XMLLoaderService;
 import com.sysfera.godiet.common.utils.StringUtils;
-import com.sysfera.godiet.common.services.InfrastructureService;
 import com.sysfera.godiet.core.managers.ResourcesManager;
 import com.sysfera.godiet.core.model.observer.ForwardersCreator;
 
@@ -57,7 +55,7 @@ public class GoDietServiceImpl implements GoDietService {
 	 * @throws StartException
 	 */
 	@Override
-	
+	@PostConstruct
 	public void start() throws StartException {
 		if (ressourceManager == null || ressourceManager.getDietModel() == null
 				|| ressourceManager.getInfrastructureModel() == null) {
