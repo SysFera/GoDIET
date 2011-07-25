@@ -1,8 +1,7 @@
 package com.sysfera.godiet.common.model;
 
-import java.io.Serializable;
 
-public interface ConfigurationFile extends Serializable{
+public interface ConfigurationFile {
 
 	public abstract String getId();
 

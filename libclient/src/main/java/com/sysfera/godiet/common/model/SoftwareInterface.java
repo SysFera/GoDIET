@@ -1,15 +1,13 @@
 package com.sysfera.godiet.common.model;
 
-import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
 import com.sysfera.godiet.common.model.generated.Resource;
 import com.sysfera.godiet.common.model.generated.Software;
-import com.sysfera.godiet.common.model.states.ResourceState;
 import com.sysfera.godiet.common.model.states.ResourceState.State;
 
-public interface SoftwareInterface<T extends Software> extends Serializable{
+public interface SoftwareInterface<T extends Software>{
 
 	public abstract String getId();
 	/**

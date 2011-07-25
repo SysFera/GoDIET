@@ -1,5 +1,6 @@
 package com.sysfera.godiet.common.rmi.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -11,7 +12,7 @@ import com.sysfera.godiet.common.model.generated.Software;
 import com.sysfera.godiet.common.model.states.ResourceState.State;
 
 public class SoftwareInterfaceSerializable<T extends Software> implements
-		SoftwareInterface<T> {
+		SoftwareInterface<T>,Serializable {
 	String id;
 	Resource pluggedOn;
 	T softwareDescription;
@@ -113,7 +114,7 @@ public class SoftwareInterfaceSerializable<T extends Software> implements
 		this.errorMessageDetails = errorMessageDetails;
 	}
 
-	class ConfigurationFileSerializable implements ConfigurationFile {
+	class ConfigurationFileSerializable implements ConfigurationFile,Serializable {
 		private String id;
 		private String contents;
 		private String absolutePath;
