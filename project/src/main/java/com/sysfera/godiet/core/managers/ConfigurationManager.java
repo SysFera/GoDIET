@@ -7,8 +7,8 @@ import java.util.List;
 import org.springframework.stereotype.Component;
 
 import com.sysfera.godiet.common.exceptions.generics.GoDietConfigurationException;
-import com.sysfera.godiet.common.model.generated.Scratch;
 import com.sysfera.godiet.common.model.generated.GoDietConfiguration.Proxy;
+import com.sysfera.godiet.common.model.generated.Scratch;
 
 /**
  * GoDiet configuration description. Temporary manage shadow SSH Proxy

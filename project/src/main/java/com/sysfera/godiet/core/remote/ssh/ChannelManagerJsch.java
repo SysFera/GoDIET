@@ -1,6 +1,5 @@
 package com.sysfera.godiet.core.remote.ssh;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
@@ -20,9 +19,9 @@ import com.jcraft.jsch.UserInfo;
 import com.sysfera.godiet.common.exceptions.generics.RemoteAccessException;
 import com.sysfera.godiet.common.exceptions.remote.AddAuthentificationException;
 import com.sysfera.godiet.common.exceptions.remote.RemoveAuthentificationException;
+import com.sysfera.godiet.common.model.generated.GoDietConfiguration.Proxy;
 import com.sysfera.godiet.common.model.generated.Resource;
 import com.sysfera.godiet.common.model.generated.Ssh;
-import com.sysfera.godiet.common.model.generated.GoDietConfiguration.Proxy;
 import com.sysfera.godiet.core.managers.ConfigurationManager;
 import com.sysfera.godiet.core.managers.user.SSHKeyManager;
 import com.sysfera.godiet.core.model.Path;

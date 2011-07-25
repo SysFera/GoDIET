@@ -7,7 +7,6 @@ import com.sysfera.godiet.common.exceptions.remote.StopException;
 import com.sysfera.godiet.common.model.SoftwareInterface;
 import com.sysfera.godiet.common.model.generated.Sed;
 import com.sysfera.godiet.common.model.generated.Software;
-import com.sysfera.godiet.common.model.states.ResourceState;
 import com.sysfera.godiet.common.model.states.ResourceState.State;
 import com.sysfera.godiet.core.managers.DietManager;
 import com.sysfera.godiet.core.model.softwares.DietResourceManaged;

@@ -11,8 +11,8 @@ import org.springframework.stereotype.Service;
 
 import com.sysfera.godiet.common.exceptions.generics.ConfigurationBuildingException;
 import com.sysfera.godiet.common.model.generated.CommandLine;
-import com.sysfera.godiet.common.model.generated.Software;
 import com.sysfera.godiet.common.model.generated.CommandLine.Parameter;
+import com.sysfera.godiet.common.model.generated.Software;
 import com.sysfera.godiet.core.model.softwares.SoftwareManager;
 
 import freemarker.template.Configuration;

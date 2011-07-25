@@ -2,14 +2,11 @@ package com.sysfera.godiet.core.model.factories;
 
 import java.util.List;
 
-import com.sysfera.godiet.common.model.generated.Binary;
-import com.sysfera.godiet.common.model.generated.CommandLine;
+import com.sysfera.godiet.common.model.generated.CommandLine.Parameter;
 import com.sysfera.godiet.common.model.generated.Env;
-import com.sysfera.godiet.common.model.generated.ObjectFactory;
 import com.sysfera.godiet.common.model.generated.OmniNames;
 import com.sysfera.godiet.common.model.generated.Software;
 import com.sysfera.godiet.common.model.generated.Var;
-import com.sysfera.godiet.common.model.generated.CommandLine.Parameter;
 import com.sysfera.godiet.core.model.softwares.SoftwareManager;
 
 /**

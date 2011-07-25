@@ -14,7 +14,6 @@ import com.sysfera.godiet.common.exceptions.generics.PathException;
 import com.sysfera.godiet.common.exceptions.remote.IncubateException;
 import com.sysfera.godiet.common.model.SoftwareInterface;
 import com.sysfera.godiet.common.model.generated.Binary;
-import com.sysfera.godiet.common.model.generated.CommandLine;
 import com.sysfera.godiet.common.model.generated.Config;
 import com.sysfera.godiet.common.model.generated.Domain;
 import com.sysfera.godiet.common.model.generated.Forwarder;

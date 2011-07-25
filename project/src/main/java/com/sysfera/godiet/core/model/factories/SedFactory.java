@@ -12,7 +12,6 @@ import com.sysfera.godiet.common.exceptions.remote.IncubateException;
 import com.sysfera.godiet.common.model.generated.Env;
 import com.sysfera.godiet.common.model.generated.Resource;
 import com.sysfera.godiet.common.model.generated.Sed;
-import com.sysfera.godiet.common.model.generated.SoftwareFile;
 import com.sysfera.godiet.common.model.generated.Var;
 import com.sysfera.godiet.core.managers.DietManager;
 import com.sysfera.godiet.core.model.configurator.CommandLineBuilderService;

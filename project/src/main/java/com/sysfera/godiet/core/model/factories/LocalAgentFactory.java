@@ -5,11 +5,11 @@ import com.sysfera.godiet.common.exceptions.generics.ConfigurationBuildingExcept
 import com.sysfera.godiet.common.exceptions.remote.IncubateException;
 import com.sysfera.godiet.common.model.generated.Binary;
 import com.sysfera.godiet.common.model.generated.CommandLine;
+import com.sysfera.godiet.common.model.generated.CommandLine.Parameter;
 import com.sysfera.godiet.common.model.generated.LocalAgent;
 import com.sysfera.godiet.common.model.generated.ObjectFactory;
 import com.sysfera.godiet.common.model.generated.Resource;
 import com.sysfera.godiet.common.model.generated.SoftwareFile;
-import com.sysfera.godiet.common.model.generated.CommandLine.Parameter;
 import com.sysfera.godiet.common.model.generated.SoftwareFile.Template;
 import com.sysfera.godiet.core.model.configurator.ConfigurationFileBuilderService;
 import com.sysfera.godiet.core.model.softwares.DietResourceManaged;

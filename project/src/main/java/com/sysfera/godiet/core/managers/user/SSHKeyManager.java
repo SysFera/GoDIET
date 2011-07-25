@@ -2,7 +2,6 @@ package com.sysfera.godiet.core.managers.user;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 
 import com.sysfera.godiet.common.controllers.SSHKeyController;
 import com.sysfera.godiet.common.model.generated.User;

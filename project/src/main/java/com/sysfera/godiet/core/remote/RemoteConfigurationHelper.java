@@ -13,7 +13,6 @@ import com.sysfera.godiet.common.exceptions.remote.CheckException;
 import com.sysfera.godiet.common.exceptions.remote.LaunchException;
 import com.sysfera.godiet.common.exceptions.remote.PrepareException;
 import com.sysfera.godiet.common.exceptions.remote.StopException;
-import com.sysfera.godiet.common.model.SoftwareInterface;
 import com.sysfera.godiet.common.model.generated.Node;
 import com.sysfera.godiet.common.model.generated.Resource;
 import com.sysfera.godiet.common.model.generated.Software;

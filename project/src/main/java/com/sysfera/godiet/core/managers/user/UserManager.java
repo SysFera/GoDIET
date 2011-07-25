@@ -14,7 +14,6 @@ import com.sysfera.godiet.common.controllers.SSHKeyController;
 import com.sysfera.godiet.common.controllers.SSHKeyController.Status;
 import com.sysfera.godiet.common.exceptions.remote.AddAuthentificationException;
 import com.sysfera.godiet.common.exceptions.remote.ModifyAuthentificationException;
-import com.sysfera.godiet.common.exceptions.remote.RemoveAuthentificationException;
 import com.sysfera.godiet.common.model.generated.User.Ssh.Key;
 import com.sysfera.godiet.core.remote.RemoteAccess;
 

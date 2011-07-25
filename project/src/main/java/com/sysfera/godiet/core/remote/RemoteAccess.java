@@ -1,8 +1,5 @@
 package com.sysfera.godiet.core.remote;
 
-import java.io.File;
-
-import com.sysfera.godiet.common.controllers.SSHKeyController.Status;
 import com.sysfera.godiet.common.exceptions.generics.RemoteAccessException;
 import com.sysfera.godiet.common.exceptions.remote.AddAuthentificationException;
 import com.sysfera.godiet.common.exceptions.remote.CheckException;

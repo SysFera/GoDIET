@@ -5,8 +5,6 @@ import com.sysfera.godiet.common.exceptions.remote.IncubateException;
 import com.sysfera.godiet.common.exceptions.remote.LaunchException;
 import com.sysfera.godiet.common.exceptions.remote.StopException;
 import com.sysfera.godiet.common.model.generated.MasterAgent;
-import com.sysfera.godiet.common.model.generated.OmniNames;
-import com.sysfera.godiet.common.model.states.ResourceState;
 import com.sysfera.godiet.common.model.states.ResourceState.State;
 import com.sysfera.godiet.core.managers.DietManager;
 import com.sysfera.godiet.core.model.softwares.DietResourceManaged;
