@@ -22,6 +22,7 @@ import groovy.lang.Binding
 import groovy.lang.Closure
 
 import java.io.File
+import java.rmi.RemoteException;
 import java.util.List
 
 import jline.History
@@ -65,6 +66,7 @@ extends Shell {
 
 	//Newbie with Groovy
 	private GoDietService godiet;
+	private boolean connected = false;
 
 	final BufferManager buffers = new BufferManager()
 
@@ -99,7 +101,10 @@ extends Shell {
 	}
 	public void setGoDiet(GoDietService d)
 	{
-		this.godiet = d;
+		if(d != null ) {
+			connected = true;
+			this.godiet = d;
+		}
 	}
 
 
@@ -134,67 +139,73 @@ extends Shell {
 	 * Execute a single line, where the line may be a command or Groovy code (complete or incomplete).
 	 */
 	Object execute(final String line) {
-		assert line != null
-
-		// Ignore empty lines
-		if (line.trim().size() == 0) {
-			return null
-		}
-
-		maybeRecordInput(line)
-
 		def result
+		try{
+			assert line != null
 
-		// First try normal command execution
-		if (isExecutable(line)) {
-			result = executeCommand(line)
-
-			// For commands, only set the last result when its non-null/true
-			if (result) {
-				lastResult = result
+			// Ignore empty lines
+			if (line.trim().size() == 0) {
+				return null
 			}
 
-			return result
-		}
+			maybeRecordInput(line)
 
-		// Otherwise treat the line as Groovy
-		def current = []
-		current += buffers.current()
 
-		// Append the line to the current buffer
-		current << line
 
-		// Attempt to parse the current buffer
-		def status = parser.parse(imports + current)
+			// First try normal command execution
+			if (isExecutable(line)) {
+				result = executeCommand(line)
 
-		switch (status.code) {
-			case ParseCode.COMPLETE:
-				log.debug("Evaluating buffer...")
-
-				if (io.verbose) {
-					displayBuffer(buffer)
+				// For commands, only set the last result when its non-null/true
+				if (result) {
+					lastResult = result
 				}
 
-			// Evaluate the current buffer w/imports and dummy statement
-				def buff = imports + ['true']+ current
+				return result
+			}
 
-				lastResult = result = interp.evaluate(buff)
-				buffers.clearSelected()
-				break
+			// Otherwise treat the line as Groovy
+			def current = []
+			current += buffers.current()
 
-			case ParseCode.INCOMPLETE:
-			// Save the current buffer so user can build up complex muli-line code blocks
-				buffers.updateSelected(current)
-				break
+			// Append the line to the current buffer
+			current << line
 
-			case ParseCode.ERROR:
-				throw status.cause
+			// Attempt to parse the current buffer
+			def status = parser.parse(imports + current)
 
-			default:
-			// Should never happen
-				throw new Error("Invalid parse status: $status.code")
+			switch (status.code) {
+				case ParseCode.COMPLETE:
+					log.debug("Evaluating buffer...")
+
+					if (io.verbose) {
+						displayBuffer(buffer)
+					}
+
+				// Evaluate the current buffer w/imports and dummy statement
+					def buff = imports + ['true']+ current
+
+					lastResult = result = interp.evaluate(buff)
+					buffers.clearSelected()
+					break
+
+				case ParseCode.INCOMPLETE:
+				// Save the current buffer so user can build up complex muli-line code blocks
+					buffers.updateSelected(current)
+					break
+
+				case ParseCode.ERROR:
+					throw status.cause
+
+				default:
+				// Should never happen
+					throw new Error("Invalid parse status: $status.code")
+			}
+		}catch(RemoteException e)
+		{
+			io.err.println("Server connection failed. Bye.")
+			throw new ExitNotification(-1);
 		}
-
 		return result
 	}
 
@@ -219,10 +230,24 @@ extends Shell {
 	// Prompt
 	//
 
+
+
+
+
 	private String renderPrompt() {
 		//def lineNum = formatLineNumber(buffers.current().size())
-
-		def localnode = godiet.getConfigurationService().serverNodeLabel
+		def localnode
+		if(connected)
+		{
+			try{
+				localnode = godiet.getConfigurationService().serverNodeLabel
+			}catch(Exception e)
+			{
+				io.err.print("Server connection failed. Bye.")
+				
+				throw new ExitNotification(-1)
+			}
+		}
 		return AnsiRenderer.render("@|bold godiet@${localnode}:>|@ ")
 	}
 
