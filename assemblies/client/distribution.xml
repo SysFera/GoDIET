@@ -52,6 +52,14 @@
 			</includes>
 			<outputDirectory>/</outputDirectory>
 		</fileSet>
+		<!-- Embedding Configuration samples -->
+		<fileSet>
+			<directory>${project.basedir}/resources</directory>
+			<includes>
+				<include>server.properties.sample</include>
+			</includes>
+			<outputDirectory>/</outputDirectory>
+		</fileSet>
 		<!-- Embedding samples -->
 		<fileSet>
 			<directory>${project.basedir}/../../doc/rsrc</directory>

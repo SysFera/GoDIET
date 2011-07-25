@@ -6,33 +6,46 @@
          http://www.springframework.org/schema/context
          http://www.springframework.org/schema/context/spring-context-3.0.xsd">
 
-	
+	<!-- Erase all classpath:/server.properties with file:/server.properties 
+		values -->
+	<context:property-placeholder
+		location="classpath:/server.properties,file:server.properties"
+		ignore-resource-not-found="true" />
+
 	<!-- Infrastructure -->
 	<bean id="infrastructureServiceRMIProxy" class="org.springframework.remoting.rmi.RmiProxyFactoryBean">
-		<property name="serviceUrl" value="rmi://localhost:1199/InfrastructureService" />
-		<property name="serviceInterface" value="com.sysfera.godiet.common.services.InfrastructureService" />
+		<property name="serviceUrl"
+			value="rmi://${server.location.rmi}/InfrastructureService" />
+		<property name="serviceInterface"
+			value="com.sysfera.godiet.common.services.InfrastructureService" />
 	</bean>
 	<!-- Platform -->
 	<bean id="platformServiceRMIProxy" class="org.springframework.remoting.rmi.RmiProxyFactoryBean">
-		<property name="serviceUrl" value="rmi://localhost:1199/PlatformService" />
-		<property name="serviceInterface" value="com.sysfera.godiet.common.services.PlatformService" />
+		<property name="serviceUrl" value="rmi://${server.location.rmi}/PlatformService" />
+		<property name="serviceInterface"
+			value="com.sysfera.godiet.common.services.PlatformService" />
 	</bean>
 	<!-- User -->
 	<bean id="userServiceRMIProxy" class="org.springframework.remoting.rmi.RmiProxyFactoryBean">
-		<property name="serviceUrl" value="rmi://localhost:1199/UserService" />
-		<property name="serviceInterface" value="com.sysfera.godiet.common.services.UserService" />
+		<property name="serviceUrl" value="rmi://${server.location.rmi}/UserService" />
+		<property name="serviceInterface"
+			value="com.sysfera.godiet.common.services.UserService" />
 	</bean>
 	<!-- XML Loader -->
 	<bean id="xMLLoaderRMIProxy" class="org.springframework.remoting.rmi.RmiProxyFactoryBean">
-		<property name="serviceUrl" value="rmi://localhost:1199/XMLLoaderService" />
-		<property name="serviceInterface" value="com.sysfera.godiet.common.services.XMLLoaderService" />
+		<property name="serviceUrl"
+			value="rmi://${server.location.rmi}/XMLLoaderService" />
+		<property name="serviceInterface"
+			value="com.sysfera.godiet.common.services.XMLLoaderService" />
 	</bean>
-	
+
 	<!-- Configuration -->
 	<bean id="configurationServiceRMIProxy" class="org.springframework.remoting.rmi.RmiProxyFactoryBean">
-		<property name="serviceUrl" value="rmi://localhost:1199/ConfigurationService" />
-		<property name="serviceInterface" value="com.sysfera.godiet.common.services.ConfigurationService" />
+		<property name="serviceUrl"
+			value="rmi://${server.location.rmi}/ConfigurationService" />
+		<property name="serviceInterface"
+			value="com.sysfera.godiet.common.services.ConfigurationService" />
 	</bean>
-	
+
 
 </beans>
