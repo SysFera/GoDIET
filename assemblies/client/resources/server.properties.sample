@@ -1,0 +1,4 @@
+# Rename the file server.properties
+# Uncomment values that you want overload. The commented values are the defaults one.
+
+#server.location.rmi=127.0.0.1:1199
