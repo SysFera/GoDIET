@@ -21,7 +21,7 @@ import com.sysfera.godiet.common.exceptions.ExportException;
 import com.sysfera.godiet.common.exceptions.generics.PathException;
 import com.sysfera.godiet.core.managers.topology.domain.DomainTopologyManagerGSImpl;
 import com.sysfera.godiet.core.managers.topology.infrastructure.TopologyManagerGSImpl;
-
+//TODO: Bug #34
 /**
  * Display of the different graph
  * 
@@ -47,7 +47,7 @@ public class DrawTopology implements Draw {
 		topologyManager = tp;
 		gs = topologyManager.getGraph();
 		// get back the FileSinkImages that has been initialized previously
-		pic = topologyManager.getFileSinkImages();
+		//pic = topologyManager.getFileSinkImages();
 		defineFileSinkImages(); // apply others features of the fileSinkImages
 		domain = false;
 		stylesheet = getClass().getResource("/draw/styleSheetTopology");
@@ -61,7 +61,7 @@ public class DrawTopology implements Draw {
 		domainManager = dm;
 		gs = domainManager.getGraph();
 		// get back the FileSinkImages that has been initialized previously
-		pic = domainManager.getFileSinkImages();
+		//pic = domainManager.getFileSinkImages();
 		defineFileSinkImages(); // apply others features of the fileSinkImages
 		domain = true;
 		stylesheet = getClass().getResource("/draw/styleSheetDomains");
@@ -85,11 +85,11 @@ public class DrawTopology implements Draw {
 	 */
 	private void defineFileSinkImages() {
 		// resolution
-		pic.setResolution(Resolutions.WXGA_8by5);
-		pic.setOutputPolicy(OutputPolicy.BY_EVENT);
-		// set renderer to the display to take care of css style.
-		pic.setRenderer(FileSinkImages.RendererType.SCALA);
-		pic.setQuality(Quality.HIGH);
+//		pic.setResolution(Resolutions.WXGA_8by5);
+//		pic.setOutputPolicy(OutputPolicy.BY_EVENT);
+//		// set renderer to the display to take care of css style.
+//		pic.setRenderer(FileSinkImages.RendererType.SCALA);
+//		pic.setQuality(Quality.HIGH);
 	}
 
 	@Override
@@ -193,16 +193,16 @@ public class DrawTopology implements Draw {
 
 	@Override
 	public void exportJPG(String path) throws ExportException {
-		pic.stabilizeLayout(0.99); // to wait until the graph is well displayed
-		String prefix;
-		if (domain) {
-			prefix = path + "export/Domain/snapshot.jpg";
-		} else {
-			prefix = path + "export/Infra/snapshot.jpg";
-		}
-		testFile(prefix);
-		pic.outputNewImage(prefix);
-		log.debug("snapshot taken");
+//		pic.stabilizeLayout(0.99); // to wait until the graph is well displayed
+//		String prefix;
+//		if (domain) {
+//			prefix = path + "export/Domain/snapshot.jpg";
+//		} else {
+//			prefix = path + "export/Infra/snapshot.jpg";
+//		}
+//		testFile(prefix);
+//		pic.outputNewImage(prefix);
+//		log.debug("snapshot taken");
 	}
 
 	/**
@@ -222,21 +222,21 @@ public class DrawTopology implements Draw {
 
 	@Override
 	public void exportDOT(String path) throws ExportException {
-		try {
-			FileSinkDOT dot = new FileSinkDOT();
-			if (domain) {
-				dot.setDirected(false);
-				dot.writeAll(gs, path + "export/Domain/exportDot.dot");
-			} else {
-				dot.setDirected(true);
-				dot.writeAll(gs, path + "export/Infra/exportDot.dot");
-			}
-			log.debug("dot file created");
-		} catch (IOException e) {
-			String mess = "Unable to export a dot version of our graph";
-			log.debug(mess, e);
-			throw new ExportException(mess, e);
-		}
+//		try {
+//			FileSinkDOT dot = new FileSinkDOT();
+//			if (domain) {
+//				dot.setDirected(false);
+//				dot.writeAll(gs, path + "export/Domain/exportDot.dot");
+//			} else {
+//				dot.setDirected(true);
+//				dot.writeAll(gs, path + "export/Infra/exportDot.dot");
+//			}
+//			log.debug("dot file created");
+//		} catch (IOException e) {
+//			String mess = "Unable to export a dot version of our graph";
+//			log.debug(mess, e);
+//			throw new ExportException(mess, e);
+//		}
 	}
 
 	@Override

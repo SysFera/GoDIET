@@ -9,10 +9,6 @@ import org.graphstream.algorithm.APSP.APSPInfo;
 import org.graphstream.graph.Edge;
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.implementations.MultiGraph;
-import org.graphstream.stream.file.FileSinkImages;
-import org.graphstream.stream.file.FileSinkImages.LayoutPolicy;
-import org.graphstream.stream.file.FileSinkImages.OutputType;
-import org.graphstream.stream.file.FileSinkImages.Resolutions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,7 +35,8 @@ public class TopologyManagerGSImpl implements TopologyManager {
 	private final APSP apsp;
 	
 	// used to save snapshot of the graph
-	private FileSinkImages fsi;
+	//TODO: Bug #34
+	//private FileSinkImages fsi;
 		
 	/**
 	 * Constructor
@@ -48,9 +45,9 @@ public class TopologyManagerGSImpl implements TopologyManager {
 		this.gs = new MultiGraph("Infrastructure");		
 		
 		// features of the fsi object
-		fsi = new FileSinkImages(OutputType.jpg, Resolutions.WXGA_8by5); // resolution
-		fsi.setLayoutPolicy(LayoutPolicy.COMPUTED_AT_NEW_IMAGE);
-		gs.addSink(fsi);
+//		fsi = new FileSinkImages(OutputType.jpg, Resolutions.WXGA_8by5); // resolution
+//		fsi.setLayoutPolicy(LayoutPolicy.COMPUTED_AT_NEW_IMAGE);
+//		gs.addSink(fsi);
 		
 		this.apsp = new APSP();
 		apsp.setDirected(true); // directed graph
@@ -70,9 +67,9 @@ public class TopologyManagerGSImpl implements TopologyManager {
 	 * Get the FileSinkImages who is connected to the graph
 	 * @return FileSinkImages
 	 */
-	public FileSinkImages getFileSinkImages(){
-		return fsi;
-	}
+//	public FileSinkImages getFileSinkImages(){
+//		return fsi;
+//	}
 
 	@Override
 	public void addLink(Link link) throws GraphDataException {
