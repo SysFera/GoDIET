@@ -39,7 +39,8 @@ public class DomainTopologyManagerGSImpl implements DomainTopologyManager {
 	// GS Shortest path calculator
 	private final APSP apsp;
 	// used to save snapshot of the graph
-	private FileSinkImages fsi;
+	//TODO: Bug #34
+	//private FileSinkImages fsi;
 
 	/**
 	 * Constructor
@@ -47,10 +48,10 @@ public class DomainTopologyManagerGSImpl implements DomainTopologyManager {
 	public DomainTopologyManagerGSImpl() {
 		this.gs = new MultiGraph("DomainTopology");
 
-		// features of the fsi object
-		fsi = new FileSinkImages(OutputType.jpg, Resolutions.WXGA_8by5); // resolution
-		fsi.setLayoutPolicy(LayoutPolicy.COMPUTED_AT_NEW_IMAGE);	
-		gs.addSink(fsi);
+//		// features of the fsi object
+//		fsi = new FileSinkImages(OutputType.jpg, Resolutions.WXGA_8by5); // resolution
+//		fsi.setLayoutPolicy(LayoutPolicy.COMPUTED_AT_NEW_IMAGE);	
+//		gs.addSink(fsi);
 
 		this.apsp = new APSP();
 		apsp.setDirected(false); // undirected graph
@@ -71,9 +72,9 @@ public class DomainTopologyManagerGSImpl implements DomainTopologyManager {
 	 * 
 	 * @return FileSinkImages
 	 */
-	public FileSinkImages getFileSinkImages() {
-		return fsi;
-	}
+//	public FileSinkImages getFileSinkImages() {
+//		return fsi;
+//	}
 
 	@Override
 	public void addDomain(Domain d) throws GraphDataException {
