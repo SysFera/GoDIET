@@ -41,8 +41,9 @@ extends ComplexCommandSupport {
 	}
 
 	private stopSoftware(SoftwareInterface<? extends Software> soft) {
+		PlatformService diet = ((GoDietSh)shell).godiet.platformService
 		io.print("Stop ${soft.softwareDescription.id}")
-		soft.stop();
+		diet.stopSoftware(soft.softwareDescription.id)
 		io.println(" Done")
 	}
 

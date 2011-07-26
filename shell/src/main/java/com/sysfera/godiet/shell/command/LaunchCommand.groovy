@@ -33,17 +33,19 @@ extends ComplexCommandSupport {
 
 
 
-	private launchSoftware(SoftwareInterface soft) {
+	private launchSoftware(SoftwareInterface<? extends Software> soft) {
+		GoDietSh goDietShell = shell;
+		PlatformService ps = goDietShell.godiet.platformService
 		try{
-			if(soft.state.status.equals(State.INCUBATE)) {
+			if(soft.state.equals(State.INCUBATE)) {
 				io.println("Prepare ${soft.softwareDescription.id}");
-				soft.prepare();
+				ps.prepareSoftware(soft.softwareDescription.id);
 			}
 
 			try{
 				io.println("Start ${soft.softwareDescription.id}")
 
-				soft.start();
+				ps.startSoftware(soft.softwareDescription.id)
 				io.println("Done")
 			}catch(LaunchException e) {
 				io.err.println(e.getMessage())
