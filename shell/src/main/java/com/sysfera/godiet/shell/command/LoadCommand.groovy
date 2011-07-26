@@ -10,6 +10,7 @@ import org.codehaus.groovy.tools.shell.CommandSupport
 import org.codehaus.groovy.tools.shell.Shell
 
 import com.sysfera.godiet.common.services.GoDietService;
+import com.sysfera.godiet.common.utils.StringUtils;
 import com.sysfera.godiet.shell.GoDietSh
 
 
@@ -74,8 +75,9 @@ extends CommandSupport {
 
 		assert godiet != null;
 		def inputStream = url.openConnection().inputStream;
-
-		godiet.xmlHelpService.registerInfrastructureElements (inputStream)
+		assert inputStream != null
+		def input = StringUtils.streamToString(inputStream) 
+		godiet.xmlHelpService.registerInfrastructureElements (input)
 
 	}
 }
@@ -128,6 +130,8 @@ extends CommandSupport {
 
 		assert godiet != null;
 		def inputStream = url.openConnection().inputStream;
-		godiet.xmlHelpService.registerDietElements(inputStream)
+		assert inputStream != null
+		def input = StringUtils.streamToString(inputStream)
+		godiet.xmlHelpService.registerDietElements(input)
 	}
 }

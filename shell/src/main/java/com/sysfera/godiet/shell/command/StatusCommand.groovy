@@ -50,21 +50,21 @@ extends ComplexCommandSupport {
 				def coloredStatus
 				String cause ='-'
 				String since = sdf.format(resource.lastTransition)
-				switch (resource.state.status) {
+				switch (resource.state) {
 					case State.UP:
-						coloredStatus =  "@|green ${resource.state.status}|@"
+						coloredStatus =  "@|green ${resource.state}|@"
 						break;
 					case State.DOWN:
-						coloredStatus =  "@|yellow ${resource.state.status}|@"
+						coloredStatus =  "@|yellow ${resource.state}|@"
 						break;
 					case State.ERROR:
-						coloredStatus =  "@|BG_RED,BLACK ${resource.state.status}|@"
+						coloredStatus =  "@|BG_RED,BLACK ${resource.state}|@"
 						if(resource.errorMessage !=null)
 							cause = resource.errorMessage
 						else cause = "Not yet managed"
 						break;
 					default:
-						coloredStatus = "@|BLUE ${resource.state.status}|@"
+						coloredStatus = "@|BLUE ${resource.state}|@"
 						break;
 				}
 				io.out.println "${resource.softwareDescription.id}\t${coloredStatus}\t${since}\t${resource.pluggedOn.id}\t${cause}"
