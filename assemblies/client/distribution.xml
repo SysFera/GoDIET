@@ -56,7 +56,7 @@
 		<fileSet>
 			<directory>${project.basedir}/resources</directory>
 			<includes>
-				<include>server.properties.sample</include>
+				<include>client.properties.sample</include>
 			</includes>
 			<outputDirectory>/</outputDirectory>
 		</fileSet>

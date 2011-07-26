@@ -34,6 +34,14 @@
 
 			</includes>
 		</fileSet>
+		<!-- Embedding Configuration samples -->
+		<fileSet>
+			<directory>${project.basedir}/resources</directory>
+			<includes>
+				<include>server.properties.sample</include>
+			</includes>
+			<outputDirectory>/</outputDirectory>
+		</fileSet>
 		<!-- Embedding PDF -->
 		<fileSet>
 			<directory>${project.basedir}/../../doc</directory>

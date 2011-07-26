@@ -5,6 +5,11 @@
          http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
          http://www.springframework.org/schema/context
          http://www.springframework.org/schema/context/spring-context-3.0.xsd">
-	<bean id="remoteAccess" class="com.sysfera.godiet.core.remote.RemoteAccessMock" />
+	<!-- Erase all classpath:/server.properties with file:/server.properties 
+		values -->
+	<context:property-placeholder
+		location="classpath:/server.properties,file:server.properties"
+		ignore-resource-not-found="true" />
+	<bean id="remoteAccess" class="${remote.access.class}" />
 
 </beans>
