@@ -23,8 +23,10 @@ import com.sysfera.godiet.common.model.generated.Resource;
 import com.sysfera.godiet.common.services.GoDietService;
 import com.sysfera.godiet.common.utils.StringUtils;
 import com.sysfera.godiet.core.managers.InfrastructureManager;
-import com.sysfera.godiet.core.model.Path;
-import com.sysfera.godiet.core.model.Path.Hop;
+import com.sysfera.godiet.core.managers.topology.infrastructure.Path;
+import com.sysfera.godiet.core.managers.topology.infrastructure.Path.Hop;
+import com.sysfera.godiet.core.managers.topology.infrastructure.TopologyManager;
+
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @DirtiesContext
@@ -73,15 +75,14 @@ public class TopologyManagerTest {
 			String infrastructureTestCase = "infrastructure/6D-10N-7G-3L.xml";
 			InputStream infrastructureInputStream = getClass().getClassLoader()
 					.getResourceAsStream(infrastructureTestCase);
-
+ 
 			try {
 				String outputString = StringUtils.streamToString(infrastructureInputStream);
 
 				godiet.getXmlHelpService().registerInfrastructureElements(
 						outputString);
 
-				TopologyManager topologyManager = infrastructureModel
-						.getTopologyManager();
+			
 				Resource source;
 				Resource destination;
 				Path path = null;

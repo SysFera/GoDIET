@@ -84,7 +84,7 @@ public class XMLLoaderServiceImpl implements XMLLoaderService {
 	@Override
 	public void registerDietElements(String xmlInput) throws IOException,
 			XMLParseException, DietResourceCreationException,
-			DietResourceValidationException, IncubateException {
+			DietResourceValidationException, IncubateException, GraphDataException {
 
 		DietPlatform dietDescription = xmlScanner.buildDietModel(xmlInput);
 		load(dietDescription);
@@ -128,10 +128,11 @@ public class XMLLoaderServiceImpl implements XMLLoaderService {
 	 * @throws DietResourceCreationException
 	 * @throws DietResourceValidationException
 	 * @throws IncubateException
+	 * @throws GraphDataException 
 	 * @throws CommandExecutionException
 	 */
 	private void load(DietPlatform diet) throws DietResourceCreationException,
-			DietResourceValidationException, IncubateException {
+			DietResourceValidationException, IncubateException, GraphDataException {
 
 		initDietPlatform(diet.getHierarchy(), diet.getServices());
 
@@ -145,10 +146,11 @@ public class XMLLoaderServiceImpl implements XMLLoaderService {
 	 * @throws DietResourceCreationException
 	 * @throws DietResourceValidationException
 	 * @throws IncubateException
+	 * @throws GraphDataException 
 	 */
 	private void initDietPlatform(DietHierarchy dietHierarchy,
 			DietServices dietServices) throws DietResourceCreationException,
-			DietResourceValidationException, IncubateException {
+			DietResourceValidationException, IncubateException, GraphDataException {
 		List<OmniNames> omniNames = dietServices.getOmniNames();
 		for (OmniNames omniName : omniNames) {
 			platformController.registerOmniNames(omniName);
@@ -165,9 +167,10 @@ public class XMLLoaderServiceImpl implements XMLLoaderService {
 	 * @param forwarders
 	 * @throws IncubateException
 	 * @throws DietResourceCreationException
+	 * @throws GraphDataException 
 	 */
 	private void initForwarders(List<Forwarders> forwarders)
-			throws DietResourceCreationException, IncubateException {
+			throws DietResourceCreationException, IncubateException, GraphDataException {
 		if (forwarders != null) {
 			for (Forwarders forwarder : forwarders) {
 				platformController.registerForwarders(forwarder.getClient(),

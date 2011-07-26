@@ -18,7 +18,7 @@ import com.sysfera.godiet.common.model.generated.Resource;
 import com.sysfera.godiet.common.model.generated.Software;
 import com.sysfera.godiet.core.managers.ConfigurationManager;
 import com.sysfera.godiet.core.managers.InfrastructureManager;
-import com.sysfera.godiet.core.model.Path;
+import com.sysfera.godiet.core.managers.topology.infrastructure.Path;
 import com.sysfera.godiet.core.model.configurator.ConfigurationFileImpl;
 import com.sysfera.godiet.core.model.softwares.SoftwareController;
 import com.sysfera.godiet.core.model.softwares.SoftwareManager;

@@ -23,9 +23,10 @@ import com.sysfera.godiet.common.model.generated.GoDietConfiguration.Proxy;
 import com.sysfera.godiet.common.model.generated.Resource;
 import com.sysfera.godiet.common.model.generated.Ssh;
 import com.sysfera.godiet.core.managers.ConfigurationManager;
+import com.sysfera.godiet.core.managers.topology.infrastructure.Path;
+import com.sysfera.godiet.core.managers.topology.infrastructure.Path.Hop;
 import com.sysfera.godiet.core.managers.user.SSHKeyManager;
-import com.sysfera.godiet.core.model.Path;
-import com.sysfera.godiet.core.model.Path.Hop;
+
 
 public class ChannelManagerJsch {
 

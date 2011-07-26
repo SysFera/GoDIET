@@ -5,8 +5,9 @@ import com.sysfera.godiet.common.exceptions.remote.AddAuthentificationException;
 import com.sysfera.godiet.common.exceptions.remote.CheckException;
 import com.sysfera.godiet.common.exceptions.remote.RemoveAuthentificationException;
 import com.sysfera.godiet.common.model.ConfigurationFile;
+import com.sysfera.godiet.core.managers.topology.infrastructure.Path;
 import com.sysfera.godiet.core.managers.user.SSHKeyManager;
-import com.sysfera.godiet.core.model.Path;
+
 
 /**
  * Interface to execute and copy file on a host remote

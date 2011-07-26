@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.sysfera.godiet.common.model.generated.Resource;
-import com.sysfera.godiet.core.model.Path;
+import com.sysfera.godiet.core.managers.topology.infrastructure.Path;
 /**
  * Store calculated paths.  
  * TODO: Listen Model modification ( Node down ... ) 

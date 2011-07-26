@@ -13,6 +13,7 @@ import com.sysfera.godiet.common.exceptions.generics.DietResourceValidationExcep
 import com.sysfera.godiet.common.exceptions.generics.GoDietServiceException;
 import com.sysfera.godiet.common.exceptions.generics.PathException;
 import com.sysfera.godiet.common.exceptions.generics.StartException;
+import com.sysfera.godiet.common.exceptions.graph.GraphDataException;
 import com.sysfera.godiet.common.exceptions.remote.IncubateException;
 import com.sysfera.godiet.common.exceptions.remote.LaunchException;
 import com.sysfera.godiet.common.exceptions.remote.PrepareException;
@@ -33,8 +34,8 @@ import com.sysfera.godiet.common.services.PlatformService;
 import com.sysfera.godiet.core.managers.ConfigurationManager;
 import com.sysfera.godiet.core.managers.DietManager;
 import com.sysfera.godiet.core.managers.InfrastructureManager;
-import com.sysfera.godiet.core.model.Path;
-import com.sysfera.godiet.core.model.Path.Hop;
+import com.sysfera.godiet.core.managers.topology.infrastructure.Path;
+import com.sysfera.godiet.core.managers.topology.infrastructure.Path.Hop;
 import com.sysfera.godiet.core.model.factories.GodietMetaFactory;
 import com.sysfera.godiet.core.model.softwares.DietResourceManaged;
 import com.sysfera.godiet.core.model.softwares.OmniNamesManaged;
@@ -197,7 +198,7 @@ public final class PlatformServiceImpl implements PlatformService {
 
 	@Override
 	public void registerForwarders(Forwarder client, Forwarder server)
-			throws DietResourceCreationException, IncubateException {
+			throws DietResourceCreationException, IncubateException, GraphDataException {
 
 		Resource clietnPluggedOn = infrastructureManager.getResource(client
 				.getConfig().getServer());

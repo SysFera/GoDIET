@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 
 import com.sysfera.godiet.common.exceptions.DietResourceCreationException;
 import com.sysfera.godiet.common.exceptions.generics.PathException;
+import com.sysfera.godiet.common.exceptions.graph.GraphDataException;
 import com.sysfera.godiet.common.exceptions.remote.IncubateException;
 import com.sysfera.godiet.common.model.SoftwareInterface;
 import com.sysfera.godiet.common.model.generated.Binary;
@@ -24,16 +25,17 @@ import com.sysfera.godiet.common.model.generated.Resource;
 import com.sysfera.godiet.common.model.generated.Sed;
 import com.sysfera.godiet.common.model.generated.Software;
 import com.sysfera.godiet.common.services.PlatformService;
-import com.sysfera.godiet.core.managers.DomainsManager;
+import com.sysfera.godiet.core.managers.DomainManager;
 import com.sysfera.godiet.core.managers.ResourcesManager;
-import com.sysfera.godiet.core.managers.topology.TopologyManager;
-import com.sysfera.godiet.core.model.Path;
-import com.sysfera.godiet.core.model.Path.Hop;
+import com.sysfera.godiet.core.managers.topology.infrastructure.Path;
+import com.sysfera.godiet.core.managers.topology.infrastructure.Path.Hop;
+import com.sysfera.godiet.core.managers.topology.infrastructure.TopologyManager;
 import com.sysfera.godiet.core.model.factories.ForwardersFactory;
 import com.sysfera.godiet.core.model.factories.ForwardersFactory.ForwarderType;
 import com.sysfera.godiet.core.model.softwares.DietResourceManaged;
 import com.sysfera.godiet.core.model.softwares.OmniNamesManaged;
 import com.sysfera.godiet.core.model.softwares.SoftwareManager;
+
 
 /**
  * 
@@ -46,7 +48,7 @@ public class ForwardersCreator implements PlatformObserver {
 	private Logger log = LoggerFactory.getLogger(getClass());
 
 	@Autowired
-	private DomainsManager domainsManager;
+	private DomainManager domainsManager;
 	@Autowired
 	private ResourcesManager rm;
 	private TopologyManager tm;
@@ -191,6 +193,11 @@ public class ForwardersCreator implements PlatformObserver {
 								+ clientForwarder.getId() + " "
 								+ serverForwarder.getId());
 					} catch (IncubateException e) {
+						// TODO error handler
+						log.error("Unable to load forwarders"
+								+ clientForwarder.getId() + " "
+								+ serverForwarder.getId());
+					} catch (GraphDataException e) {
 						// TODO error handler
 						log.error("Unable to load forwarders"
 								+ clientForwarder.getId() + " "
