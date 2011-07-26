@@ -9,7 +9,7 @@
 	<!-- Erase all classpath:/server.properties with file:/server.properties 
 		values -->
 	<context:property-placeholder
-		location="classpath:/server.properties,file:server.properties"
+		location="classpath:/client.properties,file:client.properties"
 		ignore-resource-not-found="true" />
 
 	<!-- Infrastructure -->
