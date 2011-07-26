@@ -19,7 +19,7 @@ public interface XMLLoaderService {
 	public abstract void registerDietElements(String xmlInput)
 			throws IOException, XMLParseException,
 			DietResourceCreationException, DietResourceValidationException,
-			IncubateException;
+			IncubateException, GraphDataException;
 
 	// TODO: Transactionnal
 	public abstract void registerInfrastructureElements(String xmlInput)

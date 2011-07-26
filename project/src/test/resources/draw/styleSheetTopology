@@ -1,10 +1,4 @@
-// link node > domain
-edge.nodeToDomain {
- shape: cubic-curve;
- size : 1px;
-}
-// link node > node
-edge.nodeToNode {
+edge {
  shape: cubic-curve;
  arrow-shape: arrow; 
  arrow-size: 12px, 4px; 
@@ -15,7 +9,6 @@ edge.shortestPath {
 edge.pathSelected {
  fill-color: green;
 }
-
 
 node.noeud {
  size-mode: fit;  

@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<godiet:dietPlatform xmlns:godiet="http://www.sysfera.com"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.sysfera.com ../Diet.xsd">
+
+	<services>
+
+		<omniNames id="omniNamesDomain1" domain="Domain1">
+			<config server="Node1" remoteBinary="omniNames" />
+		</omniNames>
+		<omniNames id="omniNamesDomain2" domain="Domain2">
+			<config server="Node2" remoteBinary="omniNames" />
+		</omniNames>
+		<omniNames id="omniNamesDomain3" domain="Domain3">
+			<config server="Node4" remoteBinary="omniNames" />
+		</omniNames>
+
+		<omniNames id="omniNamesDomain4" domain="DomainSysferaLB">
+			<config server="miaou" remoteBinary="omniNames" />
+		</omniNames>
+		<omniNames id="omniNamesDomain5" domain="DomainEnsDMZ">
+			<config server="graal" remoteBinary="omniNames" />
+		</omniNames>
+		<omniNames id="omniNamesDomain6" domain="DomainTestBed">
+			<config server="testbedVM" remoteBinary="omniNames" />
+		</omniNames>
+
+
+<!-- 		Should not work ! -->
+		<forwarders>
+			<client id="client1" type="CLIENT">
+				<config server="phi-laptop" remoteBinary="dietForwarder" />
+			</client>
+			<server id="server1" type="SERVER">
+				<config server="Domain3" remoteBinary="dietForwarder" />
+			</server>
+		</forwarders>
+
+		
+	</services>
+
+	<hierarchy>
+
+
+		<masterAgent id="MA1">
+			<config server="Node1" remoteBinary="dietAgent" />
+
+			<sed id="sed1">
+				<config server="Node2" remoteBinary="dmat_manips_server" />
+				<parameters string="T" />
+			</sed>
+			<sed id="sed2">
+				<config server="Node3" remoteBinary="dmat_manips_server" />
+				<cfgOptions>
+					<option key="batchName" value="eucalyptus" />
+					<option key="pathToNFS" value="/tmp" />
+					<option key="cloudURL" value="https://eu-west-1.ec2.amazonaws.com" />
+					<option key="emiName" value="ami-6e31041a" />
+					<option key="vmType" value="t1.micro" />
+					<option key="keyName" value="Ben" />
+					<option key="pathToSSHKey" value="/Users/bdepardo/SysFera/SC10/EC2/Ben.pem" />
+					<option key="instantiateVMs" value="1" />
+					<option key="vmMinCount" value="1" />
+					<option key="vmMaxCount" value="1" />
+					<option key="pathToCert"
+						value="/Users/bdepardo/SysFera/SC10/EC2/cert-2GFVV4EBDSYWYSIVXTZIDBLYZTAOX4KW.pem" />
+					<option key="pathToPK"
+						value="/Users/bdepardo/SysFera/SC10/EC2/pk-2GFVV4EBDSYWYSIVXTZIDBLYZTAOX4KW.pem" />
+					<option key="userName" value="ec2-user" />
+				</cfgOptions>
+				<parameters string="T" />
+			</sed>
+			<sed id="sed3">
+				<config server="Node4" remoteBinary="dmat_manips_server" />
+				<parameters string="T" />
+			</sed>
+		</masterAgent>
+	</hierarchy>
+</godiet:dietPlatform>

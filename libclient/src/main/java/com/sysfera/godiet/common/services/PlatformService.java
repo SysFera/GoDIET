@@ -6,6 +6,7 @@ import com.sysfera.godiet.common.exceptions.DietResourceCreationException;
 import com.sysfera.godiet.common.exceptions.generics.DietResourceValidationException;
 import com.sysfera.godiet.common.exceptions.generics.GoDietServiceException;
 import com.sysfera.godiet.common.exceptions.generics.StartException;
+import com.sysfera.godiet.common.exceptions.graph.GraphDataException;
 import com.sysfera.godiet.common.exceptions.remote.IncubateException;
 import com.sysfera.godiet.common.exceptions.remote.LaunchException;
 import com.sysfera.godiet.common.exceptions.remote.PrepareException;
@@ -35,7 +36,7 @@ public interface PlatformService {
 	public abstract void autoLoadForwarders(boolean value);
 
 	public abstract void registerForwarders(Forwarder client, Forwarder server)
-			throws DietResourceCreationException, IncubateException;
+			throws DietResourceCreationException, IncubateException, GraphDataException;
 
 	public abstract void registerLocalAgent(LocalAgent localAgent)
 			throws DietResourceCreationException,

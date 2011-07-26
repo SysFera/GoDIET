@@ -1,4 +1,4 @@
-package com.sysfera.godiet.utils.graph;
+package com.sysfera.godiet.core.utils.graph;
 
 import java.io.File;
 import java.io.IOException;
@@ -17,10 +17,10 @@ import org.graphstream.stream.file.FileSinkImages.Resolutions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.sysfera.godiet.exceptions.generics.ExportException;
-import com.sysfera.godiet.exceptions.generics.PathException;
-import com.sysfera.godiet.managers.topology.domain.DomainTopologyManagerGSImpl;
-import com.sysfera.godiet.managers.topology.infrastructure.TopologyManagerGSImpl;
+import com.sysfera.godiet.common.exceptions.ExportException;
+import com.sysfera.godiet.common.exceptions.generics.PathException;
+import com.sysfera.godiet.core.managers.topology.domain.DomainTopologyManagerGSImpl;
+import com.sysfera.godiet.core.managers.topology.infrastructure.TopologyManagerGSImpl;
 
 /**
  * Display of the different graph
@@ -72,6 +72,10 @@ public class DrawTopology implements Draw {
 	 * add the localisation of the styleSheet to the graph
 	 */
 	private void applyStyle() {
+		if(stylesheet ==  null) {
+			log.error("Unable to find stylsheet");
+			return;
+		}
 		String styleSheetpath = stylesheet.getPath();
 		gs.addAttribute("ui.stylesheet", "url('file://" + styleSheetpath + "')");
 	}
@@ -202,7 +206,7 @@ public class DrawTopology implements Draw {
 	}
 
 	/**
-	 * Test if the file is accessible.
+	 * Test if the file isï¿½accessible.
 	 * 
 	 * @param path
 	 * @throws ExportException

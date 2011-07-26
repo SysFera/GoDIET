@@ -6,15 +6,24 @@
 	<services>
 
 		<omniNames id="omniNamesDomain1" domain="Domain1">
-			<config server="Node1" />
+			<config server="Node1"  />
 		</omniNames>
 		<omniNames id="omniNamesDomain2" domain="Domain2">
-			<config server="Node2" />
+			<config server="Node2"  />
 		</omniNames>
 		<omniNames id="omniNamesDomain3" domain="Domain3">
-			<config server="Node4" />
+			<config server="Node4"  />
 		</omniNames>
 
+		<omniNames id="omniNamesDomain4" domain="DomainSysferaLB">
+			<config server="miaou"  />
+		</omniNames>
+		<omniNames id="omniNamesDomain5" domain="DomainEnsDMZ">
+			<config server="graal"  />
+		</omniNames>
+		<omniNames id="omniNamesDomain6" domain="DomainTestBed">
+			<config server="testbedVM"  />
+		</omniNames>
 
 
 		<!-- Inter-connect Domain1 and Domain2 -->
@@ -38,19 +47,46 @@
 
 		<forwarders>
 			<client id="client1" type="CLIENT">
-				<config server="Node1" />
+				<config server="phi-laptop"  />
 			</client>
 			<server id="server1" type="SERVER">
-				<config server="Node3" />
+				<config server="graal"  />
 			</server>
 		</forwarders>
 
 		<forwarders>
 			<client id="client2" type="CLIENT">
-				<config server="Node1" />
+				<config server="graal"  />
 			</client>
 			<server id="server2" type="SERVER">
-				<config server="Node5" />
+				<config server="testbedVM"  />
+			</server>
+		</forwarders>
+
+		<forwarders>
+			<client id="client3" type="CLIENT">
+				<config server="testbedVM"  />
+			</client>
+			<server id="server3" type="SERVER">
+				<config server="Node1"  />
+			</server>
+		</forwarders>
+
+		<forwarders>
+			<client id="client4" type="CLIENT">
+				<config server="Node1"  />
+			</client>
+			<server id="server4" type="SERVER">
+				<config server="Node3"  />
+			</server>
+		</forwarders>
+
+		<forwarders>
+			<client id="client5" type="CLIENT">
+				<config server="Node3"  />
+			</client>
+			<server id="server5" type="SERVER">
+				<config server="Node5"  />
 			</server>
 		</forwarders>
 

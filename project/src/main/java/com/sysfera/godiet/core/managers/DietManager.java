@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.sysfera.godiet.common.exceptions.DietResourceCreationException;
+import com.sysfera.godiet.common.exceptions.graph.GraphDataException;
 import com.sysfera.godiet.common.model.generated.Domain;
 import com.sysfera.godiet.common.model.generated.Forwarder;
 import com.sysfera.godiet.common.model.generated.LocalAgent;
@@ -41,7 +42,7 @@ public class DietManager implements PlatformObservable{
 	private final List<OmniNamesManaged> omninames;
 	private final List<DietResourceManaged<Forwarder>> forwaders;
 	@Autowired
-	private  DomainsManager domainManager;
+	private  DomainManager domainManager;
 
 	// Transient list to store all register's resourceId
 	private final Set<String> dietResourceId;
@@ -137,9 +138,10 @@ public class DietManager implements PlatformObservable{
 	 * 
 	 * @param forwarder
 	 * @throws DietResourceCreationException
+	 * @throws GraphDataException 
 	 */
 	public void addForwarders(DietResourceManaged<Forwarder> forwarderClient,
-			DietResourceManaged<Forwarder> forwarderServer) throws DietResourceCreationException {
+			DietResourceManaged<Forwarder> forwarderServer) throws DietResourceCreationException, GraphDataException {
 		String idC = forwarderClient.getSoftwareDescription().getId();
 		String idS = forwarderServer.getSoftwareDescription().getId();
 
@@ -154,6 +156,7 @@ public class DietManager implements PlatformObservable{
 		// }
 		this.forwaders.add(forwarderClient);
 		this.forwaders.add(forwarderServer);
+
 		this.domainManager.addForwarders(forwarderClient, forwarderServer);
 	}
 

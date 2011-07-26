@@ -1,0 +1,20 @@
+edge {
+}
+
+edge.shortestPath {
+ fill-color: red;
+}
+
+node {
+ shape : circle;
+ stroke-mode : plain;
+ size-mode : fit;
+ size : 50px, 35px;
+ fill-color : white;
+ padding : 10px, 10px;
+ } 
+ 
+ node.shortestPath {
+ stroke-color: red; 
+ stroke-width: 2px;
+} 

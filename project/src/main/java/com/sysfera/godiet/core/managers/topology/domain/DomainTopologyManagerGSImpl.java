@@ -1,4 +1,4 @@
-package com.sysfera.godiet.managers.topology.domain;
+package com.sysfera.godiet.core.managers.topology.domain;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -12,17 +12,15 @@ import org.graphstream.graph.Graph;
 import org.graphstream.graph.implementations.MultiGraph;
 import org.graphstream.stream.file.FileSinkImages;
 import org.graphstream.stream.file.FileSinkImages.LayoutPolicy;
-import org.graphstream.stream.file.FileSinkImages.OutputPolicy;
 import org.graphstream.stream.file.FileSinkImages.OutputType;
-import org.graphstream.stream.file.FileSinkImages.Quality;
 import org.graphstream.stream.file.FileSinkImages.Resolutions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.sysfera.godiet.exceptions.generics.PathException;
-import com.sysfera.godiet.exceptions.graph.GraphDataException;
-import com.sysfera.godiet.managers.topology.domain.Path.Hop;
-import com.sysfera.godiet.model.generated.Domain;
+import com.sysfera.godiet.common.exceptions.generics.PathException;
+import com.sysfera.godiet.common.exceptions.graph.GraphDataException;
+import com.sysfera.godiet.common.model.generated.Domain;
+import com.sysfera.godiet.core.managers.topology.domain.Path.Hop;
 
 /**
  * Display of the infrastructure's domains and the associated forwarders into a graph

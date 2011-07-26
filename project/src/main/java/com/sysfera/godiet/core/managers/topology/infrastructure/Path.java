@@ -1,9 +1,8 @@
-package com.sysfera.godiet.core.model;
+package com.sysfera.godiet.core.managers.topology.infrastructure;
 
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 
-import com.sysfera.godiet.common.model.generated.Domain;
 import com.sysfera.godiet.common.model.generated.Node;
 import com.sysfera.godiet.common.model.generated.Resource;
 import com.sysfera.godiet.common.model.generated.Ssh;
@@ -28,10 +27,8 @@ public class Path {
 	public Resource getDestination() {
 		if (path == null || path.size() < 1) {
 			return null;
-		}
-		
+		}		
 		return path.toArray(new Hop[0])[path.size() - 1].getDestination();
-
 	}
 
 	@Override
@@ -48,7 +45,6 @@ public class Path {
 
 		private Node destination;
 		private Ssh link;
-		private Domain crossedDomain = null;
 
 		public Node getDestination() {
 			return destination;
@@ -72,18 +68,6 @@ public class Path {
 			s = "Ssh : " + getLink().getId() + " , " + "Node : "
 					+ getDestination().getId();
 			return s;
-		}
-
-		public void crossDomain(Domain domain) {
-			this.crossedDomain = domain;
-		}
-
-		/**
-		 * 
-		 * @return the crossed domain. Null if cross no domain
-		 */
-		public Domain getCrossedDomain() {
-			return crossedDomain;
 		}
 
 		private Path getOuterType() {

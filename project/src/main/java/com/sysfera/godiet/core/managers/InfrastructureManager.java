@@ -21,9 +21,9 @@ import com.sysfera.godiet.common.model.generated.Link;
 import com.sysfera.godiet.common.model.generated.Node;
 import com.sysfera.godiet.common.model.generated.Resource;
 import com.sysfera.godiet.common.model.generated.Ssh;
-import com.sysfera.godiet.core.managers.topology.TopologyManager;
-import com.sysfera.godiet.core.managers.topology.TopologyManagerGSImpl;
-import com.sysfera.godiet.core.model.Path;
+import com.sysfera.godiet.core.managers.topology.infrastructure.Path;
+import com.sysfera.godiet.core.managers.topology.infrastructure.TopologyManager;
+import com.sysfera.godiet.core.managers.topology.infrastructure.TopologyManagerGSImpl;
 
 /**
  * Physical infrastructure description TODO: check the unique id resource (like
@@ -47,7 +47,7 @@ public class InfrastructureManager {
 
 	private final TopologyManager topologyManager;
 	@Autowired
-	private DomainsManager domainManager;
+	private DomainManager domainManager;
 
 	public InfrastructureManager() {
 		this.topologyManager = new TopologyManagerGSImpl();
@@ -127,9 +127,9 @@ public class InfrastructureManager {
 		}
 		for (Domain domain : domains) {
 			topologyManager.addDomain(domain);
+			
 		}
-
-		this.domainManager.addAll(domains);
+		this.domainManager.addDomains(domains);
 
 	}
 
@@ -142,7 +142,7 @@ public class InfrastructureManager {
 	 *            End node
 	 * @return The Path or null if no path exist
 	 * @throws PathException
-	 *             If one of argument are null.
+	 *             If one of argument is null.
 	 */
 	public Path findPath(Resource from, Resource to) throws PathException {
 		if (from == null || to == null) {
