@@ -42,8 +42,8 @@ public class ConfigurationFileBuilderTest {
 	private Logger log = LoggerFactory.getLogger(getClass());
 	@Autowired
 	private GoDietService godiet;
-	
-	//To configure scratch
+
+	// To configure scratch
 	@Autowired
 	private ConfigurationManager configurationManager;
 
@@ -66,7 +66,8 @@ public class ConfigurationFileBuilderTest {
 				String platformTestCase = "infrastructure/testbed.xml";
 				InputStream inputStreamPlatform = getClass().getClassLoader()
 						.getResourceAsStream(platformTestCase);
-				String outputString = StringUtils.streamToString(inputStreamPlatform);
+				String outputString = StringUtils
+						.streamToString(inputStreamPlatform);
 
 				godiet.getXmlHelpService().registerInfrastructureElements(
 						outputString);
@@ -128,8 +129,9 @@ public class ConfigurationFileBuilderTest {
 	public void testMA() {
 		String expected = "name = MA1\n" + "agentType = DIET_MASTER_AGENT";
 
-		String contents = getContent("MA1","MA1");
-		if(contents == null) Assert.fail("Unable to find configuration file");
+		String contents = getContent("MA1", "MA1");
+		if (contents == null)
+			Assert.fail("Unable to find configuration file");
 		Assert.assertEquals(expected, contents);
 	}
 
@@ -138,8 +140,9 @@ public class ConfigurationFileBuilderTest {
 		String expected = "name = LA1\n" + "parentName = MA1\n"
 				+ "agentType = DIET_LOCAL_AGENT";
 
-		String contents = getContent("LA1","LA1");
-		if(contents == null) Assert.fail("Unable to find configuration file");
+		String contents = getContent("LA1", "LA1");
+		if (contents == null)
+			Assert.fail("Unable to find configuration file");
 		Assert.assertEquals(expected, contents);
 	}
 
@@ -147,8 +150,19 @@ public class ConfigurationFileBuilderTest {
 	public void testForwarder() {
 		String expected = "accept = .*\n" + "reject = localhost";
 
-		String contents = getContent("server1","server1");
-		if(contents == null) Assert.fail("Unable to find configuration file");
+		String contents = getContent("server1", "server1");
+		if (contents == null)
+			Assert.fail("Unable to find configuration file");
+		Assert.assertEquals(expected, contents);
+	}
+
+	@Test
+	public void testOmniNames() {
+		String expected = "#InitRef = NameService=corbaname::192.168.1.16:2809\nInitRef = NameService=corbaname::192.168.1.11:2809\nsupportBootstrapAgent = 1\ngiopMaxMsgSize=33554432\nmaxGIOPConnectionPerServer=1000\nmaxServerThreadPoolSize=1000\n";
+
+		String contents = getContent("omniNamesVishnu", "omniNamesVishnu");
+		if (contents == null)
+			Assert.fail("Unable to find configuration file");
 		Assert.assertEquals(expected, contents);
 	}
 
@@ -163,31 +177,31 @@ public class ConfigurationFileBuilderTest {
 				+ "databaseUserName=vishnu_user\n"
 				+ "databaseUserPassword=vishnu_user\n"
 				+ "#sendmailScriptPath=/home/hudson/workspace/IMS1/core/src/utils/sendmail.py\n"
-//TODO: passer les tests			//	+ "sendmailScriptPath=/tmp/scratch_runtime/Domain1/sendmail.py\n"
+				// TODO: passer les tests // +
+				// "sendmailScriptPath=/tmp/scratch_runtime/Domain1/sendmail.py\n"
 				+ "sendmailScriptPath={this.configurationFiles.sendmailscript.absolutePath}\n"
 				+ "vishnuMachineId=machine_1";
 
-	
-		String contents = getContent("sed1","umssedconf");
-		if(contents == null) Assert.fail("Unable to find configuration file");
-		
+		String contents = getContent("sed1", "umssedconf");
+		if (contents == null)
+			Assert.fail("Unable to find configuration file");
+
 		Assert.assertEquals(expected, contents);
 
 	}
-	private String getContent(String softwareId,String configurationFileId)
-	{
+
+	private String getContent(String softwareId, String configurationFileId) {
 		PlatformService dm = godiet.getPlatformService();
 
 		SoftwareInterface<? extends Software> sed1 = dm
 				.getManagedSoftware(softwareId);
 		List<ConfigurationFile> configurationsFile = sed1.getFiles();
-		
-		if(configurationsFile == null) Assert.fail("No configuration file");
-		
-		
+
+		if (configurationsFile == null)
+			Assert.fail("No configuration file");
+
 		for (ConfigurationFile configurationFile : configurationsFile) {
-			if(configurationFile.getId().equals(configurationFileId))
-			{
+			if (configurationFile.getId().equals(configurationFileId)) {
 				return configurationFile.getContents();
 			}
 		}
