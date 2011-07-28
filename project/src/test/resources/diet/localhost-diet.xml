@@ -1,46 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <godiet:dietPlatform xmlns:godiet="http://www.sysfera.com"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://www.sysfera.com ../Diet.xsd">
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://www.sysfera.com ../Diet.xsd">
 
-	<services>
-		<omniNames id="omniNames1" domain="domain1">
-			<config server="local" />
-		</omniNames>
-	</services>
+   <services>
+      <omniNames id="omniNames" domain="DomainLocalhost">
+         <config server="mynode" />
+      </omniNames>
+   </services>
 
-	<hierarchy>
-		<masterAgent id="MA1">
-			<config server="local" />
+   <hierarchy>
+      <masterAgent id="MA1">
+         <config server="mynode" />
 
-			<sed id="UMS">
-
-				<!-- # Configuration of the VISHNU UMS SeD dietConfigFile=/tmp/godiet_scratch/UMS.cfg 
-					vishnuId=1 databaseType=postgresql databaseHost=daoudasys databaseName=vishnu 
-					databaseUserName=vishnu_user databaseUserPassword=Daouda sendmailScriptPath=/home/traore/VishnuProject/vishnu/core/src/utils/sendmail.py -->
-				<config server="local" />
-				<file id="ums_config">
-					<copy name="godiet_ums_config.cfg" />
-				</file>
-				<binary name="umseed">
-					<commandLine>
-						<parameter string="${this.configFiles.umsconfig.absolutePath}" />
-					</commandLine>
-				</binary>
-			</sed>
-			<sed id="TMS">
-				<config server="local" />
-				<file id="tms_config">
-					<copy name="godiet_tms_config.cfg" />
-				</file>
-				<binary name="tmssed">
-					<commandLine>
-						<parameter string="${this.configFiles.tmsconfig.absolutePath}" />
-					</commandLine>
-				</binary>
-
-			</sed>
-
-		</masterAgent>
-	</hierarchy>
+         <sed id="matrix_service">
+            <config server="mynode" />
+            <file id="sed_config">
+               <template name="sed_template.config" />
+            </file>
+            <binary name="dmat_manips_server">
+               <commandLine>
+                  <parameter string="T" />
+               </commandLine>
+            </binary>
+         </sed>
+      
+      </masterAgent>
+   </hierarchy>
 </godiet:dietPlatform>

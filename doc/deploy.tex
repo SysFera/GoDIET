@@ -89,6 +89,10 @@
 %* Revision 1.8  2004/07/12 08:33:58  rbolze
 %* explain how to copy cfgs file in install_dir/etc directory and correct my english
 %****************************************************************************%
+\definecolor{green}{rgb}{0.2,0.6,0.4} 
+\definecolor{blue}{rgb}{0.2,0.6,0.4} 
+\definecolor{grey}{rgb}{0.2,0.6,0.4} 
+\lstset{language=xml,frame=single, breaklines=true, basicstyle=\ttfamily,backgroundcolor=\color{grey},basicstyle=\scriptsize, keywordstyle=\color{blue}, commentstyle=\color{vert}, stringstyle=\color{red}, identifierstyle=\ttfamily}
 
 \newcommand{\bla}{}
 \chapter{Deploying a \diet platform}
@@ -140,9 +144,10 @@ the creation of configuration files, the staging of files, the launch of softwar
 \end{figure}
 
 
+
 \subsection{Installing \godiet}
 
-\bla\subsubsection{Requirement}
+\subsubsection{Requirement}
 
 The following operating systems are known to support GoDiet:
 \begin{itemize}
@@ -156,43 +161,26 @@ Check that the run.sh script works: it should display something similar to figur
 
 % This platform must be describe in a XML file based on \textit{Platform.xsd} grammar. You can find an simple file in the example directory 
 
-\subsubsection{Quickstart}
-\bla The steps for people in a hurry:
+\input{deploy-quickstart.tex}
+
+
+\subsubsection{\godiet Server}
+
+\paragraph{Distribution}
+
+Le serveur se présente sous la forme d'une archive tar ou zip. 
+
 \begin{itemize}
-\bla \item running the server : execute run-server.sh
-\bla \item running the client : execute run-client.sh
-\item create your \godiet configuration file in \verb+${HOME}/.godiet/configuration.xml+~\ref{GODIETConfiguration}. It contains information for remote connection;
-\item create your infrastructure description file~\ref{GODIETInfrastructureDescription}. It describes your compute nodes, gateways and storage nodes;
-\item create your \diet platform description file~\ref{GODIETPlatform}. It describes all the \diet elements (agents and SeDs) that you want to deploy and manage;
-\item run the \godiet shell~\ref{GODIET}.
+   \item Répertoire doc : contient la documentation associé au serveur au format PDF et HTML;
+   \item Répertoire lib : contient les librairies (.jar) utiles au fonctionnement du serveur;
+   \item Fichier server.properties.sample : exemple de fichier de configuration du serveur;
+   \item Scripts run-server.* : script de lancement du serveur.
 \end{itemize}
-And that's it!
 
 
-\bla \subsubsection{\godiet server setup}
 
-distribution.layout
-RMI configuration
-run-server.sh read configuration.xml\label{GODIETConfiguration}
-
-
-\bla \subsubsection{\godiet client setup}
-
-distribution.layout
-RMI configuration
-run-client.sh
-
-
-\subsection{\bla Running Diet}
-
-Before using \godiet, you need to create three files: one to describe \godiet's configuration, one to describe your infrastructure and one that contains your \diet platform's description.
-These files use an XML-format and conform to the Configuration.xsd, Infrastructure.xsd and Diet.xsd grammar files (provide with \godiet), repectively.
-Sample files are provided in the \verb+examples+ directory. 
-
-\subsubsection{Configuration.xml}
-\label{GODIETConfiguration}
-
-\bla Ce fichier regroupe les informations indispensables pour que le serveur puisse se connecter et executer les applications sur les machines distantes.
+\paragraph{Configuration}
+ Ce fichier regroupe les informations indispensables pour que le serveur puisse se connecter et executer les applications sur les machines distantes.
 This file aggregates information about the local node from where \godiet was launched. It also contains information about user authentication.
 By default, \godiet looks in the \verb+${HOME}/.godiet/configuration.xml+ directory.
 
@@ -218,6 +206,22 @@ General layout of the configuration description (some parts are omitted):
   </user>
 </godiet:configuration>
 \end{verbatim}
+
+
+
+\bla \subsubsection{\godiet client setup}
+
+distribution.layout
+RMI configuration
+run-client.sh
+
+
+\subsection{\bla Running Diet}
+
+Before using \godiet, you need to create three files: one to describe \godiet's configuration, one to describe your infrastructure and one that contains your \diet platform's description.
+These files use an XML-format and conform to the Configuration.xsd, Infrastructure.xsd and Diet.xsd grammar files (provide with \godiet), repectively.
+Sample files are provided in the \verb+examples+ directory. 
+
 
 \subsubsection{Infrastructure.xml}
 \label{GODIETInfrastructureDescription}
@@ -270,10 +274,20 @@ General layout of the infrastructure description (details are omitted):
   \caption{Example of the representation of a three-domain infrastructure.\label{fig:GODIETInfrastructure}}
 \end{figure}
 
-\subsubsection{Platform.xml}
+\subsection{Platform.xml}
 \label{GODIETPlatform}
 
 A \godiet user can describe the desired deployment in an XML file including all the external services needed (\eg omniNames and LogService). The desired hierarchical organization of agents and servers is expressed directly using the hierarchical organization of XML. 
+
+\subsubsection{Services}
+
+
+\subsubsection{Herarchy}
+
+\paragraph{Sed description}
+
+Explication : ligne de commande, 
+
 
 
 The most important fields are:
@@ -439,5 +453,8 @@ The possible states of a component are:
   \caption{The status command.\label{fig:GODIETStatus}}
 \end{figure}
 
+\subsection{Un exemple plus complexe}
+
+Déploiement sur une plate-forme réelle
 % \subsubsection{Debugging \& Gestion des erreurs}
 % parler des fichiers de log et des messages d'erreurs.

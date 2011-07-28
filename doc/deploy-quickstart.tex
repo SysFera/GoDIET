@@ -1,0 +1,103 @@
+\subsubsection{Quickstart}
+
+Dans cette partie nous allons lancer une hierarchie \diet très simple avec \godiet. Pour simplifier encore les choses,\diet et \godiet seront executer sur la même machine. Les pré-requis pour réaliser ce scénario sont d'avoir installer \diet, OmniNames ainsi que le serveur et le client \godiet.
+Les fichiers décrits par la suite se situent dans le répertoire examples/localhost de l'archive \godiet client.
+
+\paragraph{Infratructure description}
+La première étape est de créer le fichier de description de l'infrastructure physique. Dans ce cas, un domaine,  nommé DomainLocalhost contient votre machine nommée my-node. 
+La seule contrainte de nommage est qu'il faut que l'identifiant soit unique.
+s
+%Copie du fichier infrastructure\localhost-infrastructure.xml des tests unitaires
+\begin{verbatim}
+<?xml version="1.0" encoding="UTF-8"?>
+<godiet:infrastructure ...">
+   <domain id="DomainLocalhost"/>
+      <node id="mynode">
+         <ssh id="lo" domain="DomainLocalhost" login="mylogin" server="127.0.0.1"/>
+         <env>
+            <var name="PATH"
+                  value="/omniNamesInstallPath/bin:/dietInstallPath/bin:$PATH"/>
+            <var name="LD_LIBRARY_PATH"
+                  value="/omniNamesInstallPath/lib:/dietInstallPath/lib:"/>
+         </env>
+	<scratch dir="/tmp/scratch/"/>	
+	</node>
+</godiet:infrastructure>
+\end{verbatim}
+
+Remplacer mylogin par le votre et les valeur des variables PATH et LD\_LIBRARY\_PATH par celles correspondant aux répertoire d'installation sur votre machine.
+
+
+\paragraph{Platform description}
+
+Le fichier ci-après décrit la plate-forme minimale pour exposer un service. Il est composé d'un omniNames et d'un master Agent et un Sed fournissant un service de calcul matriciel. 
+
+%Copie du fichier diet\localhost-diet des tests unitaires
+\begin{verbatim}
+<?xml version="1.0" encoding="UTF-8"?>
+<godiet:dietPlatform xmlns:godiet="http://www.sysfera.com"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://www.sysfera.com ../Diet.xsd">
+
+   <services>
+      <omniNames id="omniNames" domain="DomainLocalhost">
+         <config server="mynode" />
+      </omniNames>
+   </services>
+
+   <hierarchy>
+      <masterAgent id="MA1">
+         <config server="mynode" />
+
+         <sed id="matrix_service">
+            <config server="mynode" />
+            <file id="sed_config">
+               <template name="sed_template.config" />
+            </file>
+            <binary name="dmat_manips_server">
+               <commandLine>
+                  <parameter string="T" />
+               </commandLine>
+            </binary>
+         </sed>
+      
+      </masterAgent>
+   </hierarchy>
+</godiet:dietPlatform>
+\end{verbatim}
+
+Vous pouvez utiliser ce fichier tel quel.
+
+\paragraph{Démarrer le serveur}
+
+Deux fichiers pour l'instant server.properties et configuration.xml
+
+Vous devez créer le fichier de configuration associé au serveur. Il décrit le chemin ou se trouve les clefs SSH, le nom du noeud sur lequel il est démarré
+You need to create a \godiet server configuration file. It contains information for remote connection like your SSH keys path. The server will look this file 
+in \verb+${HOME}/.godiet/configuration.xml+~\ref{GODIETConfiguration} directory.
+
+
+\begin{verbatim}
+<?xml version="1.0" encoding="UTF-8"?>
+<godiet:configuration xmlns:godiet="http://www.sysfera.com"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://www.sysfera.com ../Configuration.xsd"
+   localNode="mynode">
+   <localscratch dir="/tmp/sc_godiet" />
+   <user>
+      <ssh>
+         <key path="myPrivateKeyPath" encrypted="false"/>
+      </ssh>
+   </user>
+</godiet:configuration>
+\end{verbatim}
+
+Remplacé myPrivateKeyPaht par le chemin associé à votre clef SSH.
+Pour démarrer le serveur, lancé le script run-server.sh
+
+\paragraph{Démarrer le client}
+
+
+
+
+
