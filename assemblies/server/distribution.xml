@@ -50,6 +50,14 @@
 			</includes>
 			<outputDirectory>/doc</outputDirectory>
 		</fileSet>
+		<!-- Include defaults template directory -->
+		<fileSet>
+			<directory>${project.basedir}/../../project/src/main/resources/configuration/templates</directory>
+			<includes>
+				<include>*.config</include>
+			</includes>
+			<outputDirectory>/templates</outputDirectory>
+		</fileSet>
 
 	</fileSets>
 

@@ -60,6 +60,16 @@
 			</includes>
 			<outputDirectory>/</outputDirectory>
 		</fileSet>
+		<!-- Embedding localhost samples -->
+		<fileSet>
+			<directory>${project.basedir}/../../project/src/test/resources/</directory>
+			<includes>
+				<include>diet/localhost-diet.xml</include>
+				<include>infrastructure/localhost-infrastructure.xml</include>
+				<include>configuration/localhost-configuration.xml</include>
+			</includes>
+			<outputDirectory>/examples/localhost/</outputDirectory>
+		</fileSet>
 		<!-- Embedding samples -->
 		<fileSet>
 			<directory>${project.basedir}/../../doc/rsrc</directory>
