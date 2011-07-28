@@ -4,15 +4,13 @@
 	xsi:schemaLocation="http://www.sysfera.com ../Infrastructure.xsd">
 
 	<domain id="DomainLocalhost" />
-
-	<node id="local">
-
-		<ssh id="lo" domain="DomainLocalhost" login="traore" server="127.0.0.1" />
+	<node id="mynode">
+		<ssh id="lo" domain="DomainLocalhost" login="mylogin" server="127.0.0.1" />
 		<env>
 			<var name="PATH"
-				value="/home/traore/OMNIORB-INSTALL/install/bin/:/usr/local/bin:/home/traore/VishnuProject/vishnu/TMS/build/bin:$PATH" />
+				value="/omniNamesInstallPath/bin:/dietInstallPath/bin:$PATH" />
 			<var name="LD_LIBRARY_PATH"
-				value="/home/traore/OMNIORB-INSTALL/install/lib:/home/traore/VishnuProject/vishnu/TMS/build/lib" />
+				value="/omniNamesInstallPath/lib:/dietInstallPath/lib:$LD_LIBRARY_PATH" />
 		</env>
 		<scratch dir="/tmp/scratch/" />
 	
