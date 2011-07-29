@@ -32,6 +32,8 @@ import freemarker.template.TemplateException;
 
 @Service
 public class ConfigurationFileBuilderService {
+	private static String COPY_DIRECTORY_PATH = System
+			.getenv("COPY_DIRECTORY_PATH");
 	private Logger log = LoggerFactory.getLogger(getClass());
 	private final Configuration freemarkerConfiguration;
 
@@ -158,7 +160,7 @@ public class ConfigurationFileBuilderService {
 	 * 
 	 * @param managedSoftware
 	 * @param softwareFile
-	 * @return
+	 * @return A configuration file or null if unable to find source file
 	 * @throws ConfigurationBuildingException
 	 */
 	private ConfigurationFileImpl buildCopyFile(
@@ -168,11 +170,26 @@ public class ConfigurationFileBuilderService {
 		configurationFile.setId(softwareFile.getId());
 
 		// Read and copy contents
-		// USE URL HERE
-		String path = configurationManager.getLocalScratch().getDir() + "/"
+		// USE URL HERE and exception
+		if (COPY_DIRECTORY_PATH == null) {
+			log.error("COPY_DIRECTORY_PATH env variable not set. Unable to find file "
+					+ softwareFile.getCopy().getName());
+			return null;
+		}
+		String path = COPY_DIRECTORY_PATH + "/"
 				+ softwareFile.getCopy().getName();
 		try {
-			FileInputStream stream = new FileInputStream(new File(path));
+			File inputFile = new File(path);
+			FileInputStream stream;
+			try {
+				stream = new FileInputStream(inputFile);
+			} catch (Exception e) {
+				log.error("Unable to find configuration file "
+						+ softwareFile.getCopy().getName() + " in "
+						+ COPY_DIRECTORY_PATH);
+				return null;
+
+			}
 			try {
 				FileChannel fc = stream.getChannel();
 				MappedByteBuffer bb = fc.map(FileChannel.MapMode.READ_ONLY, 0,
@@ -198,5 +215,4 @@ public class ConfigurationFileBuilderService {
 		configurationFile.setAbsolutePath(absolutePath);
 		return configurationFile;
 	}
-
 }

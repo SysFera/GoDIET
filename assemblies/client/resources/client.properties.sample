@@ -1,5 +1,6 @@
-# Rename this file client.properties
-# Uncomment the values that you want to overload. The commented values are the default ones.
+# This file contain the client options
+# Rename this file client.properties and
+# uncomment the values that you want to overload. The commented values are the default ones.
 
 # Remote server address or hostname
 #server.location.rmi=127.0.0.1:1199

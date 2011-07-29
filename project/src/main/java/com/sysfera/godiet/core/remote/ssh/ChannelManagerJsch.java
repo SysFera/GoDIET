@@ -10,6 +10,7 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import com.jcraft.jsch.ChannelExec;
 import com.jcraft.jsch.JSch;
@@ -27,7 +28,7 @@ import com.sysfera.godiet.core.managers.topology.infrastructure.Path;
 import com.sysfera.godiet.core.managers.topology.infrastructure.Path.Hop;
 import com.sysfera.godiet.core.managers.user.SSHKeyManager;
 
-
+@Component
 public class ChannelManagerJsch {
 
 	private Logger log = LoggerFactory.getLogger(getClass());

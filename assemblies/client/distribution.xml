@@ -43,16 +43,16 @@
 		</fileSet>
 		<!-- Embedding XSD -->
 		<fileSet>
-			<directory>${project.basedir}/../../shell/src/main/resources</directory>
+			<directory>${project.basedir}/../../project/src/main/resources</directory>
 			<includes>
-				<include>GoDietNG.xsd</include>
+				<include>GoDietModel.xsd</include>
 				<include>Configuration.xsd</include>
 				<include>Diet.xsd</include>
 				<include>Infrastructure.xsd</include>
 			</includes>
 			<outputDirectory>/</outputDirectory>
 		</fileSet>
-		<!-- Embedding Configuration samples -->
+		<!-- Embedding client configuration samples -->
 		<fileSet>
 			<directory>${project.basedir}/resources</directory>
 			<includes>
@@ -66,49 +66,29 @@
 			<includes>
 				<include>diet/localhost-diet.xml</include>
 				<include>infrastructure/localhost-infrastructure.xml</include>
-				<include>configuration/localhost-configuration.xml</include>
 			</includes>
 			<outputDirectory>/examples/localhost/</outputDirectory>
 		</fileSet>
 		<!-- Embedding samples -->
-		<fileSet>
-			<directory>${project.basedir}/../../doc/rsrc</directory>
-			<includes>
-				<include>godiet-configuration.xml</include>
-				<include>godiet-infrastructure.xml</include>
-				<include>godiet-platform.xml</include>
-			</includes>
-			<outputDirectory>/examples</outputDirectory>
-		</fileSet>
+		<!-- <fileSet> <directory>${project.basedir}/../../doc/rsrc</directory> 
+			<includes> <include>godiet-configuration.xml</include> <include>godiet-infrastructure.xml</include> 
+			<include>godiet-platform.xml</include> </includes> <outputDirectory>/examples</outputDirectory> 
+			</fileSet> -->
 		<!-- Embedding VISHNU samples -->
 		<fileSet>
-			<directory>${project.basedir}/../../project/src/test/resources/diet</directory>
+			<directory>${project.basedir}/../../project/src/test/resources/</directory>
 			<includes>
-				<include>localhost-vishnu-platform.xml</include>
+				<include>diet/vishnu.xml</include>
+				<include>infrastructure/sysfera.xml</include>
 			</includes>
-			<outputDirectory>/vishnu</outputDirectory>
+			<outputDirectory>/examples/vishnu</outputDirectory>
 		</fileSet>
 		<fileSet>
-			<directory>${project.basedir}/../../project/src/test/resources/infrastructure</directory>
+			<directory>${project.basedir}/resources</directory>
 			<includes>
-				<include>localhost-infrastructure.xml</include>
+				<include>infrastucture-sysfera.jpg</include>
 			</includes>
-			<outputDirectory>/vishnu</outputDirectory>
-		</fileSet>
-		<!-- Embedding Hambourg samples -->
-		<fileSet>
-			<directory>${project.basedir}/../../project/src/test/resources/diet</directory>
-			<includes>
-				<include>hambourg-platform.xml</include>
-			</includes>
-			<outputDirectory>/hambourg</outputDirectory>
-		</fileSet>
-		<fileSet>
-			<directory>${project.basedir}/../../project/src/test/resources/infrastructure</directory>
-			<includes>
-				<include>hambourg-g5k-infrastructure.xml</include>
-			</includes>
-			<outputDirectory>/hambourg</outputDirectory>
+			<outputDirectory>/examples/vishnu</outputDirectory>
 		</fileSet>
 	</fileSets>
 
