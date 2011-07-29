@@ -14,9 +14,16 @@
 		<layout class="org.apache.log4j.PatternLayout">
 			<param name="ConversionPattern" value="%-4r [%t] %-5p %c %x - %m%n" />
 		</layout>
-
-
 	</appender>
+	<appender name="errorfile" class="org.apache.log4j.FileAppender">
+		<param name="File" value="godiet-error.log" />
+ 		 <param name="threshold" value="error" />
+
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%-4r [%t] %-5p %c %x - %m%n" />
+		</layout>
+	</appender>
+	
 	<category name="com.sysfera.godiet.remote.RemoteConfigurationHelper">
 
 		<priority value="INFO" />
@@ -33,9 +40,9 @@
 	</category>
 
 	<root>
-		<priority value="DEBUG" />
 		<appender-ref ref="console" />
-
+		<appender-ref ref="file"/>
+		<appender-ref ref="errorfile"/>
 	</root>
 
 </log4j:configuration>

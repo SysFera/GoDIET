@@ -59,9 +59,10 @@ class SSHCommand extends ComplexCommandSupport {
 		Key newKey = new Key()
 		newKey.pathPub = pubkeyPath
 		newKey.path = privKeyPath
-		SSHKeyController newManagedkey = ((GoDietSh)shell).godiet.userService.addSSHKey(privKeyPath,pubkeyPath,password)
-		newManagedkey.password = password
-		((GoDietSh)shell).godiet.userService.registerSSHKey(newManagedkey)
+		newKey.encrypted = true
+		Integer newManagedkey = ((GoDietSh)shell).godiet.userService.addSSHKey(newKey)
+
+		((GoDietSh)shell).godiet.userService.modifyKey(newManagedkey, privKeyPath, pubkeyPath, password)
 	}
 
 	private void modifyKeyForm(SSHKeyController key){
@@ -76,17 +77,24 @@ class SSHCommand extends ComplexCommandSupport {
 		consoleFileCompletor.putString("${privKeyPath}.pub")
 		String pubkeyPath = consoleFileCompletor.readLine()
 		String password = askPassword()
-		key.privKeyPath = privKeyPath
-		key.pubKeyPath = pubkeyPath
-		key.password = password
-		((GoDietSh)shell).godiet.userService.registerSSHKey(key)
+		((GoDietSh)shell).godiet.userService.modifyKey(key.getId(), privKeyPath, pubkeyPath, password)
+	}
+
+	private SSHKeyController modifyKey( Integer id, List<SSHKeyController> keys )
+	{
+		if(keys == null) return null
+		for (SSHKeyController k : keys) {
+			if(k.id.equals(id))
+				return k
+		}
+		return null
 	}
 
 	def do_modifykey = {
 		assert it.size() == 1 , 'Init key need one argument'
 		def argument = it.head()
 		if(argument.isInteger()) argument = argument as Integer
-		def keys = ((GoDietSh)shell).getDiet().managedKeys
+		def keys = ((GoDietSh)shell).godiet.userService.getManagedKeys()
 		def lastIndexKeys = keys.size()-1
 
 		switch (argument) {
@@ -94,7 +102,8 @@ class SSHCommand extends ComplexCommandSupport {
 				keys.each{ modifyKeyForm(it) }
 				break;
 			case 0..lastIndexKeys:
-				modifyKeyForm(keys[argument])
+				def k = modifyKey(argument,keys)
+				modifyKeyForm(k)
 				break;
 			default:
 				io.err.println("Only \'all\' or 0 to ${lastIndexKeys} are permitted. Use ssh status to display all key loaded.")
@@ -105,7 +114,7 @@ class SSHCommand extends ComplexCommandSupport {
 
 	def do_status = {
 		UserService godiet = ((GoDietSh)shell).godiet.userService
-		
+
 		def keys = godiet.managedKeys
 		if(keys.size() == 0){
 			io.out.println("No key loaded")
@@ -119,17 +128,17 @@ class SSHCommand extends ComplexCommandSupport {
 		io.out.println("@|bold Key\tStatus\tPublic key path|@")
 		io.out.println("---------------------------------------------------------")
 
-		keys.eachWithIndex { obj, i ->
+		keys.each{SSHKeyController key ->
 			def coloredStatus
-			switch (obj.status) {
+			switch (key.status) {
 				case Status.LOADED:
-					coloredStatus =  "@|green ${obj.status}|@"
+					coloredStatus =  "@|green ${key.status}|@"
 					break;
 				default:
-					coloredStatus = "@|red ${obj.status}|@"	
+					coloredStatus = "@|red ${key.status}|@"
 					break;
 			}
-			io.out.println "${i}\t${coloredStatus}\t${obj.pubKeyPath}"
+			io.out.println "${key.getId()}\t${coloredStatus}\t${key.pubKeyPath}"
 
 		}
 	}
@@ -141,8 +150,8 @@ class SSHCommand extends ComplexCommandSupport {
 			if(key.status == Status.PASSWORDNOTSET) {
 				io.out.println("${key.pubKeyPath}");
 				String password = askPassword()
-				key.password = password
-				((GoDietSh)shell).godiet.userService.registerSSHKey(key)
+
+				((GoDietSh)shell).godiet.userService.modifyKey(key.getId(), key.getPrivKeyPath(), key.getPubKeyPath(), password)
 			}
 		}
 	}

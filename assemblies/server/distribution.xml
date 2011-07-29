@@ -50,6 +50,14 @@
 			</includes>
 			<outputDirectory>/doc</outputDirectory>
 		</fileSet>
+		<!-- Embedding localhost samples -->
+		<fileSet>
+			<directory>${project.basedir}/../../project/src/test/resources/</directory>
+			<includes>
+				<include>configuration/localhost-configuration.xml</include>
+			</includes>
+			<outputDirectory>/examples/configuration/</outputDirectory>
+		</fileSet>
 		<!-- Include defaults template directory -->
 		<fileSet>
 			<directory>${project.basedir}/../../project/src/main/resources/configuration/templates</directory>
@@ -58,7 +66,14 @@
 			</includes>
 			<outputDirectory>/templates</outputDirectory>
 		</fileSet>
-
+		<!-- Include defaults copy directory -->
+		<fileSet>
+			<directory>${project.basedir}/../../project/src/main/resources/configuration/copy</directory>
+			<includes>
+				<include>*</include>
+			</includes>
+			<outputDirectory>/copy</outputDirectory>
+		</fileSet>
 	</fileSets>
 
 </assembly>

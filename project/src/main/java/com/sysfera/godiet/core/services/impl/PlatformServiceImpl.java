@@ -358,7 +358,10 @@ public final class PlatformServiceImpl implements PlatformService {
 
 	@Override
 	public SoftwareInterface<? extends Software> getManagedSoftware(String id) {
-		return this.dietManager.getManagedSoftware(id);
+		SoftwareManager<? extends Software> s = this.dietManager
+		.getManagedSoftware(id);
+		if(s == null) return null;
+		return new SoftwareInterfaceSerializable(s);
 	}
 
 	@Override

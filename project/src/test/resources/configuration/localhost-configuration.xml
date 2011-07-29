@@ -1,12 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <godiet:configuration xmlns:godiet="http://www.sysfera.com"
-   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-   xsi:schemaLocation="http://www.sysfera.com ../Configuration.xsd"
-   localNode="mynode">
-   <localscratch dir="/tmp/sc_godiet" />
-   <user>
-      <ssh>
-         <key path="myPrivateKeyPath" encrypted="false"/>
-      </ssh>
-   </user>
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.sysfera.com ../Configuration.xsd"
+	localNode="mynode">
+	<!-- Specify godiet working directory. Not use anymore -->
+	<localscratch dir="/tmp/sc_godiet" />
+	<user>
+		<ssh>
+			<!-- List all your SSH keys. path is mandatory corresponding to the private 
+				key path. pathpub fiels is optional. Default is the private key name  with .pub suffix.
+				Encrypted is optional. If the key is encrypted (i.e need passphrase), you must give the passphrase before use-->
+			<key path="myPrivateKeyPath" encrypted="false" />
+		</ssh>
+	</user>
 </godiet:configuration>

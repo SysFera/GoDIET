@@ -1,11 +1,12 @@
-# Rename this file server.properties
-# Uncomment the values that you want to overload. The commented values are the default ones.
+# This file contain the server options
+# Rename this file client.properties and
+# uncomment the values that you want to overload. The commented values are the default ones.
 
-# TODO Remote server port (dont'use yet)
+# TODO RMI listen port (dont'use yet)
 #rmi.port=1199
 
-# Définit la classe à l'accès distant. RemoteAccessMock simule la communication SSH
-# alors que RemoteAccessJschImpl communique réellent en SSH.
+# Définit la classe à l'accès distant. RemoteAccessMock simule les communications SSH
+# alors que RemoteAccessJschImpl les réalisent.
 
 #remote.access.class=com.sysfera.godiet.core.remote.ssh.RemoteAccessJschImpl
 #remote.access.class=com.sysfera.godiet.core.remote.RemoteAccessMock
