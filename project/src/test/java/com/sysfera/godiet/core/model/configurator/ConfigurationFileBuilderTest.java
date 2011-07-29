@@ -160,7 +160,7 @@ public class ConfigurationFileBuilderTest {
 
 	@Test
 	public void testOmniNames() {
-		String expected = "#InitRef = NameService=corbaname::192.168.1.16:2809\nInitRef = NameService=corbaname::192.168.1.11:2809\nsupportBootstrapAgent = 1\ngiopMaxMsgSize=33554432\nmaxGIOPConnectionPerServer=1000\nmaxServerThreadPoolSize=1000\n";
+		String expected = "#InitRef = NameService=corbaname::192.168.1.16:2809\nInitRef = NameService=corbaname::192.168.1.22:2809\nsupportBootstrapAgent = 1\ngiopMaxMsgSize=33554432\nmaxGIOPConnectionPerServer=1000\nmaxServerThreadPoolSize=1000\n";
 
 		String contents = getContent("omniNamesVishnu", "omniNamesVishnu");
 		if (contents == null)
