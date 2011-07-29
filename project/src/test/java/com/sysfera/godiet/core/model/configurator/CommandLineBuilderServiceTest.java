@@ -106,7 +106,7 @@ public class CommandLineBuilderServiceTest {
 
 	@Test
 	@DirtiesContext
-	public void testMA1() {
+	public void testMA1() { 
 		//TODO: scenarii modifie
 //		SoftwareInterface<? extends Software> MA1 = godiet.getPlatformService().getManagedSoftware("MA1");
 //
@@ -153,7 +153,7 @@ public class CommandLineBuilderServiceTest {
 		String server1command = sed1.getRunningCommand();
 
 		Assert.assertEquals(
-				" PATH=/home/godiet/GRAAL/build/bin:/home/godiet/GRAAL/build/bin/examples/dmat_manips/:$PATH  LD_LIBRARY_PATH=/home/godiet/GRAAL/build/lib OMNIORB_CONFIG=/tmp/scratch_runtime/Domain1/omniNamesVishnu.cfg nohup umssed /tmp/scratch_runtime/Domain1/umssedconf.cfg > /tmp/scratch_runtime/Domain1/sed1.out 2> /tmp/scratch_runtime/Domain1/sed1.err &",
+				" PATH=/usr/local/bin/:/home/vishnu/IMS1/build/bin:$PATH  LD_LIBRARY_PATH=/home/vishnu/IMS1/build/lib:/usr/local/lib/ OMNIORB_CONFIG=/tmp/scratch_runtime/Vishnu/omniNamesVishnu.cfg nohup umssed /tmp/scratch_runtime/Vishnu/umssedconf.cfg > /tmp/scratch_runtime/Vishnu/sed1.out 2> /tmp/scratch_runtime/Vishnu/sed1.err &",
 				server1command.toString());
 
 	}
@@ -167,7 +167,7 @@ public class CommandLineBuilderServiceTest {
 
 		// Take care of the last space
 		Assert.assertEquals(
-				" PATH=/home/godiet/GRAAL/build/bin:/home/godiet/GRAAL/build/bin/examples/dmat_manips/:$PATH  LD_LIBRARY_PATH=/home/godiet/GRAAL/build/lib OMNINAMES_LOGDIR=/tmp/scratch_runtime/Domain1/ OMNIORB_CONFIG=/tmp/scratch_runtime/Domain1/omniNamesVishnu.cfg nohup omniNames -start -always >/tmp/scratch_runtime/Domain1/OmniNames.out 2> /tmp/scratch_runtime/Domain1/OmniNames.err &",
+				" PATH=/usr/local/bin/:/home/vishnu/IMS1/build/bin:$PATH  LD_LIBRARY_PATH=/home/vishnu/IMS1/build/lib:/usr/local/lib/ OMNINAMES_LOGDIR=/tmp/scratch_runtime/Vishnu/ OMNIORB_CONFIG=/tmp/scratch_runtime/Vishnu/omniNamesVishnu.cfg nohup omniNames -start -always >/tmp/scratch_runtime/Vishnu/OmniNames.out 2> /tmp/scratch_runtime/Vishnu/OmniNames.err &",
 				omninamescommand.toString());
 	}
 

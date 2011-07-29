@@ -49,6 +49,11 @@ public class ConfigurationFileBuilderService {
 		this.freemarkerConfiguration
 				.setObjectWrapper(new DefaultObjectWrapper());
 		this.freemarkerConfiguration.setNumberFormat("0.######");
+		//TODO : comme pour les templates, permettre d'avoir plusieurs rep
+		if(COPY_DIRECTORY_PATH == null)
+		{
+			COPY_DIRECTORY_PATH = getClass().getResource("/configuration/copy").getPath();
+		}
 	}
 
 	@PostConstruct
