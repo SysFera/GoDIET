@@ -4,7 +4,11 @@
 	<parent>
 		<groupId>com.sysfera</groupId>
 		<artifactId>goDiet-bin-parent</artifactId>
+<<<<<<< HEAD
 		<version>2.7.0.RC3-SNAPSHOT</version>
+=======
+		<version>2.7.0.RC2</version>
+>>>>>>> 55b2cc77171d10acdb18f54de85167b12e557027
 
 	</parent>
 

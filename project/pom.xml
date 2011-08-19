@@ -5,7 +5,6 @@
 		<groupId>com.sysfera</groupId>
 		<artifactId>goDiet-parent</artifactId>
 		<version>2.7.0.RC3-SNAPSHOT</version>
-
 	</parent>
 	<artifactId>goDiet</artifactId>
 	<packaging>jar</packaging>
