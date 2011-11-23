@@ -1,3 +1,10 @@
 /.project
 /pom.xml.versionsBackup
 /topo-db
+*Backup
+*.log
+.settings*
+.classpath
+.project
+*BAK
+.*
