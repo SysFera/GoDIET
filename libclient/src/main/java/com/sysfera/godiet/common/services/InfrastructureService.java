@@ -8,6 +8,7 @@ import com.sysfera.godiet.common.model.generated.Cluster;
 import com.sysfera.godiet.common.model.generated.Domain;
 import com.sysfera.godiet.common.model.generated.Link;
 import com.sysfera.godiet.common.model.generated.Node;
+import com.sysfera.godiet.common.model.observer.InfrastructureObserver;
 
 public interface InfrastructureService {
 
@@ -24,6 +25,8 @@ public interface InfrastructureService {
 
 
  	public abstract List<Node> getNodes();
+ 	
+ 	public abstract void addObserver(InfrastructureObserver observer);
 
 	
 	

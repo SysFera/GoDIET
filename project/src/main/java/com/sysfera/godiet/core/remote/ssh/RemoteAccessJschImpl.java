@@ -167,7 +167,7 @@ public class RemoteAccessJschImpl implements RemoteAccess {
 	 * (non-Javadoc)
 	 * 
 	 * @see com.sysfera.godiet.Utils.RemoteAccess#copy(java.io.File,
-	 * java.lang.String, int)
+	 * java.lang.String)
 	 */
 	@Override
 	public void copy(ConfigurationFile localFile, String remotePath, Path path)
