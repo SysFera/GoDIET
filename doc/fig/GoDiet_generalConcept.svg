@@ -15,7 +15,10 @@
    id="svg2"
    version="1.1"
    inkscape:version="0.48.0 r9654"
-   sodipodi:docname="schemaPhilippe.svg">
+   sodipodi:docname="GoDiet_generalConcept.svg"
+   inkscape:export-filename="/home/phi/Documents/Vishnu/vishnu_1/core/design/docbook/images/png/goDiet_general_concept.png"
+   inkscape:export-xdpi="150.57001"
+   inkscape:export-ydpi="150.57001">
   <defs
      id="defs4">
     <marker
@@ -1033,19 +1036,6 @@
          offset="1"
          style="stop-color:#ffffff;stop-opacity:1" />
     </linearGradient>
-    <filter
-       color-interpolation-filters="sRGB"
-       height="1.2008868"
-       y="-0.1004434"
-       width="1.0610143"
-       x="-0.030507162"
-       id="filter51766-3-5"
-       inkscape:collect="always">
-      <feGaussianBlur
-         id="feGaussianBlur51768-3-7"
-         stdDeviation="5.5211987"
-         inkscape:collect="always" />
-    </filter>
     <radialGradient
        r="3.510375"
        fy="365.17184"
@@ -1950,6 +1940,145 @@
        y1="348.79074"
        x2="162"
        y2="540.2193" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient4879"
+       id="linearGradient3521"
+       gradientUnits="userSpaceOnUse"
+       x1="163.71429"
+       y1="348.79074"
+       x2="162"
+       y2="540.2193"
+       gradientTransform="translate(-367.14285,-11.428571)" />
+    <marker
+       inkscape:stockid="Arrow1Send"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="Arrow1Send-7"
+       style="overflow:visible">
+      <path
+         id="path4963-8"
+         d="M 0,0 5,-5 -12.5,0 5,5 0,0 z"
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1pt;marker-start:none"
+         transform="matrix(-0.2,0,0,-0.2,-1.2,0)"
+         inkscape:connector-curvature="0" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow1Send"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="Arrow1Send-2"
+       style="overflow:visible">
+      <path
+         id="path4963-5"
+         d="M 0,0 5,-5 -12.5,0 5,5 0,0 z"
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1pt;marker-start:none"
+         transform="matrix(-0.2,0,0,-0.2,-1.2,0)"
+         inkscape:connector-curvature="0" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow1Send"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="Arrow1Send-5"
+       style="overflow:visible">
+      <path
+         id="path4963-0"
+         d="M 0,0 5,-5 -12.5,0 5,5 0,0 z"
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1pt;marker-start:none"
+         transform="matrix(-0.2,0,0,-0.2,-1.2,0)"
+         inkscape:connector-curvature="0" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow1Send"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="Arrow1Send-8"
+       style="overflow:visible">
+      <path
+         id="path4963-7"
+         d="M 0,0 5,-5 -12.5,0 5,5 0,0 z"
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1pt;marker-start:none"
+         transform="matrix(-0.2,0,0,-0.2,-1.2,0)"
+         inkscape:connector-curvature="0" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow1Send"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="Arrow1Send-76"
+       style="overflow:visible">
+      <path
+         id="path4963-89"
+         d="M 0,0 5,-5 -12.5,0 5,5 0,0 z"
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1pt;marker-start:none"
+         transform="matrix(-0.2,0,0,-0.2,-1.2,0)"
+         inkscape:connector-curvature="0" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow1Send"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="Arrow1Send-3"
+       style="overflow:visible">
+      <path
+         id="path4963-2"
+         d="M 0,0 5,-5 -12.5,0 5,5 0,0 z"
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1pt;marker-start:none"
+         transform="matrix(-0.2,0,0,-0.2,-1.2,0)"
+         inkscape:connector-curvature="0" />
+    </marker>
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient4879-52"
+       id="linearGradient3521-4"
+       gradientUnits="userSpaceOnUse"
+       x1="163.71429"
+       y1="348.79074"
+       x2="162"
+       y2="540.2193"
+       gradientTransform="translate(-367.14285,-11.428571)" />
+    <linearGradient
+       id="linearGradient4879-52">
+      <stop
+         style="stop-color:#f59a00;stop-opacity:1;"
+         offset="0"
+         id="stop4881-0" />
+      <stop
+         style="stop-color:#ffffff;stop-opacity:0;"
+         offset="1"
+         id="stop4883-2" />
+    </linearGradient>
+    <linearGradient
+       y2="540.2193"
+       x2="162"
+       y1="348.79074"
+       x1="163.71429"
+       gradientTransform="translate(-346.66336,-31.066127)"
+       gradientUnits="userSpaceOnUse"
+       id="linearGradient3670"
+       xlink:href="#linearGradient4879-52"
+       inkscape:collect="always" />
+    <marker
+       inkscape:stockid="Arrow1Send"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="Arrow1Send-0"
+       style="overflow:visible">
+      <path
+         id="path4963-84"
+         d="M 0,0 5,-5 -12.5,0 5,5 0,0 z"
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1pt;marker-start:none"
+         transform="matrix(-0.2,0,0,-0.2,-1.2,0)"
+         inkscape:connector-curvature="0" />
+    </marker>
   </defs>
   <sodipodi:namedview
      id="base"
@@ -1958,9 +2087,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.98994949"
-     inkscape:cx="411.8898"
-     inkscape:cy="269.84011"
+     inkscape:zoom="0.7"
+     inkscape:cx="-29.432034"
+     inkscape:cy="92.771851"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -1990,9 +2119,23 @@
      inkscape:groupmode="layer"
      id="layer1"
      transform="translate(310.58035,54.280825)">
+    <rect
+       style="opacity:0.81756757;fill:url(#linearGradient3670);fill-opacity:1;stroke:#000000;stroke-width:4;stroke-linecap:round;stroke-miterlimit:4;stroke-opacity:0.43014706000000003;stroke-dasharray:8, 16;stroke-dashoffset:0"
+       id="rect4758-9"
+       width="208.57143"
+       height="138.57143"
+       x="-288.09192"
+       y="364.1532"
+       rx="40"
+       ry="40"
+       inkscape:export-filename="/home/phi/Dev/GoDIET/doc/fig/g5906.png"
+       inkscape:export-xdpi="150.57001"
+       inkscape:export-ydpi="150.57001" />
     <g
        id="g5906"
-       transform="matrix(1.4663358,0,0,1.4663358,-347.03611,-160.14269)">
+       transform="matrix(1.4663358,0,0,1.4663358,-347.03611,-160.14269)"
+       inkscape:export-xdpi="150.57001"
+       inkscape:export-ydpi="150.57001">
       <g
          inkscape:label="Layer 1"
          id="layer1-5"
@@ -2836,7 +2979,10 @@
     </g>
     <g
        id="g4929"
-       transform="translate(-344.2857,-75.714286)">
+       transform="translate(-344.2857,-75.714286)"
+       inkscape:export-filename="/home/phi/Dev/GoDIET/doc/fig/g5906.png"
+       inkscape:export-xdpi="150.57001"
+       inkscape:export-ydpi="150.57001">
       <rect
          ry="40"
          rx="40"
@@ -2847,7 +2993,7 @@
          id="rect4758-6"
          style="fill:url(#linearGradient7767);fill-opacity:1;stroke:#000000;stroke-width:4;stroke-linecap:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" />
       <g
-         transform="translate(301.24686,5.9914474)"
+         transform="matrix(0.74378724,0,0,0.74378724,240.65651,63.408014)"
          id="g4863">
         <text
            xml:space="preserve"
@@ -2873,64 +3019,75 @@
              y="273.93359">Core</tspan></text>
       </g>
     </g>
+    <rect
+       style="fill:url(#linearGradient3521);fill-opacity:1;stroke:#000000;stroke-width:4;stroke-linecap:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+       id="rect4758"
+       width="208.57143"
+       height="138.57143"
+       x="-308.57141"
+       y="383.79077"
+       rx="40"
+       ry="40"
+       inkscape:export-filename="/home/phi/Dev/GoDIET/doc/fig/g5906.png"
+       inkscape:export-xdpi="150.57001"
+       inkscape:export-ydpi="150.57001" />
     <g
-       id="g4921"
-       transform="translate(-367.14285,-11.428571)">
-      <rect
-         ry="40"
-         rx="40"
-         y="395.21933"
-         x="58.57143"
-         height="138.57143"
-         width="208.57143"
-         id="rect4758"
-         style="fill:url(#linearGradient7769);fill-opacity:1;stroke:#000000;stroke-width:4;stroke-linecap:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" />
-      <g
-         transform="translate(335.11195,31.705727)"
-         id="g4873">
-        <text
-           xml:space="preserve"
-           style="font-size:50px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Impact;-inkscape-font-specification:Impact Bold"
-           x="-242.17668"
+       id="g4873"
+       transform="matrix(0.76464497,0,0,0.76464497,-92.442312,122.90995)"
+       inkscape:export-filename="/home/phi/Dev/GoDIET/doc/fig/g5906.png"
+       inkscape:export-xdpi="150.57001"
+       inkscape:export-ydpi="150.57001">
+      <text
+         sodipodi:linespacing="125%"
+         id="text4760-7"
+         y="430.69684"
+         x="-242.17668"
+         style="font-size:50px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Impact;-inkscape-font-specification:Impact Bold"
+         xml:space="preserve"><tspan
            y="430.69684"
-           id="text4760-7"
-           sodipodi:linespacing="125%"><tspan
-             sodipodi:role="line"
-             id="tspan4762-3"
-             x="-242.17668"
-             y="430.69684">GoDIET</tspan></text>
-        <text
-           xml:space="preserve"
-           style="font-size:50px;font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:start;fill:#f59a00;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial Italic"
-           x="-230.71428"
+           x="-242.17668"
+           id="tspan4762-3"
+           sodipodi:role="line">GoDIET</tspan></text>
+      <text
+         sodipodi:linespacing="125%"
+         id="text4789"
+         y="474.64789"
+         x="-230.71428"
+         style="font-size:50px;font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:start;fill:#f59a00;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial Italic"
+         xml:space="preserve"><tspan
            y="474.64789"
-           id="text4789"
-           sodipodi:linespacing="125%"><tspan
-             sodipodi:role="line"
-             id="tspan4791"
-             x="-230.71428"
-             y="474.64789">Shell</tspan></text>
-      </g>
+           x="-230.71428"
+           id="tspan4791"
+           sodipodi:role="line">Shell</tspan></text>
     </g>
     <path
        style="fill:none;stroke:#000000;stroke-width:10;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-end:url(#Arrow1Send)"
        d="m -204.28571,383.13612 0,-132.83506"
        id="path7380"
        inkscape:connector-curvature="0"
-       sodipodi:nodetypes="cc" />
+       sodipodi:nodetypes="cc"
+       inkscape:export-filename="/home/phi/Dev/GoDIET/doc/fig/g5906.png"
+       inkscape:export-xdpi="150.57001"
+       inkscape:export-ydpi="150.57001" />
     <path
-       style="fill:none;stroke:#000000;stroke-width:10;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-end:url(#Arrow1Send)"
-       d="m 120.80318,162.36218 135.62539,0"
+       style="fill:none;stroke:#000000;stroke-width:10.59267235;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-end:url(#Arrow1Send)"
+       d="m 120.80318,162.36218 152.17807,0"
        id="path7803"
        inkscape:connector-curvature="0"
-       sodipodi:nodetypes="cc" />
+       sodipodi:nodetypes="cc"
+       inkscape:export-filename="/home/phi/Dev/GoDIET/doc/fig/g5906.png"
+       inkscape:export-xdpi="150.57001"
+       inkscape:export-ydpi="150.57001" />
     <text
        xml:space="preserve"
        style="font-size:30.53195381px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
        x="46.735298"
        y="173.28987"
        id="text8004"
-       sodipodi:linespacing="125%"><tspan
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="/home/phi/Dev/GoDIET/doc/fig/g5906.png"
+       inkscape:export-xdpi="150.57001"
+       inkscape:export-ydpi="150.57001"><tspan
          sodipodi:role="line"
          id="tspan8006"
          x="46.735298"
@@ -2943,24 +3100,110 @@
        sodipodi:cy="-38.097488"
        sodipodi:rx="67.680222"
        sodipodi:ry="33.840111"
-       d="m 71.720832,-38.097488 a 67.680222,33.840111 0 1 1 -135.360443,0 67.680222,33.840111 0 1 1 135.360443,0 z"
-       transform="matrix(0.64700665,0,0,0.64700665,74.995841,187.01151)" />
+       d="m 71.720832,-38.097488 c 0,18.689377 -30.301467,33.8401104 -67.6802217,33.8401104 -37.3787543,0 -67.6802213,-15.1507334 -67.6802213,-33.8401104 0,-18.689378 30.301467,-33.840111 67.6802213,-33.840111 37.3787547,0 67.6802217,15.150733 67.6802217,33.840111 z"
+       transform="matrix(0.64700665,0,0,0.64700665,74.995841,187.01151)"
+       inkscape:export-filename="/home/phi/Dev/GoDIET/doc/fig/g5906.png"
+       inkscape:export-xdpi="150.57001"
+       inkscape:export-ydpi="150.57001" />
     <path
        style="fill:none;stroke:#000000;stroke-width:10;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
        d="m -100.71429,162.00504 136.071434,0.71429"
        id="path8015"
        inkscape:connector-curvature="0"
-       sodipodi:nodetypes="cc" />
+       sodipodi:nodetypes="cc"
+       inkscape:export-filename="/home/phi/Dev/GoDIET/doc/fig/g5906.png"
+       inkscape:export-xdpi="150.57001"
+       inkscape:export-ydpi="150.57001" />
     <text
        xml:space="preserve"
        style="font-size:30.53195381px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
        x="331.22604"
        y="173.11098"
        id="text8004-5"
-       sodipodi:linespacing="125%"><tspan
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="/home/phi/Dev/GoDIET/doc/fig/g5906.png"
+       inkscape:export-xdpi="150.57001"
+       inkscape:export-ydpi="150.57001"><tspan
          sodipodi:role="line"
          x="331.22604"
          y="173.11098"
          id="tspan8041">Remote Nodes</tspan></text>
+    <path
+       style="fill:none;stroke:#000000;stroke-width:7.66937923;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-end:url(#Arrow1Send)"
+       d="M 119.26715,139.79821 260.99871,123.80773"
+       id="path7803-5"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc"
+       inkscape:export-filename="/home/phi/Dev/GoDIET/doc/fig/g5906.png"
+       inkscape:export-xdpi="150.57001"
+       inkscape:export-ydpi="150.57001" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:7.85345364;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-end:url(#Arrow1Send)"
+       d="m 118.90403,182.88658 141.73156,16.76728"
+       id="path7803-5-4"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc"
+       inkscape:export-filename="/home/phi/Dev/GoDIET/doc/fig/g5906.png"
+       inkscape:export-xdpi="150.57001"
+       inkscape:export-ydpi="150.57001" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:3.84562826;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-end:url(#Arrow1Send)"
+       d="M 115.74695,117.54258 257.04329,73.220836"
+       id="path7803-5-6"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc"
+       inkscape:export-filename="/home/phi/Dev/GoDIET/doc/fig/g5906.png"
+       inkscape:export-xdpi="150.57001"
+       inkscape:export-ydpi="150.57001" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:2.56880689;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-end:url(#Arrow1Send)"
+       d="M 112.14203,96.737337 239.56219,35.151319"
+       id="path7803-5-2"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc"
+       inkscape:export-filename="/home/phi/Dev/GoDIET/doc/fig/g5906.png"
+       inkscape:export-xdpi="150.57001"
+       inkscape:export-ydpi="150.57001" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:2.56880689;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-end:url(#Arrow1Send)"
+       d="m 115.62202,221.56335 127.42016,61.58602"
+       id="path7803-5-2-0"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc"
+       inkscape:export-filename="/home/phi/Dev/GoDIET/doc/fig/g5906.png"
+       inkscape:export-xdpi="150.57001"
+       inkscape:export-ydpi="150.57001" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:3.84562826;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-end:url(#Arrow1Send)"
+       d="M 117.63805,200.63416 258.93439,244.9559"
+       id="path7803-5-6-6"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc"
+       inkscape:export-filename="/home/phi/Dev/GoDIET/doc/fig/g5906.png"
+       inkscape:export-xdpi="150.57001"
+       inkscape:export-ydpi="150.57001" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:9.442;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-end:url(#Arrow1Send);opacity:0.44932432000000000;marker-start:none"
+       d="m -178.75544,366.33082 0,-118.42811"
+       id="path7380-2"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc"
+       inkscape:export-filename="/home/phi/Dev/GoDIET/doc/fig/g5906.png"
+       inkscape:export-xdpi="150.57001"
+       inkscape:export-ydpi="150.57001" />
+    <text
+       xml:space="preserve"
+       style="font-size:30.53195381px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
+       x="-281.44775"
+       y="323.43436"
+       id="text8004-2"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="/home/phi/Dev/GoDIET/doc/fig/g5906.png"
+       inkscape:export-xdpi="150.57001"
+       inkscape:export-ydpi="150.57001"><tspan
+         sodipodi:role="line"
+         id="tspan8006-3"
+         x="-281.44775"
+         y="323.43436">RMI</tspan></text>
   </g>
 </svg>
