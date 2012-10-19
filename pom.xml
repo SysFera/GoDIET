@@ -8,7 +8,7 @@
 	<modules>
 		<module>libclient</module>
 		<module>project</module>
-		<module>integration-test</module>
+	<!--	<module>integration-test</module>-->
 		<module>shell</module>
 	</modules>
 	<properties>
