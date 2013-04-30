@@ -1,12 +1,16 @@
 \subsubsection{Quickstart}
 
-Dans cette partie nous allons lancer une hierarchie \diet tr√®s simple avec \godiet. Pour simplifier encore les choses,\diet et \godiet seront executer sur la m√™me machine. Les pr√©-requis pour r√©aliser ce sc√©nario sont d'avoir installer \diet, OmniNames ainsi que le serveur et le client \godiet.
-Les fichiers d√©crits par la suite se situent dans le r√©pertoire examples/localhost de l'archive \godiet client.
+Dans cette partie nous allons lancer une hierarchie \diet trËs simple
+avec \godiet. Pour simplifier encore les choses, \diet et \godiet
+seront executer sur la mÍme machine. Les prÈ-requis pour rÈaliser ce
+scÈnario sont d'avoir installer \diet, OmniNames ainsi que le serveur
+et le client \godiet.  Les fichiers dÈcrits par la suite se situent
+dans le rÈpertoire examples/localhost de l'archive \godiet client.
 
 \paragraph{Infratructure description}
-La premi√®re √©tape est de cr√©er le fichier de description de l'infrastructure physique. Dans ce cas, un domaine,  nomm√© DomainLocalhost contient votre machine nomm√©e my-node. 
+La premiËre Ètape est de crÈer le fichier de description de l'infrastructure physique. Dans ce cas, un domaine,  nommÈ DomainLocalhost contient votre machine nommÈe my-node. 
 La seule contrainte de nommage est qu'il faut que l'identifiant soit unique.
-s
+
 %Copie du fichier infrastructure\localhost-infrastructure.xml des tests unitaires
 \begin{verbatim}
 <?xml version="1.0" encoding="UTF-8"?>
@@ -25,12 +29,12 @@ s
 </godiet:infrastructure>
 \end{verbatim}
 
-Remplacer mylogin par le votre et les valeur des variables PATH et LD\_LIBRARY\_PATH par celles correspondant aux r√©pertoire d'installation sur votre machine.
+Remplacer mylogin par le votre et les valeur des variables PATH et LD\_LIBRARY\_PATH par celles correspondant aux rÈpertoire d'installation sur votre machine.
 
 
 \paragraph{Platform description}
 
-Le fichier ci-apr√®s d√©crit la plate-forme minimale pour exposer un service. Il est compos√© d'un omniNames et d'un master Agent et un Sed fournissant un service de calcul matriciel. 
+Le fichier ci-aprËs dÈcrit la plate-forme minimale pour exposer un service. Il est composÈ d'un omniNames et d'un master Agent et un Sed fournissant un service de calcul matriciel. 
 
 %Copie du fichier diet\localhost-diet des tests unitaires
 \begin{verbatim}
@@ -68,11 +72,11 @@ Le fichier ci-apr√®s d√©crit la plate-forme minimale pour exposer un service. Il
 
 Vous pouvez utiliser ce fichier tel quel.
 
-\paragraph{D√©marrer le serveur}
+\paragraph{DÈmarrer le serveur}
 
 Deux fichiers pour l'instant server.properties et configuration.xml
 
-Vous devez cr√©er le fichier de configuration associ√© au serveur. Il d√©crit le chemin ou se trouve les clefs SSH, le nom du noeud sur lequel il est d√©marr√©
+Vous devez crÈer le fichier de configuration associÈ au serveur. Il dÈcrit le chemin ou se trouve les clefs SSH, le nom du noeud sur lequel il est dÈmarrÈ
 You need to create a \godiet server configuration file. It contains information for remote connection like your SSH keys path. The server will look this file 
 in \verb+${HOME}/.godiet/configuration.xml+~\ref{GODIETConfiguration} directory.
 
@@ -92,10 +96,10 @@ in \verb+${HOME}/.godiet/configuration.xml+~\ref{GODIETConfiguration} directory.
 </godiet:configuration>
 \end{verbatim}
 
-Remplac√© myPrivateKeyPaht par le chemin associ√© √† votre clef SSH.
-Pour d√©marrer le serveur, lanc√© le script run-server.sh
+Remplacer myPrivateKeyPaht par le chemin associÈ ‡ votre clef SSH.
+Pour dÈmarrer le serveur, lancer le script run-server.sh
 
-\paragraph{D√©marrer le client}
+\paragraph{DÈmarrer le client}
 
 
 
