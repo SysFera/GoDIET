@@ -10,10 +10,8 @@
 %\makeatother
 \usepackage{fancyhdr}
 \usepackage[headings]{fullpage}
-
 \usepackage[pdftex]{graphicx} % Pour l'insertion d'images
 \DeclareGraphicsExtensions{.jpg,.mps,.pdf,.png} % Formats d'images
-
 \usepackage[pdftex]{thumbpdf}      % Vignettes
 \usepackage{xcolor} % required for colors by hyperef
 \usepackage[pdftex,                %
@@ -32,7 +30,6 @@
     urlcolor          = blue, %  % Couleur des liens externes
     pdfborder         = {0 0 0}%   % Style de bordure : ici, pas de bordure
     ]{hyperref}%                   % Utilisation de HyperTeX
-
 
 \hypersetup{ % Modifiez la valeur des champs suivants
     pdfauthor   = {DIET Team},%
@@ -58,9 +55,8 @@
 
 \usepackage{pifont} % for \ding{52} dagda
 
-
-
-
+\usepackage{amsmath}
+\usepackage{boiboites}
 %%%%
 
 \newcounter{rmq}[section]
@@ -128,6 +124,9 @@
 %%%%
 % Document beginning
 %%%%
+
+
+\newboxedtheorem[boxcolor=orange, background=blue!5, titlebackground=blue!20, titleboxcolor = black]{RQ}{Remarque}{test}
 
 \begin{document}
 
