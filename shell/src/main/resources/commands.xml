@@ -21,6 +21,5 @@
 	<command>com.sysfera.godiet.shell.command.StatusCommand</command>
 	<command>com.sysfera.godiet.shell.command.SSHCommand</command>
 	<!--  <command>com.sysfera.godiet.shell.command.DrawCommand</command>-->
-	<command>com.sysfera.godiet.shell.command.InfrastructureObserverCommand</command>
 </commands>
 
