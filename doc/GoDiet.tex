@@ -5,10 +5,11 @@
 %* $LICENSE$                                                                *%
 %****************************************************************************%
 %****************************************************************************%
-\documentclass[12pt,a4paper]{book}
+\documentclass[11pt,a4paper]{book}
 %\makeatletter
 %\makeatother
 \usepackage{fancyhdr}
+\usepackage{moreverb}
 \usepackage[headings]{fullpage}
 \usepackage[pdftex]{graphicx} % Pour l'insertion d'images
 \DeclareGraphicsExtensions{.jpg,.mps,.pdf,.png} % Formats d'images
@@ -126,7 +127,8 @@
 %%%%
 
 
-\newboxedtheorem[boxcolor=orange, background=blue!5, titlebackground=blue!20, titleboxcolor = black]{RQ}{Remarque}{test}
+\newboxedtheorem[boxcolor=orange, background=blue!5, titlebackground=blue!20, titleboxcolor = black]{RQ}{Remarque}{cpt_rq}
+\newboxedtheorem[boxcolor=orange, background=red!25, titlebackground=red!20,titleboxcolor = black]{todo}{TODO}{cpt_todo}
 
 \begin{document}
 

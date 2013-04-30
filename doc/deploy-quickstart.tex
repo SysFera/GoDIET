@@ -10,12 +10,23 @@ et le client \godiet.
 Les fichiers décrits par la suite se situent dans le répertoire \texttt{examples/localhost} de l'archive \godiet client.
 \end{RQ}
 
-\paragraph{Infratructure description}
-La première étape est de créer le fichier de description de l'infrastructure physique. Dans ce cas, un domaine,  nommé DomainLocalhost contient votre machine nommée my-node. 
-La seule contrainte de nommage est qu'il faut que l'identifiant soit unique.
+\begin{todo}[Check avec Philippe]
+sauf que non... le fichier Infrastructure description est ici:
+\texttt{project/target/test-classes/infrastructure/localhost-infrastructure.xml}
+? 
+\end{todo}
 
-%Copie du fichier infrastructure\localhost-infrastructure.xml des tests unitaires
-\begin{verbatim}
+\begin{description}
+\item[Infrastructure description] La première étape est de créer le fichier de description de l'infrastructure physique. Dans ce cas, un domaine,  nommé DomainLocalhost contient votre machine nommée my-node. 
+La seule contrainte de nommage est qu'il faut que l'identifiant soit
+unique. \end{description}
+
+%Copie du fichier infrastructure\localhost-infrastructure.xml des
+%tests unitaires
+
+\begin{center}
+\begin{scriptsize}
+\begin{boxedverbatim} 
 <?xml version="1.0" encoding="UTF-8"?>
 <godiet:infrastructure ...">
    <domain id="DomainLocalhost"/>
@@ -30,17 +41,19 @@ La seule contrainte de nommage est qu'il faut que l'identifiant soit unique.
 	<scratch dir="/tmp/scratch/"/>	
 	</node>
 </godiet:infrastructure>
-\end{verbatim}
+\end{boxedverbatim}
+\end{scriptsize}
+\end{center}
 
-Remplacer mylogin par le votre et les valeur des variables PATH et LD\_LIBRARY\_PATH par celles correspondant aux répertoire d'installation sur votre machine.
+Remplacer mylogin par le votre et les valeur des variables \texttt{PATH} et\texttt{LD\_LIBRARY\_PATH} par celles correspondant aux répertoire d'installation sur votre machine.
 
+\begin{description}
+\item[Platform description] Le fichier ci-après décrit la plate-forme minimale pour exposer un service. Il est composé d'un omniNames et d'un master Agent et un Sed fournissant un service de calcul matriciel. 
+\end{description}
 
-\paragraph{Platform description}
-
-Le fichier ci-après décrit la plate-forme minimale pour exposer un service. Il est composé d'un omniNames et d'un master Agent et un Sed fournissant un service de calcul matriciel. 
-
-%Copie du fichier diet\localhost-diet des tests unitaires
-\begin{verbatim}
+\begin{center}
+\begin{scriptsize}
+\begin{boxedverbatim} 
 <?xml version="1.0" encoding="UTF-8"?>
 <godiet:dietPlatform xmlns:godiet="http://www.sysfera.com"
    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -71,7 +84,9 @@ Le fichier ci-après décrit la plate-forme minimale pour exposer un service. Il e
       </masterAgent>
    </hierarchy>
 </godiet:dietPlatform>
-\end{verbatim}
+\end{boxedverbatim}
+\end{scriptsize}
+\end{center}
 
 Vous pouvez utiliser ce fichier tel quel.
 
@@ -83,8 +98,9 @@ Vous devez créer le fichier de configuration associé au serveur. Il décrit le ch
 You need to create a \godiet server configuration file. It contains information for remote connection like your \texttt{ssh} keys path. The server will look this file 
 in \verb+${HOME}/.godiet/configuration.xml+~\ref{GODIETConfiguration} directory.
 
-
-\begin{verbatim}
+\begin{center}
+\begin{scriptsize}
+\begin{boxedverbatim} 
 <?xml version="1.0" encoding="UTF-8"?>
 <godiet:configuration xmlns:godiet="http://www.sysfera.com"
    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -97,7 +113,9 @@ in \verb+${HOME}/.godiet/configuration.xml+~\ref{GODIETConfiguration} directory.
       </ssh>
    </user>
 </godiet:configuration>
-\end{verbatim}
+\end{boxedverbatim}
+\end{scriptsize}
+\end{center}
 
 Remplacer myPrivateKeyPath par le chemin associé à votre clef \texttt{ssh}.
 Pour démarrer le serveur, lancer le script run-server.sh

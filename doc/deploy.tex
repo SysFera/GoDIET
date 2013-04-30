@@ -140,7 +140,7 @@ the creation of configuration files, the staging of files, the launch of softwar
 \begin{figure}[h]
   \centering
   \includegraphics[width=10cm]{fig/schemaPhilippe}
-  \caption{Design principle of \godiet.\label{fig:GODIETDesign}}
+  \caption{\godiet design.\label{fig:GODIETDesign}}
 \end{figure}
 
 
@@ -149,7 +149,7 @@ the creation of configuration files, the staging of files, the launch of softwar
 
 \subsubsection{Requirement}
 
-The following operating systems are known to support GoDiet:
+The following operating systems are known to support \godiet:
 \begin{itemize}
     \item Linux: the most recent distributions are likely to work;
     \item Mac OS X 10.4 or later.
@@ -194,7 +194,10 @@ The mains elements are:
 
 \vspace{1cm}
 General layout of the configuration description (some parts are omitted):
-\begin{verbatim}
+
+\begin{center}
+\begin{scriptsize}
+\begin{boxedverbatim} 
 <godiet:configuration localNode="local" schema="Configuration.xsd">
 
   <localscratch dir="/tmp/scratch_godiet" />
@@ -205,9 +208,9 @@ General layout of the configuration description (some parts are omitted):
      </ssh>
   </user>
 </godiet:configuration>
-\end{verbatim}
-
-
+\end{boxedverbatim}
+\end{scriptsize}
+\end{center}
 
 \bla \subsubsection{\godiet client setup}
 
@@ -244,8 +247,12 @@ The fields are:
 
 \vspace{1cm}
 
-General layout of the infrastructure description (details are omitted):
-\begin{verbatim}
+General layout of the infrastructure description (details are
+omitted):
+
+\begin{center}
+\begin{scriptsize}
+\begin{boxedverbatim} 
 <godiet:infrastructure schema="Infrastructure.xsd">
   <domain id="idDomain1"/>
   <domain id="idDomain2"/>
@@ -265,8 +272,9 @@ General layout of the infrastructure description (details are omitted):
   ..
 
 </godiet:infrastructure>
-\end{verbatim}
-
+\end{boxedverbatim}
+\end{scriptsize}
+\end{center}
 
 \begin{figure}[h]
   \centering
@@ -301,7 +309,9 @@ The most important fields are:
 General layout of the \diet platform description (details are omitted):
 
 
-\begin{verbatim}
+\begin{center}
+\begin{scriptsize}
+\begin{boxedverbatim} 
 <godiet:dietPlatform schema="Diet.xsd">
    <services>
 
@@ -348,8 +358,9 @@ General layout of the \diet platform description (details are omitted):
   </hierarchy>
 
 </godiet:dietPlatform>
-\end{verbatim}
-
+\end{boxedverbatim}
+\end{scriptsize}
+\end{center}
 
 \subsection{Godiet shell}
 \label{GODIETShell}
