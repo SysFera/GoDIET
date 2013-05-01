@@ -1,10 +1,12 @@
-\subsubsection{Quickstart}
+\section{\godiet Quickstart}
 
 Dans cette partie nous allons lancer une hiérarchie \diet très simple
 avec \godiet. Pour simplifier encore les choses, \diet et \godiet
 seront exécuter sur la même machine. Les pré-requis pour réaliser ce
-scénario sont d'avoir installer \diet, OmniNames ainsi que le serveur
+scénario sont d'avoir installé \diet, OmniNames ainsi que le serveur
 et le client \godiet.  
+
+\subsection{Création des fichiers de configuration}
 
 \begin{RQ}[Configuration files]
 Les fichiers décrits par la suite se situent dans le répertoire \texttt{examples/localhost} de l'archive \godiet client.
@@ -42,13 +44,22 @@ unique. \end{description}
 	</node>
 </godiet:infrastructure>
 \end{boxedverbatim}
+
+\textbf{File: } project/target/test-classes/infrastructure/localhost-infrastructure.xml
+
 \end{scriptsize}
 \end{center}
 
-Remplacer mylogin par le votre et les valeur des variables \texttt{PATH} et\texttt{LD\_LIBRARY\_PATH} par celles correspondant aux répertoire d'installation sur votre machine.
+Remplacer \texttt{mylogin} par votre login et les valeurs des variables
+\texttt{PATH} et \texttt{LD\_LIBRARY\_PATH} par celles correspondant
+aux répertoire d'installation sur votre machine.
 
 \begin{description}
-\item[Platform description] Le fichier ci-après décrit la plate-forme minimale pour exposer un service. Il est composé d'un omniNames et d'un master Agent et un Sed fournissant un service de calcul matriciel. 
+\item[Platform description] Le fichier ci-après décrit la plate-forme
+  minimale pour exposer un service. Il est composé d'un omniNames et
+  d'un master Agent et un Sed fournissant un service de calcul
+  matriciel. You can use the following file without any modification
+
 \end{description}
 
 \begin{center}
@@ -85,18 +96,19 @@ Remplacer mylogin par le votre et les valeur des variables \texttt{PATH} et\text
    </hierarchy>
 </godiet:dietPlatform>
 \end{boxedverbatim}
+
+\textbf{File:} project/target/test-classes/diet/localhost-diet.xml
 \end{scriptsize}
 \end{center}
 
-Vous pouvez utiliser ce fichier tel quel.
-
-\paragraph{Démarrer le serveur}
+\subsection{Démarrer le serveur}
 
 Deux fichiers pour l'instant server.properties et configuration.xml
 
-Vous devez créer le fichier de configuration associé au serveur. Il décrit le chemin ou se trouve les clefs \texttt{ssh}, le nom du noeud sur lequel il est démarré
+Vous devez créer le fichier de configuration associé au serveur. Il
+décrit le chemin ou se trouve les clefs \texttt{ssh} privées, le nom du noeud sur lequel il est démarré
 You need to create a \godiet server configuration file. It contains information for remote connection like your \texttt{ssh} keys path. The server will look this file 
-in \verb+${HOME}/.godiet/configuration.xml+~\ref{GODIETConfiguration} directory.
+in \verb+${HOME}/.godiet/configuration.xml+ directory.
 
 \begin{center}
 \begin{scriptsize}
@@ -114,13 +126,19 @@ in \verb+${HOME}/.godiet/configuration.xml+~\ref{GODIETConfiguration} directory.
    </user>
 </godiet:configuration>
 \end{boxedverbatim}
+
+\textbf{File: } project/target/classes/configuration/configuration-local.xml
 \end{scriptsize}
 \end{center}
 
-Remplacer myPrivateKeyPath par le chemin associé à votre clef \texttt{ssh}.
+\begin{todo}[Check avec Philippe]
+Le fichier en question a en fait des /home/phi en hard coded. 
+\end{todo}
+
+Remplacer myPrivateKeyPath par le chemin associé à votre clef privée \texttt{ssh}.
 Pour démarrer le serveur, lancer le script run-server.sh
 
-\paragraph{Démarrer le client}
+\subsection{Démarrer le client}
 
 
 
